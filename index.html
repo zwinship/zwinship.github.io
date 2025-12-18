@@ -263,7 +263,7 @@
             border-left: 5px solid var(--accent);
             transition: all 0.3s;
             position: relative;
-            overflow: hidden;
+            overflow: visible;
         }
 
         .project-card::before {
@@ -409,7 +409,7 @@
             display: inline-block;
             padding: 0.7rem 1.5rem;
             background: linear-gradient(135deg, var(--accent), #2980b9);
-            color: white;
+            color: white !important;
             text-decoration: none;
             border-radius: 30px;
             margin-top: 1rem;
@@ -417,6 +417,9 @@
             transition: all 0.3s;
             font-weight: 600;
             box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+            cursor: pointer;
+            position: relative;
+            z-index: 10;
         }
 
         .btn:hover {
