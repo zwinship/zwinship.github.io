@@ -12,6 +12,18 @@
         }
 
         :root {
+            /* Dark mode (default) */
+            --primary: #e8eaed;
+            --accent: #60a5fa;
+            --text: #e8eaed;
+            --text-light: #9ca3af;
+            --bg: #0a0a0a;
+            --card-bg: #1a1a1a;
+            --border: #2a2a2a;
+        }
+
+        [data-theme="light"] {
+            /* Light mode */
             --primary: #2c3e50;
             --accent: #3498db;
             --text: #333;
@@ -26,6 +38,7 @@
             line-height: 1.6;
             color: var(--text);
             background: var(--bg);
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .container {
@@ -34,16 +47,41 @@
             padding: 0 20px;
         }
 
+        /* Page Transitions */
+        .page {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .page.hidden {
+            display: none;
+        }
+
         /* Navigation */
         nav {
             position: sticky;
             top: 0;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(10, 10, 10, 0.95);
             backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--border);
             padding: 1rem 0;
             z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        [data-theme="light"] nav {
+            background: rgba(255, 255, 255, 0.95);
         }
 
         .nav-container {
@@ -61,19 +99,21 @@
             color: var(--primary);
             text-decoration: none;
             letter-spacing: -0.5px;
+            transition: color 0.3s ease;
         }
 
         .nav-links {
             display: flex;
             gap: 2rem;
             list-style: none;
+            align-items: center;
         }
 
         .nav-links a {
             color: var(--text);
             text-decoration: none;
             font-weight: 500;
-            transition: color 0.3s;
+            transition: color 0.3s ease;
             position: relative;
         }
 
@@ -92,6 +132,40 @@
             background: var(--accent);
         }
 
+        /* Theme Toggle Switch */
+        .theme-toggle {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: var(--card-bg);
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            border: 2px solid var(--border);
+        }
+
+        .theme-toggle::before {
+            content: '🌙';
+            position: absolute;
+            top: 50%;
+            left: 4px;
+            transform: translateY(-50%);
+            width: 22px;
+            height: 22px;
+            background: var(--accent);
+            border-radius: 50%;
+            transition: left 0.3s ease, background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        [data-theme="light"] .theme-toggle::before {
+            content: '☀️';
+            left: calc(100% - 26px);
+        }
+
         /* Hero Section */
         .hero {
             padding: 6rem 0 4rem;
@@ -104,6 +178,7 @@
             color: var(--primary);
             margin-bottom: 1rem;
             letter-spacing: -1px;
+            transition: color 0.3s ease;
         }
 
         .hero h2 {
@@ -111,6 +186,7 @@
             color: var(--text-light);
             font-weight: 400;
             margin-bottom: 1.5rem;
+            transition: color 0.3s ease;
         }
 
         .hero p {
@@ -118,6 +194,7 @@
             color: var(--text-light);
             max-width: 600px;
             margin: 0 auto 2rem;
+            transition: color 0.3s ease;
         }
 
         .cta-buttons {
@@ -132,7 +209,7 @@
             text-decoration: none;
             border-radius: 8px;
             font-weight: 600;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             display: inline-block;
         }
 
@@ -142,9 +219,9 @@
         }
 
         .btn-primary:hover {
-            background: #2980b9;
+            background: #3b82f6;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+            box-shadow: 0 5px 15px rgba(96, 165, 250, 0.4);
         }
 
         .btn-secondary {
@@ -168,6 +245,7 @@
             font-weight: 700;
             color: var(--primary);
             margin-bottom: 0.5rem;
+            transition: color 0.3s ease;
         }
 
         /* Projects Grid */
@@ -182,32 +260,34 @@
             background: var(--card-bg);
             border-radius: 12px;
             overflow: hidden;
-            transition: transform 0.3s, box-shadow 0.3s;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
             border: 1px solid var(--border);
         }
 
         .project-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(96, 165, 250, 0.2);
         }
 
         .project-image {
             width: 100%;
             height: 220px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            /* This is the change: use the variable, not the gradient */
+            background: var(--card-bg); 
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-size: 3rem;
             position: relative;
             overflow: hidden;
+            border-bottom: 1px solid var(--border); /* Adds a subtle line to separate image from text */
         }
 
         .project-image img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            /* 'contain' ensures the graph isn't cut off if it's a weird shape */
+            object-fit: contain; 
+            padding: 15px; /* Keeps the transparent image from touching the edges */
         }
 
         .project-content {
@@ -219,18 +299,21 @@
             font-weight: 700;
             color: var(--primary);
             margin-bottom: 0.5rem;
+            transition: color 0.3s ease;
         }
 
         .project-subtitle {
             color: var(--text-light);
             font-size: 0.9rem;
             margin-bottom: 1rem;
+            transition: color 0.3s ease;
         }
 
         .project-description {
             color: var(--text);
             margin-bottom: 1rem;
             line-height: 1.6;
+            transition: color 0.3s ease;
         }
 
         .project-tags {
@@ -242,11 +325,12 @@
 
         .tag {
             padding: 0.3rem 0.8rem;
-            background: rgba(52, 152, 219, 0.1);
+            background: rgba(96, 165, 250, 0.15);
             color: var(--accent);
             border-radius: 20px;
             font-size: 0.85rem;
-            border: 1px solid rgba(52, 152, 219, 0.2);
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            transition: all 0.3s ease;
         }
 
         .project-links {
@@ -264,7 +348,7 @@
             border-radius: 6px;
             font-size: 0.9rem;
             font-weight: 600;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
         }
 
         .project-link:hover {
@@ -290,7 +374,7 @@
             margin: 1.5rem 0;
             border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
         }
 
         .video-container video {
@@ -323,7 +407,10 @@
             border-radius: 50%;
             overflow: hidden;
             border: 4px solid var(--accent);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(96, 165, 250, 0.3);
+            transition: border-color 0.3s ease;
+            /* Use the page background color for the circle */
+            background: var(--bg); 
         }
 
         .profile-image img {
@@ -337,12 +424,14 @@
             font-weight: 800;
             color: var(--primary);
             margin-bottom: 0.5rem;
+            transition: color 0.3s ease;
         }
 
         .profile-text .subtitle {
             font-size: 1.3rem;
             color: var(--text-light);
             margin-bottom: 1.5rem;
+            transition: color 0.3s ease;
         }
 
         .page-content h1 {
@@ -350,6 +439,7 @@
             font-weight: 800;
             color: var(--primary);
             margin-bottom: 2rem;
+            transition: color 0.3s ease;
         }
 
         .page-content h2 {
@@ -358,6 +448,7 @@
             color: var(--primary);
             margin-bottom: 1.5rem;
             margin-top: 3rem;
+            transition: color 0.3s ease;
         }
 
         .page-content p {
@@ -365,6 +456,7 @@
             line-height: 1.8;
             color: var(--text);
             margin-bottom: 1.5rem;
+            transition: color 0.3s ease;
         }
 
         .contact-section {
@@ -373,6 +465,7 @@
             background: var(--card-bg);
             border-radius: 12px;
             border: 1px solid var(--border);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
         .contact-section h2 {
@@ -394,11 +487,11 @@
             text-decoration: none;
             border-radius: 8px;
             font-weight: 600;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
         }
 
         .contact-link:hover {
-            background: #2980b9;
+            background: #3b82f6;
             transform: translateY(-2px);
         }
 
@@ -415,12 +508,14 @@
             padding: 2rem;
             border-radius: 12px;
             border: 1px solid var(--border);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
         .skill-category h3 {
             color: var(--accent);
             margin-bottom: 1rem;
             font-size: 1.3rem;
+            transition: color 0.3s ease;
         }
 
         .skill-list {
@@ -430,6 +525,7 @@
         .skill-list li {
             padding: 0.5rem 0;
             color: var(--text);
+            transition: color 0.3s ease;
         }
 
         .skill-list li::before {
@@ -454,6 +550,7 @@
             border-left: 4px solid var(--accent);
             border: 1px solid var(--border);
             border-left: 4px solid var(--accent);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
         .experience-title {
@@ -461,12 +558,14 @@
             font-weight: 700;
             color: var(--primary);
             margin-bottom: 0.5rem;
+            transition: color 0.3s ease;
         }
 
         .experience-details {
             color: var(--text-light);
             margin-bottom: 1rem;
             font-size: 0.95rem;
+            transition: color 0.3s ease;
         }
 
         /* Footer */
@@ -476,10 +575,12 @@
             padding: 3rem 0;
             margin-top: 4rem;
             text-align: center;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
         footer p {
             color: var(--text-light);
+            transition: color 0.3s ease;
         }
 
         /* Utility Classes */
@@ -526,6 +627,7 @@
                 <li><a href="#" data-page="experience" onclick="showPage('experience'); return false;">Experience</a></li>
                 <li><a href="#" data-page="skills" onclick="showPage('skills'); return false;">Skills</a></li>
                 <li><a href="./resume.pdf">Resume</a></li>
+                <li><div class="theme-toggle" onclick="toggleTheme()"></div></li>
             </ul>
         </div>
     </nav>
@@ -845,14 +947,33 @@
     </footer>
 
     <script>
+        // Theme Toggle Function
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+
+        // Load saved theme on page load
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            // Default to dark mode if no theme is saved
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            }
+        }
+
         function showPage(pageId) {
-            // 1. Find all sections with the class 'page' and hide them
+            // Find all sections with the class 'page' and hide them
             const pages = document.querySelectorAll('.page');
             pages.forEach(page => {
                 page.classList.add('hidden');
             });
 
-            // 2. Show the specific page the user clicked
+            // Show the specific page the user clicked
             const selectedPage = document.getElementById(pageId + '-page');
             if (selectedPage) {
                 selectedPage.classList.remove('hidden');
@@ -860,7 +981,7 @@
                 console.error("Could not find page ID:", pageId + '-page');
             }
 
-            // 3. Update the navigation links to show which one is 'active'
+            // Update the navigation links to show which one is 'active'
             const links = document.querySelectorAll('.nav-links a');
             links.forEach(link => {
                 link.classList.remove('active');
@@ -869,12 +990,13 @@
                 }
             });
             
-            // 4. Smoothly scroll back to the top
+            // Smoothly scroll back to the top
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // 5. When the browser finishes loading the HTML, show the Home page first
+        // When the browser finishes loading the HTML
         document.addEventListener('DOMContentLoaded', () => {
+            loadTheme();
             showPage('home');
         });
     </script>
