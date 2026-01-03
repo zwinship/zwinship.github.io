@@ -4,11 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zach Winship | Quantitative Economics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         :root {
@@ -238,14 +243,29 @@
         /* Section Headers */
         .section-header {
             padding: 4rem 0 2rem;
+            text-align: center;
         }
 
         .section-title {
             font-size: 2.5rem;
             font-weight: 700;
             color: var(--primary);
-            margin-bottom: 0.5rem;
+            margin-bottom: 1rem;
             transition: color 0.3s ease;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 2px;
         }
 
         /* Projects Grid */
@@ -272,22 +292,20 @@
         .project-image {
             width: 100%;
             height: 220px;
-            /* This is the change: use the variable, not the gradient */
             background: var(--card-bg); 
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
             overflow: hidden;
-            border-bottom: 1px solid var(--border); /* Adds a subtle line to separate image from text */
+            border-bottom: 1px solid var(--border);
         }
 
         .project-image img {
             width: 100%;
             height: 100%;
-            /* 'contain' ensures the graph isn't cut off if it's a weird shape */
             object-fit: contain; 
-            padding: 15px; /* Keeps the transparent image from touching the edges */
+            padding: 15px;
         }
 
         .project-content {
@@ -349,6 +367,9 @@
             font-size: 0.9rem;
             font-weight: 600;
             transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .project-link:hover {
@@ -409,7 +430,6 @@
             border: 4px solid var(--accent);
             box-shadow: 0 10px 30px rgba(96, 165, 250, 0.3);
             transition: border-color 0.3s ease;
-            /* Use the page background color for the circle */
             background: var(--bg); 
         }
 
@@ -488,6 +508,9 @@
             border-radius: 8px;
             font-weight: 600;
             transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .contact-link:hover {
@@ -621,12 +644,12 @@
         <div class="nav-container">
             <a href="#" class="logo" onclick="showPage('home'); return false;">ZW</a>
             <ul class="nav-links">
-                <li><a href="#" class="active" data-page="home" onclick="showPage('home'); return false;">Projects</a></li>
+                <li><a href="#projects" class="active" data-page="home">Projects</a></li>
                 <li><a href="#" data-page="about" onclick="showPage('about'); return false;">About</a></li>
                 <li><a href="#" data-page="presentations" onclick="showPage('presentations'); return false;">Presentations</a></li>
                 <li><a href="#" data-page="experience" onclick="showPage('experience'); return false;">Experience</a></li>
                 <li><a href="#" data-page="skills" onclick="showPage('skills'); return false;">Skills</a></li>
-                <li><a href="./resume.pdf">Resume</a></li>
+                <li><a href="./resume.pdf" download>Resume</a></li>
                 <li><div class="theme-toggle" onclick="toggleTheme()"></div></li>
             </ul>
         </div>
@@ -638,7 +661,7 @@
             <section class="hero">
                 <h1>Zach Winship</h1>
                 <h2>Quantitative Economics Student & Data Analyst</h2>
-                <p>Developing data-driven solutions for policy evaluation, economic research, and decision-making</p>
+                <p>Most people have portfolios full of coursework; this one is made up entirely of fun, self-driven projects I chose to spend my time on.</p>
                 <div class="cta-buttons">
                     <a href="#projects" class="btn btn-primary">View Projects</a>
                     <a href="#" onclick="showPage('about'); return false;" class="btn btn-secondary">About Me</a>
@@ -646,7 +669,7 @@
             </section>
 
             <section class="section-header" id="projects">
-                <h2 class="section-title">Featured Projects</h2>
+                <h2 class="section-title">Projects</h2>
             </section>
 
             <div class="projects-grid">
@@ -667,7 +690,9 @@
                         </div>
                         <div class="project-links">
                             <a href="https://www.researchgate.net/publication/391840600_UNDERGRADUATE_ARIMA_Modeling_of_MBTA_Ridership_Reducing_Costs_and_Preserving_Rider_Experience_via_Supply-Side_Optimization" class="project-link" target="_blank">Paper</a>
-                            <a href="https://github.com/zwinship/MBTA_TIME_SERIES" class="project-link" target="_blank">GitHub</a>
+                            <a href="https://github.com/zwinship/MBTA_TIME_SERIES" class="project-link" target="_blank">
+                                <i class="fab fa-github"></i> GitHub
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -689,7 +714,9 @@
                         </div>
                         <div class="project-links">
                             <a href="https://www.researchgate.net/publication/386876438_UNDERGRADUATE_Polling_as_an_Indicator_Not_a_Catalyst_for_Election_Outcomes_Evidence_from_the_2024_US_Presidential_Election" class="project-link" target="_blank">Paper</a>
-                            <a href="https://github.com/zwinship/Polling_Data_Analysis" class="project-link" target="_blank">GitHub</a>
+                            <a href="https://github.com/zwinship/Polling_Data_Analysis" class="project-link" target="_blank">
+                                <i class="fab fa-github"></i> GitHub
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -755,7 +782,9 @@
                         </div>
                         <div class="project-links">
                             <a href="https://ufcmodel.pythonanywhere.com/" class="project-link" target="_blank">Dashboard</a>
-                            <a href="https://github.com/zwinship/UFC_Model" class="project-link" target="_blank">GitHub</a>
+                            <a href="https://github.com/zwinship/UFC_Model" class="project-link" target="_blank">
+                                <i class="fab fa-github"></i> GitHub
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -776,7 +805,9 @@
                         </div>
                         <div class="project-links">
                             <a href="https://taleofthetape.github.io" class="project-link" target="_blank">Play Game</a>
-                            <a href="https://github.com/zwinship/taleofthetape" class="project-link" target="_blank">GitHub</a>
+                            <a href="https://github.com/zwinship/taleofthetape" class="project-link" target="_blank">
+                                <i class="fab fa-github"></i> GitHub
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -801,7 +832,7 @@
             
             <p>I'm particularly interested in applying data-driven approaches to policy evaluation, economic research, and decision-making. I approach new challenges with a data-driven mindset, adapting to complex problems by finding patterns and refining solutions through analysis.</p>
             
-            <p>Outside of coursework, I spend a lot of time on personal projects. I'm especially interested in spatial analytics, transportation systems, and optimization problems. Feel free to check out some of my projects—I had a lot of fun working on them!</p>
+            <p>Outside of coursework, I spend a lot of time on personal projects. I'm especially interested in spatial analytics, transportation systems, and optimization problems. Feel free to check out some of my projects, I had a lot of fun working on them!</p>
 
             <h2>Education</h2>
             <div class="experience-item">
@@ -814,9 +845,15 @@
             <div class="contact-section">
                 <h2>Get In Touch</h2>
                 <div class="contact-links">
-                    <a href="mailto:zwinship04@gmail.com" class="contact-link">Email</a>
-                    <a href="https://linkedin.com/in/zwinship" class="contact-link" target="_blank">LinkedIn</a>
-                    <a href="https://github.com/zwinship" class="contact-link" target="_blank">GitHub</a>
+                    <a href="mailto:zwinship04@gmail.com" class="contact-link">
+                        <i class="fas fa-envelope"></i> Email
+                    </a>
+                    <a href="https://linkedin.com/in/zwinship" class="contact-link" target="_blank">
+                        <i class="fab fa-linkedin"></i> LinkedIn
+                    </a>
+                    <a href="https://github.com/zwinship" class="contact-link" target="_blank">
+                        <i class="fab fa-github"></i> GitHub
+                    </a>
                     <a href="./resume.pdf" class="contact-link">Resume</a>
                 </div>
             </div>
@@ -856,7 +893,9 @@
                     <span class="tag">Educational Content</span>
                     <span class="tag">Mathematical Modeling</span>
                 </div>
-                <a href="https://github.com/zwinship/Visualizing-Experimental-Economics-Theory" class="btn btn-primary" style="margin-top: 1rem;" target="_blank">View on GitHub</a>
+                <a href="https://github.com/zwinship/Visualizing-Experimental-Economics-Theory" class="btn btn-primary" style="margin-top: 1rem;" target="_blank">
+                    <i class="fab fa-github"></i> View on GitHub
+                </a>
             </div>
 
             <div class="experience-item">
