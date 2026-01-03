@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zach Winship | Quantitative Economics</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --text: #333;
+            --text-light: #666;
+            --bg: #ffffff;
+            --card-bg: #f8f9fa;
+            --border: #e1e8ed;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--bg);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navigation */
+        nav {
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--accent);
+        }
+
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 6rem 0 4rem;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+        }
+
+        .hero h2 {
+            font-size: 1.5rem;
+            color: var(--text-light);
+            font-weight: 400;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.8rem 2rem;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--accent);
+            border: 2px solid var(--accent);
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* Section Headers */
+        .section-header {
+            padding: 4rem 0 2rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Projects Grid */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            padding-bottom: 4rem;
+        }
+
+        .project-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid var(--border);
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .project-image {
+            width: 100%;
+            height: 220px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .project-content {
+            padding: 1.5rem;
+        }
+
+        .project-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .project-subtitle {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .project-description {
+            color: var(--text);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tag {
+            padding: 0.3rem 0.8rem;
+            background: rgba(52, 152, 219, 0.1);
+            color: var(--accent);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            border: 1px solid rgba(52, 152, 219, 0.2);
+        }
+
+        .project-links {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .project-link {
+            padding: 0.5rem 1rem;
+            background: transparent;
+            color: var(--accent);
+            text-decoration: none;
+            border: 2px solid var(--accent);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .project-link:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .coming-soon-badge {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            background: rgba(241, 196, 15, 0.2);
+            color: #f39c12;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: 1px solid rgba(241, 196, 15, 0.5);
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            margin: 1.5rem 0;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .video-container video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* About Page */
+        .page-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 4rem 20px;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .profile-image {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid var(--accent);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-text h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-text .subtitle {
+            font-size: 1.3rem;
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .page-content h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 2rem;
+        }
+
+        .page-content h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .page-content p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text);
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-section {
+            margin-top: 3rem;
+            padding: 2rem;
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .contact-section h2 {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin: 0 0 1.5rem 0;
+        }
+
+        .contact-links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .contact-link {
+            padding: 0.8rem 1.5rem;
+            background: var(--accent);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .contact-link:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        /* Skills Grid */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .skill-category {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .skill-category h3 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .skill-list {
+            list-style: none;
+        }
+
+        .skill-list li {
+            padding: 0.5rem 0;
+            color: var(--text);
+        }
+
+        .skill-list li::before {
+            content: "▸ ";
+            color: var(--accent);
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        /* Experience Section */
+        .experience-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .experience-item {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--accent);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent);
+        }
+
+        .experience-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .experience-details {
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--card-bg);
+            border-top: 1px solid var(--border);
+            padding: 3rem 0;
+            margin-top: 4rem;
+            text-align: center;
+        }
+
+        footer p {
+            color: var(--text-light);
+        }
+
+        /* Utility Classes */
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero h2 {
+                font-size: 1.2rem;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="#" class="logo" onclick="showPage('home'); return false;">ZW</a>
+            <ul class="nav-links">
+                <li><a href="#" class="active" data-page="home" onclick="showPage('home'); return false;">Projects</a></li>
+                <li><a href="#" data-page="about" onclick="showPage('about'); return false;">About</a></li>
+                <li><a href="#" data-page="presentations" onclick="showPage('presentations'); return false;">Presentations</a></li>
+                <li><a href="#" data-page="experience" onclick="showPage('experience'); return false;">Experience</a></li>
+                <li><a href="#" data-page="skills" onclick="showPage('skills'); return false;">Skills</a></li>
+                <li><a href="./resume.pdf">Resume</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Home/Projects Page -->
+    <div id="home-page" class="page">
+        <div class="container">
+            <section class="hero">
+                <h1>Zach Winship</h1>
+                <h2>Quantitative Economics Student & Data Analyst</h2>
+                <p>Developing data-driven solutions for policy evaluation, economic research, and decision-making</p>
+                <div class="cta-buttons">
+                    <a href="#projects" class="btn btn-primary">View Projects</a>
+                    <a href="#" onclick="showPage('about'); return false;" class="btn btn-secondary">About Me</a>
+                </div>
+            </section>
+
+            <section class="section-header" id="projects">
+                <h2 class="section-title">Featured Projects</h2>
+            </section>
+
+            <div class="projects-grid">
+                <!-- Project 1: MBTA Time Series -->
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="mbta-timeseries.png" alt="MBTA Time Series Analysis">
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">MBTA Time Series Analysis</h3>
+                        <p class="project-subtitle">Time Series Modeling • Transportation Economics</p>
+                        <p class="project-description">Analyzed MBTA ridership data with weather patterns and seasonal trends to figure out how the T could optimize its operations. The goal was to maintain service quality while identifying cost-saving opportunities. Built the whole analysis in R with reproducible code that pulls data straight from the source.</p>
+                        <div class="project-tags">
+                            <span class="tag">ARIMA</span>
+                            <span class="tag">R</span>
+                            <span class="tag">Time Series</span>
+                            <span class="tag">Transportation</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://www.researchgate.net/publication/391840600_UNDERGRADUATE_ARIMA_Modeling_of_MBTA_Ridership_Reducing_Costs_and_Preserving_Rider_Experience_via_Supply-Side_Optimization" class="project-link" target="_blank">Paper</a>
+                            <a href="https://github.com/zwinship/MBTA_TIME_SERIES" class="project-link" target="_blank">GitHub</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 2: Election Polling -->
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="election-polling.png" alt="Election Polling Analysis">
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">Election Polling Analysis: Indicator vs. Catalyst</h3>
+                        <p class="project-subtitle">Political Economy • Data Collection & Analysis</p>
+                        <p class="project-description">Do polls predict elections or actually influence them? I scraped polling data from across the web and cleaned it with custom Python scripts to examine this question. The research tests whether polls are just measuring public opinion or actively shaping it, using data from the 2024 presidential election.</p>
+                        <div class="project-tags">
+                            <span class="tag">Python</span>
+                            <span class="tag">Web Scraping</span>
+                            <span class="tag">Stata</span>
+                            <span class="tag">Causal Inference</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://www.researchgate.net/publication/386876438_UNDERGRADUATE_Polling_as_an_Indicator_Not_a_Catalyst_for_Election_Outcomes_Evidence_from_the_2024_US_Presidential_Election" class="project-link" target="_blank">Paper</a>
+                            <a href="https://github.com/zwinship/Polling_Data_Analysis" class="project-link" target="_blank">GitHub</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 3: Starling Optima -->
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="starling-optima.png" alt="Autonomous Vehicle Research">
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">Starling Optima: Autonomous Urban Mobility Ecosystem</h3>
+                        <p class="project-subtitle">Policy Research • Traffic Simulation • Urban Planning</p>
+                        <p class="project-description">My big passion project exploring the future of self-driving cars and smart cities. Diving into policy research, building traffic simulations, and figuring out how cities could coordinate autonomous vehicle networks. The focus is on centralized traffic control, V2X communication, and autonomous-only zones. Just getting started with the research!</p>
+                        <div class="project-tags">
+                            <span class="tag">Policy Analysis</span>
+                            <span class="tag">Traffic Simulation</span>
+                            <span class="tag">SUMO</span>
+                            <span class="tag">Urban Economics</span>
+                            <span class="tag">Regulatory Research</span>
+                        </div>
+                        <div class="project-links">
+                            <span class="coming-soon-badge">Coming Soon</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 4: MBTA LED Tracker -->
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="mbta-led.png" alt="MBTA LED Tracker">
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">MBTA Live Tracker LED Art</h3>
+                        <p class="project-subtitle">Hardware • API Integration • Real-Time Data Visualization</p>
+                        <p class="project-description">Building a physical LED art piece using a Raspberry Pi that tracks MBTA trains in real-time. The display will show where trains are on the network at any given moment, pulling live data from the MBTA API. Hoping to make a tutorial on the process after I'm done, so you could make your own!</p>
+                        <div class="project-tags">
+                            <span class="tag">Raspberry Pi</span>
+                            <span class="tag">Python</span>
+                            <span class="tag">MBTA API</span>
+                            <span class="tag">LED Programming</span>
+                            <span class="tag">Hardware</span>
+                        </div>
+                        <div class="project-links">
+                            <span class="coming-soon-badge">Coming Soon</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 5: UFC Prediction Model -->
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="ufc-model.png" alt="UFC Fight Prediction">
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">UFC Fight Outcome Prediction Model</h3>
+                        <p class="project-subtitle">Machine Learning • Sports Analytics</p>
+                        <p class="project-description">Built a two-stage ML model to predict UFC fight outcomes. First classifies fighters by style, then predicts matchup results based on how those styles interact. Tracks the model's performance and hypothetical betting returns on a live dashboard.</p>
+                        <div class="project-tags">
+                            <span class="tag">Python</span>
+                            <span class="tag">Classification</span>
+                            <span class="tag">Predictive Modeling</span>
+                            <span class="tag">Dashboard</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://ufcmodel.pythonanywhere.com/" class="project-link" target="_blank">Dashboard</a>
+                            <a href="https://github.com/zwinship/UFC_Model" class="project-link" target="_blank">GitHub</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 6: Tale of the Tape -->
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="tale-of-tape.png" alt="Tale of the Tape Game">
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">Tale of the Tape: UFC Daily Challenge</h3>
+                        <p class="project-subtitle">Interactive Game • Sports Analytics • Machine Learning</p>
+                        <p class="project-description">A daily UFC fighter guessing game where you identify a mystery fighter using stat comparisons. The other UFC daily games are pretty bad, so I built my own! New fighter every day!</p>
+                        <div class="project-tags">
+                            <span class="tag">Python</span>
+                            <span class="tag">Web Development</span>
+                            <span class="tag">Sports Analytics</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://taleofthetape.github.io" class="project-link" target="_blank">Play Game</a>
+                            <a href="https://github.com/zwinship/taleofthetape" class="project-link" target="_blank">GitHub</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Page -->
+    <div id="about-page" class="page hidden">
+        <div class="page-content">
+            <div class="profile-header">
+                <div class="profile-image">
+                    <img src="zwinship.png" alt="Zach Winship">
+                </div>
+                <div class="profile-text">
+                    <h1>Zach Winship</h1>
+                    <p class="subtitle">Quantitative Economics Student & Data Analyst</p>
+                </div>
+            </div>
+
+            <p>I am a Quantitative Economics student at Bentley University with a focus on data analysis and public policy. Through my minor in Data Technologies & Mathematics, I've built strong skills in Python, R, and Stata, allowing me to analyze complex datasets and extract causal insights.</p>
+            
+            <p>I'm particularly interested in applying data-driven approaches to policy evaluation, economic research, and decision-making. I approach new challenges with a data-driven mindset, adapting to complex problems by finding patterns and refining solutions through analysis.</p>
+            
+            <p>Outside of coursework, I spend a lot of time on personal projects. I'm especially interested in spatial analytics, transportation systems, and optimization problems. Feel free to check out some of my projects—I had a lot of fun working on them!</p>
+
+            <h2>Education</h2>
+            <div class="experience-item">
+                <div class="experience-title">Bachelor of Science in Quantitative Economics</div>
+                <div class="experience-details">Bentley University • Expected 2026</div>
+                <p>Double Minor in Data Technologies & Mathematics</p>
+                <p style="margin-top: 1rem;"><strong>Relevant Coursework:</strong> Econometrics, Statistical Analysis, Data Analytics, Mathematical Economics, Public Policy Analysis</p>
+            </div>
+
+            <div class="contact-section">
+                <h2>Get In Touch</h2>
+                <div class="contact-links">
+                    <a href="mailto:zwinship04@gmail.com" class="contact-link">Email</a>
+                    <a href="https://linkedin.com/in/zwinship" class="contact-link" target="_blank">LinkedIn</a>
+                    <a href="https://github.com/zwinship" class="contact-link" target="_blank">GitHub</a>
+                    <a href="./resume.pdf" class="contact-link">Resume</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Presentations Page -->
+    <div id="presentations-page" class="page hidden">
+        <div class="page-content">
+            <h1>Presentations</h1>
+            
+            <div class="experience-item">
+                <div class="experience-title">VAR & VECM Time Series Models</div>
+                <div class="experience-details">Bentley University • 2025</div>
+                <p>Taught a class on Vector Autoregression (VAR) and Vector Error Correction Models (VECM), explaining how these time series models work and demonstrating their application in economic analysis.</p>
+                <div class="project-tags" style="margin-top: 1rem;">
+                    <span class="tag">Econometrics</span>
+                    <span class="tag">Time Series</span>
+                    <span class="tag">Teaching</span>
+                </div>
+                <a href="./VAR_VECM_Presentation.pdf" class="btn btn-primary" style="margin-top: 1rem;" download>Download PDF</a>
+            </div>
+
+            <div class="experience-item">
+                <div class="experience-title">Visualizing Experimental Economics Theory</div>
+                <div class="experience-details">Bentley University • 2025</div>
+                <p>Created an animated explainer video walking through the theoretical predictions of our experiment. The animation covers game-theoretic structure, equilibrium intuition, and mathematical foundations in a 3Blue1Brown-inspired visual style, making formal theory more intuitive and engaging.</p>
+                <div class="video-container">
+                    <video controls>
+                        <source src="EffortModel.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="project-tags" style="margin-top: 1rem;">
+                    <span class="tag">Game Theory</span>
+                    <span class="tag">Python Animation</span>
+                    <span class="tag">Educational Content</span>
+                    <span class="tag">Mathematical Modeling</span>
+                </div>
+                <a href="https://github.com/zwinship/Visualizing-Experimental-Economics-Theory" class="btn btn-primary" style="margin-top: 1rem;" target="_blank">View on GitHub</a>
+            </div>
+
+            <div class="experience-item">
+                <div class="experience-title">Regulation with Limited Information</div>
+                <div class="experience-details">American Action Forum • 2025</div>
+                <p>Presented on regulatory reform under limited data, exploring methods to make policy decisions and analyze regulatory impacts when information is incomplete or constrained.</p>
+                <div class="project-tags" style="margin-top: 1rem;">
+                    <span class="tag">Policy Analysis</span>
+                    <span class="tag">Regulatory Economics</span>
+                    <span class="tag">Public Policy</span>
+                </div>
+                <a href="./Regulation_Limited_Info_Presentation.pdf" class="btn btn-primary" style="margin-top: 1rem;" download>Download PDF</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Experience Page -->
+    <div id="experience-page" class="page hidden">
+        <div class="page-content">
+            <h1>Experience</h1>
+            
+            <div class="experience-grid">
+                <div class="experience-item">
+                    <div class="experience-title">Research Assistant</div>
+                    <div class="experience-details">Bentley University • May 2025 - August 2025</div>
+                    <p>Compiled and analyzed data on 2025 ASSA conference education sessions, focusing on geographic distribution and representation. Assisted Professor Savannah Adkins in research examining global trends and socioeconomic biases in economic literature.</p>
+                </div>
+
+                <div class="experience-item">
+                    <div class="experience-title">Regulatory Data Intern</div>
+                    <div class="experience-details">American Action Forum • May 2025 - August 2025 • Washington, DC</div>
+                    <p>Served as data intern supporting regulatory analysis efforts. Compiled and cleaned datasets using Python, produced statistical summaries, and conducted literature reviews on the economic impact of federal regulations. Attended congressional and agency hearings on regulatory policy.</p>
+                    <a href="https://policyinterns.com/author/typhoonscented11a6c9fde0/" class="btn btn-primary" style="margin-top: 1rem;" target="_blank">Internship Blog Posts</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Skills Page -->
+    <div id="skills-page" class="page hidden">
+        <div class="page-content">
+            <h1>Skills</h1>
+            <div class="skills-grid">
+                <div class="skill-category">
+                    <h3>Statistical Software</h3>
+                    <ul class="skill-list">
+                        <li>R & RStudio</li>
+                        <li>Stata</li>
+                        <li>Python</li>
+                        <li>SQL</li>
+                    </ul>
+                </div>
+                <div class="skill-category">
+                    <h3>Data Analysis</h3>
+                    <ul class="skill-list">
+                        <li>Data Cleaning</li>
+                        <li>Statistical Modeling</li>
+                        <li>Data Visualization</li>
+                        <li>Basic ML Techniques</li>
+                    </ul>
+                </div>
+                <div class="skill-category">
+                    <h3>Econometric Methods</h3>
+                    <ul class="skill-list">
+                        <li>Regression Analysis</li>
+                        <li>Time Series</li>
+                        <li>Causal Inference</li>
+                        <li>Panel Data</li>
+                    </ul>
+                </div>
+                <div class="skill-category">
+                    <h3>Analytical Specializations</h3>
+                    <ul class="skill-list">
+                        <li>Policy Analysis</li>
+                        <li>Regulatory Analytics</li>
+                        <li>Spatial Data Science</li>
+                        <li>Remote Sensing Data</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>© 2025 Zach Winship. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        function showPage(pageId) {
+            // 1. Find all sections with the class 'page' and hide them
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => {
+                page.classList.add('hidden');
+            });
+
+            // 2. Show the specific page the user clicked
+            const selectedPage = document.getElementById(pageId + '-page');
+            if (selectedPage) {
+                selectedPage.classList.remove('hidden');
+            } else {
+                console.error("Could not find page ID:", pageId + '-page');
+            }
+
+            // 3. Update the navigation links to show which one is 'active'
+            const links = document.querySelectorAll('.nav-links a');
+            links.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-page') === pageId) {
+                    link.classList.add('active');
+                }
+            });
+            
+            // 4. Smoothly scroll back to the top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 5. When the browser finishes loading the HTML, show the Home page first
+        document.addEventListener('DOMContentLoaded', () => {
+            showPage('home');
+        });
+    </script>
+</body>
+</html>
