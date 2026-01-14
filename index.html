@@ -607,7 +607,7 @@
             display: none;
         }
 
-        @media (max-width: 768px) {
+                @media (max-width: 768px) {
             .hero h1 {
                 font-size: 2.5rem;
             }
@@ -632,14 +632,24 @@
 
             .nav-links {
                 width: 100%;
-                flex-direction: column;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
                 gap: 0.5rem;
                 font-size: 0.9rem;
-                align-items: stretch;
             }
 
             .nav-links li {
                 width: 100%;
+            }
+
+            .nav-links li:nth-last-child(2) {
+                grid-column: 1 / -1;
+            }
+
+            .nav-links li:last-child {
+                grid-column: 1 / -1;
+                display: flex;
+                justify-content: center;
             }
 
             .nav-links a {
