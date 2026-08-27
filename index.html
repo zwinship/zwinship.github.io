@@ -429,6 +429,13 @@ a { color: inherit; text-decoration: none; }
 .toc-tags { display: flex; gap: 5px; }
 .toc-tag { font-family: var(--f-mono); font-size: 0.68rem; letter-spacing: 0.05em; padding: 3px 8px; border: 1px solid var(--rule); color: var(--ink-lt); text-transform: uppercase; }
 .toc-yr { font-family: var(--f-mono); font-size: 0.74rem; color: var(--ink-lt); }
+.toc-divider {
+    display: flex; align-items: center; gap: 10px; padding: 18px 0 8px;
+    font-family: var(--f-mono); font-size: 0.68rem; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--red);
+}
+.toc-divider::after { content: ''; flex: 1; height: 1px; background: var(--rule); }
+.toc-divider:first-child { padding-top: 0; }
 
 /* ============================================================
    PROJECT CARDS
@@ -469,6 +476,30 @@ a { color: inherit; text-decoration: none; }
 .coming { font-family: var(--f-mono); font-size: 0.7rem; letter-spacing: 0.07em; text-transform: uppercase; padding: 5px 11px; border: 1px dashed var(--rule); color: var(--ink-lt); display: inline-flex; align-items: center; gap: 5px; }
 .coming::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; animation: pulse 2s infinite; }
 @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.2} }
+
+.grid-divider {
+    grid-column: 1 / -1; padding: 11px 26px;
+    font-family: var(--f-mono); font-size: 0.68rem; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--red); background: var(--cream2);
+    border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+    display: flex; align-items: center; gap: 12px;
+}
+.grid-divider::after { content: ''; flex: 1; height: 1px; background: var(--rule); }
+
+.card-media { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+.card-media img, .card-media video {
+    width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; border: 1px solid var(--rule);
+}
+
+.press-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+.press-item {
+    font-family: var(--f-mono); font-size: 0.72rem; color: var(--ink-mid);
+    text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 3px;
+    transition: color .2s;
+}
+a.press-item:hover { color: var(--red); }
+.press-item.pending-press { text-decoration: none; cursor: default; color: var(--ink-lt); }
+.press-note { color: var(--ink-lt); font-style: italic; }
 
 /* ============================================================
    ABOUT
@@ -654,6 +685,7 @@ footer { border-top: 2px solid var(--ink); background: var(--ink); color: var(--
         <li><a href="#" data-page="about" onclick="showPage('about');return false;">About</a></li>
         <li><a href="#" data-page="presentations" onclick="showPage('presentations');return false;">Presentations</a></li>
         <li><a href="#" data-page="experience" onclick="showPage('experience');return false;">Experience</a></li>
+        <li><a href="#" data-page="blog" onclick="showPage('blog');return false;">Blog</a></li>
       </ul>
       <a href="about_me/resume.pdf" class="nav-resume" download>
         <i class="fas fa-arrow-down" style="font-size:.56rem;"></i> Resume
@@ -696,7 +728,7 @@ footer { border-top: 2px solid var(--ink); background: var(--ink); color: var(--
         </div>
         <div class="hero-aside">
           <div class="hero-stats">
-            <div class="hero-stat"><strong class="counter" data-to="12">0</strong>Projects</div>
+            <div class="hero-stat"><strong class="counter" data-to="11">0</strong>Projects</div>
             <div class="hero-stat"><strong>NYU MS</strong>Starting 2026</div>
             <div class="hero-stat"><strong>Bentley '26</strong>QE · Math · Data Tech</div>
           </div>
@@ -711,90 +743,117 @@ footer { border-top: 2px solid var(--ink); background: var(--ink); color: var(--
       <div class="section-head reveal">
         <h2 class="sh-title">Projects</h2>
         <div class="sh-rule"></div>
-        <span class="sh-count">12 entries</span>
+        <span class="sh-count">11 entries</span>
       </div>
 
       <!-- TOC -->
       <div class="project-toc stagger">
-        <div class="toc-row" onclick="gotoCard('c2')">
-          <span class="toc-n">01</span><span class="toc-name">OctaStats UFC Model V2</span>
-          <div class="toc-meta"><div class="toc-tags"><span class="toc-tag">ML</span><span class="toc-tag">Python</span></div><span class="toc-yr">2026</span></div>
+        <div class="toc-divider">Research</div>
+        <div class="toc-row" onclick="gotoCard('c12')">
+          <span class="toc-n">01</span><span class="toc-name">Congestion Pricing and EMS Response Time: Evidence From New York City</span>
+          <div class="toc-meta"><div class="toc-tags"><span class="toc-tag">NBER WP</span><span class="toc-tag">Policy</span></div><span class="toc-yr">2026</span></div>
         </div>
-        <div class="toc-row" onclick="gotoCard('c3')">
-          <span class="toc-n">02</span><span class="toc-name">MBTA Time Series Analysis</span>
-          <div class="toc-meta"><div class="toc-tags"><span class="toc-tag">R</span><span class="toc-tag">ARIMA</span></div><span class="toc-yr">2025</span></div>
+        <div class="toc-row" onclick="gotoCard('c7')">
+          <span class="toc-n">02</span><span class="toc-name">NYC Congestion Pricing: Mobility and Commercial Effects</span>
+          <div class="toc-meta"><div class="toc-tags"><span class="toc-tag">Policy</span><span class="toc-tag">Spatial</span></div><span class="toc-yr">2026</span></div>
+        </div>
+        <div class="toc-row" onclick="gotoCard('c9')">
+          <span class="toc-n">03</span><span class="toc-name">The Real Price of Clean Air: EPA Ozone Regulation</span>
+          <div class="toc-meta"><div class="toc-tags"><span class="toc-tag">RDD</span><span class="toc-tag">Policy</span></div><span class="toc-yr">2025</span></div>
         </div>
         <div class="toc-row" onclick="gotoCard('c4')">
-          <span class="toc-n">03</span><span class="toc-name">Election Polling Analysis: Indicator vs. Catalyst</span>
+          <span class="toc-n">04</span><span class="toc-name">Election Polling Analysis: Indicator vs. Catalyst</span>
           <div class="toc-meta"><div class="toc-tags"><span class="toc-tag">Stata</span><span class="toc-tag">Causal</span></div><span class="toc-yr">2024</span></div>
         </div>
         <div class="toc-row" onclick="gotoCard('c11')">
-          <span class="toc-n">04</span><span class="toc-name">Intermediate Microeconomics Course Website</span>
-          <div class="toc-meta"><div class="toc-tags"><span class="toc-tag">JSXGraph</span><span class="toc-tag">Web Dev</span></div><span class="toc-yr">Est. Summer 2026</span></div>
+          <span class="toc-n">05</span><span class="toc-name">Intermediate Microeconomics Course Website</span>
+          <div class="toc-meta"><div class="toc-tags"><span class="toc-tag">JSXGraph</span><span class="toc-tag">Web Dev</span></div><span class="toc-yr">2026</span></div>
+        </div>
+        <div class="toc-row" onclick="gotoCard('c10')">
+          <span class="toc-n">06</span><span class="toc-name">Agentic LLMs for Economic and Game Theory Analysis</span>
+          <div class="toc-meta"><div class="toc-tags"><span class="toc-tag">LLMs</span><span class="toc-tag">Game Theory</span></div><span class="toc-yr">Est. Aug 2026</span></div>
+        </div>
+        <div class="toc-divider">Personal Projects</div>
+        <div class="toc-row" onclick="gotoCard('c2')">
+          <span class="toc-n">07</span><span class="toc-name">OctaStats UFC Model V2</span>
+          <div class="toc-meta"><div class="toc-tags"><span class="toc-tag">ML</span><span class="toc-tag">Python</span></div><span class="toc-yr">2026</span></div>
         </div>
         <div class="toc-row" onclick="gotoCard('c1')">
-          <span class="toc-n">05</span><span class="toc-name">UFC Fight Outcome Prediction Model</span>
+          <span class="toc-n">08</span><span class="toc-name">UFC Fight Outcome Prediction Model</span>
           <div class="toc-meta"><div class="toc-tags"><span class="toc-tag">ML</span><span class="toc-tag">Python</span></div><span class="toc-yr">2025</span></div>
         </div>
         <div class="toc-row" onclick="gotoCard('c5')">
-          <span class="toc-n">06</span><span class="toc-name">Tale of the Tape: UFC Daily Challenge</span>
+          <span class="toc-n">09</span><span class="toc-name">Tale of the Tape: UFC Daily Challenge</span>
           <div class="toc-meta"><div class="toc-tags"><span class="toc-tag">Web Dev</span></div><span class="toc-yr">2026</span></div>
         </div>
-        <div class="toc-row" onclick="gotoCard('c9')">
-          <span class="toc-n">07</span><span class="toc-name">The Real Price of Clean Air: EPA Ozone Regulation</span>
-          <div class="toc-meta"><div class="toc-tags"><span class="toc-tag">RDD</span><span class="toc-tag">Policy</span></div><span class="toc-yr">2025</span></div>
+        <div class="toc-row" onclick="gotoCard('c3')">
+          <span class="toc-n">10</span><span class="toc-name">MBTA Time Series Analysis</span>
+          <div class="toc-meta"><div class="toc-tags"><span class="toc-tag">R</span><span class="toc-tag">ARIMA</span></div><span class="toc-yr">2025</span></div>
         </div>
         <div class="toc-row" onclick="gotoCard('c6')">
-          <span class="toc-n">08</span><span class="toc-name">MBTA Live Tracker LED Art</span>
+          <span class="toc-n">11</span><span class="toc-name">MBTA Live Tracker LED Art</span>
           <div class="toc-meta"><div class="toc-tags"><span class="toc-tag">Hardware</span></div><span class="toc-yr">Est. Jun 2026</span></div>
-        </div>
-        <div class="toc-row" onclick="gotoCard('c7')">
-          <span class="toc-n">09</span><span class="toc-name">NYC Congestion Pricing: Mobility and Commercial Effects</span>
-          <div class="toc-meta"><div class="toc-tags"><span class="toc-tag">Policy</span><span class="toc-tag">Spatial</span></div><span class="toc-yr">2026</span></div>
-        </div>
-        <div class="toc-row" onclick="gotoCard('c8')">
-          <span class="toc-n">10</span><span class="toc-name">Detecting AI Use in Academic Research</span>
-          <div class="toc-meta"><div class="toc-tags"><span class="toc-tag">Econometrics</span></div><span class="toc-yr">Est. Jun 2026</span></div>
-        </div>
-        <div class="toc-row" onclick="gotoCard('c10')">
-          <span class="toc-n">11</span><span class="toc-name">Agentic LLMs for Economic and Game Theory Analysis</span>
-          <div class="toc-meta"><div class="toc-tags"><span class="toc-tag">LLMs</span><span class="toc-tag">Game Theory</span></div><span class="toc-yr">Est. Aug 2026</span></div>
-        </div>
-        <div class="toc-row" onclick="gotoCard('c12')">
-          <span class="toc-n">12</span><span class="toc-name">Congestion Pricing and EMS Response Times</span>
-          <div class="toc-meta"><div class="toc-tags"><span class="toc-tag">Working Paper</span><span class="toc-tag">Policy</span></div><span class="toc-yr">2026</span></div>
         </div>
       </div>
 
       <!-- Cards -->
       <div class="projects-grid stagger">
 
-        <div class="project-card" id="c2">
+        <div class="grid-divider">Research</div>
+
+        <div class="project-card" id="c12">
           <div class="card-shine"></div>
           <div class="card-inner">
-            <div class="card-chip">2026</div>
-            <h3 class="card-title">OctaStats UFC Model V2</h3>
-            <p class="card-sub">Machine Learning · Sports Analytics · Full Rebuild</p>
-            <p class="card-desc">Rebuilt from the ground up for the model's one-year anniversary. Upgraded to a dynamic logit framework, automated the full data pipeline, and gathered proprietary data with no reliance on scraped third-party sources.</p>
-            <div class="card-tags"><span class="card-tag">Python</span><span class="card-tag">Machine Learning</span><span class="card-tag">Econometrics</span><span class="card-tag">Data Collection</span></div>
+            <div class="card-chip">NBER WP No. 35414</div>
+            <h3 class="card-title">Congestion Pricing and EMS Response Time: Evidence From New York City</h3>
+            <p class="card-sub">Urban Economics · Health Policy · Causal Inference</p>
+            <p class="card-desc">NBER Working Paper No. 35414, currently under journal review, with Yulia Chikish, Greg Colman, Dhaval Dave, Brad Humphreys, and Zachary Santamaria. Using a difference-in-discontinuities design at the 60th Street congestion relief zone boundary, we find congestion pricing reduced total EMS travel times by 63-70 seconds (roughly 5-6%), with vehicular traffic declining 18-21% near the boundary and no evidence of displacement to adjacent areas.</p>
+            <div class="card-tags"><span class="card-tag">Python</span><span class="card-tag">Stata</span><span class="card-tag">Causal Inference</span><span class="card-tag">Policy</span></div>
             <div class="card-links">
-              <a href="https://octastats.github.io/index.html" class="card-link" target="_blank">Live Site</a>
-              <a href="https://github.com/zwinship/OctaStats_UFC_Model_V2" class="card-link" target="_blank"><i class="fab fa-github"></i></a>
+              <a href="https://www.nber.org/papers/w35414" class="card-link" target="_blank">NBER Paper</a>
+            </div>
+            <div class="vid-label">Media Coverage</div>
+            <div class="press-list">
+              <span class="press-item pending-press">NBER Digest <span class="press-note">(forthcoming, Sept. 2026)</span></span>
+              <span class="press-item pending-press">ProMarket, Chicago Booth Stigler Center <span class="press-note">(forthcoming)</span></span>
+              <a class="press-item" href="https://fortune.com/2026/07/08/nyc-congestion-pricing-ambulance-trips-one-minute-economic-benefits/" target="_blank">Fortune</a>
+              <a class="press-item" href="https://abc7ny.com/post/7-side-investigates-has-congestion-pricing-reduced-911-response-times/19476789/" target="_blank">ABC7, "7 On Your Side Investigates"</a>
+              <a class="press-item" href="https://gothamist.com/news/every-second-counts-congestion-pricing-speeds-up-ambulances-in-manhattan-study-finds" target="_blank">Gothamist</a>
+              <a class="press-item" href="https://nyc.streetsblog.org/2026/07/07/report-shows-yet-another-benefit-to-congestion-pricing-faster-emergency-response-times" target="_blank">Streetsblog NYC</a>
+              <a class="press-item" href="https://cityobservatory.substack.com/p/the-week-observed-july-10-2026" target="_blank">City Observatory</a>
+              <a class="press-item" href="https://finance.yahoo.com/economy/policy/articles/even-shaving-one-minute-off-182426964.html" target="_blank">Yahoo Finance</a>
             </div>
           </div>
         </div>
 
-        <div class="project-card" id="c3">
+        <div class="project-card" id="c7">
+          <div class="card-shine"></div>
+          <div class="card-inner">
+            <div class="card-chip">2026</div>
+            <h3 class="card-title">NYC Congestion Pricing: Mobility and Commercial Effects</h3>
+            <p class="card-sub">Urban Economics · Causal Inference · Policy Research</p>
+            <p class="card-desc">Applied a difference-in-discontinuities design using C2Smart traffic camera data and MTA ridership records to estimate the causal effect of NYC's congestion pricing zone on vehicle traffic, pedestrian activity, subway ridership, and commercial outcomes at the 60th Street boundary.</p>
+            <div class="card-tags"><span class="card-tag">Python</span><span class="card-tag">Stata</span><span class="card-tag">Causal Inference</span><span class="card-tag">Spatial</span><span class="card-tag">DD-RD</span></div>
+            <div class="card-links">
+              <a href="https://www.researchgate.net/publication/405220672" class="card-link" target="_blank">Paper</a>
+              <a href="https://github.com/zwinship" class="card-link" target="_blank"><i class="fab fa-github"></i></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card" id="c9">
           <div class="card-shine"></div>
           <div class="card-inner">
             <div class="card-chip">2025</div>
-            <h3 class="card-title">MBTA Time Series Analysis</h3>
-            <p class="card-sub">Forecasting · Transportation Economics</p>
-            <p class="card-desc">MBTA ridership data analyzed alongside weather patterns and seasonal trends to figure out how the T could optimize operations. Built in R with reproducible code that pulls data straight from the source.</p>
-            <div class="card-tags"><span class="card-tag">R</span><span class="card-tag">ARIMA</span><span class="card-tag">Forecasting</span><span class="card-tag">Econometrics</span></div>
+            <h3 class="card-title">The Real Price of Clean Air: EPA Ozone Regulation</h3>
+            <p class="card-sub">Regulatory Economics · Causal Inference · Policy</p>
+            <p class="card-desc">Leverages the EPA's 0.071 ppm ozone threshold in a regression discontinuity design to quantify the revenue impact on U.S. manufacturing firms, finding a $277M annual reduction absent from the EPA's own analysis.</p>
+            <div class="card-tags"><span class="card-tag">Python</span><span class="card-tag">Econometrics</span><span class="card-tag">RDD</span><span class="card-tag">Policy</span></div>
             <div class="card-links">
-              <a href="https://www.researchgate.net/publication/391840600_UNDERGRADUATE_ARIMA_Modeling_of_MBTA_Ridership_Reducing_Costs_and_Preserving_Rider_Experience_via_Supply-Side_Optimization" class="card-link" target="_blank">Paper</a>
-              <a href="https://github.com/zwinship/MBTA_TIME_SERIES" class="card-link" target="_blank"><i class="fab fa-github"></i></a>
+              <a href="https://policyinterns.com/2025/06/18/the-real-price-of-clean-air/" class="card-link" target="_blank">Ozone Blog Post</a>
+              <a href="https://policyinterns.com/2025/07/24/eslr-reform-without-precedent/" class="card-link" target="_blank">eSLR Blog Post</a>
+              <a href="https://zwinshippolicyintern.github.io/" class="card-link" target="_blank">Map</a>
+              <a href="https://github.com/zwinship/EPA_Ozone_Regulation_Blog" class="card-link" target="_blank"><i class="fab fa-github"></i></a>
             </div>
           </div>
         </div>
@@ -819,11 +878,41 @@ footer { border-top: 2px solid var(--ink); background: var(--ink); color: var(--
           <div class="card-inner">
             <div class="card-chip">2026</div>
             <h3 class="card-title">Intermediate Microeconomics Course Website</h3>
-            <p class="card-sub">Interactive Education · Web Development</p>
-            <p class="card-desc">Building an interactive learning platform for Bentley University's Intermediate Microeconomics course alongside Professor Sunder. Integrates dynamic visualizations, randomly generated practice problems, flashcards, and lecture content into a unified chapter-by-chapter system using HTML and JavaScript.</p>
-            <div class="card-tags"><span class="card-tag">Python</span><span class="card-tag">JSXGraph</span><span class="card-tag">Web Development</span><span class="card-tag">Economics</span></div>
+            <p class="card-sub">Interactive Education · Web Development · Ongoing</p>
+            <p class="card-desc">A full 12-week interactive Intermediate Microeconomics course built with Professor Naveen Sunder at Bentley, covering consumer theory, producer theory, market structure and welfare, and public goods/externalities and adverse selection/moral hazard. Includes "Ask the Course AI," a deployed RAG chatbot students can ask course questions to. Live and being piloted by students this academic year, with continued development planned.</p>
+            <div class="card-tags"><span class="card-tag">Python</span><span class="card-tag">JSXGraph</span><span class="card-tag">Web Development</span><span class="card-tag">Economics</span><span class="card-tag">AI Chatbot</span></div>
             <div class="card-links">
               <a href="https://falconeconsim.github.io/" class="card-link" target="_blank">Course Site</a>
+              <a href="https://falconeconsim.github.io/ask.html" class="card-link" target="_blank">Ask the Course AI</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card" id="c10">
+          <div class="card-shine"></div>
+          <div class="card-inner">
+            <div class="card-chip pending">Est. Aug 2026</div>
+            <h3 class="card-title">Agentic LLMs for Economic and Game Theory Analysis</h3>
+            <p class="card-sub">Applied AI · Behavioral Economics · Game Theory</p>
+            <p class="card-desc">Using Expected Parrot's EDSL framework (John Horton, MIT Sloan) to run agentic LLMs as simulated economic agents. Testing historical counterfactual prediction accuracy, causal impact analysis, and game-theoretic behavioral modeling. Explores whether Homo silicus replicates and extends findings from classic economics experiments.</p>
+            <div class="card-tags"><span class="card-tag">Python</span><span class="card-tag">LLMs</span><span class="card-tag">Game Theory</span><span class="card-tag">Behavioral Econ</span><span class="card-tag">Causal Inference</span></div>
+            <div class="card-links"><span class="coming">Coming Soon</span></div>
+          </div>
+        </div>
+
+        <div class="grid-divider">Personal Projects</div>
+
+        <div class="project-card" id="c2">
+          <div class="card-shine"></div>
+          <div class="card-inner">
+            <div class="card-chip">2026</div>
+            <h3 class="card-title">OctaStats UFC Model V2</h3>
+            <p class="card-sub">Machine Learning · Sports Analytics · Full Rebuild</p>
+            <p class="card-desc">Rebuilt from the ground up for the model's one-year anniversary. Upgraded to a dynamic logit framework, automated the full data pipeline, and gathered proprietary data with no reliance on scraped third-party sources.</p>
+            <div class="card-tags"><span class="card-tag">Python</span><span class="card-tag">Machine Learning</span><span class="card-tag">Econometrics</span><span class="card-tag">Data Collection</span></div>
+            <div class="card-links">
+              <a href="https://octastats.github.io/index.html" class="card-link" target="_blank">Live Site</a>
+              <a href="https://github.com/zwinship/OctaStats_UFC_Model_V2" class="card-link" target="_blank"><i class="fab fa-github"></i></a>
             </div>
           </div>
         </div>
@@ -858,18 +947,17 @@ footer { border-top: 2px solid var(--ink); background: var(--ink); color: var(--
           </div>
         </div>
 
-        <div class="project-card" id="c9">
+        <div class="project-card" id="c3">
           <div class="card-shine"></div>
           <div class="card-inner">
             <div class="card-chip">2025</div>
-            <h3 class="card-title">The Real Price of Clean Air: EPA Ozone Regulation</h3>
-            <p class="card-sub">Regulatory Economics · Causal Inference · Policy</p>
-            <p class="card-desc">Leverages the EPA's 0.071 ppm ozone threshold in a regression discontinuity design to quantify the revenue impact on U.S. manufacturing firms, finding a $277M annual reduction absent from the EPA's own analysis.</p>
-            <div class="card-tags"><span class="card-tag">Python</span><span class="card-tag">Econometrics</span><span class="card-tag">RDD</span><span class="card-tag">Policy</span></div>
+            <h3 class="card-title">MBTA Time Series Analysis</h3>
+            <p class="card-sub">Forecasting · Transportation Economics</p>
+            <p class="card-desc">MBTA ridership data analyzed alongside weather patterns and seasonal trends to figure out how the T could optimize operations. Built in R with reproducible code that pulls data straight from the source.</p>
+            <div class="card-tags"><span class="card-tag">R</span><span class="card-tag">ARIMA</span><span class="card-tag">Forecasting</span><span class="card-tag">Econometrics</span></div>
             <div class="card-links">
-              <a href="https://policyinterns.com/2025/06/18/the-real-price-of-clean-air/" class="card-link" target="_blank">Blog Post</a>
-              <a href="https://zwinshippolicyintern.github.io/" class="card-link" target="_blank">Map</a>
-              <a href="https://github.com/zwinship/EPA_Ozone_Regulation_Blog" class="card-link" target="_blank"><i class="fab fa-github"></i></a>
+              <a href="https://www.researchgate.net/publication/391840600_UNDERGRADUATE_ARIMA_Modeling_of_MBTA_Ridership_Reducing_Costs_and_Preserving_Rider_Experience_via_Supply-Side_Optimization" class="card-link" target="_blank">Paper</a>
+              <a href="https://github.com/zwinship/MBTA_TIME_SERIES" class="card-link" target="_blank"><i class="fab fa-github"></i></a>
             </div>
           </div>
         </div>
@@ -881,59 +969,15 @@ footer { border-top: 2px solid var(--ink); background: var(--ink); color: var(--
             <h3 class="card-title">MBTA Live Tracker LED Art</h3>
             <p class="card-sub">Hardware · API Integration · Real-Time Data</p>
             <p class="card-desc">A physical LED art piece on a Raspberry Pi that tracks MBTA trains in real-time. All software and API work is finished. What remains is building the frame and mounting the LED lights.</p>
-            <div class="card-tags"><span class="card-tag">Python</span><span class="card-tag">Hardware</span><span class="card-tag">MBTA API</span><span class="card-tag">Spatial</span></div>
-            <div class="card-links"><span class="coming">In Progress</span></div>
-          </div>
-        </div>
-
-        <div class="project-card" id="c7">
-          <div class="card-shine"></div>
-          <div class="card-inner">
-            <div class="card-chip">2026</div>
-            <h3 class="card-title">NYC Congestion Pricing: Mobility and Commercial Effects</h3>
-            <p class="card-sub">Urban Economics · Causal Inference · Policy Research</p>
-            <p class="card-desc">Applied a difference-in-discontinuities design using C2Smart traffic camera data and MTA ridership records to estimate the causal effect of NYC's congestion pricing zone on vehicle traffic, pedestrian activity, subway ridership, and commercial outcomes at the 60th Street boundary.</p>
-            <div class="card-tags"><span class="card-tag">Python</span><span class="card-tag">Stata</span><span class="card-tag">Causal Inference</span><span class="card-tag">Spatial</span><span class="card-tag">DD-RD</span></div>
-            <div class="card-links">
-              <a href="https://www.researchgate.net/publication/405220672" class="card-link" target="_blank">Paper</a>
-              <a href="https://github.com/zwinship" class="card-link" target="_blank"><i class="fab fa-github"></i></a>
+            <div class="card-media">
+              <img src="images/mbta_led_build.jpg" alt="MBTA LED map build in progress" loading="lazy">
+              <video controls preload="none"><source src="videos/MBTA_LED_Build.mp4" type="video/mp4"></video>
             </div>
-          </div>
-        </div>
-
-        <div class="project-card" id="c8">
-          <div class="card-shine"></div>
-          <div class="card-inner">
-            <div class="card-chip pending">Est. Jun 2026</div>
-            <h3 class="card-title">Detecting AI Use in Academic Research</h3>
-            <p class="card-sub">Applied Econometrics · Science of Science</p>
-            <p class="card-desc">Using dash frequency in academic papers as an instrument for AI-assisted writing. Estimating the causal effect of AI tool adoption on research output quality and productivity.</p>
-            <div class="card-tags"><span class="card-tag">Python</span><span class="card-tag">Econometrics</span><span class="card-tag">Data Collection</span></div>
-            <div class="card-links"><span class="coming">Coming Soon</span></div>
-          </div>
-        </div>
-
-        <div class="project-card" id="c10">
-          <div class="card-shine"></div>
-          <div class="card-inner">
-            <div class="card-chip pending">Est. Aug 2026</div>
-            <h3 class="card-title">Agentic LLMs for Economic and Game Theory Analysis</h3>
-            <p class="card-sub">Applied AI · Behavioral Economics · Game Theory</p>
-            <p class="card-desc">Using Expected Parrot's EDSL framework (John Horton, MIT Sloan) to run agentic LLMs as simulated economic agents. Testing historical counterfactual prediction accuracy, causal impact analysis, and game-theoretic behavioral modeling. Explores whether Homo silicus replicates and extends findings from classic economics experiments.</p>
-            <div class="card-tags"><span class="card-tag">Python</span><span class="card-tag">LLMs</span><span class="card-tag">Game Theory</span><span class="card-tag">Behavioral Econ</span><span class="card-tag">Causal Inference</span></div>
-            <div class="card-links"><span class="coming">Coming Soon</span></div>
-          </div>
-        </div>
-
-        <div class="project-card" id="c12">
-          <div class="card-shine"></div>
-          <div class="card-inner">
-            <div class="card-chip pending">Working Paper</div>
-            <h3 class="card-title">Congestion Pricing and EMS Response Times</h3>
-            <p class="card-sub">Urban Economics · Health Policy · Causal Inference</p>
-            <p class="card-desc">Working paper with Dhaval Dave and Greg Colman estimating the effect of the Manhattan Congestion Zone on EMS response times, using variation induced by the January 2025 toll implementation.</p>
-            <div class="card-tags"><span class="card-tag">Python</span><span class="card-tag">Stata</span><span class="card-tag">Causal Inference</span><span class="card-tag">Policy</span></div>
-            <div class="card-links"><span class="coming">In Progress</span></div>
+            <div class="card-tags"><span class="card-tag">Python</span><span class="card-tag">Hardware</span><span class="card-tag">MBTA API</span><span class="card-tag">Spatial</span></div>
+            <div class="card-links">
+              <a href="https://github.com/zwinship/MBTA_Live_Art" class="card-link" target="_blank"><i class="fab fa-github"></i></a>
+              <span class="coming">In Progress</span>
+            </div>
           </div>
         </div>
 
@@ -966,9 +1010,9 @@ footer { border-top: 2px solid var(--ink); background: var(--ink); color: var(--
         <div class="reveal">
           <h2>Zach Winship</h2>
           <p class="subtitle">Quantitative Economist and Data Analyst</p>
-          <p>I recently graduated from <strong>Bentley University</strong> with a BS in Quantitative Economics and a double minor in Mathematics and Data Technologies. I'm now pursuing the <strong>MS in Quantitative Economics</strong> at New York University, with expected graduation in May 2027.</p>
-          <p>My work sits at the intersection of data and policy. I'm drawn to questions where careful empirical methods can cut through noise and say something concrete about how the world works. I've built tools for sports prediction, transportation research, and political economy, always trying to combine rigor with work that's actually interesting to look at.</p>
-          <p>Outside of coursework I spend a lot of time on personal projects. I'm especially interested in <strong>transportation economics</strong>, spatial analytics, optimization problems, and the emerging field of <strong>Homo silicus</strong> — using large language models as simulated economic agents to replicate and extend classic experiments in economics and game theory. Feel free to look around. I had a lot of fun building these.</p>
+          <p>I recently graduated from <strong>Bentley University</strong> with a BS in Quantitative Economics and a double minor in Mathematics and Data Technologies. I'm now pursuing the <strong>MS in Quantitative Economics</strong> at New York University, with expected graduation in May 2027, where I also work as a teaching assistant for Introductory Macroeconomics.</p>
+          <p>My work sits at the intersection of data and policy. I'm drawn to questions where careful empirical methods can cut through noise and say something concrete about how the world works. I'm currently a co-author on an <strong>NBER working paper</strong> studying how NYC's congestion pricing program affected EMS response times, and I've built tools for sports prediction, transportation research, and political economy, always trying to combine rigor with work that's actually interesting to look at.</p>
+          <p>Outside of coursework I spend a lot of time on personal projects. I'm especially interested in <strong>transportation economics</strong>, spatial analytics, optimization problems, and the emerging field of <strong>Homo silicus</strong> — using large language models as simulated economic agents to replicate and extend classic experiments in economics and game theory. I also write, bi-monthly, at <strong>Unlikely Instruments</strong>, a blog about unusual proxy variables and data sources nobody would think to look at. Feel free to look around. I had a lot of fun building these.</p>
         </div>
         <div class="skills-block reveal">
           <h3>Technical Skills</h3>
@@ -1158,9 +1202,17 @@ footer { border-top: 2px solid var(--ink); background: var(--ink); color: var(--
     <div class="section-head reveal">
       <h2 class="sh-title">Experience</h2>
       <div class="sh-rule"></div>
-      <span class="sh-count">04 roles</span>
+      <span class="sh-count">05 roles</span>
     </div>
     <div class="exp-list stagger">
+      <div class="exp-item">
+        <div>
+          <div class="exp-role">Teaching Assistant, Introductory Macroeconomics</div>
+          <div class="exp-org">New York University</div>
+          <div class="exp-date">Aug 2026 to Present</div>
+        </div>
+        <div><p class="exp-desc">Run weekly recitations covering course material and homework problems, proctor and grade exams, and manage grade entry.</p></div>
+      </div>
       <div class="exp-item">
         <div>
           <div class="exp-role">NYU Econ Teaching Fellowship</div>
@@ -1204,6 +1256,36 @@ footer { border-top: 2px solid var(--ink); background: var(--ink); color: var(--
 </div>
 
 <!-- ══════════════════════════════════════
+     BLOG
+══════════════════════════════════════ -->
+<div id="blog-page" class="page">
+  <div class="container">
+    <div class="section-head reveal">
+      <h2 class="sh-title">Unlikely Instruments</h2>
+      <div class="sh-rule"></div>
+      <span class="sh-count">Bi-monthly · Launching Sept 2026</span>
+    </div>
+    <div class="reveal" style="max-width:700px;margin-bottom:12px;">
+      <p>A blog about unusual, creative ways to find and use data — especially proxy variables and data sources nobody would think to look at. New post every two months.</p>
+    </div>
+    <div class="project-toc stagger">
+      <div class="toc-row" style="cursor:default;">
+        <span class="toc-n">01</span><span class="toc-name">Strava as a Proxy for Urban Crime Perception</span>
+        <div class="toc-meta"><div class="toc-tags"><span class="toc-tag">Proxy Variables</span><span class="toc-tag">Urban Data</span></div><span class="toc-yr">Planned · Sept 2026</span></div>
+      </div>
+      <div class="toc-row" style="cursor:default;">
+        <span class="toc-n">02</span><span class="toc-name">What Your Neighbor's Windows Say About Their Schedule</span>
+        <div class="toc-meta"><div class="toc-tags"><span class="toc-tag">Spillover Effects</span><span class="toc-tag">Time-Lapse</span></div><span class="toc-yr">Planned · Nov 2026</span></div>
+      </div>
+      <div class="toc-row" style="cursor:default;">
+        <span class="toc-n">03</span><span class="toc-name">Detecting AI Use via Dash Frequency in Academic Writing</span>
+        <div class="toc-meta"><div class="toc-tags"><span class="toc-tag">Econometrics</span><span class="toc-tag">Science of Science</span></div><span class="toc-yr">Unscheduled</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
      FOOTER
 ══════════════════════════════════════ -->
 <footer>
@@ -1220,6 +1302,7 @@ footer { border-top: 2px solid var(--ink); background: var(--ink); color: var(--
         <a href="#" onclick="showPage('about');return false;">About</a>
         <a href="#" onclick="showPage('presentations');return false;">Presentations</a>
         <a href="#" onclick="showPage('experience');return false;">Experience</a>
+        <a href="#" onclick="showPage('blog');return false;">Blog</a>
         <a href="about_me/resume.pdf" download>Resume</a>
       </div>
     </div>
@@ -1678,20 +1761,20 @@ document.querySelectorAll('.project-card').forEach(card => {
    projects animate in below
 ══════════════════════════════════════ */
 const SKILL_MAP = {
-    'Python':               ['UFC Fight Outcome Prediction Model','OctaStats UFC Model V2','MBTA Time Series Analysis','MBTA Live Tracker LED Art','NYC Congestion Pricing','Detecting AI Use in Academic Research','EPA Ozone Regulation','Agentic LLMs for Economic and Game Theory Analysis','Intermediate Microeconomics Course Website','Congestion Pricing and EMS Response Times'],
+    'Python':               ['UFC Fight Outcome Prediction Model','OctaStats UFC Model V2','MBTA Time Series Analysis','MBTA Live Tracker LED Art','NYC Congestion Pricing','EPA Ozone Regulation','Agentic LLMs for Economic and Game Theory Analysis','Intermediate Microeconomics Course Website','Congestion Pricing and EMS Response Time'],
     'R':                    ['MBTA Time Series Analysis'],
-    'Stata':                ['Election Polling Analysis','NYC Congestion Pricing','Congestion Pricing and EMS Response Times'],
+    'Stata':                ['Election Polling Analysis','NYC Congestion Pricing','Congestion Pricing and EMS Response Time'],
     'Machine Learning':     ['UFC Fight Outcome Prediction Model','OctaStats UFC Model V2'],
-    'Causal Inference':     ['Election Polling Analysis','NYC Congestion Pricing','EPA Ozone Regulation','Agentic LLMs for Economic and Game Theory Analysis','Congestion Pricing and EMS Response Times'],
+    'Causal Inference':     ['Election Polling Analysis','NYC Congestion Pricing','EPA Ozone Regulation','Agentic LLMs for Economic and Game Theory Analysis','Congestion Pricing and EMS Response Time'],
     'Forecasting':          ['MBTA Time Series Analysis'],
-    'Econometrics':         ['UFC Fight Outcome Prediction Model','OctaStats UFC Model V2','MBTA Time Series Analysis','Election Polling Analysis','NYC Congestion Pricing','Detecting AI Use in Academic Research','EPA Ozone Regulation','Agentic LLMs for Economic and Game Theory Analysis'],
+    'Econometrics':         ['UFC Fight Outcome Prediction Model','OctaStats UFC Model V2','MBTA Time Series Analysis','Election Polling Analysis','NYC Congestion Pricing','EPA Ozone Regulation','Agentic LLMs for Economic and Game Theory Analysis'],
     'Web Development':      ['UFC Fight Outcome Prediction Model','OctaStats UFC Model V2','Tale of the Tape','EPA Ozone Regulation','Intermediate Microeconomics Course Website'],
     'Hardware / Raspberry Pi': ['MBTA Live Tracker LED Art'],
-    'Data Collection':      ['MBTA Time Series Analysis','Election Polling Analysis','OctaStats UFC Model V2','Tale of the Tape','NYC Congestion Pricing','Detecting AI Use in Academic Research','EPA Ozone Regulation'],
-    'Policy Analysis':      ['Election Polling Analysis','NYC Congestion Pricing','EPA Ozone Regulation','Congestion Pricing and EMS Response Times'],
-    'Spatial Analysis':     ['MBTA Live Tracker LED Art','NYC Congestion Pricing','Congestion Pricing and EMS Response Times'],
+    'Data Collection':      ['MBTA Time Series Analysis','Election Polling Analysis','OctaStats UFC Model V2','Tale of the Tape','NYC Congestion Pricing','EPA Ozone Regulation'],
+    'Policy Analysis':      ['Election Polling Analysis','NYC Congestion Pricing','EPA Ozone Regulation','Congestion Pricing and EMS Response Time'],
+    'Spatial Analysis':     ['MBTA Live Tracker LED Art','NYC Congestion Pricing','Congestion Pricing and EMS Response Time'],
     'ARIMA':                ['MBTA Time Series Analysis'],
-    'Regression Discontinuity': ['EPA Ozone Regulation','NYC Congestion Pricing','Congestion Pricing and EMS Response Times'],
+    'Regression Discontinuity': ['EPA Ozone Regulation','NYC Congestion Pricing','Congestion Pricing and EMS Response Time'],
     'LLMs / Agent Simulation': ['Agentic LLMs for Economic and Game Theory Analysis'],
     'JSXGraph':               ['Intermediate Microeconomics Course Website'],
 };
