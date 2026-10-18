@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Wii Menu · Zach Winship</title>
+<link rel="icon" href="../../images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@400;500;700;800&display=swap" rel="stylesheet">
+<!--
+  Layout reference: the bottom-bar silhouette, button geometry and page
+  arrow are adapted from tobieche110/wii-portfolio (MIT License,
+  Copyright (c) 2024 Tobias Echenique). Everything else is original.
+  A fan homage to the Nintendo Wii Menu; not affiliated with Nintendo.
+-->
+<style>
+:root{
+  --wii-cyan:#34beed;
+  --wii-cyan-lt:#8fdcf7;
+  --wii-gray:#8f9196;
+  --wii-gray-dk:#5c5e63;
+  --wii-bar:#e1e2e6;
+  --wii-bar-dk:#d4d5d9;
+  --tile-border:#c3c4c8;
+  --bg:#f4f4f4;
+  --font:'M PLUS 1p','Helvetica Neue',Arial,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--font);color:#4a4c50;-webkit-font-smoothing:antialiased;user-select:none}
+button{font-family:inherit;border:0;background:none;color:inherit}
+.has-hand, .has-hand *{cursor:none !important}
+
+/* The faint horizontal scanlines of the Wii Menu background */
+.scan{
+  background-color:#f7f7f7;
+  background-image:repeating-linear-gradient(to bottom,#f7f7f7 0 2px,#ececec 2px 4px);
+}
+
+/* ================= STAGE (fixed 1280x720, scaled to fit) ================= */
+#root{position:fixed;inset:0;overflow:hidden}
+#stage{position:absolute;left:0;top:0;width:1280px;height:720px;transform-origin:0 0;overflow:hidden}
+
+/* ================= HEALTH & SAFETY ================= */
+#warning{position:absolute;inset:0;z-index:80;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#fff;transition:opacity .7s ease}
+#warning.gone{opacity:0;pointer-events:none}
+.warn-title{display:flex;align-items:center;gap:18px;font-size:46px;font-weight:800;color:#222;letter-spacing:.5px}
+.warn-title svg{width:58px;height:58px}
+.warn-rule{width:880px;height:3px;background:#222;margin:22px 0 34px}
+.warn-body{width:880px;font-size:30px;line-height:1.55;font-weight:500;color:#222}
+.warn-body b{font-weight:800}
+.warn-body .url{display:block;margin-top:26px;color:#222}
+.warn-press{margin-top:80px;font-size:30px;font-weight:700;color:#222;display:flex;align-items:center;gap:12px;animation:blink 1.6s ease-in-out infinite}
+.a-btn{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;background:#222;color:#fff;font-size:26px;font-weight:800}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+
+/* ================= MENU ================= */
+#menu{position:absolute;inset:0}
+#menu.boot{animation:menuBoot .9s ease both}
+@keyframes menuBoot{from{opacity:0;transform:scale(1.04)}to{opacity:1;transform:none}}
+
+#pages{position:absolute;left:0;top:0;width:1280px;height:560px;overflow:hidden}
+#track{position:absolute;left:0;top:0;height:100%;display:flex;transition:transform .6s cubic-bezier(.3,.9,.3,1)}
+.page{width:1280px;height:560px;position:relative;flex:0 0 1280px}
+.grid{position:absolute;left:94px;top:42px;display:grid;grid-template-columns:repeat(4,258px);grid-template-rows:repeat(3,152px);gap:16px 20px}
+
+/* --- channel tile --- */
+.ch{position:relative;border-radius:22px;background:#fff;border:3px solid var(--tile-border);box-shadow:0 2px 3px rgba(0,0,0,.08);padding:4px;transition:border-color .12s,box-shadow .12s,transform .18s}
+.ch .bn{position:absolute;inset:4px;border-radius:16px;overflow:hidden}
+.ch.hot{border-color:var(--wii-cyan);box-shadow:0 0 0 2px var(--wii-cyan-lt),0 0 16px 3px rgba(52,190,237,.55);z-index:3}
+.ch.empty{background:#e6e6e8;border-color:#cfd0d3;box-shadow:inset 0 1px 3px rgba(0,0,0,.06)}
+.ch.empty .bn{display:flex;align-items:center;justify-content:center;background:repeating-linear-gradient(to bottom,#ebebed 0 2px,#e1e1e4 2px 4px)}
+.wii-logo{font-family:var(--font);font-weight:800;letter-spacing:-1px;color:#c9cacd;font-size:44px;font-style:italic;text-shadow:0 1px 0 #f6f6f7}
+
+/* hover label bubble */
+#bubble{position:absolute;z-index:40;pointer-events:none;padding:9px 38px;border-radius:999px;background:#fff;border:3px solid #c9cacd;box-shadow:0 4px 10px rgba(0,0,0,.18);font-size:23px;font-weight:700;color:#4a4c50;white-space:nowrap;opacity:0;transform:translate(-50%,6px) scale(.9);transition:opacity .12s,transform .12s}
+#bubble.on{opacity:1;transform:translate(-50%,0) scale(1)}
+
+/* page arrows */
+.parrow{position:absolute;top:230px;width:46px;height:82px;z-index:5;opacity:0;transition:opacity .25s,transform .15s}
+.parrow svg{width:100%;height:100%;filter:drop-shadow(0 2px 3px rgba(20,60,120,.3))}
+.parrow.show{opacity:1}
+.parrow.hot{transform:scale(1.15)}
+#arrR{right:22px}
+#arrL{left:22px}
+#arrL svg{transform:scaleX(-1)}
+
+/* ================= BOTTOM BAR ================= */
+#bar{position:absolute;left:0;top:520px;width:1280px;height:200px}
+#bar svg.shape{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+#clock{position:absolute;left:0;right:0;top:20px;display:flex;justify-content:center;align-items:flex-start;height:62px}
+#clock svg{height:62px}
+#date{position:absolute;left:0;right:0;top:120px;text-align:center;font-size:34px;font-weight:700;color:#8a8c91;letter-spacing:.5px}
+.round-btn{position:absolute;top:65px;width:132px;height:132px;border-radius:50%}
+.round-btn .face{position:absolute;inset:8px;border-radius:50%;background:radial-gradient(circle at 40% 30%,#f3f3f4 0%,#dadadc 60%,#cfd0d2 100%);border:4px solid var(--wii-cyan);box-shadow:0 4px 6px rgba(0,0,0,.18),inset 0 2px 2px #fff;display:flex;align-items:center;justify-content:center;transition:box-shadow .15s,transform .15s}
+.round-btn .face::before{content:"";position:absolute;left:14%;top:8%;width:60%;height:44%;border-radius:50%;background:linear-gradient(#ffffffd0,#ffffff00);transform:rotate(-25deg)}
+.round-btn.hot .face{box-shadow:0 0 0 4px var(--wii-cyan-lt),0 0 18px 4px rgba(52,190,237,.6),0 4px 6px rgba(0,0,0,.18);transform:scale(1.05)}
+#wiiBtn{left:58px}
+#mailBtn{right:58px}
+.round-btn .lbl{position:relative;font-weight:800;font-size:38px;color:#a1a0a4;letter-spacing:-1px;font-style:italic}
+#mailBtn .dot{position:absolute;right:16px;top:14px;width:22px;height:22px;border-radius:50%;background:#34beed;border:3px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.25);animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+#sdBtn{position:absolute;left:214px;top:102px;width:46px;height:56px}
+
+/* ================= CHANNEL PREVIEW (zoomed banner) ================= */
+#preview{position:absolute;inset:0;z-index:50;pointer-events:none}
+#preview.open{pointer-events:auto}
+#pvBg{position:absolute;inset:0;opacity:0;transition:opacity .35s}
+#preview.open #pvBg{opacity:1}
+#pvZoom{position:absolute;border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 0 0 rgba(0,0,0,0);transition:left .45s cubic-bezier(.3,.9,.3,1),top .45s cubic-bezier(.3,.9,.3,1),width .45s cubic-bezier(.3,.9,.3,1),height .45s cubic-bezier(.3,.9,.3,1),border-radius .45s}
+#pvZoom .bn{position:absolute;inset:0}
+#pvBottom{position:absolute;left:0;right:0;bottom:0;height:148px;display:flex;align-items:center;justify-content:center;gap:120px;opacity:0;transition:opacity .25s;border-top:3px solid #34beed;box-shadow:0 -2px 8px rgba(0,0,0,.08)}
+#preview.shown #pvBottom{opacity:1}
+.pill{position:relative;width:360px;height:96px;border-radius:999px;background:linear-gradient(#ffffff 0%,#f2f4f7 45%,#dfe3ea 100%);border:3px solid #b9d9ea;box-shadow:0 4px 8px rgba(0,0,0,.18),inset 0 -4px 8px rgba(160,175,195,.35);font-size:38px;font-weight:500;color:#4b4f55;transition:box-shadow .12s,border-color .12s,transform .12s}
+.pill::before{content:"";position:absolute;left:30px;right:30px;top:6px;height:32px;border-radius:999px;background:linear-gradient(#ffffffee,#ffffff00)}
+.pill span{position:relative}
+.pill.hot{border-color:var(--wii-cyan);box-shadow:0 0 0 3px var(--wii-cyan-lt),0 0 18px 4px rgba(52,190,237,.55),0 4px 8px rgba(0,0,0,.18);transform:scale(1.04)}
+.pvarrow{position:absolute;top:245px;width:46px;height:82px;opacity:0;transition:opacity .25s,transform .15s}
+#preview.shown .pvarrow{opacity:1}
+.pvarrow svg{width:100%;height:100%;filter:drop-shadow(0 2px 3px rgba(20,60,120,.3))}
+.pvarrow.hot{transform:scale(1.15)}
+#pvL{left:22px} #pvL svg{transform:scaleX(-1)}
+#pvR{right:22px}
+
+/* ================= WII BUTTON MENU (system options) ================= */
+#sysmenu{position:absolute;inset:0;z-index:55;display:none;flex-direction:column;align-items:center;justify-content:center;gap:40px}
+#sysmenu.open{display:flex;animation:fadeIn .3s ease}
+#sysmenu .sys-title{font-size:40px;font-weight:700;color:#6a6c71}
+.sys-row{display:flex;gap:60px}
+.sysbtn{width:420px;height:230px;border-radius:30px;background:linear-gradient(#fff,#eceef1);border:3px solid #c7c8cc;box-shadow:0 4px 10px rgba(0,0,0,.12);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;font-size:34px;font-weight:700;color:#55575c;transition:box-shadow .12s,border-color .12s,transform .12s}
+.sysbtn svg{width:96px;height:96px}
+.sysbtn.hot{border-color:var(--wii-cyan);box-shadow:0 0 0 3px var(--wii-cyan-lt),0 0 18px 4px rgba(52,190,237,.5);transform:scale(1.03)}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+#rotate{display:none;position:fixed;left:16px;right:16px;bottom:24px;text-align:center;font-size:14px;font-weight:700;color:#8a8c91}
+@media (orientation:portrait) and (max-width:700px){#rotate{display:block}}
+
+/* ================= HAND CURSOR ================= */
+#hand{position:fixed;left:0;top:0;z-index:9999;pointer-events:none;width:58px;height:70px;margin:-6px 0 0 -18px;display:none;transform-origin:18px 6px;will-change:transform}
+.has-hand #hand{display:block}
+#hand.press svg{transform:scale(.9)}
+#hand svg{width:100%;height:100%;transition:transform .08s;filter:drop-shadow(1px 3px 2px rgba(0,0,0,.3))}
+
+/* ================= CHANNEL CONTENT (unscaled, responsive) ================= */
+#content{position:fixed;inset:0;z-index:70;display:none;flex-direction:column}
+#content.open{display:flex;animation:fadeIn .35s ease}
+.cc-head{flex:0 0 auto;display:flex;align-items:center;gap:16px;padding:18px clamp(16px,4vw,48px);background:linear-gradient(#ffffff,#eef0f3);border-bottom:3px solid var(--wii-cyan)}
+.cc-head .ico{width:52px;height:52px;border-radius:14px;overflow:hidden;border:3px solid var(--tile-border);flex:0 0 auto;position:relative;background:#fff}
+.cc-head .ico .bn{position:absolute;inset:0}
+.cc-head h1{font-size:clamp(22px,3vw,32px);font-weight:800;color:#55575c}
+.cc-head p{font-size:14px;color:#8a8c91;font-weight:500}
+.cc-body{flex:1;overflow-y:auto;padding:28px clamp(16px,4vw,48px) 40px;-webkit-overflow-scrolling:touch;user-select:text}
+.cc-inner{max-width:1040px;margin:0 auto}
+.cc-foot{flex:0 0 auto;display:flex;justify-content:center;gap:24px;padding:14px 16px;background:linear-gradient(#eceef1,#dcdee2);border-top:2px solid #cfd0d4}
+.cc-foot .pill{width:240px;height:58px;font-size:24px}
+.cc-foot .pill::before{top:4px;height:20px;left:22px;right:22px}
+
+.sec-h{font-size:15px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#34a9d6;margin:30px 0 14px;display:flex;align-items:center;gap:12px}
+.sec-h::after{content:"";flex:1;height:2px;background:linear-gradient(90deg,#bfe7f6,transparent)}
+.sec-h:first-child{margin-top:0}
+.card{background:#fff;border:3px solid #d5d6da;border-radius:22px;padding:22px 24px;margin-bottom:16px;box-shadow:0 2px 4px rgba(0,0,0,.05);transition:border-color .15s,box-shadow .15s}
+.card:hover{border-color:var(--wii-cyan);box-shadow:0 0 0 2px #c9eefb,0 6px 16px rgba(52,190,237,.18)}
+.card h3{font-size:21px;font-weight:800;color:#45474c;line-height:1.3}
+.card .meta{font-size:13px;font-weight:700;color:#34a9d6;margin:4px 0 10px;letter-spacing:.3px}
+.card p{font-size:15.5px;line-height:1.65;color:#5a5c61}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.tag{font-size:12px;font-weight:700;color:#6a6c71;background:#f0f1f3;border:2px solid #dedfe2;border-radius:999px;padding:2px 11px}
+.links{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.wbtn{display:inline-flex;align-items:center;gap:8px;padding:8px 20px;border-radius:999px;background:linear-gradient(#fff,#e7ebf0);border:2px solid #b9d9ea;color:#3f4348;font-weight:700;font-size:14px;text-decoration:none;box-shadow:0 2px 4px rgba(0,0,0,.1);transition:all .12s}
+.wbtn:hover{border-color:var(--wii-cyan);box-shadow:0 0 0 2px #c9eefb,0 0 10px rgba(52,190,237,.5)}
+.wbtn.blue{background:linear-gradient(#5fd0f6,#22a8dc);border-color:#1b93c4;color:#fff;text-shadow:0 1px 0 rgba(0,0,0,.2)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.grid2 .card{margin:0}
+.badge{display:inline-block;font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:3px 10px;border-radius:999px;background:#34beed;color:#fff;margin-right:6px;vertical-align:middle}
+.badge.gray{background:#a9abb0}
+.about-top{display:flex;gap:28px;align-items:center;flex-wrap:wrap}
+.about-top img{width:170px;height:170px;object-fit:cover;border-radius:30px;border:4px solid #fff;box-shadow:0 0 0 3px #d5d6da,0 6px 14px rgba(0,0,0,.12)}
+.about-top h2{font-size:34px;font-weight:800;color:#45474c}
+.about-top .sub{color:#34a9d6;font-weight:700;margin-top:2px}
+video{width:100%;border-radius:14px;background:#000;margin-top:12px;display:block}
+.vids{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:10px}
+.vids figcaption{font-size:13px;font-weight:700;color:#6a6c71;margin-top:6px}
+.shop-row{display:flex;gap:18px;align-items:flex-start}
+.shop-row .thumb{flex:0 0 150px;height:96px;border-radius:14px;overflow:hidden;position:relative;border:3px solid #d5d6da;container-type:size}
+.shop-row .thumb .bn{position:absolute;inset:0}
+.shop-row .price{margin-left:auto;flex:0 0 auto;font-weight:800;color:#34a9d6;font-size:14px;text-align:right}
+@media (max-width:640px){.shop-row{flex-direction:column}.shop-row .thumb{width:100%;flex-basis:auto;height:140px}.shop-row .price{margin-left:0;text-align:left}}
+.wx{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.wx .card{text-align:center}
+.wx .temp{font-size:64px;font-weight:800;color:#45474c;line-height:1}
+.wx .cond{font-weight:700;color:#34a9d6;margin-top:6px}
+.poll-opts{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px}
+.poll-bar{height:30px;border-radius:999px;background:#eef0f2;overflow:hidden;margin-top:8px;border:2px solid #dedfe2}
+.poll-bar i{display:block;height:100%;border-radius:999px;transition:width .8s cubic-bezier(.3,.9,.3,1)}
+.list-plain{list-style:none}
+.list-plain li{padding:10px 0;border-bottom:2px dashed #e4e5e8;font-size:15px}
+.list-plain li:last-child{border:0}
+.list-plain a{color:#1f8fc0;font-weight:700;text-decoration:none}
+.list-plain a:hover{text-decoration:underline}
+.pdf-frame{width:100%;height:70vh;border:3px solid #d5d6da;border-radius:18px;background:#fff}
+
+/* ================= BANNERS =================
+   Every banner is drawn in container units so the same markup works
+   on a channel tile, in the zoomed preview and in the content header. */
+.bn{container-type:size;font-family:var(--font)}
+.bn *{position:absolute}
+.bn .t{left:0;right:0;text-align:center;font-weight:800;white-space:nowrap}
+.spin{animation:spin 6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6%)}}
+@keyframes walk{from{transform:translateX(-30cqw)}to{transform:translateX(130cqw)}}
+@keyframes ticker{from{transform:translateX(100cqw)}to{transform:translateX(-100%)}}
+@keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes floaty{0%,100%{transform:translate(0,0)}50%{transform:translate(2cqw,-3cqh)}}
+@keyframes ledrun{from{offset-distance:0%}to{offset-distance:100%}}
+@keyframes grow{from{transform:scaleX(.05)}to{transform:scaleX(1)}}
+@keyframes draw{from{stroke-dashoffset:400}to{stroke-dashoffset:0}}
+@keyframes twinkle{0%,100%{opacity:.25}50%{opacity:1}}
+</style>
+</head>
+<body class="scan">
+
+<div id="root" class="scan">
+<div id="stage" class="scan">
+
+  <!-- ===== Health & Safety ===== -->
+  <div id="warning">
+    <div class="warn-title">
+      <svg viewBox="0 0 60 60"><path d="M30 4 57 54H3Z" fill="#222"/><path d="M27.5 20h5l-1 20h-3zM27.5 44h5v5h-5z" fill="#fff"/></svg>
+      WARNING-HEALTH AND SAFETY
+    </div>
+    <div class="warn-rule"></div>
+    <div class="warn-body">
+      BEFORE BROWSING, READ ZACH'S <b>RÉSUMÉ</b> FOR IMPORTANT INFORMATION ABOUT HIS RESEARCH, PROJECTS AND EXPERIENCE.
+      <span class="url">Also online at<br>zwinship.github.io</span>
+    </div>
+    <div class="warn-press">Press <span class="a-btn">A</span> to continue.</div>
+  </div>
+
+  <!-- ===== Wii Menu ===== -->
+  <div id="menu" style="visibility:hidden">
+    <div id="pages"><div id="track"></div></div>
+
+    <button class="parrow" id="arrL" aria-label="Previous page" data-hot></button>
+    <button class="parrow" id="arrR" aria-label="Next page" data-hot></button>
+
+    <div id="bar">
+      <svg class="shape" viewBox="0 0 1280 200" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="barG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#e9eaed"/><stop offset=".35" stop-color="#e1e2e6"/><stop offset="1" stop-color="#d6d7db"/>
+          </linearGradient>
+          <linearGradient id="tabG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#dcdcde"/><stop offset="1" stop-color="#cfcfd2"/>
+          </linearGradient>
+          <filter id="barShadow" x="-5%" y="-30%" width="110%" height="160%">
+            <feDropShadow dx="0" dy="-2" stdDeviation="4" flood-color="#6c7c8c" flood-opacity=".18"/>
+          </filter>
+          <filter id="tabShadow" x="-20%" y="-20%" width="140%" height="160%">
+            <feDropShadow dx="2" dy="4" stdDeviation="3" flood-color="#000" flood-opacity=".18"/>
+          </filter>
+        </defs>
+        <!-- silhouette: raised shoulders at the corners, a dip in the middle -->
+        <path filter="url(#barShadow)" fill="url(#barG)" d="M0,44 H204 C236,44 275,44 322,84 C354,112 384,130 442,130 H838 C896,130 926,112 958,84 C1005,44 1044,44 1076,44 H1280 V200 H0 Z"/>
+        <path fill="none" stroke="#fff" stroke-width="5" opacity=".8" d="M0,47 H204 C236,47 275,47 322,87 C354,115 384,133 442,133 H838 C896,133 926,115 958,87 C1005,47 1044,47 1076,47 H1280"/>
+        <path fill="none" stroke="#34beed" stroke-width="3" d="M0,44 H204 C236,44 275,44 322,84 C354,112 384,130 442,130 H838 C896,130 926,112 958,84 C1005,44 1044,44 1076,44 H1280"/>
+        <!-- button holder tabs -->
+        <path filter="url(#tabShadow)" fill="url(#tabG)" d="M0,61 H118 C155,61 186,92 186,130 C186,168 155,199 118,199 H0 Z"/>
+        <path filter="url(#tabShadow)" fill="url(#tabG)" d="M1280,61 H1162 C1125,61 1094,92 1094,130 C1094,168 1125,199 1162,199 H1280 Z"/>
+      </svg>
+      <div id="clock" aria-label="Clock"></div>
+      <div id="date"></div>
+      <button class="round-btn" id="wiiBtn" aria-label="Wii Menu options" data-hot><span class="face"><span class="lbl">Wii</span></span></button>
+      <button class="round-btn" id="mailBtn" aria-label="Wii Message Board" data-hot>
+        <span class="face"><svg width="58" height="42" viewBox="0 0 96 64" style="position:relative"><path d="M0 4v8l46.7 22.9c.8.4 1.8.4 2.6 0L96 12V4c0-2.2-1.8-4-4-4H4C1.8 0 0 1.8 0 4z" fill="#a1a0a4"/><path d="M46.7 43.8 0 20.5V60c0 2.2 1.8 4 4 4h88c2.2 0 4-1.8 4-4V20.5L49.3 43.8c-.8.4-1.8.4-2.6 0z" fill="#a1a0a4"/></svg></span>
+        <span class="dot"></span>
+      </button>
+      <svg id="sdBtn" viewBox="0 0 46 56" aria-hidden="true"><path d="M4 2h26l14 14v36a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" fill="#c9cacd" stroke="#a9aaae" stroke-width="2"/><g fill="#e8e8ea"><rect x="8" y="6" width="4" height="9" rx="1"/><rect x="14" y="6" width="4" height="9" rx="1"/><rect x="20" y="6" width="4" height="9" rx="1"/><rect x="26" y="6" width="4" height="9" rx="1"/></g><text x="23" y="42" text-anchor="middle" font-family="M PLUS 1p,Arial" font-weight="800" font-size="13" fill="#9a9b9f">SD</text></svg>
+    </div>
+
+    <div id="bubble"></div>
+
+    <!-- ===== Channel preview ===== -->
+    <div id="preview">
+      <div id="pvBg" class="scan"></div>
+      <div id="pvZoom"></div>
+      <button class="pvarrow" id="pvL" aria-label="Previous channel" data-hot></button>
+      <button class="pvarrow" id="pvR" aria-label="Next channel" data-hot></button>
+      <div id="pvBottom">
+        <button class="pill" id="pvMenu" data-hot><span>Wii Menu</span></button>
+        <button class="pill" id="pvStart" data-hot><span>Start</span></button>
+      </div>
+    </div>
+
+    <!-- ===== Wii button: system menu ===== -->
+    <div id="sysmenu" class="scan">
+      <div class="sys-title">Wii Menu</div>
+      <div class="sys-row">
+        <button class="sysbtn" id="sysData" data-hot>
+          <svg viewBox="0 0 96 96"><rect x="14" y="10" width="68" height="76" rx="8" fill="#e9eaec" stroke="#a1a0a4" stroke-width="4"/><path d="M28 32h40M28 46h40M28 60h26" stroke="#34beed" stroke-width="6" stroke-linecap="round"/></svg>
+          Résumé (PDF)
+        </button>
+        <button class="sysbtn" id="sysSettings" data-hot>
+          <svg viewBox="0 0 96 96"><circle cx="48" cy="48" r="16" fill="none" stroke="#a1a0a4" stroke-width="6"/><path d="M48 10v12M48 74v12M10 48h12M74 48h12M21 21l9 9M66 66l9 9M75 21l-9 9M30 66l-9 9" stroke="#34beed" stroke-width="7" stroke-linecap="round"/></svg>
+          Back to Main Site
+        </button>
+      </div>
+      <div style="margin-top:20px"><button class="pill" id="sysClose" data-hot style="width:300px;height:80px;font-size:32px"><span>Close</span></button></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div id="rotate">Rotate your phone for the full Wii Menu. Swipe to change pages.</div>
+
+<!-- ===== Channel content (full screen, unscaled) ===== -->
+<div id="content" class="scan">
+  <div class="cc-head"><div class="ico" id="ccIco"></div><div><h1 id="ccTitle"></h1><p id="ccSub"></p></div></div>
+  <div class="cc-body" id="ccBody"><div class="cc-inner" id="ccInner"></div></div>
+  <div class="cc-foot"><button class="pill" id="ccBack" data-hot><span>Wii Menu</span></button></div>
+</div>
+
+<!-- ===== P1 hand pointer ===== -->
+<div id="hand" aria-hidden="true">
+  <svg viewBox="0 0 58 70">
+    <defs><linearGradient id="handG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#cdeefc"/></linearGradient></defs>
+    <path d="M14 30V9.5a5 5 0 0 1 10 0V26l.2-1.2a4.6 4.6 0 0 1 9 .2V28a4.6 4.6 0 0 1 9 0v3a4.4 4.4 0 0 1 8.6 1V46c0 11-8 20-20 20h-3C18 66 12 60 8.5 53L3.3 42.5a4.6 4.6 0 0 1 7.6-5L14 41z" fill="url(#handG)" stroke="#2b6fa8" stroke-width="2.6" stroke-linejoin="round"/>
+    <path d="M24 26v10M33.2 28v8M42.2 31v6" stroke="#2b6fa8" stroke-width="2" stroke-linecap="round" opacity=".55"/>
+    <text x="31" y="56" text-anchor="middle" font-family="M PLUS 1p,Arial" font-weight="800" font-size="15" fill="#2b6fa8">1</text>
+  </svg>
+</div>
+
+<script src="../shared/data.js"></script>
+<script>
+/* =====================================================================
+   DATA
+   ===================================================================== */
+const ASSET = '../../';
+const LINK = (href, label, cls='') => `<a class="wbtn ${cls}" href="${href}" target="_blank" rel="noopener">${label}</a>`;
+const TAGS = arr => `<div class="tags">${arr.map(t=>`<span class="tag">${t}</span>`).join('')}</div>`;
+
+PERSONAL[4].media = `<video src="${ASSET+PERSONAL[4].video}" controls playsinline preload="none" poster="${ASSET+PERSONAL[4].poster}"></video>`;
+
+/* =====================================================================
+   BANNERS (container-unit art: cqw / cqh)
+   ===================================================================== */
+const B = {
+disc: () => `
+  <div style="inset:0;background:linear-gradient(#ffffff,#e9eaec)"></div>
+  <div style="left:6cqw;top:12cqh;width:76cqh;height:76cqh;border-radius:50%;background:conic-gradient(from 20deg,#dfe7f3,#f7f2ff,#e2f7ff,#fff7e6,#e8f0ff,#f5e9ff,#dfe7f3);box-shadow:0 1cqh 3cqh rgba(0,0,0,.18),inset 0 0 0 .6cqh #c9ccd2" class="spin">
+    <div style="inset:34%;border-radius:50%;background:#f3f4f6;box-shadow:inset 0 0 0 .6cqh #c9ccd2"></div>
+    <div style="inset:44%;border-radius:50%;background:#d8dade"></div>
+    <div style="left:12%;top:20%;font-size:6cqh;font-weight:800;color:#8a8f99;transform:rotate(-30deg)">NBER</div>
+  </div>
+  <div style="left:50cqw;right:4cqw;top:22cqh;font-size:13cqh;font-weight:800;color:#6b6e74;line-height:1.05">Research</div>
+  <div style="left:50cqw;top:44cqh;font-size:6cqh;font-weight:700;color:#34a9d6;line-height:1.45;white-space:nowrap">NBER WP No. 35414<br><span style="position:static;color:#8a8c91">Congestion Pricing &amp; EMS</span></div>`,
+
+mii: () => {
+  const miis = [['#e64646',0,0],['#3b8de0',-2.3,1],['#f2b632',-4.6,0],['#5fbf4a',-6.9,1],['#b46ad8',-9.2,0]];
+  return `<div style="inset:0;background:radial-gradient(circle at 50% 40%,#ffffff,#eef0f2)"></div>
+  <div style="left:0;right:0;bottom:0;height:22cqh;background:linear-gradient(#e7e9ec,#d8dbdf)"></div>
+  ${miis.map(([c,d,f])=>`<div style="left:0;bottom:14cqh;width:16cqh;height:44cqh;animation:walk 11.5s linear ${d}s infinite">
+     <div style="left:3cqh;top:0;width:10cqh;height:12cqh;border-radius:45%;background:#f6d6b8;box-shadow:inset 0 2.4cqh 0 ${c==='#f2b632'?'#6b3f1f':'#3a2a20'};animation:bob .5s ease-in-out ${f*.25}s infinite"></div>
+     <div style="left:2cqh;top:13cqh;width:12cqh;height:17cqh;border-radius:40% 40% 20% 20%;background:${c}"></div>
+     <div style="left:3cqh;top:29cqh;width:4cqh;height:12cqh;border-radius:2cqh;background:#4a5568"></div>
+     <div style="left:9cqh;top:29cqh;width:4cqh;height:12cqh;border-radius:2cqh;background:#4a5568"></div></div>`).join('')}
+  <div style="right:6cqw;top:10cqh;width:30cqh;height:30cqh;border-radius:24%;overflow:hidden;border:1cqh solid #fff;box-shadow:0 1cqh 3cqh rgba(0,0,0,.2)"><img src="${ASSET}images/zwinship.png" alt="" style="width:100%;height:100%;object-fit:cover"></div>
+  <div class="t" style="top:12cqh;left:6cqw;right:auto;font-size:14cqh;color:#6b6e74">About Me</div>`;
+},
+
+photo: () => {
+  const frames = [['#ffd36b','RD Design'],['#9fdcff','VAR · VECM'],['#c8f0a0','Rural Roads'],['#ffb3c7','Diff-in-Disc'],['#d8c4ff','Effort Model'],['#ffe1a8','NYC Tolls']];
+  const strip = frames.concat(frames).map(([c,l],i)=>`<div style="position:relative;display:inline-block;width:30cqw;height:44cqh;margin-right:4cqw;background:#fff;border-radius:1.5cqh;padding:1.6cqh;box-shadow:0 1cqh 2.5cqh rgba(0,0,0,.18);transform:rotate(${i%2?3:-3}deg)">
+     <div style="position:relative;width:100%;height:100%;border-radius:1cqh;background:linear-gradient(135deg,${c},#ffffff)"><div style="left:0;right:0;bottom:12%;text-align:center;font-size:6cqh;font-weight:800;color:#5a5c61">${l}</div><div style="left:40%;top:22%;width:0;height:0;border-left:7cqh solid rgba(90,92,97,.55);border-top:4.5cqh solid transparent;border-bottom:4.5cqh solid transparent"></div></div></div>`).join('');
+  return `<div style="inset:0;background:linear-gradient(#f8f8f8,#e5e7ea)"></div>
+  <div style="left:0;top:34cqh;white-space:nowrap;animation:slide 18s linear infinite">${strip}</div>
+  <div class="t" style="top:7cqh;font-size:14cqh;color:#6b6e74">Presentations</div>`;
+},
+
+shop: () => `
+  <div style="inset:0;background:linear-gradient(#e8f8ff,#bfe9fa)"></div>
+  <div style="inset:0;background:repeating-linear-gradient(-45deg,rgba(255,255,255,.35) 0 3cqw,transparent 3cqw 6cqw)"></div>
+  <div style="left:50%;top:14cqh;width:34cqh;height:36cqh;margin-left:-17cqh;animation:bob 2.4s ease-in-out infinite">
+    <div style="left:9cqh;top:0;width:16cqh;height:12cqh;border:2.2cqh solid #2aa6d8;border-bottom:0;border-radius:8cqh 8cqh 0 0"></div>
+    <div style="left:0;top:9cqh;width:34cqh;height:27cqh;border-radius:3cqh;background:linear-gradient(#5fd0f6,#22a8dc);box-shadow:0 1.5cqh 3cqh rgba(20,120,170,.35)"></div>
+    <div style="left:0;right:0;top:15cqh;text-align:center;font-size:11cqh;font-weight:800;color:#fff">11</div>
+  </div>
+  <div class="t" style="top:60cqh;font-size:13cqh;color:#1d7fae">Project Shop</div>
+  <div class="t" style="top:80cqh;font-size:6cqh;color:#4b9cc4;font-weight:700">Research &amp; Personal Projects</div>`,
+
+forecast: () => `
+  <div style="inset:0;background:linear-gradient(#4fb3ec,#a9ddf8 70%,#e6f6ff)"></div>
+  <div style="left:10cqw;top:14cqh;width:30cqh;height:30cqh;border-radius:50%;background:radial-gradient(circle at 40% 40%,#fff6b0,#ffc531 60%,#ffab1a);box-shadow:0 0 6cqh #ffd86b"></div>
+  <div style="left:22cqw;top:30cqh;width:44cqh;height:20cqh;border-radius:10cqh;background:#fff;box-shadow:inset 0 -2cqh 0 #e3eef6;animation:floaty 6s ease-in-out infinite"><div style="left:8cqh;top:-9cqh;width:20cqh;height:20cqh;border-radius:50%;background:#fff"></div></div>
+  <div class="wx-temp" style="right:7cqw;top:14cqh;font-size:22cqh;font-weight:800;color:#fff;text-shadow:0 .6cqh 1.4cqh rgba(0,60,120,.35)">--°</div>
+  <div style="right:7cqw;top:44cqh;font-size:7cqh;font-weight:800;color:#fff;text-align:right;text-shadow:0 .4cqh 1cqh rgba(0,60,120,.35)">New York, NY</div>
+  <div style="left:0;right:0;bottom:0;height:20cqh;background:linear-gradient(#ffffffaa,#ffffffee);text-align:center"><div style="position:relative;font-size:8cqh;font-weight:800;color:#2c8fc6;line-height:20cqh">Forecast</div></div>`,
+
+news: () => `
+  <div style="inset:0;background:radial-gradient(circle at 50% 35%,#1b4f86,#0b2240)"></div>
+  ${Array.from({length:18},(_,i)=>`<div style="left:${(i*37)%100}cqw;top:${(i*53)%60}cqh;width:.8cqh;height:.8cqh;border-radius:50%;background:#fff;animation:twinkle ${2+i%3}s ease-in-out ${i*.2}s infinite"></div>`).join('')}
+  <div style="left:50%;top:8cqh;width:58cqh;height:58cqh;margin-left:-29cqh;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 35% 30%,#7fd3ff,#1f7fcf 55%,#0d4a8c);box-shadow:0 0 5cqh rgba(110,200,255,.5)">
+    <div style="left:0;top:0;height:100%;width:200%;animation:slide 14s linear infinite;background:
+      radial-gradient(ellipse 9% 14% at 10% 38%,#7ccf6a 98%,transparent),radial-gradient(ellipse 6% 18% at 22% 62%,#6cc35a 98%,transparent),
+      radial-gradient(ellipse 12% 10% at 36% 30%,#86d46f 98%,transparent),radial-gradient(ellipse 7% 12% at 40% 58%,#7ccf6a 98%,transparent),
+      radial-gradient(ellipse 9% 14% at 60% 38%,#7ccf6a 98%,transparent),radial-gradient(ellipse 6% 18% at 72% 62%,#6cc35a 98%,transparent),
+      radial-gradient(ellipse 12% 10% at 86% 30%,#86d46f 98%,transparent),radial-gradient(ellipse 7% 12% at 90% 58%,#7ccf6a 98%,transparent)"></div>
+    <div style="inset:0;border-radius:50%;background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.45),transparent 45%)"></div>
+  </div>
+  <div style="left:0;right:0;bottom:0;height:24cqh;background:linear-gradient(#ffffff,#dfe6ee);overflow:hidden">
+    <div style="left:0;top:0;height:24cqh;line-height:24cqh;white-space:nowrap;font-size:9cqh;font-weight:800;color:#1d4f86;animation:ticker 26s linear infinite">${MEDIA.map(m=>`${m[1]}: ${m[2]}`).join('  ·  ')}  ·  Unlikely Instruments launches Sept 2026</div>
+  </div>`,
+
+internet: () => `
+  <div style="inset:0;background:linear-gradient(#ffffff,#e6e8eb)"></div>
+  <div style="left:12cqw;top:16cqh;width:62cqh;height:62cqh;border-radius:50%;background:radial-gradient(circle at 35% 30%,#bfe9ff,#3fa7e6 60%,#1a6fb8);box-shadow:0 1.5cqh 4cqh rgba(20,90,160,.3)" class="spin">
+    <div style="inset:0;border-radius:50%;border:1cqh solid rgba(255,255,255,.55)"></div>
+    <div style="left:22%;top:0;bottom:0;width:56%;border-radius:50%;border:.9cqh solid rgba(255,255,255,.55)"></div>
+    <div style="left:0;right:0;top:48%;height:.9cqh;background:rgba(255,255,255,.55)"></div>
+    <div style="left:6%;right:6%;top:24%;height:.9cqh;background:rgba(255,255,255,.4)"></div>
+    <div style="left:6%;right:6%;top:72%;height:.9cqh;background:rgba(255,255,255,.4)"></div>
+  </div>
+  <div style="left:52cqw;top:26cqh;font-size:13cqh;font-weight:800;color:#6b6e74">Links</div>
+  <div style="left:52cqw;top:50cqh;font-size:6cqh;font-weight:700;color:#34a9d6;line-height:1.5">GitHub · LinkedIn<br>Email · Live Sites</div>`,
+
+votes: () => `
+  <div style="inset:0;background:linear-gradient(#fff7e0,#ffe7a8)"></div>
+  <div class="t" style="top:8cqh;font-size:8.5cqh;color:#8a6a1f">Do polls predict or influence?</div>
+  <div style="left:10cqw;right:10cqw;top:32cqh;height:14cqh;border-radius:7cqh;background:#fff;box-shadow:inset 0 0 0 .6cqh #f1d38a;overflow:hidden"><div style="left:0;top:0;bottom:0;width:72%;background:linear-gradient(#5fd0f6,#22a8dc);transform-origin:left;animation:grow 3s cubic-bezier(.3,.9,.3,1) infinite alternate"></div><div style="left:4cqw;top:0;line-height:14cqh;font-size:7cqh;font-weight:800;color:#fff">Indicator</div></div>
+  <div style="left:10cqw;right:10cqw;top:52cqh;height:14cqh;border-radius:7cqh;background:#fff;box-shadow:inset 0 0 0 .6cqh #f1d38a;overflow:hidden"><div style="left:0;top:0;bottom:0;width:28%;background:linear-gradient(#ff8a8a,#e44d4d);transform-origin:left;animation:grow 3s cubic-bezier(.3,.9,.3,1) .4s infinite alternate"></div><div style="left:4cqw;top:0;line-height:14cqh;font-size:7cqh;font-weight:800;color:#b03a3a">Catalyst</div></div>
+  <div class="t" style="top:76cqh;font-size:7cqh;color:#8a6a1f">Everybody Votes · 2024</div>`,
+
+resume: () => `
+  <div style="inset:0;background:linear-gradient(135deg,#34beed,#1b8fc4)"></div>
+  <div style="inset:0;background:repeating-linear-gradient(to bottom,rgba(255,255,255,.08) 0 2px,transparent 2px 4px)"></div>
+  <div style="left:12cqw;top:12cqh;width:30cqh;height:76cqh;border-radius:2cqh;background:#fff;box-shadow:0 1.5cqh 3cqh rgba(0,40,80,.35);transform:rotate(-6deg);animation:bob 3s ease-in-out infinite">
+    <div style="left:12%;top:10%;width:40%;height:9%;border-radius:1cqh;background:#34beed"></div>
+    ${[26,36,46,56,66,76].map(t=>`<div style="left:12%;right:12%;top:${t}%;height:3.5%;border-radius:1cqh;background:#d5dbe2"></div>`).join('')}
+  </div>
+  <div style="left:46cqw;top:22cqh;font-size:16cqh;font-weight:800;color:#fff;letter-spacing:.5cqw">RÉSUMÉ</div>
+  <div style="left:46cqw;top:52cqh;font-size:7cqh;font-weight:700;color:#d8f4ff">Zach Winship · PDF</div>`,
+
+experience: () => `
+  <div style="inset:0;background:linear-gradient(#f3efe8,#ddd3c4)"></div>
+  <div style="left:9cqw;top:22cqh;width:44cqh;height:46cqh;animation:bob 2.6s ease-in-out infinite">
+    <div style="left:13cqh;top:0;width:18cqh;height:10cqh;border:2cqh solid #7a4f2a;border-bottom:0;border-radius:3cqh 3cqh 0 0"></div>
+    <div style="left:0;top:8cqh;width:44cqh;height:34cqh;border-radius:4cqh;background:linear-gradient(#a8703f,#7a4f2a);box-shadow:0 1.5cqh 3cqh rgba(60,30,10,.3)"></div>
+    <div style="left:0;right:0;top:20cqh;height:2cqh;background:#5e3c1f"></div>
+    <div style="left:18cqh;top:18cqh;width:8cqh;height:7cqh;border-radius:1cqh;background:#e4c27a"></div>
+  </div>
+  <div style="left:50cqw;top:20cqh;font-size:13cqh;font-weight:800;color:#6a4a2c">Experience</div>
+  <div style="left:50cqw;top:44cqh;font-size:6.2cqh;font-weight:700;color:#8a6a4a;line-height:1.5">NYU · Bentley<br>American Action Forum</div>`,
+
+octa: () => `
+  <div style="inset:0;background:radial-gradient(circle at 50% 40%,#3a3a3f,#121214)"></div>
+  <div style="left:50%;top:10cqh;width:56cqh;height:56cqh;margin-left:-28cqh;clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%);background:linear-gradient(#e33b3b,#a51616)">
+    <div style="inset:2.5cqh;clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%);background:#1b1b1e"></div>
+    <div style="left:0;right:0;top:15cqh;text-align:center;font-size:10cqh;font-weight:800;color:#fff;letter-spacing:.3cqh">OCTA</div>
+    <div style="left:0;right:0;top:27cqh;text-align:center;font-size:10cqh;font-weight:800;color:#e33b3b;letter-spacing:.3cqh">STATS</div>
+  </div>
+  <div style="left:0;right:0;bottom:6cqh;text-align:center;font-size:6.5cqh;font-weight:700;color:#bbb">UFC Prediction Model · V2</div>`,
+
+tape: () => `
+  <div style="inset:0;background:linear-gradient(90deg,#c62828 0 50%,#1565c0 50%)"></div>
+  <div style="left:50%;top:0;bottom:0;width:1cqw;margin-left:-.5cqw;background:#fff"></div>
+  <div style="left:0;right:0;top:36cqh;height:20cqh;background:repeating-linear-gradient(90deg,#ffd54a 0 3cqw,#f2c11a 3cqw 3.3cqw);box-shadow:0 1cqh 2cqh rgba(0,0,0,.3);animation:slide 8s linear infinite;width:200%"></div>
+  <div style="left:50%;top:30cqh;width:32cqh;height:32cqh;margin-left:-16cqh;border-radius:50%;background:#fff;box-shadow:0 1cqh 3cqh rgba(0,0,0,.35);text-align:center;line-height:32cqh;font-size:13cqh;font-weight:800;color:#222">VS</div>
+  <div class="t" style="top:6cqh;font-size:10cqh;color:#fff;text-shadow:0 .6cqh 1.4cqh rgba(0,0,0,.4)">Tale of the Tape</div>
+  <div class="t" style="top:74cqh;font-size:6.5cqh;color:#fff;font-weight:700">UFC Daily Challenge</div>`,
+
+micro: () => `
+  <div style="inset:0;background:#fff"></div>
+  <div style="inset:0;background-image:linear-gradient(#eef2f6 1px,transparent 1px),linear-gradient(90deg,#eef2f6 1px,transparent 1px);background-size:6cqw 6cqw"></div>
+  <svg viewBox="0 0 100 60" preserveAspectRatio="none" style="left:6cqw;top:10cqh;width:50cqw;height:72cqh;overflow:visible">
+    <path d="M2 2V58H98" fill="none" stroke="#5a5c61" stroke-width="1.2"/>
+    <path d="M10 8 Q50 30 92 52" fill="none" stroke="#e44d4d" stroke-width="2.4" stroke-dasharray="400" style="animation:draw 3s ease-out infinite alternate"/>
+    <path d="M10 52 Q50 30 92 8" fill="none" stroke="#22a8dc" stroke-width="2.4" stroke-dasharray="400" style="animation:draw 3s ease-out .3s infinite alternate"/>
+    <circle cx="51" cy="30" r="2.6" fill="#f2b632"/>
+  </svg>
+  <div style="left:60cqw;top:18cqh;font-size:10cqh;font-weight:800;color:#45474c;line-height:1.05">Micro<br>Course</div>
+  <div style="left:60cqw;top:50cqh;font-size:6cqh;font-weight:700;color:#34a9d6;line-height:1.4">12 weeks<br>+ Course AI</div>`,
+
+led: () => {
+  const lines = [['#da291c','M5 30 C30 30 40 10 95 10'],['#ed8b00','M50 2 L50 58'],['#00843d','M5 50 C35 50 60 30 95 30'],['#003da5','M10 5 C40 20 60 45 95 55']];
+  return `<div style="inset:0;background:#0b0d12"></div>
+  <svg viewBox="0 0 100 60" style="inset:0;width:100%;height:100%">
+    <defs><filter id="ledGlow" x="-200%" y="-200%" width="500%" height="500%"><feGaussianBlur stdDeviation="1.1" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+    ${lines.map(([c,d],i)=>`<path d="${d}" fill="none" stroke="${c}" stroke-width=".8" opacity=".35"/>`+
+      [0,1,2].map(k=>`<circle r="1.3" fill="${c}" filter="url(#ledGlow)"><animateMotion dur="${7+i}s" begin="${-(k*2.4+i)}s" repeatCount="indefinite" path="${d}"/></circle>`).join('')).join('')}
+  </svg>
+  <div class="t" style="bottom:6cqh;font-size:8cqh;color:#e8e8e8;text-shadow:0 0 2cqh rgba(255,255,255,.4)">MBTA Live LED Art</div>`;
+},
+
+ts: () => `
+  <div style="inset:0;background:linear-gradient(#f6fbf6,#e2efe4)"></div>
+  <svg viewBox="0 0 100 60" preserveAspectRatio="none" style="left:5cqw;top:20cqh;width:90cqw;height:50cqh">
+    <path d="M0 40 L6 34 L12 38 L18 26 L24 30 L30 20 L36 28 L42 18 L48 24 L54 14 L60 22 L66 12 L72 20" fill="none" stroke="#00843d" stroke-width="1.6" stroke-dasharray="400" style="animation:draw 4s ease-out infinite"/>
+    <path d="M72 20 L78 16 L84 22 L90 12 L96 18" fill="none" stroke="#ed8b00" stroke-width="1.6" stroke-dasharray="3 2"/>
+    <path d="M72 14 L96 4 L96 30 L72 26Z" fill="#ed8b00" opacity=".12"/>
+  </svg>
+  <div class="t" style="top:6cqh;font-size:10cqh;color:#2e5d3a">MBTA Ridership</div>
+  <div class="t" style="top:78cqh;font-size:6.5cqh;color:#5f8a69;font-weight:700">ARIMA Forecasting · R</div>`,
+
+llm: () => `
+  <div style="inset:0;background:linear-gradient(#f2edff,#dcd0ff)"></div>
+  ${[0,1,2].map(i=>`<div style="left:${14+i*26}cqw;top:24cqh;width:18cqw;height:40cqh;animation:bob 2s ease-in-out ${i*.3}s infinite">
+     <div style="left:50%;top:0;width:.8cqw;height:6cqh;background:#7c5cd6;margin-left:-.4cqw"></div><div style="left:50%;top:-2cqh;width:3cqh;height:3cqh;border-radius:50%;background:#f2b632;margin-left:-1.5cqh"></div>
+     <div style="left:0;right:0;top:5cqh;height:24cqh;border-radius:4cqh;background:#fff;box-shadow:0 1cqh 2cqh rgba(80,50,160,.25)"><div style="left:22%;top:35%;width:3.4cqh;height:3.4cqh;border-radius:50%;background:#7c5cd6"></div><div style="right:22%;top:35%;width:3.4cqh;height:3.4cqh;border-radius:50%;background:#7c5cd6"></div></div>
+     <div style="left:18%;right:18%;top:30cqh;height:10cqh;border-radius:2cqh;background:#b9a5f2"></div></div>`).join('')}
+  <div class="t" style="top:5cqh;font-size:8.5cqh;color:#5b3fb4">Homo silicus</div>
+  <div class="t" style="top:78cqh;font-size:6.5cqh;color:#7c5cd6">Agentic LLMs · Coming Soon</div>`,
+};
+
+/* =====================================================================
+   CONTENT SCREENS
+   ===================================================================== */
+const card = p => `<div class="card">
+  ${p.badge?`<span class="badge">${p.badge}</span>`:''}${p.soon?`<span class="badge gray">Coming Soon</span>`:''}
+  <h3 style="margin-top:${p.badge||p.soon?'8px':'0'}">${p.title}</h3>
+  <div class="meta">${p.meta}${p.year?' · '+p.year:''}</div>
+  <p>${p.body}</p>${p.media||''}${TAGS(p.tags)}
+  ${p.links&&p.links.length?`<div class="links">${p.links.map(l=>LINK(...l)).join('')}</div>`:''}
+</div>`;
+
+const shopRow = (p, art) => `<div class="card"><div class="shop-row">
+  <div class="thumb"><div class="bn">${B[art]()}</div></div>
+  <div style="flex:1;min-width:0"><h3>${p.title}</h3><div class="meta">${p.meta}</div><p>${p.body}</p>${TAGS(p.tags)}
+  ${p.links.length?`<div class="links">${p.links.map(l=>LINK(...l)).join('')}</div>`:''}</div>
+  <div class="price">${p.soon?'COMING SOON':p.year}</div>
+</div></div>`;
+
+const SCREENS = {
+  research: () => `<div class="sec-h">Featured · NBER Working Paper</div>${card(RESEARCH[0])}
+    <div class="card"><h3>Media Coverage</h3><ul class="list-plain" style="margin-top:8px">
+      <li>NBER Digest <span class="tag">forthcoming, Sept. 2026</span></li>
+      <li>ProMarket, Chicago Booth Stigler Center <span class="tag">forthcoming</span></li>
+      ${MEDIA.map(m=>`<li><a href="${m[0]}" target="_blank" rel="noopener">${m[1]}</a> — ${m[2]}</li>`).join('')}</ul></div>
+    <div class="sec-h">More Research</div>${RESEARCH.slice(1,4).map(card).join('')}`,
+
+  about: () => `<div class="card"><div class="about-top">
+      <img src="${ASSET}images/zwinship.png" alt="Zach Winship">
+      <div><h2>Zach Winship</h2><div class="sub">Quantitative Economist and Data Analyst</div>
+      <div class="links">${LINK('mailto:'+EMAIL,'Email','blue')}${LINK('https://linkedin.com/in/zwinship','LinkedIn')}${LINK('https://github.com/zwinship','GitHub')}${LINK(ASSET+'about_me/resume.pdf','Resume PDF')}</div></div></div></div>
+    <div class="card"><p>I recently graduated from <b>Bentley University</b> with a BS in Quantitative Economics and a double minor in Mathematics and Data Technologies. I'm now pursuing the <b>MS in Quantitative Economics</b> at New York University, with expected graduation in May 2027, where I also work as a teaching assistant for Introductory Macroeconomics.</p><br>
+      <p>My work sits at the intersection of data and policy. I'm drawn to questions where careful empirical methods can cut through noise and say something concrete about how the world works. I'm currently a co-author on an <b>NBER working paper</b> studying how NYC's congestion pricing program affected EMS response times, and I've built tools for sports prediction, transportation research, and political economy, always trying to combine rigor with work that's actually interesting to look at.</p><br>
+      <p>Outside of coursework I spend a lot of time on personal projects. I'm especially interested in <b>transportation economics</b>, spatial analytics, optimization problems, and the emerging field of <b>Homo silicus</b> — using large language models as simulated economic agents to replicate and extend classic experiments in economics and game theory. I also write, bi-monthly, at <b>Unlikely Instruments</b>, a blog about unusual proxy variables and data sources nobody would think to look at. Feel free to look around. I had a lot of fun building these.</p></div>
+    <div class="sec-h">Education</div>
+    <div class="grid2"><div class="card"><h3>MS in Quantitative Economics</h3><div class="meta">New York University · Starting Summer 2026</div><p>Expected May 2027. NYU Economics Teaching Fellowship, Summer 2026.</p></div>
+    <div class="card"><h3>BS in Quantitative Economics</h3><div class="meta">Bentley University · Graduated May 2026</div><p>Double Minor in Mathematics and Data Technologies. GPA: 3.74. Relevant coursework: Econometrics, Statistical Analysis, Data Analytics, Mathematical Economics, Public Policy Analysis.</p></div></div>
+    <div class="sec-h">Technical Skills</div><div class="card">${TAGS(SKILLS)}</div>`,
+
+  presentations: () => PRESENTATIONS.map(p=>`<div class="card"><h3>${p.title}</h3><div class="meta">${p.meta}</div><p>${p.body}</p>
+    ${p.vids?`<div class="vids">${p.vids.map(v=>`<figure><video src="${ASSET+v[0]}" controls playsinline preload="metadata"></video><figcaption>${v[1]}</figcaption></figure>`).join('')}</div>`:''}
+    ${TAGS(p.tags)}<div class="links">${p.pdf?LINK(ASSET+p.pdf,'Download PDF','blue'):''}${p.gh?LINK(p.gh,'View on GitHub'):''}</div></div>`).join(''),
+
+  shop: () => {
+    const arts = ['disc','disc','disc','votes','micro','llm','octa','octa','tape','ts','led'];
+    return `<div class="sec-h">Research</div>${RESEARCH.map((p,i)=>shopRow(p,arts[i])).join('')}
+      <div class="sec-h">Personal Projects</div>${PERSONAL.map((p,i)=>shopRow(p,arts[6+i])).join('')}`;
+  },
+
+  forecast: () => `<div class="sec-h">Where I've been</div><div class="wx" id="wxCards">
+      ${[['New York, NY','NYU · MS Quantitative Economics'],['Waltham, MA','Bentley University'],['Gray, ME',"43°53'N 70°20'W · Home"]].map(([c,s],i)=>`<div class="card" data-wx="${i}"><div class="meta" style="margin:0 0 8px">${s}</div><div class="temp">--°</div><div class="cond">Loading forecast…</div><h3 style="margin-top:10px">${c}</h3></div>`).join('')}
+    </div><p style="font-size:13px;color:#8a8c91;margin-top:10px">Live conditions from Open-Meteo.</p>`,
+
+  news: () => `<div class="sec-h">In the News · Congestion Pricing &amp; EMS</div>
+    <div class="grid2">${MEDIA.map(m=>`<div class="card"><div class="meta" style="margin-top:0">${m[1]}</div><h3>${m[2]}</h3><div class="links">${LINK(m[0],'Read article','blue')}</div></div>`).join('')}</div>
+    <div class="sec-h">Unlikely Instruments · Blog</div>
+    <div class="card"><p>Bi-monthly · Launching Sept 2026. A blog about unusual, creative ways to find and use data — especially proxy variables and data sources nobody would think to look at. New post every two months.</p></div>
+    ${BLOG.map((b,i)=>`<div class="card"><div class="meta" style="margin-top:0">0${i+1} · ${b[2]}</div><h3>${b[0]}</h3>${TAGS(b[1].split(' · '))}</div>`).join('')}`,
+
+  links: () => `<div class="grid2">
+    ${[['GitHub','https://github.com/zwinship','Code for every project'],['LinkedIn','https://linkedin.com/in/zwinship','Professional profile'],['Email','mailto:'+EMAIL,EMAIL],['Résumé',ASSET+'about_me/resume.pdf','PDF, Summer 2026'],['Course Site','https://falconeconsim.github.io/','Intermediate Microeconomics'],['OctaStats','https://octastats.github.io/index.html','UFC prediction model'],['Tale of the Tape','https://taleofthetape.github.io','UFC daily guessing game'],['NBER Paper','https://www.nber.org/papers/w35414','Working Paper No. 35414'],['Main Site','../../','zwinship.github.io']].map(([t,h,s])=>`<div class="card"><h3>${t}</h3><div class="meta">${s}</div><div class="links">${LINK(h,'Open','blue')}</div></div>`).join('')}
+  </div>`,
+
+  votes: () => `${card(RESEARCH[3])}
+    <div class="card"><h3>Cast your vote</h3><p>Do polls predict elections, or do they move them?</p>
+      <div class="poll-opts"><button class="wbtn blue" data-vote="0">Indicator</button><button class="wbtn" data-vote="1" style="border-color:#f2a3a3">Catalyst</button></div>
+      <div id="pollRes" style="margin-top:14px;display:none">
+        <div style="font-weight:800;font-size:14px;color:#1d7fae">Indicator <span id="pv0"></span></div><div class="poll-bar"><i id="pb0" style="width:0;background:linear-gradient(#5fd0f6,#22a8dc)"></i></div>
+        <div style="font-weight:800;font-size:14px;color:#b03a3a;margin-top:10px">Catalyst <span id="pv1"></span></div><div class="poll-bar"><i id="pb1" style="width:0;background:linear-gradient(#ff8a8a,#e44d4d)"></i></div>
+        <p style="font-size:13px;color:#8a8c91;margin-top:10px">The paper's answer: polls behave as an indicator, not a catalyst.</p>
+      </div></div>`,
+
+  resume: () => `<div class="links" style="margin:0 0 14px">${LINK(ASSET+'about_me/resume.pdf','Open in new tab','blue')}${LINK(ASSET+'about_me/transcript.pdf','Transcript')}</div>
+    <iframe class="pdf-frame" src="${ASSET}about_me/resume.pdf" title="Résumé"></iframe>`,
+
+  experience: () => EXPERIENCE.map(e=>`<div class="card"><h3>${e.role}</h3><div class="meta">${e.org} · ${e.when}</div><p>${e.body}</p>${e.links?`<div class="links">${e.links.map(l=>LINK(...l)).join('')}</div>`:''}</div>`).join(''),
+
+  octa: () => card(PERSONAL[0]) + card(PERSONAL[1]),
+  tape: () => card(PERSONAL[2]),
+  micro: () => card(RESEARCH[4]),
+  led: () => card(PERSONAL[4]),
+  ts: () => card(PERSONAL[3]),
+  llm: () => card(RESEARCH[5]),
+};
+
+/* =====================================================================
+   CHANNEL REGISTRY  (12 per page, like the real menu)
+   ===================================================================== */
+const CHANNELS = [
+  { id:'disc',       name:'Disc Channel',          title:'Research',             art:'disc',       screen:'research' },
+  { id:'mii',        name:'Mii Channel',           title:'About Me',             art:'mii',        screen:'about' },
+  { id:'photo',      name:'Photo Channel',         title:'Presentations',        art:'photo',      screen:'presentations' },
+  { id:'shop',       name:'Wii Shop Channel',      title:'Project Shop',         art:'shop',       screen:'shop' },
+  { id:'forecast',   name:'Forecast Channel',      title:'Forecast',             art:'forecast',   screen:'forecast' },
+  { id:'news',       name:'News Channel',          title:'News & Blog',          art:'news',       screen:'news' },
+  { id:'internet',   name:'Internet Channel',      title:'Links',                art:'internet',   screen:'links' },
+  { id:'votes',      name:'Everybody Votes Channel', title:'Election Polling',   art:'votes',      screen:'votes' },
+  { id:'resume',     name:'Résumé',                title:'Résumé',               art:'resume',     screen:'resume' },
+  { id:'experience', name:'Experience',            title:'Experience',           art:'experience', screen:'experience' },
+  { id:'octa',       name:'OctaStats',             title:'OctaStats UFC Model',  art:'octa',       screen:'octa' },
+  { id:'tape',       name:'Tale of the Tape',      title:'Tale of the Tape',     art:'tape',       screen:'tape' },
+  { id:'micro',      name:'Microeconomics Course', title:'Intermediate Micro',   art:'micro',      screen:'micro' },
+  { id:'led',        name:'MBTA LED Art',          title:'MBTA Live Tracker',    art:'led',        screen:'led' },
+  { id:'ts',         name:'MBTA Time Series',      title:'MBTA Time Series',     art:'ts',         screen:'ts' },
+  { id:'llm',        name:'Agentic LLMs',          title:'Agentic LLMs',         art:'llm',        screen:'llm' },
+];
+const PAGES = Math.ceil(CHANNELS.length / 12);
+
+/* =====================================================================
+   SOUND (synthesized; no audio files)
+   ===================================================================== */
+let AC = null;
+function audio(){ if(!AC){ try{ AC = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } return AC; }
+function tone(freq, dur=.06, type='sine', vol=.05, when=0, slide=0){
+  const ac = audio(); if(!ac) return;
+  const t = ac.currentTime + when, o = ac.createOscillator(), g = ac.createGain();
+  o.type = type; o.frequency.setValueAtTime(freq, t);
+  if (slide) o.frequency.exponentialRampToValueAtTime(freq*slide, t+dur);
+  g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t+.006); g.gain.exponentialRampToValueAtTime(.0001, t+dur);
+  o.connect(g).connect(ac.destination); o.start(t); o.stop(t+dur+.02);
+}
+const SFX = {
+  hover: () => tone(1900,.035,'sine',.035),
+  select: () => { tone(880,.09,'triangle',.06); tone(1320,.14,'triangle',.05,.06); },
+  back: () => { tone(1100,.08,'triangle',.05); tone(740,.12,'triangle',.045,.06); },
+  page: () => tone(600,.12,'sine',.04,0,1.8),
+  start: () => [523,659,784,1047].forEach((f,i)=>tone(f,.25,'triangle',.05,i*.08)),
+};
+
+/* =====================================================================
+   STAGE SCALING
+   ===================================================================== */
+const stage = document.getElementById('stage');
+let SCALE = 1, OX = 0, OY = 0;
+function fit(){
+  const w = innerWidth, h = innerHeight;
+  SCALE = Math.min(w/1280, h/720);
+  OX = (w - 1280*SCALE)/2; OY = (h - 720*SCALE)/2;
+  stage.style.transform = `translate(${OX}px,${OY}px) scale(${SCALE})`;
+}
+addEventListener('resize', fit); fit();
+
+/* =====================================================================
+   BUILD MENU
+   ===================================================================== */
+const track = document.getElementById('track');
+track.style.width = (PAGES*1280)+'px';
+const tiles = [];
+for (let p=0; p<PAGES; p++){
+  const page = document.createElement('div'); page.className='page';
+  const grid = document.createElement('div'); grid.className='grid';
+  for (let s=0; s<12; s++){
+    const idx = p*12+s, ch = CHANNELS[idx];
+    const el = document.createElement('button');
+    if (ch){
+      el.className = 'ch'; el.dataset.hot = ''; el.dataset.idx = idx;
+      el.setAttribute('aria-label', ch.name + (ch.title!==ch.name?' — '+ch.title:''));
+      el.innerHTML = `<div class="bn">${B[ch.art]()}</div>`;
+      tiles[idx] = el;
+    } else {
+      el.className = 'ch empty'; el.tabIndex = -1; el.setAttribute('aria-hidden','true');
+      el.innerHTML = `<div class="bn"><span class="wii-logo" style="position:static">Wii</span></div>`;
+    }
+    grid.appendChild(el);
+  }
+  page.appendChild(grid); track.appendChild(page);
+}
+
+const ARROW_SVG = `<svg viewBox="0 0 55 98"><defs><radialGradient id="arG" cx="24" cy="49" r="45" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#cbf6ff"/><stop offset="1" stop-color="#62d6ff"/></radialGradient></defs><path d="M4.16 2.07 52.25 48.28a1 1 0 0 1 0 1.44L4.16 95.93c-.7.66-1.84.07-1.68-.88L9.92 49 2.48 2.95c-.16-.95.98-1.54 1.68-.88Z" fill="url(#arG)" stroke="#24479b" stroke-width="3"/></svg>`;
+['arrL','arrR','pvL','pvR'].forEach(id => document.getElementById(id).innerHTML = ARROW_SVG);
+
+/* ---- clock: seven-segment digits drawn in SVG ---- */
+const SEG = { // a b c d e f g
+  0:'1111110',1:'0110000',2:'1101101',3:'1111001',4:'0110011',5:'1011011',6:'1011111',7:'1110000',8:'1111111',9:'1111011',' ':'0000000' };
+const SEG_POLY = [
+  'M6,2 H30 L26,7 H10 Z', 'M31,4 V30 L27,27 V8 Z', 'M31,34 V60 L27,56 V37 Z',
+  'M6,62 H30 L26,57 H10 Z', 'M5,34 V60 L9,56 V37 Z', 'M5,4 V30 L9,27 V8 Z', 'M7,32 L10,29.5 H26 L29,32 L26,34.5 H10 Z'];
+function digitSVG(ch, x){
+  const on = SEG[ch] || SEG[' '];
+  return `<g transform="translate(${x},0)">${SEG_POLY.map((d,i)=>on[i]==='1'?`<path d="${d}" fill="#97999e"/>`:'').join('')}</g>`;
+}
+let colon = true;
+function tick(){
+  const now = new Date();
+  let h = now.getHours(); const m = now.getMinutes();
+  const ampm = h>=12 ? 'PM' : 'AM'; h = h%12 || 12;
+  const hs = String(h).padStart(2,' '), ms = String(m).padStart(2,'0');
+  let x = 0, svg = '';
+  if (hs[0] !== ' ') { svg += digitSVG(hs[0], x); x += 40; }
+  svg += digitSVG(hs[1], x); x += 40;
+  svg += `<g opacity="${colon?1:.15}"><rect x="${x+2}" y="18" width="7" height="7" rx="1.5" fill="#97999e"/><rect x="${x+2}" y="40" width="7" height="7" rx="1.5" fill="#97999e"/></g>`; x += 16;
+  svg += digitSVG(ms[0], x); x += 40; svg += digitSVG(ms[1], x); x += 40;
+  svg += `<text x="${x+4}" y="20" font-family="M PLUS 1p,Arial" font-weight="800" font-size="17" fill="#97999e">${ampm}</text>`; x += 34;
+  document.getElementById('clock').innerHTML = `<svg viewBox="0 0 ${x} 64" width="${x}" height="62">${svg}</svg>`;
+  const wd = now.toLocaleDateString('en-US',{weekday:'short'});
+  document.getElementById('date').textContent = `${wd} ${now.getMonth()+1}/${now.getDate()}`;
+  colon = !colon;
+}
+tick(); setInterval(tick, 1000);
+
+/* =====================================================================
+   HAND POINTER + HOVER SYSTEM
+   ===================================================================== */
+const fine = matchMedia('(hover:hover) and (pointer:fine)').matches;
+const hand = document.getElementById('hand');
+if (fine) document.documentElement.classList.add('has-hand');
+let mx = innerWidth/2, my = innerHeight/2, hx = mx, hy = my, tilt = 0;
+addEventListener('pointermove', e => { mx = e.clientX; my = e.clientY; });
+addEventListener('pointerdown', () => hand.classList.add('press'));
+addEventListener('pointerup', () => hand.classList.remove('press'));
+(function loop(){
+  const dx = mx - hx; hx += dx*.45; hy += (my-hy)*.45;
+  tilt += (Math.max(-18, Math.min(18, dx*.5)) - tilt) * .2;
+  hand.style.transform = `translate(${hx}px,${hy}px) rotate(${tilt}deg)`;
+  requestAnimationFrame(loop);
+})();
+
+let hotEl = null;
+const bubble = document.getElementById('bubble');
+function setHot(el){
+  if (el === hotEl) return;
+  if (hotEl) hotEl.classList.remove('hot');
+  hotEl = el;
+  if (el){ el.classList.add('hot'); if (started) SFX.hover(); }
+  updateBubble();
+}
+function updateBubble(){
+  if (hotEl && hotEl.classList.contains('ch') && state==='menu'){
+    const ch = CHANNELS[+hotEl.dataset.idx];
+    bubble.textContent = ch.name;
+    const r = hotEl.getBoundingClientRect();
+    const cx = ((r.left + r.width/2) - OX)/SCALE, by = (r.bottom - OY)/SCALE;
+    bubble.style.left = Math.max(170, Math.min(1110, cx)) + 'px';
+    bubble.style.top = Math.min(by - 26, 490) + 'px';
+    bubble.classList.add('on');
+  } else bubble.classList.remove('on');
+}
+document.addEventListener('pointerover', e => {
+  const el = e.target.closest('[data-hot]');
+  setHot(el && !el.disabled ? el : null);
+});
+document.addEventListener('pointerleave', () => setHot(null));
+
+/* =====================================================================
+   STATE MACHINE: warning → menu → preview → content
+   ===================================================================== */
+let state = 'warning', started = false, page = 0, current = -1;
+const menu = document.getElementById('menu');
+const warning = document.getElementById('warning');
+
+function startMenu(){
+  if (started) return;
+  started = true; audio(); SFX.start();
+  warning.classList.add('gone');
+  menu.style.visibility = 'visible'; menu.classList.add('boot');
+  state = 'menu'; setPage(0, true);
+  setTimeout(()=>{ warning.remove(); }, 800);
+}
+warning.addEventListener('click', startMenu);
+
+/* --- paging --- */
+const arrL = document.getElementById('arrL'), arrR = document.getElementById('arrR');
+function setPage(p, silent){
+  page = Math.max(0, Math.min(PAGES-1, p));
+  track.style.transform = `translateX(${-page*1280}px)`;
+  arrL.classList.toggle('show', page>0);
+  arrR.classList.toggle('show', page<PAGES-1);
+  arrL.disabled = page===0; arrR.disabled = page===PAGES-1;
+  if (!silent) SFX.page();
+  setHot(null);
+}
+arrL.onclick = () => setPage(page-1);
+arrR.onclick = () => setPage(page+1);
+
+/* --- channel preview: zoom the tile's banner to full screen --- */
+const preview = document.getElementById('preview');
+const pvZoom = document.getElementById('pvZoom');
+function tileRectInStage(idx){
+  const r = tiles[idx].getBoundingClientRect();
+  return { l:(r.left-OX)/SCALE+7, t:(r.top-OY)/SCALE+7, w:r.width/SCALE-14, h:r.height/SCALE-14 };
+}
+function placeZoom(r, radius){ Object.assign(pvZoom.style, { left:r.l+'px', top:r.t+'px', width:r.w+'px', height:r.h+'px', borderRadius:radius+'px' }); }
+function openPreview(idx, fromSide){
+  current = idx; const ch = CHANNELS[idx];
+  pvZoom.innerHTML = `<div class="bn">${B[ch.art]()}</div>`;
+  if (state === 'menu'){
+    state = 'preview'; SFX.select(); bubble.classList.remove('on');
+    pvZoom.style.transition = 'none'; placeZoom(tileRectInStage(idx), 16);
+    pvZoom.offsetWidth; pvZoom.style.transition = '';
+    requestAnimationFrame(()=>{ placeZoom({l:0,t:0,w:1280,h:572}, 0); });
+    preview.classList.add('open');
+    setTimeout(()=>preview.classList.add('shown'), 380);
+  } else {
+    SFX.page();
+    pvZoom.animate([{opacity:0, transform:`translateX(${fromSide*60}px)`},{opacity:1, transform:'none'}],{duration:280,easing:'ease-out'});
+  }
+  document.getElementById('pvL').style.visibility = idx>0 ? 'visible':'hidden';
+  document.getElementById('pvR').style.visibility = idx<CHANNELS.length-1 ? 'visible':'hidden';
+}
+function closePreview(){
+  if (state !== 'preview') return;
+  SFX.back(); preview.classList.remove('shown');
+  const p = Math.floor(current/12); if (p !== page) setPage(p, true);
+  placeZoom(tileRectInStage(current), 16);
+  setTimeout(()=>{ preview.classList.remove('open'); pvZoom.innerHTML=''; pvZoom.style.width='0'; state='menu'; }, 450);
+}
+document.getElementById('pvMenu').onclick = closePreview;
+document.getElementById('pvL').onclick = () => current>0 && openPreview(current-1, -1);
+document.getElementById('pvR').onclick = () => current<CHANNELS.length-1 && openPreview(current+1, 1);
+document.getElementById('pvStart').onclick = () => openContent(current);
+
+tiles.forEach((t,i) => t && t.addEventListener('click', () => state==='menu' && openPreview(i)));
+
+/* --- channel content --- */
+const content = document.getElementById('content');
+function openContent(idx){
+  const ch = CHANNELS[idx]; SFX.start();
+  document.getElementById('ccIco').innerHTML = `<div class="bn">${B[ch.art]()}</div>`;
+  document.getElementById('ccTitle').textContent = ch.title;
+  document.getElementById('ccSub').textContent = ch.name;
+  document.getElementById('ccInner').innerHTML = SCREENS[ch.screen]();
+  document.getElementById('ccBody').scrollTop = 0;
+  content.classList.add('open'); state = 'content';
+  if (ch.screen === 'forecast') loadWeather();
+  if (ch.screen === 'votes') wirePoll();
+}
+document.getElementById('ccBack').onclick = () => {
+  content.classList.remove('open');
+  content.querySelectorAll('video').forEach(v=>v.pause());
+  document.getElementById('ccInner').innerHTML = '';
+  state = 'preview'; closePreview();
+};
+
+/* --- Wii button / mail button --- */
+const sys = document.getElementById('sysmenu');
+document.getElementById('wiiBtn').onclick = () => { if(state!=='menu') return; SFX.select(); sys.classList.add('open'); state='sys'; };
+document.getElementById('sysClose').onclick = () => { SFX.back(); sys.classList.remove('open'); state='menu'; };
+document.getElementById('sysData').onclick = () => window.open(ASSET+'about_me/resume.pdf','_blank');
+document.getElementById('sysSettings').onclick = () => { location.href = ASSET; };
+document.getElementById('mailBtn').onclick = () => { if(state!=='menu') return; SFX.select(); location.href = 'mailto:'+EMAIL; };
+
+/* --- keyboard: arrows move the cursor focus, Enter = A, Esc/Backspace = B --- */
+let kFocus = 0;
+addEventListener('keydown', e => {
+  if (state === 'warning'){ if (['Enter',' ','a','A'].includes(e.key)){ e.preventDefault(); startMenu(); } return; }
+  if (state === 'menu'){
+    const cols = 4, onPage = i => Math.floor(i/12) === page;
+    if (hotEl && hotEl.dataset.idx) kFocus = +hotEl.dataset.idx;
+    let n = kFocus;
+    if (e.key==='ArrowRight'){ n = (kFocus%4===3) ? Math.min(CHANNELS.length-1,(page+1)*12) : kFocus+1; }
+    else if (e.key==='ArrowLeft'){ n = (kFocus%4===0) ? Math.max(0, page*12-9) : kFocus-1; }
+    else if (e.key==='ArrowDown'){ n = kFocus+cols; }
+    else if (e.key==='ArrowUp'){ n = kFocus-cols; }
+    else if (e.key==='Enter' || e.key==='a'){ if (hotEl && hotEl.dataset.idx) openPreview(+hotEl.dataset.idx); else openPreview(kFocus); return; }
+    else return;
+    e.preventDefault();
+    if (n<0 || n>=CHANNELS.length) return;
+    const p = Math.floor(n/12); if (p!==page) setPage(p);
+    kFocus = n; setHot(tiles[n]);
+  } else if (state === 'preview'){
+    if (e.key==='Escape' || e.key==='Backspace' || e.key==='b') closePreview();
+    else if (e.key==='Enter' || e.key==='a') openContent(current);
+    else if (e.key==='ArrowLeft' && current>0) openPreview(current-1,-1);
+    else if (e.key==='ArrowRight' && current<CHANNELS.length-1) openPreview(current+1,1);
+  } else if (state === 'content'){
+    if (e.key==='Escape') document.getElementById('ccBack').click();
+  } else if (state === 'sys'){
+    if (e.key==='Escape') document.getElementById('sysClose').click();
+  }
+});
+
+/* --- touch: swipe between pages --- */
+let tsx = null;
+addEventListener('touchstart', e => { if(state==='menu') tsx = e.touches[0].clientX; }, {passive:true});
+addEventListener('touchend', e => {
+  if (tsx===null) return; const dx = e.changedTouches[0].clientX - tsx; tsx = null;
+  if (Math.abs(dx) > 60) setPage(page + (dx<0?1:-1));
+});
+
+/* =====================================================================
+   LIVE DATA: Forecast + poll
+   ===================================================================== */
+const WX_CODES = {0:'Clear',1:'Mostly Clear',2:'Partly Cloudy',3:'Cloudy',45:'Fog',48:'Fog',51:'Drizzle',53:'Drizzle',55:'Drizzle',61:'Rain',63:'Rain',65:'Heavy Rain',71:'Snow',73:'Snow',75:'Heavy Snow',80:'Showers',81:'Showers',82:'Showers',95:'Thunderstorms'};
+const CITIES = [[40.73,-73.99],[42.39,-71.22],[43.89,-70.33]];
+let wxCache = null;
+function fetchWeather(){
+  if (wxCache) return wxCache;
+  const lat = CITIES.map(c=>c[0]).join(','), lon = CITIES.map(c=>c[1]).join(',');
+  wxCache = fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&temperature_unit=fahrenheit`)
+    .then(r=>r.json()).then(d=>Array.isArray(d)?d:[d]).catch(()=>null);
+  return wxCache;
+}
+function paintBannerTemp(){
+  fetchWeather().then(d=>{ if(!d) return; const t = Math.round(d[0].current.temperature_2m)+'°';
+    document.querySelectorAll('.wx-temp').forEach(el=>el.textContent=t); });
+}
+function loadWeather(){
+  fetchWeather().then(d=>{
+    document.querySelectorAll('#wxCards [data-wx]').forEach((el,i)=>{
+      if(!d || !d[i]){ el.querySelector('.cond').textContent='Forecast unavailable'; return; }
+      el.querySelector('.temp').textContent = Math.round(d[i].current.temperature_2m)+'°F';
+      el.querySelector('.cond').textContent = WX_CODES[d[i].current.weather_code] || '—';
+    });
+  });
+}
+paintBannerTemp();
+new MutationObserver(paintBannerTemp).observe(pvZoom,{childList:true});
+
+function wirePoll(){
+  document.querySelectorAll('[data-vote]').forEach(b=>b.onclick=()=>{
+    const v = +b.dataset.vote; SFX.select();
+    const base = [72, 28]; base[v] += 1; const tot = base[0]+base[1];
+    document.getElementById('pollRes').style.display='block';
+    [0,1].forEach(i=>{ const pct = Math.round(base[i]/tot*100);
+      document.getElementById('pv'+i).textContent = pct+'%';
+      requestAnimationFrame(()=>document.getElementById('pb'+i).style.width = pct+'%'); });
+  });
+}
+</script>
+</body>
+</html>
