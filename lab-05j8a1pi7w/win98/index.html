@@ -1242,7 +1242,7 @@ function buildSub(id, items){
     } else {
       mi.addEventListener('pointerenter', () => hoverIntent(() => hideSubsBelow(el)));
       mi.addEventListener('click', () => { closeStart(); const t = it[2];
-        if (t==='@wii') location.href='../wii/'; else if (t.startsWith('@')) ext(t.slice(1)); else openApp(t); });
+        if (t==='@wii') location.href='../wii/'; else if (t==='@saver') setTimeout(screensaver,300); else if (t.startsWith('@')) ext(t.slice(1)); else openApp(t); });
     }
   });
   return el;
@@ -1312,5 +1312,6 @@ function boot(){
 document.getElementById('safe').onclick = () => { document.getElementById('safe').style.display='none'; boot(); };
 boot();
 </script>
+<script src="extras.js"></script>
 </body>
 </html>
