@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Zach 98</title>
+<link rel="icon" href="../../images/logo.png">
+<!-- 98.css v0.1.21 by Jordan Scales, MIT License (vendor/98.css.LICENSE) -->
+<link rel="stylesheet" href="vendor/98.css">
+<style>
+:root{
+  --face:#c0c0c0; --hl:#ffffff; --lt:#dfdfdf; --sh:#808080; --dk:#0a0a0a;
+  --navy:#000080; --title2:#1084d0; --desk:#008080;
+  --raised:inset -1px -1px var(--dk),inset 1px 1px var(--hl),inset -2px -2px var(--sh),inset 2px 2px var(--lt);
+  --sunken:inset -1px -1px var(--hl),inset 1px 1px var(--sh),inset -2px -2px var(--lt),inset 2px 2px var(--dk);
+  --thin-sunk:inset -1px -1px var(--hl),inset 1px 1px var(--sh);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden}
+body{background:var(--desk);font-size:11px;-webkit-font-smoothing:none;user-select:none}
+img,svg{image-rendering:pixelated}
+.ico{display:block;shape-rendering:crispEdges}
+
+/* ============ BOOT ============ */
+#boot{position:fixed;inset:0;z-index:9000;background:#000;color:#c0c0c0;font:16px/1.35 "Courier New",monospace;padding:24px 28px;white-space:pre-wrap;cursor:default}
+#boot .energy{position:absolute;right:28px;top:20px;color:#5af;font-weight:bold;text-align:right;line-height:1.1}
+#splash{position:fixed;inset:0;z-index:8999;display:none;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(#5d8fd8,#a8c8f0 55%,#e8f2ff);overflow:hidden}
+#splash .cloud{position:absolute;background:#fff;border-radius:50%;filter:blur(6px);opacity:.85}
+#splash .logo{position:relative;font:bold 64px/1 "Times New Roman",serif;color:#fff;text-shadow:3px 3px 0 #2a4f8a;letter-spacing:1px}
+#splash .logo sup{font:bold 30px Arial,sans-serif;color:#ffcf3a;text-shadow:2px 2px 0 #7a4d00;vertical-align:top;margin-left:6px}
+#splash .tag{position:relative;font:italic 18px "Times New Roman",serif;color:#173b73;margin-top:10px}
+#splash .bar{position:absolute;left:0;right:0;bottom:0;height:18px;background:linear-gradient(90deg,#000080,#1084d0,#5bc0ff,#1084d0,#000080);background-size:50% 100%;animation:bootbar 1.2s linear infinite}
+@keyframes bootbar{to{background-position:100% 0}}
+
+/* ============ DESKTOP ============ */
+#desktop{position:absolute;left:0;top:0;right:0;bottom:28px;overflow:hidden}
+#icons{position:absolute;left:4px;top:4px;bottom:4px;display:grid;grid-auto-flow:column;grid-template-rows:repeat(auto-fill,76px);grid-auto-columns:76px;gap:0 2px}
+.dicon{width:76px;height:74px;display:flex;flex-direction:column;align-items:center;padding-top:4px;color:#fff;text-align:center;cursor:default;outline:none}
+.dicon .ico{width:32px;height:32px}
+.dicon .lbl{margin-top:4px;padding:1px 2px;line-height:13px;max-width:74px;word-wrap:break-word;border:1px dotted transparent}
+.dicon.sel .ico{filter:url(#selTint)}
+.dicon.sel .lbl{background:var(--navy);border-color:#ffff80}
+.dicon .arrow{position:absolute}
+#zoomRect{position:fixed;z-index:7000;border:2px solid #fff;mix-blend-mode:difference;pointer-events:none;display:none}
+
+/* ============ TASKBAR ============ */
+#taskbar{position:fixed;left:0;right:0;bottom:0;height:28px;background:var(--face);box-shadow:inset 0 1px var(--lt),inset 0 2px var(--hl);display:flex;align-items:center;gap:3px;padding:3px 2px 2px;z-index:5000}
+#taskbar button{min-width:0;min-height:0;padding:0 4px;height:22px}
+#startBtn{display:flex;align-items:center;gap:3px;font-weight:bold;padding:0 5px 0 3px !important;flex:0 0 auto}
+#startBtn.on{box-shadow:var(--sunken);padding-top:1px !important}
+#startBtn .ico{width:18px;height:16px}
+.tb-sep{width:2px;height:20px;box-shadow:inset 1px 0 var(--sh),inset -1px 0 var(--hl);margin:0 2px;flex:0 0 auto}
+.quick{display:flex;gap:1px;flex:0 0 auto}
+.quick button{width:22px;padding:0 !important;display:flex;align-items:center;justify-content:center;box-shadow:none !important;background:none}
+.quick button:hover{box-shadow:var(--raised) !important}
+.quick .ico{width:16px;height:16px}
+#tasks{flex:1;display:flex;gap:3px;min-width:0;overflow:hidden}
+.task{flex:0 1 160px;min-width:40px !important;display:flex;align-items:center;gap:3px;text-align:left;justify-content:flex-start;overflow:hidden;white-space:nowrap}
+.task .ico{width:16px;height:16px;flex:0 0 auto}
+.task span{overflow:hidden;text-overflow:ellipsis}
+.task.on{box-shadow:var(--sunken) !important;font-weight:bold;background:repeating-conic-gradient(var(--hl) 0 25%,var(--face) 0 50%) 0 0/2px 2px}
+#tray{flex:0 0 auto;height:22px;display:flex;align-items:center;gap:6px;padding:0 8px 0 6px;box-shadow:var(--thin-sunk)}
+#tray .ico{width:16px;height:16px}
+
+/* ============ START MENU ============ */
+#startMenu{position:fixed;left:2px;bottom:27px;z-index:6000;background:var(--face);box-shadow:var(--raised);padding:3px 3px 3px 24px;display:none;min-width:200px}
+#startMenu.open{display:block}
+#startMenu .band{position:absolute;left:3px;top:3px;bottom:3px;width:21px;background:linear-gradient(0deg,var(--navy),var(--title2));overflow:hidden}
+#startMenu .band span{position:absolute;left:1px;bottom:6px;transform:rotate(-90deg);transform-origin:left top;translate:0 0;white-space:nowrap;color:#c0c0c0;font:bold 18px Arial,sans-serif;letter-spacing:.5px;width:0}
+#startMenu .band span b{color:#fff}
+.mi{position:relative;display:flex;align-items:center;gap:8px;height:32px;padding:0 18px 0 6px;white-space:nowrap;cursor:default}
+.mi .ico{width:24px;height:24px;flex:0 0 auto}
+.mi u{text-decoration:underline}
+.mi.sub::after{content:"";position:absolute;right:6px;top:50%;margin-top:-4px;border-left:4px solid #000;border-top:4px solid transparent;border-bottom:4px solid transparent}
+.mi:hover,.mi.hover{background:var(--navy);color:#fff}
+.mi.sub:hover::after,.mi.sub.hover::after{border-left-color:#fff}
+.msep{height:2px;margin:3px 2px;box-shadow:inset 0 1px var(--sh),inset 0 -1px var(--hl)}
+.submenu{position:fixed;z-index:6001;background:var(--face);box-shadow:var(--raised);padding:3px;display:none;min-width:180px}
+.submenu .mi{height:22px;gap:6px}
+.submenu .mi .ico{width:16px;height:16px}
+
+/* ============ WINDOWS ============ */
+.app{position:absolute;display:flex;flex-direction:column;min-width:200px;min-height:100px}
+.app .title-bar{flex:0 0 auto;cursor:default;touch-action:none}
+.app .title-bar-text{display:flex;align-items:center;gap:3px;overflow:hidden;white-space:nowrap}
+.app .title-bar-text .ico{width:16px;height:16px;flex:0 0 auto}
+.app .title-bar-controls{flex:0 0 auto}
+.app.max{left:0 !important;top:0 !important;width:100% !important;height:100% !important}
+.app.min{display:none}
+.app .window-body{flex:1;min-height:0;display:flex;flex-direction:column;margin:2px 3px 3px;overflow:hidden}
+.app .resize{position:absolute;right:2px;bottom:2px;width:13px;height:13px;cursor:nwse-resize;touch-action:none;background:
+  linear-gradient(135deg,transparent 0 45%,var(--hl) 45% 52%,var(--sh) 52% 60%,transparent 60% 70%,var(--hl) 70% 77%,var(--sh) 77% 85%,transparent 85%)}
+.app.max .resize{display:none}
+.menubar{display:flex;flex:0 0 auto;padding:1px 0 2px}
+.menubar > div{padding:2px 6px;position:relative}
+.menubar > div:hover,.menubar > div.open{box-shadow:var(--thin-sunk)}
+.menubar > div::first-letter{text-decoration:underline}
+.dropdown{position:absolute;left:0;top:100%;z-index:50;background:var(--face);box-shadow:var(--raised);padding:3px;min-width:170px;display:none}
+.menubar > div.open .dropdown{display:block}
+.dropdown .mi{height:20px;padding:0 20px}
+.dropdown .mi.check::before{content:"✓";position:absolute;left:6px}
+.toolbar{display:flex;flex:0 0 auto;align-items:stretch;gap:0;padding:2px 2px;box-shadow:inset 0 1px var(--hl),inset 0 -1px var(--sh),inset 0 2px var(--lt)}
+.tbtn{min-width:0 !important;min-height:0 !important;padding:2px 6px !important;display:flex;flex-direction:column;align-items:center;gap:1px;box-shadow:none !important;background:none !important}
+.tbtn:not(:disabled):hover{box-shadow:var(--thin-sunk),inset -1px -1px var(--sh),inset 1px 1px var(--hl) !important}
+.tbtn:disabled{color:var(--sh)}
+.tbtn .ico{width:20px;height:20px}
+.tbtn:disabled .ico{filter:grayscale(1) opacity(.45)}
+.addr{display:flex;align-items:center;gap:4px;padding:2px 3px 3px;flex:0 0 auto;box-shadow:inset 0 -1px var(--sh),inset 0 1px var(--hl)}
+.addr .fld{flex:1;display:flex;align-items:center;gap:3px;background:#fff;box-shadow:var(--sunken);height:21px;padding:0 3px;overflow:hidden;white-space:nowrap}
+.addr .fld .ico{width:16px;height:16px;flex:0 0 auto}
+.panel-white{flex:1;min-height:0;background:#fff;box-shadow:var(--sunken);padding:2px;overflow:auto;user-select:text}
+.status-bar{flex:0 0 auto;margin:2px 0 0}
+
+/* explorer */
+.explorer{flex:1;min-height:0;display:flex;background:#fff;box-shadow:var(--sunken);padding:2px;overflow:hidden}
+.webview{flex:0 0 190px;padding:14px 12px;background:linear-gradient(#fff,#fff 60%,#e8eef8);border-right:1px solid #d0d8e8;overflow:auto;user-select:text}
+.webview .wv-ico{width:48px;height:48px;margin-bottom:8px}
+.webview h2{font:bold 21px Arial,sans-serif;margin:0 0 4px;color:#000;line-height:1.05;word-break:break-word}
+.webview .wv-line{height:3px;margin:6px 0 10px;background:linear-gradient(90deg,#ff9a00,#ffd800,#2ab0ff,transparent)}
+.webview p{margin:0 0 8px;font-size:11px;line-height:1.35}
+.webview a{color:#00c}
+.files{flex:1;min-width:0;overflow:auto;padding:6px;display:flex;flex-wrap:wrap;align-content:flex-start;gap:4px}
+.file{width:84px;display:flex;flex-direction:column;align-items:center;text-align:center;padding:3px 0;cursor:default;outline:none}
+.file .ico{width:32px;height:32px}
+.file .lbl{margin-top:3px;padding:0 2px;line-height:13px;border:1px dotted transparent;word-break:break-word}
+.file.sel .ico{filter:url(#selTint)}
+.file.sel .lbl{background:var(--navy);color:#fff;border-color:#ffff80}
+.files.details{display:block;padding:0}
+.files.details table{width:100%;border-collapse:collapse}
+.files.details th{position:sticky;top:0;text-align:left;font-weight:normal;background:var(--face);box-shadow:var(--raised);padding:2px 6px;white-space:nowrap}
+.files.details td{padding:1px 6px;white-space:nowrap}
+.files.details td:first-child{display:flex;align-items:center;gap:4px}
+.files.details td .ico{width:16px;height:16px}
+.files.details tr.sel td{background:var(--navy);color:#fff}
+@media (max-width:640px){.webview{display:none}}
+
+/* notepad / wordpad */
+textarea.notepad{flex:1;resize:none;border:0;width:100%;font:13px/1.35 "Courier New",monospace;padding:2px 4px;box-shadow:var(--sunken);user-select:text}
+.wp-page{flex:1;min-height:0;overflow:auto;background:var(--sh);box-shadow:var(--sunken);padding:10px}
+.wp-doc{background:#fff;max-width:680px;margin:0 auto;padding:36px 44px;font:14px/1.45 "Times New Roman",Times,serif;color:#000;box-shadow:2px 2px 0 #000;user-select:text}
+.wp-doc h1{font:bold 22px "Times New Roman",serif;margin:0 0 2px}
+.wp-doc h2{font:bold 16px "Times New Roman",serif;margin:18px 0 2px}
+.wp-doc .when{font-style:italic;color:#333}
+.wp-doc a{color:#00f}
+.ruler{flex:0 0 auto;height:20px;margin:2px 0;background:#fff;box-shadow:var(--thin-sunk);position:relative;overflow:hidden;
+  background-image:repeating-linear-gradient(90deg,#000 0 1px,transparent 1px 12px),repeating-linear-gradient(90deg,#000 0 1px,transparent 1px 48px);background-size:100% 4px,100% 8px;background-position:0 100%,0 100%;background-repeat:repeat-x}
+.fmtbar{display:flex;gap:4px;align-items:center;padding:2px;flex:0 0 auto}
+.fmtbar select{height:21px}
+.fmtbar .b{min-width:0 !important;width:23px;padding:0 !important;font-weight:bold}
+
+/* properties dialog */
+.props{display:flex;gap:12px;align-items:flex-start;margin:10px 4px}
+.props .ico{width:32px;height:32px;flex:0 0 auto}
+.props h4{margin:0;font-size:13px;font-weight:bold}
+.kv{display:grid;grid-template-columns:90px 1fr;gap:5px 8px;margin:10px 4px}
+.hr98{height:2px;margin:8px 0;box-shadow:inset 0 1px var(--sh),inset 0 -1px var(--hl)}
+.desc-box{background:#fff;box-shadow:var(--sunken);padding:8px;line-height:1.45;font-size:11px;user-select:text;max-height:170px;overflow:auto}
+.btn-row{display:flex;justify-content:flex-end;gap:6px;flex-wrap:wrap;margin-top:10px}
+.btn-row button{min-width:75px}
+
+/* tabs */
+.tabs{flex:1;display:flex;flex-direction:column;min-height:0}
+.tabs menu[role=tablist]{margin:0;flex:0 0 auto}
+.tabs .window[role=tabpanel]{flex:1;overflow:auto;min-height:0;user-select:text}
+
+/* media player */
+.mp{flex:1;display:flex;flex-direction:column;min-height:0;gap:3px}
+.mp-screen{flex:1;min-height:120px;background:#000;box-shadow:var(--sunken);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.mp-screen video{max-width:100%;max-height:100%;display:block}
+.mp-screen .vis{color:#0f0;font:12px "Courier New",monospace;text-align:center;padding:14px}
+.mp-controls{display:flex;gap:2px;align-items:center;flex:0 0 auto}
+.mp-controls button{min-width:0 !important;width:26px;padding:0 !important}
+.mp-list{flex:0 0 132px;min-height:0;overflow:auto;background:#fff;box-shadow:var(--sunken);padding:2px}
+.mp-list div{padding:2px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mp-list div.sel{background:var(--navy);color:#fff}
+.mp-info{flex:0 0 auto;background:#000;color:#0f0;font:11px "Courier New",monospace;padding:4px 6px;box-shadow:var(--sunken);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* browser page (90s homepage) */
+.ie-page{flex:1;min-height:0;overflow:auto;box-shadow:var(--sunken);background:#fff;user-select:text}
+.web{font:16px "Times New Roman",Times,serif;color:#000;padding:14px 18px;min-height:100%;
+  background-color:#fffbe6;background-image:radial-gradient(#f2e6b8 1px,transparent 1px);background-size:14px 14px}
+.web h1{font:bold 34px "Times New Roman",serif;text-align:center;margin:6px 0;color:#800000}
+.web h2{font:bold 22px "Times New Roman",serif;color:#000080;margin:18px 0 6px}
+.web a{color:#0000ee;text-decoration:underline;cursor:pointer}
+.web a:visited{color:#551a8b}
+.web hr{border:0;height:4px;background:linear-gradient(90deg,red,orange,yellow,lime,cyan,blue,violet);margin:14px 0}
+.web table{border-collapse:separate}
+.web table{max-width:100%}
+.web td,.web th{border:2px outset #ccc;padding:4px 8px;vertical-align:top;font-size:15px;white-space:normal}
+.web .marq{overflow:hidden;white-space:nowrap;background:#000080;color:#ffff00;font:bold 16px "Courier New",monospace;padding:3px 0}
+.web .marq span{display:inline-block;padding-left:100%;animation:marq 16s linear infinite}
+@keyframes marq{to{transform:translateX(-100%)}}
+.web .uc{display:inline-block;padding:4px 14px;background:repeating-linear-gradient(-45deg,#ffd800 0 12px,#000 12px 24px);color:#fff;font:bold 14px Arial;text-shadow:1px 1px 0 #000,-1px -1px 0 #000}
+.web .uc span{background:#000;padding:2px 6px}
+.web .counter{display:inline-flex;gap:1px;background:#000;padding:2px;vertical-align:middle}
+.web .counter b{background:#222;color:#0f0;font:bold 16px "Courier New",monospace;padding:0 3px}
+.web .blink{animation:blink98 1s steps(1) infinite}
+@keyframes blink98{50%{opacity:0}}
+.web .center{text-align:center}
+.web ul{margin:6px 0}
+.web .new{color:red;font-weight:bold;font-size:12px;font-family:Arial}
+
+/* mail */
+.mail-fields{display:grid;grid-template-columns:62px 1fr;gap:4px 6px;align-items:center;padding:6px 4px;flex:0 0 auto}
+.mail-fields input{width:100%}
+.mail-body{flex:1;resize:none;font:13px Arial,sans-serif;padding:6px;border:0;box-shadow:var(--sunken)}
+
+/* minesweeper */
+.ms{display:inline-flex;flex-direction:column;background:var(--face);padding:6px;box-shadow:inset -1px -1px var(--sh),inset 1px 1px var(--hl),inset -2px -2px var(--sh),inset 2px 2px var(--hl),inset -3px -3px var(--sh),inset 3px 3px var(--hl)}
+.ms-head{display:flex;justify-content:space-between;align-items:center;padding:4px 5px;margin-bottom:6px;box-shadow:inset -1px -1px var(--hl),inset 1px 1px var(--sh),inset -2px -2px var(--hl),inset 2px 2px var(--sh)}
+.led{background:#000;color:#f00;font:bold 22px/1 "Courier New",monospace;letter-spacing:1px;padding:1px 2px;box-shadow:inset -1px -1px var(--hl),inset 1px 1px var(--sh);min-width:41px;text-align:center;text-shadow:0 0 2px #f00}
+.ms-face{min-width:0 !important;min-height:0 !important;width:26px;height:26px;padding:0 !important;font-size:16px;line-height:1;display:flex;align-items:center;justify-content:center}
+.ms-grid{display:grid;box-shadow:inset -1px -1px var(--hl),inset 1px 1px var(--sh),inset -2px -2px var(--hl),inset 2px 2px var(--sh),inset -3px -3px var(--hl),inset 3px 3px var(--sh);padding:3px}
+.cell{width:16px;height:16px;background:var(--face);box-shadow:inset -1px -1px var(--sh),inset 1px 1px var(--hl),inset -2px -2px var(--sh),inset 2px 2px var(--hl);font:bold 12px/16px Arial,sans-serif;text-align:center;cursor:default}
+.cell .ico{display:inline-block;vertical-align:-2px}
+.cell.open{box-shadow:none;border-left:1px solid var(--sh);border-top:1px solid var(--sh);line-height:15px}
+.cell.boom{background:red}
+.n1{color:#0000ff}.n2{color:#008000}.n3{color:#ff0000}.n4{color:#000080}.n5{color:#800000}.n6{color:#008080}.n7{color:#000}.n8{color:#808080}
+
+/* dos */
+.dos{flex:1;min-height:0;overflow:auto;background:#000;color:#c0c0c0;font:14px/1.25 "Courier New",monospace;padding:4px 6px;white-space:pre-wrap;word-break:break-word;user-select:text;cursor:text}
+.dos input{background:transparent;border:0;color:#c0c0c0;font:inherit;outline:none;padding:0;width:60%;box-shadow:none;height:auto;caret-color:#c0c0c0}
+
+/* welcome */
+.welcome{display:flex;flex-direction:column;flex:1;min-height:0}
+.wl-banner{flex:0 0 auto;background:linear-gradient(90deg,#000 0,#000080 60%,#1084d0);color:#fff;padding:14px 18px;font:bold 26px "Times New Roman",serif}
+.wl-banner span{color:#ffcf3a}
+.wl-body{flex:1;display:flex;min-height:0;background:#fff;box-shadow:var(--sunken)}
+.wl-opts{flex:0 0 210px;background:#000;padding:18px 0;display:flex;flex-direction:column;gap:4px}
+.wl-opt{display:flex;align-items:center;gap:8px;color:#fff;padding:6px 14px;cursor:default;font-size:12px}
+.wl-opt .ico{width:24px;height:24px}
+.wl-opt:hover,.wl-opt.on{color:#ffcf3a;text-decoration:underline}
+.wl-text{flex:1;padding:18px 20px;overflow:auto;font-size:12px;line-height:1.5;user-select:text}
+.wl-text h3{font:bold 18px Arial,sans-serif;margin:0 0 8px;color:#000080}
+@media (max-width:640px){.wl-opts{flex-basis:150px}}
+
+/* misc */
+.err{display:flex;gap:14px;align-items:flex-start;padding:12px 8px 4px}
+.err .ico{width:32px;height:32px;flex:0 0 auto}
+.err p{margin:6px 0 0;line-height:1.4}
+.colors{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px}
+.swatch{height:40px;box-shadow:var(--sunken);cursor:default;position:relative}
+.swatch.on{outline:2px dotted #000;outline-offset:2px}
+.monitor-prev{width:180px;margin:6px auto 10px;position:relative}
+.monitor-prev .scr{position:absolute;left:16px;top:14px;width:148px;height:98px}
+#safe{position:fixed;inset:0;z-index:9500;background:#000;display:none;align-items:center;justify-content:center;text-align:center;color:#ff8c00;font:bold 32px Arial,sans-serif;cursor:default}
+#safe small{display:block;color:#888;font:14px Arial;margin-top:40px}
+#shutdim{position:fixed;inset:0;z-index:7500;display:none;background:repeating-conic-gradient(#000 0 25%,transparent 0 50%) 0 0/2px 2px}
+a.btnlink{color:inherit;text-decoration:none}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <!-- Win98 blue "selected" tint for icons -->
+  <filter id="selTint"><feColorMatrix type="matrix" values=".5 0 0 0 0  0 .5 0 0 0  0 0 .5 0 .5  0 0 0 1 0"/></filter>
+</svg>
+
+<div id="boot"></div>
+<div id="splash">
+  <div class="cloud" style="left:8%;top:18%;width:260px;height:80px"></div>
+  <div class="cloud" style="left:60%;top:12%;width:320px;height:90px"></div>
+  <div class="cloud" style="left:30%;top:68%;width:380px;height:100px"></div>
+  <div class="cloud" style="left:75%;top:58%;width:220px;height:70px"></div>
+  <div class="logo">Zach<sup>98</sup></div>
+  <div class="tag">Quantitative Economics Edition</div>
+  <div class="bar"></div>
+</div>
+
+<div id="desktop"><div id="icons"></div></div>
+<div id="zoomRect"></div>
+
+<div id="startMenu" role="menu">
+  <div class="band"><span><b>Zach</b>98</span></div>
+  <div class="mi" data-open="welcome"><span data-i="update"></span><span>Welcome to Zach 98</span></div>
+  <div class="msep"></div>
+  <div class="mi sub" data-sub="programs"><span data-i="programs"></span><span><u>P</u>rograms</span></div>
+  <div class="mi sub" data-sub="favorites"><span data-i="favorites"></span><span>F<u>a</u>vorites</span></div>
+  <div class="mi sub" data-sub="documents"><span data-i="documents"></span><span><u>D</u>ocuments</span></div>
+  <div class="mi sub" data-sub="settings"><span data-i="settings"></span><span><u>S</u>ettings</span></div>
+  <div class="mi" data-open="find"><span data-i="find"></span><span><u>F</u>ind...</span></div>
+  <div class="mi" data-open="help"><span data-i="help"></span><span><u>H</u>elp</span></div>
+  <div class="mi" data-open="run"><span data-i="run"></span><span><u>R</u>un...</span></div>
+  <div class="msep"></div>
+  <div class="mi" data-open="logoff"><span data-i="logoff"></span><span><u>L</u>og Off Visitor...</span></div>
+  <div class="mi" data-open="shutdown"><span data-i="shutdown"></span><span>Sh<u>u</u>t Down...</span></div>
+</div>
+<div class="submenu" id="sub-programs"></div>
+<div class="submenu" id="sub-favorites"></div>
+<div class="submenu" id="sub-documents"></div>
+<div class="submenu" id="sub-settings"></div>
+
+<div id="taskbar">
+  <button id="startBtn" aria-label="Start"><span data-i="start"></span>Start</button>
+  <div class="tb-sep"></div>
+  <div class="quick">
+    <button data-open="ie" title="Zach's Home Page"><span data-i="globe"></span></button>
+    <button data-open="mail" title="Email Zach"><span data-i="mail"></span></button>
+    <button data-open="mycomputer" title="Show Desktop" id="showDesk"><span data-i="desktop"></span></button>
+  </div>
+  <div class="tb-sep"></div>
+  <div id="tasks"></div>
+  <div id="tray"><span data-i="speaker" title="Volume"></span><span data-i="nyu" title="NYU MS '27"></span><span id="clock">12:00 PM</span></div>
+</div>
+
+<div id="shutdim"></div>
+<div id="safe"><div>It's now safe to turn off<br>your computer.<small>(click anywhere to restart)</small></div></div>
+
+<script src="../shared/data.js"></script>
+<script>
+/* =====================================================================
+   ICONS — hand-drawn 32×32 pixel-style SVGs
+   ===================================================================== */
+const PAGE = (fold='#fff') => `<path d="M7 2h13l6 6v22H7z" fill="${fold}" stroke="#000"/><path d="M20 2v6h6" fill="#c0c0c0" stroke="#000"/>`;
+const ICON = {
+  computer:`<rect x="5" y="3" width="22" height="17" fill="#c0c0c0" stroke="#000"/><rect x="8" y="6" width="16" height="11" fill="#008080" stroke="#808080"/><rect x="9" y="7" width="7" height="2" fill="#5ff"/><rect x="12" y="20" width="8" height="3" fill="#808080" stroke="#000"/><rect x="3" y="23" width="26" height="6" fill="#c0c0c0" stroke="#000"/><rect x="21" y="25" width="5" height="2" fill="#0a0"/><rect x="6" y="25" width="10" height="1" fill="#808080"/>`,
+  folder:`<path d="M2 7h10l2 3h15v18H2z" fill="#c9a000" stroke="#000"/><path d="M2 12h27v16H2z" fill="#ffe36b" stroke="#000"/><path d="M3 13h25" stroke="#fff6b8"/>`,
+  docfolder:`<path d="M2 7h10l2 3h15v18H2z" fill="#c9a000" stroke="#000"/><path d="M8 5h14v14H8z" fill="#fff" stroke="#000"/><path d="M10 8h10M10 11h10M10 14h7" stroke="#000080"/><path d="M2 14h27v14H2z" fill="#ffe36b" stroke="#000"/>`,
+  notepad:`${PAGE()}<rect x="7" y="2" width="13" height="5" fill="#00a"/><path d="M9 1v4M12 1v4M15 1v4M18 1v4" stroke="#808080" stroke-width="2"/><path d="M10 12h12M10 16h12M10 20h12M10 24h8" stroke="#000"/>`,
+  doc:`${PAGE()}<path d="M10 12h12M10 15h12M10 18h12M10 21h12M10 24h8" stroke="#000080"/><rect x="2" y="16" width="11" height="12" fill="#1a5ad8" stroke="#000"/><path d="M4 19l2 7 1.5-4 1.5 4 2-7" fill="none" stroke="#fff" stroke-width="1.4"/>`,
+  pdf:`${PAGE()}<path d="M10 11h12M10 14h12M10 17h8" stroke="#808080"/><rect x="3" y="19" width="22" height="9" fill="#c00" stroke="#000"/><text x="14" y="26.5" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="8" fill="#fff">PDF</text>`,
+  globe:`<circle cx="16" cy="16" r="13" fill="#2a7fff" stroke="#000"/><path d="M8 9c3 1 4 4 7 3s2 4-1 5-2 5-5 4-3-6-3-8 0-4 2-4zM18 6c3 0 6 2 7 5-2 1-4 0-5 2s1 4 3 5c-1 3-3 4-5 5 0-3-2-4-1-7s-2-3-1-6 2-4 2-4z" fill="#21b521" stroke="#064"/><circle cx="16" cy="16" r="13" fill="none" stroke="#000"/><path d="M6 10c4-3 8-4 12-3" stroke="#bdf" fill="none"/>`,
+  mail:`<rect x="3" y="8" width="26" height="17" fill="#fff" stroke="#000"/><path d="M3 8l13 10 13-10" fill="#ffffe0" stroke="#000"/><path d="M3 25l10-8M29 25l-10-8" stroke="#808080"/><rect x="22" y="10" width="5" height="5" fill="#d00"/>`,
+  mine:`<path d="M16 3v26M3 16h26M7 7l18 18M25 7L7 25" stroke="#000" stroke-width="2"/><circle cx="16" cy="16" r="9" fill="#000"/><rect x="11" y="11" width="4" height="4" fill="#fff"/>`,
+  recycle:`<path d="M7 7h18l-2 22H9z" fill="#d8d8d8" stroke="#000"/><path d="M6 5h20v3H6z" fill="#c0c0c0" stroke="#000"/><path d="M11 10l1 17M16 10v17M21 10l-1 17M9 14h14M9 19h14M10 24h12" stroke="#808080"/>`,
+  recyclefull:`<path d="M7 7h18l-2 22H9z" fill="#d8d8d8" stroke="#000"/><path d="M9 3l7 2 6-3 3 5H6z" fill="#fff" stroke="#000"/><path d="M11 10l1 17M16 10v17M21 10l-1 17M9 14h14M9 19h14M10 24h12" stroke="#808080"/>`,
+  media:`<rect x="3" y="5" width="26" height="20" fill="#c0c0c0" stroke="#000"/><rect x="6" y="8" width="20" height="13" fill="#000"/><path d="M13 10v9l7-4.5z" fill="#0f0"/><rect x="8" y="25" width="16" height="3" fill="#808080" stroke="#000"/>`,
+  dos:`<rect x="2" y="5" width="28" height="22" fill="#c0c0c0" stroke="#000"/><rect x="2" y="5" width="28" height="4" fill="#000080"/><rect x="4" y="10" width="24" height="15" fill="#000"/><text x="6" y="20" font-family="Courier New" font-weight="bold" font-size="8" fill="#c0c0c0">C:\\&gt;</text>`,
+  help:`<path d="M5 4h18l4 4v20H9l-4-4z" fill="#3050c8" stroke="#000"/><path d="M5 24V4l4 4v20" fill="#1a2f8a" stroke="#000"/><text x="17" y="22" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="15" fill="#ffd800" stroke="#000" stroke-width=".5">?</text>`,
+  blog:`<rect x="3" y="5" width="24" height="22" fill="#fff" stroke="#000"/><rect x="27" y="9" width="3" height="18" fill="#c0c0c0" stroke="#000"/><rect x="6" y="8" width="18" height="4" fill="#000"/><path d="M6 15h8M6 18h8M6 21h8M6 24h8" stroke="#808080"/><rect x="16" y="15" width="8" height="9" fill="#8ab4ff" stroke="#000"/>`,
+  chart:`${PAGE()}<path d="M10 26V12" stroke="#000"/><path d="M10 26h13" stroke="#000"/><rect x="12" y="19" width="3" height="7" fill="#c00"/><rect x="16" y="15" width="3" height="11" fill="#00c"/><rect x="20" y="12" width="3" height="14" fill="#0a0"/>`,
+  ufc:`${PAGE()}<path d="M12 12h8l4 4v6l-4 4h-8l-4-4v-6z" fill="#c00" stroke="#000"/><text x="16" y="22" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="7" fill="#fff">UFC</text>`,
+  train:`${PAGE()}<rect x="10" y="12" width="13" height="12" rx="2" fill="#da291c" stroke="#000"/><rect x="12" y="14" width="9" height="4" fill="#bdf"/><circle cx="13" cy="21" r="1" fill="#ff0"/><circle cx="20" cy="21" r="1" fill="#ff0"/><path d="M11 26l2-2M22 26l-2-2" stroke="#000"/>`,
+  web:`${PAGE()}<circle cx="16" cy="18" r="7" fill="#2a7fff" stroke="#000"/><path d="M9 18h14M16 11c-4 4-4 10 0 14M16 11c4 4 4 10 0 14" stroke="#fff" fill="none"/>`,
+  robot:`${PAGE()}<rect x="10" y="13" width="12" height="10" fill="#c0c0ff" stroke="#000"/><rect x="12" y="16" width="2" height="2" fill="#000"/><rect x="18" y="16" width="2" height="2" fill="#000"/><path d="M16 13v-3" stroke="#000"/><rect x="15" y="8" width="2" height="2" fill="#f00"/><path d="M13 21h6" stroke="#000"/>`,
+  vote:`${PAGE()}<rect x="10" y="14" width="12" height="10" fill="#fff" stroke="#000"/><path d="M13 12l3 5 5-8" fill="none" stroke="#c00" stroke-width="2"/>`,
+  floppy:`<path d="M4 3h21l3 3v23H4z" fill="#222" stroke="#000"/><rect x="9" y="3" width="13" height="9" fill="#c0c0c0" stroke="#000"/><rect x="17" y="4" width="3" height="7" fill="#222"/><rect x="7" y="16" width="18" height="12" fill="#fff" stroke="#000"/><path d="M9 19h14M9 22h14M9 25h10" stroke="#00a"/>`,
+  drive:`<path d="M3 13l4-6h18l4 6v10H3z" fill="#c0c0c0" stroke="#000"/><path d="M3 13h26" stroke="#000"/><path d="M4 14h24" stroke="#fff"/><rect x="22" y="17" width="4" height="2" fill="#0c0"/><path d="M6 18h10" stroke="#808080"/>`,
+  cd:`<path d="M3 13l4-6h18l4 6v10H3z" fill="#c0c0c0" stroke="#000"/><path d="M3 13h26" stroke="#000"/><circle cx="12" cy="18" r="4" fill="#e8e8ff" stroke="#000"/><circle cx="12" cy="18" r="1" fill="#000"/><rect x="22" y="17" width="4" height="2" fill="#0c0"/>`,
+  control:`<path d="M2 7h10l2 3h15v18H2z" fill="#c9a000" stroke="#000"/><path d="M2 12h27v16H2z" fill="#ffe36b" stroke="#000"/><rect x="10" y="15" width="12" height="9" fill="#c0c0c0" stroke="#000"/><rect x="12" y="17" width="8" height="5" fill="#008080"/><path d="M22 14l5 5" stroke="#c00" stroke-width="2"/>`,
+  display:`<rect x="3" y="3" width="26" height="19" fill="#c0c0c0" stroke="#000"/><rect x="6" y="6" width="20" height="13" fill="#008080"/><rect x="6" y="6" width="7" height="13" fill="#f0f"/><rect x="13" y="6" width="7" height="13" fill="#ff0"/><rect x="12" y="22" width="8" height="3" fill="#808080" stroke="#000"/><rect x="7" y="25" width="18" height="3" fill="#c0c0c0" stroke="#000"/>`,
+  user:`<circle cx="16" cy="10" r="6" fill="#f0c090" stroke="#000"/><path d="M10 7c2-4 10-4 12 0-3-1-9-1-12 0z" fill="#6b3f1f" stroke="#000"/><path d="M5 29c0-8 5-12 11-12s11 4 11 12z" fill="#57068c" stroke="#000"/><path d="M14 17l2 4 2-4" fill="#fff" stroke="#000"/>`,
+  zip:`<path d="M2 7h10l2 3h15v18H2z" fill="#c9a000" stroke="#000"/><path d="M2 12h27v16H2z" fill="#ffe36b" stroke="#000"/><path d="M15 12v16" stroke="#000" stroke-dasharray="2 1" stroke-width="2"/><rect x="13" y="18" width="5" height="4" fill="#c0c0c0" stroke="#000"/>`,
+  xls:`${PAGE()}<rect x="10" y="11" width="13" height="15" fill="#fff" stroke="#080"/><path d="M10 15h13M10 19h13M10 23h13M15 11v15M19 11v15" stroke="#080"/>`,
+  presentation:`<rect x="3" y="4" width="26" height="17" fill="#fff" stroke="#000"/><rect x="2" y="3" width="28" height="2" fill="#808080" stroke="#000"/><rect x="7" y="13" width="3" height="5" fill="#c00"/><rect x="12" y="10" width="3" height="8" fill="#00c"/><rect x="17" y="8" width="3" height="10" fill="#0a0"/><path d="M16 21v4M10 29l6-4 6 4" stroke="#000" fill="none"/>`,
+  update:`<circle cx="16" cy="16" r="13" fill="#2a7fff" stroke="#000"/><path d="M9 16h14M16 9v14" stroke="#fff" stroke-width="3"/><circle cx="16" cy="16" r="5" fill="#ffd800" stroke="#000"/>`,
+  programs:`<rect x="3" y="7" width="20" height="16" fill="#c0c0c0" stroke="#000"/><rect x="3" y="7" width="20" height="3" fill="#000080"/><rect x="9" y="13" width="20" height="16" fill="#c0c0c0" stroke="#000"/><rect x="9" y="13" width="20" height="3" fill="#000080"/><rect x="11" y="18" width="16" height="9" fill="#fff"/>`,
+  favorites:`<path d="M2 7h10l2 3h15v18H2z" fill="#c9a000" stroke="#000"/><path d="M2 12h27v16H2z" fill="#ffe36b" stroke="#000"/><path d="M16 13l2.5 5 5.5.5-4 3.6 1.2 5.4-5.2-3-5.2 3 1.2-5.4-4-3.6 5.5-.5z" fill="#ffd800" stroke="#a06000"/>`,
+  documents:`<path d="M2 7h10l2 3h15v18H2z" fill="#c9a000" stroke="#000"/><path d="M2 12h27v16H2z" fill="#ffe36b" stroke="#000"/><path d="M10 9h12v14H10z" fill="#fff" stroke="#000"/><path d="M12 13h8M12 16h8M12 19h6" stroke="#000080"/>`,
+  settings:`<rect x="3" y="5" width="26" height="22" fill="#c0c0c0" stroke="#000"/><rect x="3" y="5" width="26" height="4" fill="#000080"/><path d="M8 14h16M8 19h16M8 24h16" stroke="#808080"/><rect x="11" y="12" width="3" height="4" fill="#c0c0c0" stroke="#000"/><rect x="18" y="17" width="3" height="4" fill="#c0c0c0" stroke="#000"/><rect x="13" y="22" width="3" height="4" fill="#c0c0c0" stroke="#000"/>`,
+  find:`<rect x="4" y="4" width="16" height="20" fill="#fff" stroke="#000"/><path d="M7 8h10M7 11h10M7 14h6" stroke="#808080"/><circle cx="18" cy="17" r="6" fill="#bdf" fill-opacity=".6" stroke="#000" stroke-width="2"/><path d="M22 21l6 6" stroke="#000" stroke-width="3"/>`,
+  run:`<rect x="3" y="6" width="26" height="20" fill="#c0c0c0" stroke="#000"/><rect x="3" y="6" width="26" height="4" fill="#000080"/><rect x="6" y="15" width="20" height="5" fill="#fff" stroke="#000"/><path d="M8 17.5h9" stroke="#000"/>`,
+  logoff:`<path d="M5 3h14v26H5z" fill="#c0c0c0" stroke="#000"/><path d="M7 5l10 2v20l-10 2z" fill="#a06030" stroke="#000"/><path d="M19 16h10M25 12l4 4-4 4" stroke="#0a0" stroke-width="2" fill="none"/>`,
+  shutdown:`<rect x="5" y="3" width="22" height="17" fill="#c0c0c0" stroke="#000"/><rect x="8" y="6" width="16" height="11" fill="#000"/><rect x="12" y="20" width="8" height="3" fill="#808080" stroke="#000"/><rect x="3" y="23" width="26" height="6" fill="#c0c0c0" stroke="#000"/><circle cx="16" cy="11.5" r="3.5" fill="none" stroke="#f80" stroke-width="1.5"/><path d="M16 7v4" stroke="#f80" stroke-width="1.5"/>`,
+  start:`<g transform="translate(0,2)"><path d="M3 4c3-2 6-2 9 0v10c-3-2-6-2-9 0z" fill="#f33"/><path d="M14 4c3 2 6 2 9 0v10c-3 2-6 2-9 0z" fill="#3c3"/><path d="M3 16c3-2 6-2 9 0v10c-3-2-6-2-9 0z" fill="#36f"/><path d="M14 16c3 2 6 2 9 0v10c-3 2-6 2-9 0z" fill="#fc0"/><text x="25" y="27" font-family="Arial" font-weight="bold" font-size="12" fill="#000">Z</text></g>`,
+  desktop:`<rect x="2" y="4" width="28" height="20" fill="#008080" stroke="#000"/><rect x="5" y="7" width="5" height="4" fill="#fff"/><rect x="5" y="13" width="5" height="4" fill="#ff0"/><rect x="2" y="24" width="28" height="4" fill="#c0c0c0" stroke="#000"/><path d="M20 10h7v8h-7z" fill="#c0c0c0" stroke="#000"/>`,
+  speaker:`<path d="M5 12h6l7-6v20l-7-6H5z" fill="#ff0" stroke="#000"/><path d="M22 11c2 2 2 8 0 10M25 8c4 4 4 12 0 16" stroke="#000" fill="none" stroke-width="2"/>`,
+  nyu:`<rect x="3" y="3" width="26" height="26" fill="#57068c" stroke="#000"/><path d="M16 7c-3 4-6 7-6 11a6 6 0 0012 0c0-4-3-7-6-11z" fill="#fff"/>`,
+  info:`<circle cx="16" cy="16" r="13" fill="#fff" stroke="#000"/><circle cx="16" cy="16" r="12" fill="#2a5ad8"/><rect x="14" y="13" width="4" height="11" fill="#fff"/><rect x="14" y="7" width="4" height="4" fill="#fff"/>`,
+  warn:`<path d="M16 3l14 25H2z" fill="#ffd800" stroke="#000"/><rect x="14" y="11" width="4" height="10" fill="#000"/><rect x="14" y="23" width="4" height="3" fill="#000"/>`,
+  errorx:`<circle cx="16" cy="16" r="13" fill="#e00" stroke="#600"/><path d="M10 10l12 12M22 10L10 22" stroke="#fff" stroke-width="3.5"/>`,
+  back:`<path d="M4 16l10-10v6h12v8H14v6z" fill="#1aa31a" stroke="#000"/>`,
+  fwd:`<path d="M28 16L18 6v6H6v8h12v6z" fill="#1aa31a" stroke="#000"/>`,
+  up:`<path d="M2 9h10l2 3h15v16H2z" fill="#ffe36b" stroke="#000"/><path d="M16 4l7 7h-4v8h-6v-8H9z" fill="#1aa31a" stroke="#000"/>`,
+  views:`<rect x="3" y="4" width="11" height="10" fill="#fff" stroke="#000"/><rect x="18" y="4" width="11" height="10" fill="#fff" stroke="#000"/><rect x="3" y="18" width="11" height="10" fill="#fff" stroke="#000"/><rect x="18" y="18" width="11" height="10" fill="#fff" stroke="#000"/><rect x="5" y="6" width="7" height="6" fill="#ffe36b"/><rect x="20" y="6" width="7" height="6" fill="#8ab4ff"/>`,
+  home:`<path d="M4 16L16 5l12 11h-4v12H8V16z" fill="#fff" stroke="#000"/><rect x="13" y="20" width="6" height="8" fill="#a06030" stroke="#000"/><path d="M4 16L16 5l12 11" fill="none" stroke="#c00" stroke-width="2"/>`,
+  refresh:`<rect x="4" y="4" width="24" height="24" fill="#fff" stroke="#000"/><path d="M22 12a7 7 0 10 1 6" fill="none" stroke="#1aa31a" stroke-width="3"/><path d="M24 7v7h-7z" fill="#1aa31a"/>`,
+  stop:`<path d="M11 3h10l8 8v10l-8 8H11l-8-8V11z" fill="#d00" stroke="#000"/><path d="M11 11l10 10M21 11L11 21" stroke="#fff" stroke-width="3"/>`,
+  print:`<rect x="8" y="3" width="16" height="10" fill="#fff" stroke="#000"/><rect x="3" y="12" width="26" height="11" fill="#c0c0c0" stroke="#000"/><rect x="8" y="20" width="16" height="9" fill="#fff" stroke="#000"/><rect x="23" y="15" width="3" height="2" fill="#0c0"/>`,
+  send:`<rect x="3" y="9" width="20" height="14" fill="#fff" stroke="#000"/><path d="M3 9l10 8 10-8" fill="none" stroke="#000"/><path d="M18 18h8v-4l5 6-5 6v-4h-8z" fill="#1aa31a" stroke="#000"/>`,
+  cut:`<circle cx="9" cy="24" r="4" fill="none" stroke="#000" stroke-width="2"/><circle cx="23" cy="24" r="4" fill="none" stroke="#000" stroke-width="2"/><path d="M11 21L23 4M21 21L9 4" stroke="#808080" stroke-width="2"/>`,
+  copy:`<path d="M4 3h12l4 4v14H4z" fill="#fff" stroke="#000"/><path d="M12 11h12l4 4v14H12z" fill="#fff" stroke="#000"/><path d="M15 19h10M15 22h10M15 25h7" stroke="#000080"/>`,
+  paste:`<rect x="5" y="5" width="18" height="23" fill="#a06030" stroke="#000"/><rect x="10" y="3" width="8" height="5" fill="#c0c0c0" stroke="#000"/><path d="M13 11h12l4 4v14H13z" fill="#fff" stroke="#000"/>`,
+  attach:`<path d="M20 8v14a5 5 0 01-10 0V7a3 3 0 016 0v14a1 1 0 01-2 0V9" fill="none" stroke="#000" stroke-width="2"/>`,
+  play:`<path d="M10 6v20l16-10z" fill="#000"/>`,
+  pause:`<rect x="9" y="7" width="5" height="18" fill="#000"/><rect x="18" y="7" width="5" height="18" fill="#000"/>`,
+  stopsq:`<rect x="8" y="8" width="16" height="16" fill="#000"/>`,
+};
+const icon = (name, size=32) => `<svg class="ico" viewBox="0 0 32 32" width="${size}" height="${size}" aria-hidden="true">${ICON[name]||ICON.doc}</svg>`;
+document.querySelectorAll('[data-i]').forEach(el => el.outerHTML = icon(el.dataset.i));
+
+/* =====================================================================
+   CONTENT HELPERS
+   ===================================================================== */
+const ASSET = '../../';
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const ALL_PROJECTS = [
+  ...RESEARCH.map(p=>({...p, group:'Research'})),
+  ...PERSONAL.map(p=>({...p, group:'Personal Projects'})),
+];
+const PROJECT_ICON = t => /UFC|Tale/.test(t) ? 'ufc' : /MBTA/.test(t) ? 'train' : /Course/.test(t) ? 'web' : /LLM/.test(t) ? 'robot' : /Polling/.test(t) ? 'vote' : 'chart';
+const shortName = t => ({
+  'Congestion Pricing and EMS Response Time: Evidence From New York City':'NBER - Congestion Pricing & EMS',
+  'NYC Congestion Pricing: Mobility and Commercial Effects':'NYC Congestion Pricing',
+  'The Real Price of Clean Air: EPA Ozone Regulation':'EPA Ozone Regulation',
+  'Election Polling: Indicator vs. Catalyst':'Election Polling',
+  'Intermediate Microeconomics Course Website':'Micro Course Website',
+  'Agentic LLMs for Economic and Game Theory Analysis':'Agentic LLMs',
+  'OctaStats UFC Model V2':'OctaStats V2',
+  'UFC Fight Outcome Prediction Model':'UFC Model V1',
+  'Tale of the Tape: UFC Daily Challenge':'Tale of the Tape',
+  'MBTA Time Series Analysis':'MBTA Time Series',
+  'MBTA Live Tracker LED Art':'MBTA LED Art',
+}[t] || t);
+const ext = (href) => window.open(href, '_blank', 'noopener');
+const FACE = mood => `<svg viewBox="0 0 17 17" width="17" height="17" style="shape-rendering:crispEdges"><circle cx="8.5" cy="8.5" r="7.5" fill="#ff0" stroke="#000"/>${
+  mood==='dead' ? '<path d="M4.5 5l2 2M6.5 5l-2 2M10.5 5l2 2M12.5 5l-2 2" stroke="#000"/><path d="M5.5 12.5q3-2.5 6 0" fill="none" stroke="#000"/>' :
+  mood==='cool' ? '<path d="M3 6h11v1.5h-1l-1 1.5h-2l-1-1.5h-1L7 9H5L4 7.5H3z" fill="#000"/><path d="M5.5 11q3 2.5 6 0" fill="none" stroke="#000"/>' :
+  mood==='oh' ? '<rect x="5" y="5" width="2" height="2"/><rect x="10" y="5" width="2" height="2"/><circle cx="8.5" cy="11.5" r="1.8" fill="none" stroke="#000"/>' :
+  '<rect x="5" y="5" width="2" height="2"/><rect x="10" y="5" width="2" height="2"/><path d="M5 10.5q3.5 3 7 0" fill="none" stroke="#000"/>'}</svg>`;
+const FLAG = `<svg viewBox="0 0 16 16" width="12" height="12" style="shape-rendering:crispEdges;vertical-align:-1px"><path d="M8 2v9" stroke="#000"/><path d="M8 2L3 4.5 8 7z" fill="#f00"/><path d="M5 11h6v1H5zM3 12h10v2H3z" fill="#000"/></svg>`;
+
+/* =====================================================================
+   SOUND — tiny synthesized "ding" and "chord" for dialogs
+   ===================================================================== */
+let AC = null;
+function beep(kind='ding'){
+  try{
+    AC = AC || new (window.AudioContext||window.webkitAudioContext)();
+    const notes = kind==='chord' ? [523,659,784] : kind==='tada' ? [523,659,784,1047] : [880,1320];
+    notes.forEach((f,i)=>{
+      const o = AC.createOscillator(), g = AC.createGain(), t = AC.currentTime + (kind==='tada'?i*.09:0);
+      o.type='triangle'; o.frequency.value=f;
+      g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(.06,t+.01); g.gain.exponentialRampToValueAtTime(.0001,t+.5);
+      o.connect(g).connect(AC.destination); o.start(t); o.stop(t+.55);
+    });
+  }catch(e){}
+}
+
+/* =====================================================================
+   WINDOW MANAGER
+   ===================================================================== */
+const desktop = document.getElementById('desktop');
+const tasks = document.getElementById('tasks');
+const isSmall = () => innerWidth < 700;
+let Z = 10, cascade = 0;
+const wins = new Map();   // key -> win object
+
+function focusWin(w){
+  if (!w) return;
+  wins.forEach(o => { o.el.querySelector('.title-bar').classList.toggle('inactive', o!==w); o.task.classList.toggle('on', o===w && !o.el.classList.contains('min')); });
+  w.el.style.zIndex = w.opts.top ? 7600 : ++Z;
+  w.el.classList.remove('min');
+  w.task.classList.add('on');
+  active = w;
+}
+let active = null;
+
+function zoomFrom(rect, w){
+  const z = document.getElementById('zoomRect'); if (!rect) return;
+  const to = w.el.getBoundingClientRect();
+  z.style.display='block';
+  const anim = z.animate([
+    {left:rect.left+'px',top:rect.top+'px',width:rect.width+'px',height:rect.height+'px'},
+    {left:to.left+'px',top:to.top+'px',width:to.width+'px',height:to.height+'px'}],{duration:180,easing:'linear'});
+  anim.onfinish = () => z.style.display='none';
+}
+
+function openWin(key, opts, fromRect){
+  if (wins.has(key)){ const w = wins.get(key); focusWin(w); return w; }
+  const W = Math.min(opts.w||520, innerWidth-8), H = Math.min(opts.h||380, innerHeight-36);
+  const x = opts.x ?? Math.max(4, Math.min(innerWidth-W-4, 90 + (cascade%8)*26));
+  const y = opts.y ?? Math.max(4, Math.min(innerHeight-28-H-4, 30 + (cascade%8)*24));
+  cascade++;
+  const el = document.createElement('div');
+  el.className = 'window app';
+  el.style.cssText = `left:${x}px;top:${y}px;width:${W}px;height:${H}px`;
+  const ctrls = opts.dialog
+    ? `${opts.help?'<button aria-label="Help"></button>':''}<button aria-label="Close"></button>`
+    : `<button aria-label="Minimize"></button><button aria-label="Maximize"${opts.noMax?' disabled':''}></button><button aria-label="Close"></button>`;
+  el.innerHTML = `<div class="title-bar"><div class="title-bar-text">${opts.dialog?'':icon(opts.icon||'doc',16)}<span>${esc(opts.title)}</span></div><div class="title-bar-controls">${ctrls}</div></div>
+    <div class="window-body"></div>${opts.noResize||opts.dialog?'':'<div class="resize"></div>'}`;
+  desktop.appendChild(el);
+  const body = el.querySelector('.window-body');
+  const task = document.createElement('button');
+  task.className = 'task'; task.innerHTML = `${icon(opts.icon||'doc',16)}<span>${esc(opts.title)}</span>`;
+  if (!opts.dialog) tasks.appendChild(task);
+  const w = { key, el, body, task, opts, onClose:null };
+  wins.set(key, w);
+
+  const close = () => { if (w.onClose) w.onClose(); el.remove(); task.remove(); wins.delete(key); if (active===w){ active=null; const top=[...wins.values()].sort((a,b)=>b.el.style.zIndex-a.el.style.zIndex)[0]; if(top && !top.el.classList.contains('min')) focusWin(top); } };
+  w.close = close;
+  w.setTitle = t => { el.querySelector('.title-bar-text span').textContent = t; task.querySelector('span').textContent = t; };
+  el.querySelector('[aria-label=Close]').onclick = close;
+  const minB = el.querySelector('[aria-label=Minimize]');
+  if (minB) minB.onclick = e => { e.stopPropagation(); el.classList.add('min'); task.classList.remove('on'); active=null; };
+  const maxB = el.querySelector('[aria-label=Maximize]');
+  const toggleMax = () => { if (opts.noMax) return; el.classList.toggle('max'); maxB.setAttribute('aria-label', el.classList.contains('max')?'Restore':'Maximize'); if (w.onResize) w.onResize(); };
+  if (maxB) maxB.onclick = toggleMax;
+  const helpB = el.querySelector('[aria-label=Help]');
+  if (helpB) helpB.onclick = () => openApp('help');
+  task.onclick = () => { if (active===w && !el.classList.contains('min')){ el.classList.add('min'); task.classList.remove('on'); active=null; } else focusWin(w); };
+  el.addEventListener('pointerdown', () => { if (active!==w) focusWin(w); }, true);
+
+  // drag
+  const tb = el.querySelector('.title-bar');
+  tb.addEventListener('dblclick', e => { if (!e.target.closest('button')) toggleMax(); });
+  tb.addEventListener('pointerdown', e => {
+    if (e.target.closest('button') || el.classList.contains('max')) return;
+    const sx = e.clientX, sy = e.clientY, ox = el.offsetLeft, oy = el.offsetTop;
+    tb.setPointerCapture(e.pointerId);
+    const mv = ev => {
+      el.style.left = Math.max(-el.offsetWidth+60, Math.min(innerWidth-40, ox+ev.clientX-sx))+'px';
+      el.style.top = Math.max(0, Math.min(innerHeight-50, oy+ev.clientY-sy))+'px';
+    };
+    const up = () => { tb.removeEventListener('pointermove', mv); tb.removeEventListener('pointerup', up); };
+    tb.addEventListener('pointermove', mv); tb.addEventListener('pointerup', up);
+  });
+  // resize
+  const rz = el.querySelector('.resize');
+  if (rz) rz.addEventListener('pointerdown', e => {
+    e.preventDefault(); const sx=e.clientX, sy=e.clientY, ow=el.offsetWidth, oh=el.offsetHeight;
+    rz.setPointerCapture(e.pointerId);
+    const mv = ev => { el.style.width = Math.max(opts.minW||220, ow+ev.clientX-sx)+'px'; el.style.height = Math.max(opts.minH||120, oh+ev.clientY-sy)+'px'; if (w.onResize) w.onResize(); };
+    const up = () => { rz.removeEventListener('pointermove', mv); rz.removeEventListener('pointerup', up); };
+    rz.addEventListener('pointermove', mv); rz.addEventListener('pointerup', up);
+  });
+
+  if (isSmall() && !opts.dialog && !opts.noMax){ el.classList.add('max'); maxB && maxB.setAttribute('aria-label','Restore'); }
+  if (opts.center || (isSmall() && opts.dialog)){ el.style.left = Math.max(4,(innerWidth-W)/2)+'px'; el.style.top = Math.max(4,(innerHeight-28-H)/3)+'px'; }
+  opts.render && opts.render(w);
+  focusWin(w);
+  zoomFrom(fromRect, w);
+  return w;
+}
+
+/* --- menus inside windows --- */
+function menubar(menus){
+  return `<div class="menubar">${menus.map(([name, items])=>`<div>${name}<div class="dropdown">${(items||[]).map(it=> it==='-' ? '<div class="msep"></div>' : `<div class="mi${it[2]?' check':''}" data-act="${it[1]}">${it[0]}</div>`).join('')}</div></div>`).join('')}</div>`;
+}
+function wireMenubar(w, handlers){
+  const mb = w.body.querySelector('.menubar'); if (!mb) return;
+  mb.querySelectorAll(':scope > div').forEach(m => {
+    m.addEventListener('pointerdown', e => {
+      if (e.target.closest('.dropdown')) return;
+      const was = m.classList.contains('open');
+      mb.querySelectorAll(':scope > div').forEach(x=>x.classList.remove('open'));
+      if (!was) m.classList.add('open');
+      e.stopPropagation();
+    });
+    m.addEventListener('pointerenter', () => { if (mb.querySelector(':scope > div.open') && !m.classList.contains('open')){ mb.querySelectorAll(':scope > div').forEach(x=>x.classList.remove('open')); m.classList.add('open'); } });
+  });
+  mb.querySelectorAll('.dropdown .mi').forEach(mi => mi.addEventListener('click', e => {
+    e.stopPropagation(); mb.querySelectorAll(':scope > div').forEach(x=>x.classList.remove('open'));
+    const a = mi.dataset.act; if (handlers[a]) handlers[a](); else if (a==='close') w.close(); else if (a.startsWith('app:')) openApp(a.slice(4)); else if (a.startsWith('url:')) ext(a.slice(4));
+  }));
+}
+document.addEventListener('pointerdown', () => document.querySelectorAll('.menubar > div.open').forEach(x=>x.classList.remove('open')));
+
+/* --- message boxes --- */
+function msgbox(title, text, kind='info', buttons=['OK'], cb){
+  beep(kind==='errorx'?'chord':'ding');
+  const key = 'msg'+Math.random();
+  const w = openWin(key, { title, dialog:true, w:Math.min(380, innerWidth-16), h:150, render(w){
+    w.body.innerHTML = `<div class="err">${icon(kind)}<p>${text}</p></div><div class="btn-row" style="justify-content:center">${buttons.map((b,i)=>`<button ${i===0?'class="default"':''} data-b="${i}">${b}</button>`).join('')}</div>`;
+    w.body.querySelectorAll('[data-b]').forEach(b => b.onclick = () => { w.close(); cb && cb(+b.dataset.b); });
+  }});
+  w.el.style.height='auto';
+  w.el.style.left = Math.max(4,(innerWidth-w.el.offsetWidth)/2)+'px';
+  w.el.style.top = Math.max(4,(innerHeight-28-w.el.offsetHeight)/2.4)+'px';
+  return w;
+}
+
+/* =====================================================================
+   EXPLORER
+   ===================================================================== */
+function explorer(w, cfg){
+  // cfg: {path, title, icon, desc, items:[{name, icon, type, size, open}]}
+  let view = 'icons';
+  const history = [cfg]; let hi = 0;
+  function render(){
+    const c = history[hi];
+    w.setTitle(c.title);
+    w.body.innerHTML = menubar([
+      ['File',[['Open','open'],'-',['Close','close']]],
+      ['Edit',[['Select All','selall']]],
+      ['View',[['Large Icons','v:icons',view==='icons'],['Details','v:details',view==='details']]],
+      ['Go',[['Back','back'],['Forward','fwd'],['Up One Level','up'],'-',['My Computer','app:mycomputer']]],
+      ['Favorites',[['GitHub','url:https://github.com/zwinship'],['LinkedIn','url:https://linkedin.com/in/zwinship']]],
+      ['Help',[['About Zach 98','app:about98']]],
+    ]) + `<div class="toolbar">
+        <button class="tbtn" data-t="back" ${hi>0?'':'disabled'}>${icon('back',20)}Back</button>
+        <button class="tbtn" data-t="fwd" ${hi<history.length-1?'':'disabled'}>${icon('fwd',20)}Forward</button>
+        <button class="tbtn" data-t="up" ${c.parent?'':'disabled'}>${icon('up',20)}Up</button>
+        <div class="tb-sep" style="height:auto"></div>
+        <button class="tbtn" data-t="views">${icon('views',20)}Views</button>
+      </div>
+      <div class="addr"><span>Address</span><div class="fld">${icon(c.icon,16)}<span>${esc(c.path)}</span></div></div>
+      <div class="explorer">
+        <div class="webview">${icon(c.icon,48).replace('class="ico"','class="ico wv-ico"')}<h2>${esc(c.title)}</h2><div class="wv-line"></div>${c.desc||''}<p id="wvSel" style="margin-top:12px"></p></div>
+        <div class="files ${view}"></div>
+      </div>
+      <div class="status-bar"><p class="status-bar-field">${c.items.length} object(s)</p><p class="status-bar-field" style="flex:0 0 140px">${icon('computer',16).replace('class="ico"','class="ico" style="display:inline;vertical-align:-3px;width:14px;height:14px"')} My Computer</p></div>`;
+    const files = w.body.querySelector('.files');
+    const wv = w.body.querySelector('#wvSel');
+    const select = (el, it) => {
+      files.querySelectorAll('.sel').forEach(x=>x.classList.remove('sel')); el.classList.add('sel');
+      wv.innerHTML = `<b>${esc(it.name)}</b><br>${esc(it.type||'')}${it.blurb?'<br><br>'+esc(it.blurb):''}`;
+    };
+    if (view==='icons'){
+      c.items.forEach(it => {
+        const f = document.createElement('div'); f.className='file'; f.tabIndex=0;
+        f.innerHTML = `${icon(it.icon)}<div class="lbl">${esc(it.name)}</div>`;
+        f.onclick = () => { select(f,it); if (matchMedia('(pointer:coarse)').matches) go(it, f); };
+        f.ondblclick = () => go(it, f);
+        f.onkeydown = e => { if (e.key==='Enter') go(it, f); };
+        files.appendChild(f);
+      });
+    } else {
+      files.innerHTML = `<table><thead><tr><th>Name</th><th>Type</th><th>Modified</th></tr></thead><tbody></tbody></table>`;
+      const tb = files.querySelector('tbody');
+      c.items.forEach(it => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${icon(it.icon,16)}${esc(it.name)}</td><td>${esc(it.type||'')}</td><td>${esc(it.date||'')}</td>`;
+        tr.onclick = () => { tb.querySelectorAll('.sel').forEach(x=>x.classList.remove('sel')); tr.classList.add('sel'); wv.innerHTML=`<b>${esc(it.name)}</b><br>${esc(it.type||'')}${it.blurb?'<br><br>'+esc(it.blurb):''}`; };
+        tr.ondblclick = () => go(it, tr);
+        tb.appendChild(tr);
+      });
+    }
+    w.body.querySelectorAll('[data-t]').forEach(b => b.onclick = () => {
+      const t = b.dataset.t;
+      if (t==='back' && hi>0){ hi--; render(); }
+      if (t==='fwd' && hi<history.length-1){ hi++; render(); }
+      if (t==='up' && c.parent){ nav(FOLDERS[c.parent]()); }
+      if (t==='views'){ view = view==='icons'?'details':'icons'; render(); }
+    });
+    wireMenubar(w, {
+      'v:icons':()=>{view='icons';render();}, 'v:details':()=>{view='details';render();},
+      back:()=>{ if(hi>0){hi--;render();} }, fwd:()=>{ if(hi<history.length-1){hi++;render();} },
+      up:()=>{ if(c.parent) nav(FOLDERS[c.parent]()); },
+      open:()=>{ const s=files.querySelector('.sel'); if(s) s.dispatchEvent(new MouseEvent('dblclick')); },
+      selall:()=>files.querySelectorAll('.file,tr').forEach(x=>x.classList.add('sel')),
+    });
+  }
+  function nav(next){ history.splice(hi+1); history.push(next); hi++; render(); }
+  function go(it, el){
+    if (it.folder) nav(FOLDERS[it.folder]());
+    else it.open(el.getBoundingClientRect());
+  }
+  render();
+}
+
+const FOLDERS = {
+  mycomputer: () => ({ title:'My Computer', path:'My Computer', icon:'computer',
+    desc:`<p>Zach Winship's portfolio, packaged as a 1998 PC.</p><p>Select an item to view its description.</p><p>Quantitative Economist · NYU MS '27 · Bentley '26</p>`,
+    items:[
+      { name:'3½ Floppy (A:)', icon:'floppy', type:'Résumé', blurb:'Résumé, Summer 2026 (PDF).', open:r=>openApp('resume',r) },
+      { name:'Research (C:)', icon:'drive', type:'Local Disk', blurb:'Papers, working papers and research projects.', folder:'research' },
+      { name:'Personal Projects (D:)', icon:'drive', type:'Local Disk', blurb:'Self-driven projects: ML models, games and hardware.', folder:'personal' },
+      { name:'Presentations (E:)', icon:'cd', type:'CD-ROM Disc', blurb:'Talks, teaching and explainer videos.', open:r=>openApp('media',r) },
+      { name:'My Documents', icon:'docfolder', type:'File Folder', blurb:'About, experience, résumé.', folder:'mydocs' },
+      { name:'Control Panel', icon:'control', type:'System Folder', blurb:'Change the desktop, view system properties.', folder:'control' },
+    ]}),
+  research: () => ({ title:'Research (C:)', path:'C:\\Research', icon:'drive', parent:'mycomputer',
+    desc:`<p><b>${RESEARCH.length} projects</b></p><p>Causal inference, urban economics and policy research, including an NBER working paper.</p>`,
+    items: ALL_PROJECTS.filter(p=>p.group==='Research').map(p=>({ name:shortName(p.title), icon:PROJECT_ICON(p.title), type:p.meta.split(' · ')[0], date:p.year, blurb:p.title, open:r=>openProject(p,r) })) }),
+  personal: () => ({ title:'Personal Projects (D:)', path:'D:\\Personal Projects', icon:'drive', parent:'mycomputer',
+    desc:`<p><b>${PERSONAL.length} projects</b></p><p>Most portfolios are full of coursework. These are fun, self-driven projects.</p>`,
+    items: ALL_PROJECTS.filter(p=>p.group!=='Research').map(p=>({ name:shortName(p.title), icon:PROJECT_ICON(p.title), type:p.meta.split(' · ')[0], date:p.year, blurb:p.title, open:r=>openProject(p,r) })) }),
+  mydocs: () => ({ title:'My Documents', path:'C:\\My Documents', icon:'docfolder', parent:'mycomputer',
+    desc:`<p>Personal documents.</p>`,
+    items:[
+      { name:'About Me.txt', icon:'notepad', type:'Text Document', open:r=>openApp('notepad',r) },
+      { name:'Experience.doc', icon:'doc', type:'WordPad Document', open:r=>openApp('wordpad',r) },
+      { name:'resume.pdf', icon:'pdf', type:'PDF Document', open:r=>openApp('resume',r) },
+      { name:'transcript.pdf', icon:'pdf', type:'PDF Document', open:()=>ext(ASSET+'about_me/transcript.pdf') },
+      { name:'Research', icon:'folder', type:'File Folder', folder:'research' },
+      { name:'Personal Projects', icon:'folder', type:'File Folder', folder:'personal' },
+      { name:'Unlikely Instruments', icon:'blog', type:'Internet Shortcut', open:r=>openApp('blog',r) },
+    ]}),
+  control: () => ({ title:'Control Panel', path:'Control Panel', icon:'control', parent:'mycomputer',
+    desc:`<p>Use the settings in Control Panel to personalize your computer.</p>`,
+    items:[
+      { name:'Display', icon:'display', type:'Control Panel Item', blurb:'Change the desktop background.', open:r=>openApp('display',r) },
+      { name:'System', icon:'computer', type:'Control Panel Item', blurb:'System properties: about Zach.', open:r=>openApp('system',r) },
+      { name:'Sounds', icon:'speaker', type:'Control Panel Item', blurb:'Play the system sounds.', open:()=>beep('tada') },
+    ]}),
+  recycle: () => ({ title:'Recycle Bin', path:'Recycle Bin', icon:'recyclefull',
+    desc:`<p>This folder contains files you have deleted from your computer.</p>`,
+    items:[
+      { name:'coursework_portfolio.zip', icon:'zip', type:'Compressed Folder', blurb:'Deleted: this portfolio is self-driven projects only.', open:binErr },
+      { name:'generic_resume_template.doc', icon:'doc', type:'WordPad Document', open:binErr },
+      { name:'chart_with_default_colors.xls', icon:'xls', type:'Spreadsheet', open:binErr },
+      { name:'p_hacking_notes.txt', icon:'notepad', type:'Text Document', blurb:'Never.', open:binErr },
+    ]}),
+};
+function binErr(){ msgbox('Recycle Bin','This item is in the Recycle Bin. To use it, you must first drag it out of the Recycle Bin.<br><br>(It was deleted on purpose.)','info'); }
+
+/* =====================================================================
+   APPS
+   ===================================================================== */
+function openProject(p, fromRect){
+  openWin('proj:'+p.title, { title:shortName(p.title)+' Properties', icon:PROJECT_ICON(p.title), dialog:true, help:true, w:420, h:Math.min(470, innerHeight-40), render(w){
+    w.body.innerHTML = `<div class="tabs">
+      <menu role="tablist"><li role="tab" aria-selected="true"><a href="#">General</a></li></menu>
+      <div class="window" role="tabpanel"><div class="window-body" style="margin:6px;display:block">
+        <div class="props">${icon(PROJECT_ICON(p.title))}<div><h4>${esc(p.title)}</h4></div></div>
+        <div class="hr98"></div>
+        <div class="kv"><span>Type:</span><span>${esc(p.meta)}</span><span>Location:</span><span>${p.group==='Research'?'C:\\Research':'D:\\Personal Projects'}</span><span>Date:</span><span>${esc(p.year)}${p.soon?' (in progress)':''}</span>${p.badge?`<span>Series:</span><span>${esc(p.badge)}</span>`:''}</div>
+        <div class="hr98"></div>
+        <div class="desc-box">${esc(p.body)}${p.video?`<video src="${ASSET+p.video}" poster="${ASSET+p.poster}" controls playsinline preload="none" style="width:100%;margin-top:8px;display:block"></video>`:''}</div>
+        <div class="kv" style="grid-template-columns:90px 1fr"><span>Attributes:</span><span>${p.tags.map(esc).join(', ')}</span></div>
+      </div></div></div>
+      <div class="btn-row">${(p.links||[]).map((l,i)=>`<button data-href="${l[0]}" ${i===0?'class="default"':''}>${esc(l[1])}</button>`).join('')}<button data-ok>OK</button></div>`;
+    w.body.style.display='flex'; w.body.style.flexDirection='column';
+    w.body.querySelectorAll('[data-href]').forEach(b=>b.onclick=()=>ext(b.dataset.href));
+    w.body.querySelector('[data-ok]').onclick = w.close;
+    w.body.querySelector('[role=tab] a').onclick = e => e.preventDefault();
+  }}, fromRect);
+}
+
+const ABOUT_TXT = `ABOUT ME.TXT
+============
+
+Zach Winship
+Quantitative Economist and Data Analyst
+
+I recently graduated from Bentley University with a BS in
+Quantitative Economics and a double minor in Mathematics and
+Data Technologies. I'm now pursuing the MS in Quantitative
+Economics at New York University, with expected graduation in
+May 2027, where I also work as a teaching assistant for
+Introductory Macroeconomics.
+
+My work sits at the intersection of data and policy. I'm drawn
+to questions where careful empirical methods can cut through
+noise and say something concrete about how the world works.
+I'm currently a co-author on an NBER working paper studying how
+NYC's congestion pricing program affected EMS response times,
+and I've built tools for sports prediction, transportation
+research, and political economy, always trying to combine rigor
+with work that's actually interesting to look at.
+
+Outside of coursework I spend a lot of time on personal
+projects. I'm especially interested in transportation
+economics, spatial analytics, optimization problems, and the
+emerging field of Homo silicus -- using large language models as
+simulated economic agents to replicate and extend classic
+experiments in economics and game theory. I also write,
+bi-monthly, at Unlikely Instruments, a blog about unusual proxy
+variables and data sources nobody would think to look at.
+
+Feel free to look around. I had a lot of fun building these.
+
+EDUCATION
+---------
+MS in Quantitative Economics
+  New York University -- Starting Summer 2026, expected May 2027
+  NYU Economics Teaching Fellowship, Summer 2026.
+
+BS in Quantitative Economics
+  Bentley University -- Graduated May 2026
+  Double Minor in Mathematics and Data Technologies. GPA: 3.74.
+
+SKILLS
+------
+${SKILLS.join(', ')}
+
+CONTACT
+-------
+Email ..... ${EMAIL}
+LinkedIn .. linkedin.com/in/zwinship
+GitHub .... github.com/zwinship
+`;
+
+const APPS = {
+  mycomputer: { title:'My Computer', icon:'computer', w:640, h:420, render:w=>explorer(w, FOLDERS.mycomputer()) },
+  research:   { title:'Research (C:)', icon:'drive', w:640, h:420, render:w=>explorer(w, FOLDERS.research()) },
+  personal:   { title:'Personal Projects (D:)', icon:'drive', w:640, h:420, render:w=>explorer(w, FOLDERS.personal()) },
+  mydocs:     { title:'My Documents', icon:'docfolder', w:620, h:400, render:w=>explorer(w, FOLDERS.mydocs()) },
+  control:    { title:'Control Panel', icon:'control', w:560, h:360, render:w=>explorer(w, FOLDERS.control()) },
+  recycle:    { title:'Recycle Bin', icon:'recyclefull', w:580, h:360, render:w=>explorer(w, FOLDERS.recycle()) },
+
+  notepad: { title:'About Me.txt - Notepad', icon:'notepad', w:560, h:440, render(w){
+    w.body.innerHTML = menubar([['File',[['New','new'],['Open...','app:mydocs'],'-',['Exit','close']]],['Edit',[['Select All','selall']]],['Search',[['Find...','app:find']]],['Help',[['About Notepad','abt']]]])
+      + `<textarea class="notepad" spellcheck="false"></textarea>`;
+    const ta = w.body.querySelector('textarea'); ta.value = ABOUT_TXT;
+    wireMenubar(w, { new:()=>{ta.value='';w.setTitle('Untitled - Notepad');}, selall:()=>ta.select(), abt:()=>msgbox('About Notepad','Notepad<br>Zach 98 Edition','info') });
+  }},
+
+  wordpad: { title:'Experience.doc - WordPad', icon:'doc', w:720, h:520, render(w){
+    w.body.innerHTML = menubar([['File',[['Print...','print'],'-',['Exit','close']]],['Edit',[]],['View',[]],['Insert',[]],['Format',[]],['Help',[]]])
+      + `<div class="toolbar">${['doc','folder','print','cut','copy','paste'].map(i=>`<button class="tbtn" tabindex="-1">${icon(i,16).replace('width="16"','width="18"')}</button>`).join('')}</div>
+      <div class="fmtbar"><select><option>Times New Roman</option><option>Arial</option></select><select style="width:50px"><option>12</option></select>
+        <button class="b">B</button><button class="b" style="font-style:italic">I</button><button class="b" style="text-decoration:underline">U</button></div>
+      <div class="ruler"></div>
+      <div class="wp-page"><div class="wp-doc">
+        <h1>Zach Winship — Experience</h1><div class="when">Quantitative Economist and Data Analyst</div>
+        ${EXPERIENCE.map(e=>`<h2>${esc(e.role)}</h2><div><b>${esc(e.org)}</b> &nbsp;·&nbsp; <span class="when">${esc(e.when)}</span></div><p style="margin:4px 0 0">${esc(e.body)}</p>${e.links?e.links.map(l=>`<p style="margin:2px 0"><a href="${l[0]}" target="_blank" rel="noopener">${esc(l[1])}</a></p>`).join(''):''}`).join('')}
+      </div></div>
+      <div class="status-bar"><p class="status-bar-field">For Help, press F1</p><p class="status-bar-field" style="flex:0 0 60px">NUM</p></div>`;
+    wireMenubar(w, { print:()=>window.print() });
+  }},
+
+  resume: { title:'resume.pdf - PDF Viewer', icon:'pdf', w:700, h:560, render(w){
+    w.body.innerHTML = menubar([['File',[['Open in new window','pop'],['Download transcript','trans'],'-',['Exit','close']]],['View',[]],['Help',[]]])
+      + `<div class="toolbar"><button class="tbtn" data-pop>${icon('print',20)}Open</button><button class="tbtn" data-dl>${icon('pdf',20)}Transcript</button></div>
+      <iframe src="${ASSET}about_me/resume.pdf" title="Résumé" style="flex:1;border:0;box-shadow:var(--sunken);background:#808080"></iframe>`;
+    const pop = ()=>ext(ASSET+'about_me/resume.pdf'), trans = ()=>ext(ASSET+'about_me/transcript.pdf');
+    w.body.querySelector('[data-pop]').onclick = pop; w.body.querySelector('[data-dl]').onclick = trans;
+    wireMenubar(w, { pop, trans });
+  }},
+
+  media: { title:'Presentations - Media Player', icon:'media', w:720, h:500, minW:420, minH:300, render(w){
+    let cur = 0;
+    w.body.innerHTML = menubar([['File',[['Open PDF','pdf'],'-',['Exit','close']]],['View',[]],['Play',[['Play/Pause','pp']]],['Favorites',[]],['Go',[]],['Help',[]]])
+      + `<div class="mp" style="flex-direction:row;gap:4px">
+          <div class="mp" style="flex:1">
+            <div class="mp-screen"><div class="vis"></div></div>
+            <div class="mp-controls"><button data-c="play" title="Play">${icon('play',12)}</button><button data-c="pause" title="Pause">${icon('pause',12)}</button><button data-c="stop" title="Stop">${icon('stopsq',12)}</button>
+              <select style="flex:1;min-width:0;margin-left:6px" data-clip></select></div>
+            <div class="desc-box" style="max-height:120px" data-desc></div>
+            <div class="btn-row" style="margin-top:2px" data-btns></div>
+          </div>
+          <div class="mp-list" style="flex:0 0 190px" data-list></div>
+        </div>
+        <div class="mp-info" data-info></div>`;
+    const list = w.body.querySelector('[data-list]'), scr = w.body.querySelector('.mp-screen'), clip = w.body.querySelector('[data-clip]');
+    PRESENTATIONS.forEach((p,i)=>{ const d=document.createElement('div'); d.textContent=`${i+1}. ${p.title}`; d.onclick=()=>show(i); list.appendChild(d); });
+    function vid(){ return scr.querySelector('video'); }
+    function load(src){ scr.innerHTML = src ? `<video src="${src}" playsinline preload="metadata" controls></video>` : `<div class="vis">No video for this presentation.<br><br>▶ Open the PDF slides below.</div>`; }
+    function show(i){
+      cur = i; const p = PRESENTATIONS[i];
+      list.querySelectorAll('div').forEach((d,k)=>d.classList.toggle('sel',k===i));
+      clip.innerHTML = (p.vids||[]).map((v,k)=>`<option value="${k}">${esc(v[1])}</option>`).join('') || '<option>(slides only)</option>';
+      clip.disabled = !p.vids;
+      load(p.vids ? ASSET+p.vids[0][0] : null);
+      w.body.querySelector('[data-desc]').innerHTML = `<b>${esc(p.title)}</b><br><i>${esc(p.meta)}</i><br><br>${esc(p.body)}<br><br>${p.tags.map(esc).join(' · ')}`;
+      w.body.querySelector('[data-btns]').innerHTML = `${p.pdf?`<button class="default" data-u="${ASSET+p.pdf}">Open PDF Slides</button>`:''}${p.gh?`<button data-u="${p.gh}">View on GitHub</button>`:''}`;
+      w.body.querySelectorAll('[data-u]').forEach(b=>b.onclick=()=>ext(b.dataset.u));
+      w.body.querySelector('[data-info]').textContent = `Clip ${i+1} of ${PRESENTATIONS.length}  ·  ${p.title}`;
+    }
+    clip.onchange = () => { const p = PRESENTATIONS[cur]; if (p.vids) { load(ASSET+p.vids[+clip.value][0]); vid().play().catch(()=>{}); } };
+    w.body.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{ const v=vid(); if(!v) return; const c=b.dataset.c; if(c==='play') v.play(); if(c==='pause') v.pause(); if(c==='stop'){ v.pause(); v.currentTime=0; } });
+    wireMenubar(w, { pdf:()=>{ const p=PRESENTATIONS[cur]; if(p.pdf) ext(ASSET+p.pdf); }, pp:()=>{ const v=vid(); if(v) v.paused?v.play():v.pause(); } });
+    w.onClose = () => { const v=vid(); if(v) v.pause(); };
+    show(0);
+  }},
+
+  ie: { title:"Zach's Home Page - Internet Explorer", icon:'globe', w:780, h:560, render:w=>browser(w,'home') },
+  blog: { title:'Unlikely Instruments - Internet Explorer', icon:'globe', w:760, h:540, render:w=>browser(w,'blog') },
+
+  mail: { title:'New Message', icon:'mail', w:560, h:420, render(w){
+    w.body.innerHTML = menubar([['File',[['Send Message','send'],'-',['Close','close']]],['Edit',[]],['View',[]],['Insert',[]],['Format',[]],['Tools',[]],['Message',[]],['Help',[]]])
+      + `<div class="toolbar"><button class="tbtn" data-send>${icon('send',20)}Send</button><div class="tb-sep" style="height:auto"></div>
+          <button class="tbtn">${icon('cut',20)}Cut</button><button class="tbtn">${icon('copy',20)}Copy</button><button class="tbtn">${icon('paste',20)}Paste</button><div class="tb-sep" style="height:auto"></div><button class="tbtn">${icon('attach',20)}Attach</button></div>
+        <div class="mail-fields"><label>To:</label><input type="text" value="${EMAIL}" readonly><label>Cc:</label><input type="text"><label>Subject:</label><input type="text" data-subj value="Hello from your Zach 98 site"></div>
+        <textarea class="mail-body" data-body>Hi Zach,\n\n</textarea>`;
+    const send = () => { const s = w.body.querySelector('[data-subj]').value, b = w.body.querySelector('[data-body]').value;
+      location.href = `mailto:${EMAIL}?subject=${encodeURIComponent(s)}&body=${encodeURIComponent(b)}`; };
+    w.body.querySelector('[data-send]').onclick = send; wireMenubar(w,{send});
+  }},
+
+  winmine: { title:'Minesweeper', icon:'mine', w:184, h:282, noMax:true, noResize:true, render:w=>minesweeper(w) },
+
+  system: { title:'System Properties', icon:'computer', dialog:true, help:true, w:420, h:440, render(w){
+    const tabs = ['General','Education','Skills','Contact'];
+    w.body.style.display='flex'; w.body.style.flexDirection='column';
+    w.body.innerHTML = `<div class="tabs"><menu role="tablist">${tabs.map((t,i)=>`<li role="tab" aria-selected="${i===0}"><a href="#" data-tab="${i}">${t}</a></li>`).join('')}</menu><div class="window" role="tabpanel"><div class="window-body" data-pane style="display:block;margin:10px"></div></div></div>
+      <div class="btn-row"><button class="default" data-ok>OK</button><button data-ok>Cancel</button></div>`;
+    const pane = w.body.querySelector('[data-pane]');
+    const PANES = [
+      () => `<div style="display:flex;gap:18px"><div style="flex:0 0 140px;text-align:center"><img src="${ASSET}images/zwinship.png" alt="Zach Winship" style="width:120px;height:120px;object-fit:cover;box-shadow:var(--sunken);padding:2px;background:#fff"></div>
+        <div style="line-height:1.6"><b>System:</b><br>&nbsp;&nbsp;Zach Winship<br>&nbsp;&nbsp;Quantitative Economist<br>&nbsp;&nbsp;Second Edition (NYU)<br><br><b>Registered to:</b><br>&nbsp;&nbsp;NYU MS Quantitative Economics<br>&nbsp;&nbsp;Bentley University '26<br>&nbsp;&nbsp;NBER-35414-EMS-NYC<br><br><b>Computer:</b><br>&nbsp;&nbsp;Python / R / Stata<br>&nbsp;&nbsp;3.74 GPA, 64.0MB RAM</div></div>`,
+      () => `<fieldset><legend>MS in Quantitative Economics</legend>New York University · Starting Summer 2026<br>Expected May 2027. NYU Economics Teaching Fellowship, Summer 2026.</fieldset><br>
+        <fieldset><legend>BS in Quantitative Economics</legend>Bentley University · Graduated May 2026<br>Double Minor in Mathematics and Data Technologies. GPA: 3.74.<br>Relevant coursework: Econometrics, Statistical Analysis, Data Analytics, Mathematical Economics, Public Policy Analysis.</fieldset>`,
+      () => `<p style="margin:0 0 6px">Device Manager — skills installed on this computer:</p><ul class="tree-view" style="height:250px;overflow:auto">
+        <li>${icon('computer',16).replace('class="ico"','class="ico" style="display:inline;vertical-align:-3px"')} ZACH-PC<ul>
+          <li><details open><summary>Languages</summary><ul><li>Python</li><li>R</li><li>Stata</li><li>JSXGraph</li></ul></details></li>
+          <li><details open><summary>Econometrics</summary><ul><li>Causal Inference</li><li>Regression Discontinuity</li><li>Forecasting</li><li>ARIMA</li><li>Econometrics</li></ul></details></li>
+          <li><details><summary>Data</summary><ul><li>Machine Learning</li><li>Data Collection</li><li>Spatial Analysis</li><li>LLMs / Agent Simulation</li></ul></details></li>
+          <li><details><summary>Other devices</summary><ul><li>Web Development</li><li>Hardware / Raspberry Pi</li><li>Policy Analysis</li></ul></details></li>
+        </ul></li></ul>`,
+      () => `<fieldset><legend>Contact</legend><div class="kv" style="margin:4px"><span>Email:</span><span>${EMAIL}</span><span>LinkedIn:</span><span>linkedin.com/in/zwinship</span><span>GitHub:</span><span>github.com/zwinship</span></div>
+        <div class="btn-row" style="justify-content:flex-start"><button data-u="mailto:${EMAIL}">Email</button><button data-u="https://linkedin.com/in/zwinship">LinkedIn</button><button data-u="https://github.com/zwinship">GitHub</button></div></fieldset>`,
+    ];
+    const show = i => { w.body.querySelectorAll('[role=tab]').forEach((t,k)=>t.setAttribute('aria-selected',k===i)); pane.innerHTML = PANES[i]();
+      pane.querySelectorAll('[data-u]').forEach(b=>b.onclick=()=>{ const u=b.dataset.u; u.startsWith('mailto')?location.href=u:ext(u); }); };
+    w.body.querySelectorAll('[data-tab]').forEach(a=>a.onclick=e=>{ e.preventDefault(); show(+a.dataset.tab); });
+    w.body.querySelectorAll('[data-ok]').forEach(b=>b.onclick=w.close);
+    show(0);
+  }},
+
+  display: { title:'Display Properties', icon:'display', dialog:true, w:380, h:410, render(w){
+    const COLORS = [['Teal','#008080'],['Clouds','linear-gradient(#5d8fd8,#a8c8f0 55%,#e8f2ff)'],['Navy','#000080'],['Black','#000'],['Maroon','#800000'],['Olive','#808000'],['Violet','#57068c'],['Gray','#808080']];
+    let pick = localGet('z98bg') || '#008080';
+    w.body.innerHTML = `<div class="tabs"><menu role="tablist"><li role="tab" aria-selected="true"><a href="#">Background</a></li></menu><div class="window" role="tabpanel"><div class="window-body" style="display:block;margin:10px">
+      <div class="monitor-prev">${icon('computer',180).replace('class="ico"','class="ico" style="width:180px;height:180px"')}<div class="scr" data-prev></div></div>
+      <div>Wallpaper:</div><div class="colors">${COLORS.map(c=>`<div class="swatch" data-c="${c[1]}" title="${c[0]}" style="background:${c[1]}"></div>`).join('')}</div>
+    </div></div></div><div class="btn-row"><button class="default" data-ok>OK</button><button data-cancel>Cancel</button><button data-apply>Apply</button></div>`;
+    w.body.style.display='flex'; w.body.style.flexDirection='column';
+    const prev = w.body.querySelector('[data-prev]');
+    const paint = () => { prev.style.background = pick; w.body.querySelectorAll('.swatch').forEach(s=>s.classList.toggle('on', s.dataset.c===pick)); };
+    w.body.querySelectorAll('.swatch').forEach(s=>s.onclick=()=>{ pick=s.dataset.c; paint(); });
+    const apply = () => { setDesktop(pick); localSet('z98bg', pick); };
+    w.body.querySelector('[data-apply]').onclick = apply;
+    w.body.querySelector('[data-ok]').onclick = () => { apply(); w.close(); };
+    w.body.querySelector('[data-cancel]').onclick = w.close;
+    paint();
+  }},
+
+  welcome: { title:'Welcome', icon:'update', w:620, h:400, noMax:true, render(w){
+    const OPTS = [
+      ['user','About Zach','system','<h3>Hi, I\'m Zach.</h3><p>Quantitative economist: Bentley \'26, now in NYU\'s MS in Quantitative Economics (May 2027). I co-authored an NBER working paper on how NYC congestion pricing sped up ambulances.</p><p>Click to open <b>System Properties</b>.</p>'],
+      ['drive','Discover My Projects','mycomputer','<h3>Discover my projects</h3><p>Most people have portfolios full of coursework. This one is made up entirely of fun, self-driven projects.</p><p>Open <b>My Computer</b> to browse the Research (C:) and Personal Projects (D:) drives.</p>'],
+      ['media','Watch Presentations','media','<h3>Presentations</h3><p>Talks, teaching and methodology explainer videos — in a Media Player.</p>'],
+      ['globe','Connect to the Internet','ie','<h3>Connect to the Internet</h3><p>Visit Zach\'s Home Page: links, media coverage, and the Unlikely Instruments blog.</p>'],
+      ['floppy','Read My Résumé','resume','<h3>Résumé</h3><p>Open the Summer 2026 résumé (PDF).</p>'],
+      ['mail','Register Now (Email Me)','mail','<h3>Register now</h3><p>Send Zach an email with Outlook Express.</p>'],
+    ];
+    w.body.innerHTML = `<div class="welcome"><div class="wl-banner">Welcome to <span>Zach 98</span></div><div class="wl-body">
+      <div class="wl-opts">${OPTS.map((o,i)=>`<div class="wl-opt" data-i="${i}">${icon(o[0],24)}<span>${o[1]}</span></div>`).join('')}</div>
+      <div class="wl-text" data-text></div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;flex:0 0 auto">
+        <div><input type="checkbox" id="wlShow" ${localGet('z98nowelcome')?'':'checked'}><label for="wlShow">Show this screen each time Zach 98 starts.</label></div>
+        <button data-close>Close</button></div></div>`;
+    const text = w.body.querySelector('[data-text]');
+    const hover = i => { w.body.querySelectorAll('.wl-opt').forEach((o,k)=>o.classList.toggle('on',k===i)); text.innerHTML = OPTS[i][3]; };
+    w.body.querySelectorAll('.wl-opt').forEach(o=>{ const i=+o.dataset.i; o.onmouseenter=()=>hover(i); o.onclick=()=>openApp(OPTS[i][2], o.getBoundingClientRect()); });
+    w.body.querySelector('#wlShow').onchange = e => localSet('z98nowelcome', e.target.checked ? '' : '1');
+    w.body.querySelector('[data-close]').onclick = w.close;
+    text.innerHTML = `<h3>Welcome!</h3><p>This is Zach Winship's portfolio, running on a 1998 desktop.</p><p>Point at an option on the left to learn more, or double-click the icons on the desktop.</p><p><b>Tip:</b> the <b>Start</b> button lists everything.</p>`;
+  }},
+
+  help: { title:'Zach 98 Help', icon:'help', w:520, h:400, render(w){
+    w.body.innerHTML = `<div class="toolbar"><button class="tbtn" data-close>${icon('back',20)}Hide</button><button class="tbtn" data-print>${icon('print',20)}Print</button></div>
+      <div style="flex:1;display:flex;gap:4px;min-height:0;margin-top:3px">
+        <ul class="tree-view" style="flex:0 0 170px;overflow:auto;margin:0">
+          <li><details open><summary>Getting Started</summary><ul><li>Opening programs</li><li>Using windows</li><li>The Start menu</li></ul></details></li>
+          <li><details open><summary>Where is...</summary><ul><li>Research → C:</li><li>Projects → D:</li><li>Presentations → E:</li><li>Résumé → A:</li></ul></details></li>
+          <li><details><summary>Tips &amp; Tricks</summary><ul><li>Run... commands</li><li>Minesweeper</li><li>Display settings</li></ul></details></li>
+        </ul>
+        <div class="panel-white" style="padding:10px 14px;line-height:1.5;font-size:12px">
+          <h4 style="margin:0 0 8px;font-size:14px">Getting around Zach 98</h4>
+          <p>• <b>Double-click</b> a desktop icon to open it (single tap on touch screens).</p>
+          <p>• Drag windows by their <b>title bar</b>; resize from the bottom-right corner; double-click the title bar to maximize.</p>
+          <p>• The <b>Start</b> menu has every program, document and link.</p>
+          <p>• <b>Start → Run...</b> accepts commands such as <code>projects</code>, <code>resume</code>, <code>notepad</code>, <code>winmine</code>, <code>command</code>, <code>wii</code> and <code>exit</code>.</p>
+          <p>• The <b>Recycle Bin</b> holds the things this portfolio deliberately doesn't contain.</p>
+          <p>Prefer a modern page? <a href="${ASSET}" style="color:#00c">Return to the main site</a>.</p>
+        </div></div>`;
+    w.body.querySelector('[data-close]').onclick = w.close;
+    w.body.querySelector('[data-print]').onclick = () => window.print();
+  }},
+
+  run: { title:'Run', dialog:true, center:true, help:true, w:360, h:170, render(w){
+    w.body.innerHTML = `<div class="err" style="padding:8px 4px">${icon('run')}<p style="margin:0">Type the name of a program, folder, document, or Internet resource, and Zach 98 will open it for you.</p></div>
+      <div class="field-row" style="margin:6px 4px"><label for="runIn" style="width:40px"><u>O</u>pen:</label><input id="runIn" type="text" list="runList" style="flex:1" autocomplete="off"></div>
+      <datalist id="runList">${Object.keys(RUN).map(k=>`<option value="${k}">`).join('')}</datalist>
+      <div class="btn-row"><button class="default" data-ok>OK</button><button data-cancel>Cancel</button><button data-browse>Browse...</button></div>`;
+    const inp = w.body.querySelector('#runIn'); setTimeout(()=>inp.focus(), 50);
+    const go = () => { const v = inp.value.trim().toLowerCase(); if (!v) return; w.close(); runCommand(v); };
+    inp.onkeydown = e => { if (e.key==='Enter') go(); };
+    w.body.querySelector('[data-ok]').onclick = go;
+    w.body.querySelector('[data-cancel]').onclick = w.close;
+    w.body.querySelector('[data-browse]').onclick = () => { w.close(); openApp('mycomputer'); };
+  }},
+
+  find: { title:'Find: All Files', icon:'find', w:520, h:380, render(w){
+    w.body.innerHTML = `<div class="tabs" style="flex:0 0 auto"><menu role="tablist"><li role="tab" aria-selected="true"><a href="#">Name &amp; Location</a></li></menu>
+      <div class="window" role="tabpanel"><div class="window-body" style="display:block;margin:8px">
+        <div class="field-row"><label style="width:70px">Named:</label><input type="text" data-q style="flex:1" placeholder="e.g. causal, UFC, MBTA"><button class="default" data-go>Find Now</button></div>
+        <div class="field-row"><label style="width:70px">Look in:</label><select style="flex:1"><option>My Computer</option></select></div>
+      </div></div></div>
+      <div class="sunken-panel" style="flex:1;margin-top:6px;min-height:0;background:#fff"><table class="interactive" style="width:100%"><thead><tr><th>Name</th><th>In Folder</th><th>Type</th></tr></thead><tbody data-res></tbody></table></div>
+      <div class="status-bar"><p class="status-bar-field" data-st>Enter a search term.</p></div>`;
+    w.body.querySelector('[role=tab] a').onclick = e => e.preventDefault();
+    const q = w.body.querySelector('[data-q]'), res = w.body.querySelector('[data-res]'), st = w.body.querySelector('[data-st]');
+    const find = () => {
+      const t = q.value.trim().toLowerCase();
+      const hits = ALL_PROJECTS.filter(p => !t || (p.title+' '+p.body+' '+p.tags.join(' ')+' '+p.meta).toLowerCase().includes(t));
+      res.innerHTML = hits.map((p,i)=>`<tr data-k="${i}"><td>${esc(shortName(p.title))}</td><td>${p.group==='Research'?'C:\\Research':'D:\\Personal Projects'}</td><td>${esc(p.meta.split(' · ')[0])}</td></tr>`).join('');
+      res.querySelectorAll('tr').forEach((tr,i)=>{ tr.onclick=()=>{res.querySelectorAll('tr').forEach(x=>x.classList.remove('highlighted'));tr.classList.add('highlighted');}; tr.ondblclick=()=>openProject(hits[i], tr.getBoundingClientRect()); });
+      st.textContent = `${hits.length} file(s) found`;
+    };
+    w.body.querySelector('[data-go]').onclick = find; q.onkeydown = e => { if (e.key==='Enter') find(); };
+    setTimeout(()=>q.focus(),50);
+  }},
+
+  dos: { title:'MS-DOS Prompt', icon:'dos', w:600, h:360, render(w){
+    w.body.innerHTML = `<div class="dos" tabindex="0"></div>`;
+    const out = w.body.querySelector('.dos');
+    const print = s => { out.insertAdjacentHTML('beforeend', s+'\n'); };
+    let line;
+    const prompt = () => { out.insertAdjacentHTML('beforeend', `<span>C:\\ZACH&gt;</span><input spellcheck="false" autocomplete="off">`); line = out.querySelector('input:last-of-type'); line.focus(); out.scrollTop = out.scrollHeight;
+      line.onkeydown = e => { if (e.key!=='Enter') return; const v = line.value; line.replaceWith(document.createTextNode(v)); out.insertAdjacentHTML('beforeend','\n'); exec(v.trim()); }; };
+    const exec = v => {
+      const c = v.toLowerCase().split(/\s+/)[0];
+      if (!c) {}
+      else if (c==='help') print('Commands: DIR, TYPE ABOUT.TXT, PROJECTS, RESUME, CONTACT, VER, CLS, WII, EXIT');
+      else if (c==='dir') print(` Volume in drive C is ZACH98\n Directory of C:\\ZACH\n\nABOUT    TXT     2,048  05-01-26\nRESUME   PDF    84,417  06-01-26\nRESEARCH     &lt;DIR&gt;        07-07-26\nPROJECTS     &lt;DIR&gt;        08-15-26\nPRESENT      &lt;DIR&gt;        04-20-26\n        2 file(s)     86,465 bytes\n        3 dir(s)   NBER 35,414 MB free`);
+      else if (c==='type') print(esc(ABOUT_TXT));
+      else if (c==='ver') print('\nZach 98 [Version 4.10.2026]\n');
+      else if (c==='cls') out.innerHTML='';
+      else if (c==='projects' || c==='dir/p') { print(ALL_PROJECTS.map(p=>`${p.year.padEnd(14)} ${p.title}`).join('\n')); }
+      else if (c==='resume') { openApp('resume'); print('Starting PDF Viewer...'); }
+      else if (c==='contact') { print(`Email: ${EMAIL}\nLinkedIn: linkedin.com/in/zwinship\nGitHub: github.com/zwinship`); }
+      else if (c==='wii') { print('Switching consoles...'); setTimeout(()=>location.href='../wii/',600); }
+      else if (c==='exit') { w.close(); return; }
+      else if (RUN[c]) { RUN[c](); }
+      else print('Bad command or file name');
+      prompt();
+    };
+    print('\nZach 98\n   (C)Copyright Zach Winship 1998-2026.\n\nType HELP for a list of commands.\n');
+    prompt();
+    out.onclick = () => line && line.focus();
+  }},
+
+  shutdown: { title:'Shut Down Zach 98', dialog:true, top:true, center:true, w:380, h:196, render(w){
+    document.getElementById('shutdim').style.display='block';
+    w.onClose = () => document.getElementById('shutdim').style.display='none';
+    w.body.innerHTML = `<div class="err" style="padding:8px 4px">${icon('shutdown')}<div><p style="margin:0 0 8px">What do you want the computer to do?</p>
+      <div class="field-row"><input id="sd1" type="radio" name="sd" checked><label for="sd1"><u>S</u>hut down</label></div>
+      <div class="field-row"><input id="sd2" type="radio" name="sd"><label for="sd2"><u>R</u>estart</label></div>
+      <div class="field-row"><input id="sd3" type="radio" name="sd"><label for="sd3">Restart in&nbsp;<u>M</u>S-DOS mode</label></div>
+      <div class="field-row"><input id="sd4" type="radio" name="sd"><label for="sd4">Switch to the&nbsp;<u>W</u>ii</label></div></div></div>
+      <div class="btn-row"><button class="default" data-ok>OK</button><button data-cancel>Cancel</button><button data-help>Help</button></div>`;
+    w.body.querySelector('[data-cancel]').onclick = w.close;
+    w.body.querySelector('[data-help]').onclick = () => openApp('help');
+    w.body.querySelector('[data-ok]').onclick = () => {
+      const pick = ['sd1','sd2','sd3','sd4'].find(id=>w.body.querySelector('#'+id).checked); w.close();
+      if (pick==='sd1') { closeAll(); document.getElementById('safe').style.display='flex'; }
+      if (pick==='sd2') { closeAll(); boot(); }
+      if (pick==='sd3') { closeAll(); const d = openApp('dos'); d.el.classList.add('max'); }
+      if (pick==='sd4') location.href='../wii/';
+    };
+  }},
+
+  logoff: { title:'Log Off Zach 98', dialog:true, center:true, w:320, h:130, render(w){
+    w.body.innerHTML = `<div class="err">${icon('logoff')}<p style="margin:4px 0 0">Are you sure you want to log off and return to the main site?</p></div><div class="btn-row" style="justify-content:center"><button class="default" data-y>Yes</button><button data-n>No</button></div>`;
+    w.body.querySelector('[data-y]').onclick = () => location.href = ASSET;
+    w.body.querySelector('[data-n]').onclick = w.close;
+  }},
+
+  about98: { title:'About Zach 98', dialog:true, center:true, w:360, h:200, render(w){
+    w.body.innerHTML = `<div class="err">${icon('computer')}<p style="margin:0">Zach 98<br>Version 4.10.2026<br><br>A portfolio for Zach Winship.<br>Built with <a href="https://github.com/jdan/98.css" target="_blank" rel="noopener">98.css</a> (MIT).</p></div><div class="btn-row"><button class="default" data-ok>OK</button></div>`;
+    w.body.querySelector('[data-ok]').onclick = w.close;
+  }},
+};
+
+function openApp(key, fromRect){
+  const a = APPS[key]; if (!a) return;
+  return openWin(key, a, fromRect);
+}
+function closeAll(){ [...wins.values()].forEach(w=>w.close()); }
+
+/* --- Run command table --- */
+const RUN = {
+  projects:()=>openApp('mycomputer'), research:()=>openApp('research'), personal:()=>openApp('personal'),
+  resume:()=>openApp('resume'), about:()=>openApp('system'), notepad:()=>openApp('notepad'), wordpad:()=>openApp('wordpad'),
+  experience:()=>openApp('wordpad'), presentations:()=>openApp('media'), mplayer:()=>openApp('media'),
+  iexplore:()=>openApp('ie'), blog:()=>openApp('blog'), mail:()=>openApp('mail'), winmine:()=>openApp('winmine'),
+  command:()=>openApp('dos'), cmd:()=>openApp('dos'), control:()=>openApp('control'), help:()=>openApp('help'),
+  wii:()=>location.href='../wii/', exit:()=>location.href=ASSET,
+  github:()=>ext('https://github.com/zwinship'), linkedin:()=>ext('https://linkedin.com/in/zwinship'),
+};
+function runCommand(v){
+  if (RUN[v]) return RUN[v]();
+  if (/^https?:\/\//.test(v)) return ext(v);
+  msgbox(v, `Cannot find the file '${esc(v)}' (or one of its components). Make sure the path and filename are correct and that all required libraries are available.`, 'errorx');
+}
+
+/* =====================================================================
+   BROWSER (90s home page)
+   ===================================================================== */
+function browser(w, start){
+  const PAGES = {
+    home: { url:'http://www.zwinship.com/~zach/index.htm', title:"Zach's Home Page", html:() => `
+      <div class="marq"><span>*** Welcome to Zach's Home Page! *** NBER Working Paper No. 35414 is out! *** Now a grad student at NYU *** Thanks for visiting! ***</span></div>
+      <h1>Zach Winship's Home Page</h1>
+      <p class="center"><i>Quantitative Economist &amp; Data Analyst · NYU MS '27 · Bentley '26</i></p>
+      <p class="center"><span class="uc"><span>UNDER CONSTRUCTION</span></span></p>
+      <hr>
+      <table align="center" cellspacing="6"><tr>
+        <td style="width:160px;text-align:center"><img src="${ASSET}images/zwinship.png" alt="Zach" width="140" height="140" style="object-fit:cover;border:3px ridge #c0c0c0"><br><small>This is me!</small></td>
+        <td style="max-width:420px">Hi! Welcome to my little corner of the Information Superhighway. I'm an economist who likes careful empirical methods and work that's actually fun to look at. Most portfolios are full of coursework &mdash; mine is made up entirely of self-driven projects.<br><br>
+        <b>Cool stuff on this site:</b><ul><li><a data-go="research">My Research</a> <span class="new blink">NEW!</span></li><li><a data-go="media">In the News</a></li><li><a data-go="blog">Unlikely Instruments</a> (my blog)</li><li><a data-app="mycomputer">All my projects</a></li></ul></td>
+      </tr></table>
+      <hr>
+      <h2>&#9733; My Links &#9733;</h2>
+      <ul>
+        <li><a data-href="https://github.com/zwinship">GitHub</a> &mdash; code for everything</li>
+        <li><a data-href="https://linkedin.com/in/zwinship">LinkedIn</a></li>
+        <li><a data-href="https://www.nber.org/papers/w35414">NBER Working Paper No. 35414</a></li>
+        <li><a data-href="https://octastats.github.io/index.html">OctaStats</a> &mdash; UFC prediction model</li>
+        <li><a data-href="https://taleofthetape.github.io">Tale of the Tape</a> &mdash; daily UFC game</li>
+        <li><a data-href="https://falconeconsim.github.io/">Intermediate Microeconomics course site</a></li>
+        <li><a data-href="${ASSET}">The modern version of this site</a></li>
+      </ul>
+      <hr>
+      <p class="center">You are visitor number <span class="counter">${'035414'.split('').map(d=>`<b>${d}</b>`).join('')}</span></p>
+      <p class="center"><a data-app="mail">Sign my guestbook!</a> &nbsp;|&nbsp; <a data-app="mail">E-mail me</a></p>
+      <p class="center"><small>Best viewed in 800x600 with Internet Explorer 4.0 or higher.<br>Last updated: ${new Date().toLocaleDateString('en-US')}</small></p>` },
+    research: { url:'http://www.zwinship.com/~zach/research.htm', title:'My Research', html:() => `
+      <p><a data-go="home">&laquo; Back to Home</a></p><h1>My Research</h1><hr>
+      ${RESEARCH.map(p=>`<h2>${esc(p.title)}</h2><p><i>${esc(p.meta)} &middot; ${esc(p.year)}</i>${p.badge?` &middot; <b>${esc(p.badge)}</b>`:''}</p><p>${esc(p.body)}</p><p>${(p.links||[]).map(l=>`[<a data-href="${l[0]}">${esc(l[1])}</a>]`).join(' ')}</p>`).join('<hr>')}` },
+    media: { url:'http://www.zwinship.com/~zach/news.htm', title:'In the News', html:() => `
+      <p><a data-go="home">&laquo; Back to Home</a></p><h1>In the News</h1><p class="center"><b>Congestion Pricing and EMS Response Time</b> (NBER WP No. 35414)</p><hr>
+      <table align="center"><tr><th>Outlet</th><th>Story</th></tr>
+      <tr><td>NBER Digest</td><td>forthcoming, Sept. 2026</td></tr><tr><td>ProMarket, Chicago Booth Stigler Center</td><td>forthcoming</td></tr>
+      ${MEDIA.map(m=>`<tr><td><b>${m[1]}</b></td><td><a data-href="${m[0]}">${esc(m[2])}</a></td></tr>`).join('')}</table>` },
+    blog: { url:'http://www.unlikelyinstruments.com/', title:'Unlikely Instruments', html:() => `
+      <p><a data-go="home">&laquo; Back to Zach's Home Page</a></p>
+      <h1 style="color:#000080">Unlikely Instruments</h1><p class="center"><i>Bi-monthly &middot; Launching Sept 2026</i></p>
+      <p class="center">A blog about unusual, creative ways to find and use data &mdash; especially proxy variables and data sources nobody would think to look at. New post every two months.</p><hr>
+      <table align="center" width="90%"><tr><th>#</th><th>Post</th><th>Topics</th><th>Status</th></tr>
+      ${BLOG.map((b,i)=>`<tr><td>0${i+1}</td><td><b>${esc(b[0])}</b></td><td>${esc(b[1])}</td><td>${esc(b[2])}</td></tr>`).join('')}</table>
+      <p class="center" style="margin-top:20px"><span class="uc"><span>COMING SOON</span></span></p>` },
+  };
+  const hist = [start]; let hi = 0;
+  function render(){
+    const pg = PAGES[hist[hi]];
+    w.setTitle(`${pg.title} - Internet Explorer`);
+    w.body.innerHTML = menubar([['File',[['Close','close']]],['Edit',[]],['View',[['Refresh','refresh']]],['Go',[['Home Page','home'],['Back','back'],['Forward','fwd']]],['Favorites',[['GitHub','url:https://github.com/zwinship'],['LinkedIn','url:https://linkedin.com/in/zwinship'],['NBER Paper','url:https://www.nber.org/papers/w35414'],['Unlikely Instruments','blogp']]],['Help',[['About Zach 98','app:about98']]]])
+      + `<div class="toolbar">
+          <button class="tbtn" data-t="back" ${hi>0?'':'disabled'}>${icon('back',20)}Back</button>
+          <button class="tbtn" data-t="fwd" ${hi<hist.length-1?'':'disabled'}>${icon('fwd',20)}Forward</button>
+          <button class="tbtn" data-t="stop">${icon('stop',20)}Stop</button>
+          <button class="tbtn" data-t="refresh">${icon('refresh',20)}Refresh</button>
+          <button class="tbtn" data-t="home">${icon('home',20)}Home</button>
+          <div class="tb-sep" style="height:auto"></div>
+          <button class="tbtn" data-t="mail">${icon('mail',20)}Mail</button>
+          <button class="tbtn" data-t="print">${icon('print',20)}Print</button>
+        </div>
+        <div class="addr"><span>Address</span><div class="fld">${icon('web',16)}<span>${pg.url}</span></div><button style="min-width:0;padding:0 8px" data-t="refresh">Go</button></div>
+        <div class="ie-page"><div class="web">${pg.html()}</div></div>
+        <div class="status-bar"><p class="status-bar-field">Done</p><p class="status-bar-field" style="flex:0 0 120px">${icon('globe',16).replace('class="ico"','class="ico" style="display:inline;vertical-align:-3px;width:14px;height:14px"')} Internet zone</p></div>`;
+    const go = id => { hist.splice(hi+1); hist.push(id); hi++; render(); };
+    w.body.querySelectorAll('[data-go]').forEach(a=>a.onclick=()=>go(a.dataset.go));
+    w.body.querySelectorAll('[data-href]').forEach(a=>a.onclick=()=>ext(a.dataset.href));
+    w.body.querySelectorAll('[data-app]').forEach(a=>a.onclick=()=>openApp(a.dataset.app));
+    const T = { back:()=>{ if(hi>0){hi--;render();} }, fwd:()=>{ if(hi<hist.length-1){hi++;render();} }, home:()=>go('home'), refresh:render, stop:()=>{}, mail:()=>openApp('mail'), print:()=>window.print(), blogp:()=>go('blog') };
+    w.body.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>T[b.dataset.t]());
+    wireMenubar(w, T);
+  }
+  render();
+}
+
+/* =====================================================================
+   MINESWEEPER (Beginner: 9×9, 10 mines)
+   ===================================================================== */
+function minesweeper(w){
+  const R=9, C=9, M=10;
+  let grid, opened, flags, over, first, timer, secs;
+  w.body.innerHTML = menubar([['Game',[['New','new'],'-',['Exit','close']]],['Help',[['About Minesweeper','abt']]]])
+    + `<div class="ms"><div class="ms-head"><div class="led" data-left>010</div><button class="ms-face" data-face></button><div class="led" data-time>000</div></div><div class="ms-grid" style="grid-template-columns:repeat(${C},16px)"></div></div>`;
+  w.body.style.background = 'var(--face)';
+  const gridEl = w.body.querySelector('.ms-grid'), face = w.body.querySelector('[data-face]');
+  const pad = n => String(Math.max(-99,Math.min(999,n))).padStart(3,'0');
+  function reset(){
+    grid = Array(R*C).fill(0); opened = Array(R*C).fill(false); flags = Array(R*C).fill(false);
+    over = false; first = true; secs = 0; clearInterval(timer);
+    face.innerHTML=FACE(); w.body.querySelector('[data-time]').textContent='000'; w.body.querySelector('[data-left]').textContent=pad(M);
+    gridEl.innerHTML=''; for (let i=0;i<R*C;i++){ const c=document.createElement('div'); c.className='cell'; c.dataset.i=i; gridEl.appendChild(c); }
+  }
+  const nb = i => { const r=Math.floor(i/C), c=i%C, out=[]; for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){ if(!dr&&!dc)continue; const rr=r+dr, cc=c+dc; if(rr>=0&&rr<R&&cc>=0&&cc<C) out.push(rr*C+cc);} return out; };
+  function plant(safe){
+    const banned = new Set([safe, ...nb(safe)]); let n=0;
+    while(n<M){ const k=Math.floor(Math.random()*R*C); if(grid[k]!==-1 && !banned.has(k)){ grid[k]=-1; n++; } }
+    for(let i=0;i<R*C;i++) if(grid[i]!==-1) grid[i]=nb(i).filter(j=>grid[j]===-1).length;
+  }
+  function paint(i){
+    const el = gridEl.children[i];
+    if (opened[i]){ el.className='cell open'; const v=grid[i]; if (v===-1) el.innerHTML = icon('mine',14); else el.textContent = v||''; if(v>0) el.classList.add('n'+v); }
+    else { el.className='cell'; el.innerHTML = flags[i]?FLAG:''; }
+  }
+  function open(i){
+    if (opened[i]||flags[i]) return; opened[i]=true; paint(i);
+    if (grid[i]===0) nb(i).forEach(open);
+  }
+  function click(i){
+    if (over || flags[i]) return;
+    if (first){ plant(i); first=false; timer=setInterval(()=>{ secs++; w.body.querySelector('[data-time]').textContent=pad(secs); },1000); }
+    if (grid[i]===-1){ over=true; clearInterval(timer); face.innerHTML=FACE('dead');
+      for(let k=0;k<R*C;k++) if(grid[k]===-1){ opened[k]=true; paint(k); }
+      gridEl.children[i].classList.add('boom'); return; }
+    open(i);
+    if (opened.filter(Boolean).length === R*C-M){ over=true; clearInterval(timer); face.innerHTML=FACE('cool'); beep('tada'); }
+  }
+  gridEl.addEventListener('pointerdown', e => { if(!over && e.button===0 && e.target.dataset.i) face.innerHTML=FACE('oh'); });
+  gridEl.addEventListener('pointerup', e => { if(!over) face.innerHTML=FACE(); });
+  gridEl.addEventListener('click', e => { const i=e.target.dataset.i; if(i!==undefined) click(+i); });
+  gridEl.addEventListener('contextmenu', e => { e.preventDefault(); const i=+e.target.dataset.i; if(isNaN(i)||over||opened[i]) return; flags[i]=!flags[i]; paint(i); w.body.querySelector('[data-left]').textContent=pad(M-flags.filter(Boolean).length); });
+  face.onclick = reset;
+  wireMenubar(w, { new:reset, abt:()=>msgbox('About Minesweeper','Minesweeper<br>Zach 98 Edition. Right-click to flag a mine.','info') });
+  w.onClose = () => clearInterval(timer);
+  reset();
+  requestAnimationFrame(()=>{ const ms=w.body.querySelector('.ms'); w.el.style.width=(ms.offsetWidth+12)+'px'; w.el.style.height=(ms.offsetHeight+w.el.querySelector('.title-bar').offsetHeight+w.body.querySelector('.menubar').offsetHeight+14)+'px'; });
+}
+
+/* =====================================================================
+   DESKTOP ICONS
+   ===================================================================== */
+const DESKTOP = [
+  ['mycomputer','My Computer','computer'],
+  ['mydocs','My Documents','docfolder'],
+  ['research','Research','folder'],
+  ['personal','Personal Projects','folder'],
+  ['media','Presentations','media'],
+  ['notepad','About Me.txt','notepad'],
+  ['wordpad','Experience.doc','doc'],
+  ['resume','Résumé.pdf','pdf'],
+  ['ie','The Internet','globe'],
+  ['blog','Unlikely Instruments','blog'],
+  ['mail','Email Zach','mail'],
+  ['winmine','Minesweeper','mine'],
+  ['dos','MS-DOS Prompt','dos'],
+  ['recycle','Recycle Bin','recyclefull'],
+];
+const iconsEl = document.getElementById('icons');
+DESKTOP.forEach(([app,label,ic]) => {
+  const d = document.createElement('div'); d.className='dicon'; d.tabIndex=0;
+  d.innerHTML = `${icon(ic)}<div class="lbl">${label}</div>`;
+  const open = () => openApp(app, d.querySelector('.ico').getBoundingClientRect());
+  d.addEventListener('click', e => { iconsEl.querySelectorAll('.sel').forEach(x=>x.classList.remove('sel')); d.classList.add('sel'); if (matchMedia('(pointer:coarse)').matches) open(); e.stopPropagation(); });
+  d.addEventListener('dblclick', open);
+  d.addEventListener('keydown', e => { if (e.key==='Enter') open(); });
+  iconsEl.appendChild(d);
+});
+desktop.addEventListener('pointerdown', e => { if (e.target===desktop || e.target===iconsEl) iconsEl.querySelectorAll('.sel').forEach(x=>x.classList.remove('sel')); });
+
+/* =====================================================================
+   START MENU
+   ===================================================================== */
+const startBtn = document.getElementById('startBtn'), startMenu = document.getElementById('startMenu');
+const SUBS = {
+  programs: [['Accessories','folder',null,[['Notepad','notepad','notepad'],['WordPad','doc','wordpad'],['Media Player','media','media'],['Minesweeper','mine','winmine']]],['Internet Explorer','globe','ie'],['Outlook Express','mail','mail'],['MS-DOS Prompt','dos','dos'],['Windows Explorer','computer','mycomputer'],['Wii Menu','display','@wii']],
+  favorites: [['GitHub','web','@https://github.com/zwinship'],['LinkedIn','web','@https://linkedin.com/in/zwinship'],['NBER Paper','web','@https://www.nber.org/papers/w35414'],['OctaStats','web','@https://octastats.github.io/index.html'],['Tale of the Tape','web','@https://taleofthetape.github.io'],['Micro Course Site','web','@https://falconeconsim.github.io/']],
+  documents: [['About Me.txt','notepad','notepad'],['Experience.doc','doc','wordpad'],['resume.pdf','pdf','resume'],['transcript.pdf','pdf','@'+ASSET+'about_me/transcript.pdf'],...PRESENTATIONS.filter(p=>p.pdf).map(p=>[p.pdf.split('/').pop().replace(/_Presentation\.pdf$/,'').replace(/_/g,' ')+'.pdf','presentation','@'+ASSET+p.pdf])],
+  settings: [['Control Panel','control','control'],['Display','display','display'],['System Properties','computer','system'],['Taskbar & Start Menu...','settings','help']],
+};
+function buildSub(id, items){
+  const el = document.getElementById('sub-'+id) || Object.assign(document.createElement('div'),{className:'submenu',id:'sub-'+id});
+  if (!el.parentNode) document.body.appendChild(el);
+  el.innerHTML = items.map((it,k)=>`<div class="mi${it[3]?' sub':''}" data-k="${k}">${icon(it[1],16)}<span>${esc(it[0])}</span></div>`).join('');
+  el.querySelectorAll('.mi').forEach(mi => {
+    const it = items[+mi.dataset.k];
+    if (it[3]){
+      const childId = id+'-'+mi.dataset.k; buildSub(childId, it[3]);
+      mi.addEventListener('pointerenter', () => hoverIntent(() => showSub(childId, mi, el)));
+    } else {
+      mi.addEventListener('pointerenter', () => hoverIntent(() => hideSubsBelow(el)));
+      mi.addEventListener('click', () => { closeStart(); const t = it[2];
+        if (t==='@wii') location.href='../wii/'; else if (t.startsWith('@')) ext(t.slice(1)); else openApp(t); });
+    }
+  });
+  return el;
+}
+Object.entries(SUBS).forEach(([k,v])=>buildSub(k,v));
+const subChain = [];
+let hoverT = null;
+function hoverIntent(fn){ clearTimeout(hoverT); hoverT = setTimeout(fn, 180); }
+function hideSubsBelow(parent){
+  while (subChain.length && subChain[subChain.length-1].el !== parent){ const s=subChain.pop(); s.el.style.display='none'; s.anchor.classList.remove('hover'); }
+}
+function showSub(id, anchor, parent){
+  hideSubsBelow(parent);
+  const el = document.getElementById('sub-'+id); el.style.display='block';
+  const r = anchor.getBoundingClientRect();
+  let left = r.right - 3, top = r.top - 3;
+  if (left + el.offsetWidth > innerWidth) left = Math.max(0, r.left - el.offsetWidth + 3);
+  if (top + el.offsetHeight > innerHeight - 28) top = Math.max(0, innerHeight - 28 - el.offsetHeight);
+  el.style.left = left+'px'; el.style.top = top+'px';
+  anchor.classList.add('hover');
+  subChain.push({el, anchor, parent});
+}
+startMenu.querySelectorAll('.mi').forEach(mi => {
+  if (mi.dataset.sub) mi.addEventListener('pointerenter', () => hoverIntent(() => showSub(mi.dataset.sub, mi, startMenu)));
+  else mi.addEventListener('pointerenter', () => hoverIntent(() => hideSubsBelow(startMenu)));
+  if (mi.dataset.sub) mi.addEventListener('click', () => { clearTimeout(hoverT); showSub(mi.dataset.sub, mi, startMenu); });
+  if (mi.dataset.open) mi.addEventListener('click', () => { closeStart(); openApp(mi.dataset.open); });
+});
+function closeStart(){ clearTimeout(hoverT); startMenu.classList.remove('open'); startBtn.classList.remove('on'); hideSubsBelow(null); }
+startBtn.addEventListener('click', e => { e.stopPropagation(); const o = !startMenu.classList.contains('open'); closeStart(); if (o){ startMenu.classList.add('open'); startBtn.classList.add('on'); } });
+document.addEventListener('pointerdown', e => { if (!e.target.closest('#startMenu,.submenu,#startBtn')) closeStart(); });
+document.querySelectorAll('.quick [data-open]').forEach(b => b.onclick = () => {
+  if (b.id==='showDesk'){ wins.forEach(w=>{ w.el.classList.add('min'); w.task.classList.remove('on'); }); active=null; return; }
+  openApp(b.dataset.open, b.getBoundingClientRect());
+});
+addEventListener('keydown', e => { if (e.key==='Escape') closeStart(); if (e.key==='Meta' ) { e.preventDefault(); startBtn.click(); } });
+
+/* =====================================================================
+   CLOCK, WALLPAPER, BOOT
+   ===================================================================== */
+function tick(){ document.getElementById('clock').textContent = new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}); }
+tick(); setInterval(tick, 10000);
+function localGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+function localSet(k,v){ try{ v ? localStorage.setItem(k,v) : localStorage.removeItem(k); }catch(e){} }
+function setDesktop(bg){ document.body.style.background = bg; }
+setDesktop(localGet('z98bg') || '#008080');
+
+function boot(){
+  const el = document.getElementById('boot'), sp = document.getElementById('splash');
+  el.style.display='block'; sp.style.display='none';
+  const lines = [
+    'Zach BIOS v4.10, An Energy Star Ally','Copyright (C) 1998-2026, Zach Winship','',
+    'Main Processor : Quantitative Economist @ NYU','Memory Testing : 65536K OK','',
+    'Detecting IDE Primary Master ... RESEARCH (C:)','Detecting IDE Primary Slave  ... PERSONAL PROJECTS (D:)','Detecting IDE Secondary Master ... PRESENTATIONS (E:)','Detecting Floppy Drive A: ... RESUME.PDF','',
+    'Loading NBER_WP_35414.SYS ... OK','','Starting Zach 98...'];
+  el.innerHTML = `<div class="energy">ZACH<br>98</div>`;
+  let i = 0, done = false;
+  const finish = () => {
+    if (done) return; done = true; clearInterval(t);
+    el.style.display='none'; sp.style.display='flex';
+    setTimeout(() => { sp.style.display='none'; if (!localGet('z98nowelcome')) openApp('welcome'); beep('tada'); }, 1500);
+  };
+  const t = setInterval(() => { if (i < lines.length){ el.insertAdjacentText('beforeend', lines[i++]+'\n'); } else finish(); }, 110);
+  el.onclick = finish; sp.onclick = () => { sp.style.display='none'; };
+  addEventListener('keydown', finish, { once:true });
+}
+document.getElementById('safe').onclick = () => { document.getElementById('safe').style.display='none'; boot(); };
+boot();
+</script>
+</body>
+</html>
