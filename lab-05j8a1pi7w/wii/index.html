@@ -8,7 +8,7 @@
 <link rel="icon" href="../../images/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@400;500;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <!--
   Layout reference: the bottom-bar silhouette, button geometry and page
   arrow are adapted from tobieche110/wii-portfolio (MIT License,
@@ -33,9 +33,9 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 .scan{background-color:#fafafa;background-image:repeating-linear-gradient(to bottom,#fafafa 0 2px,#f0f0f0 2px 4px)}
 
 /* ================= STAGE ================= */
-#root{position:fixed;inset:0;overflow:hidden}
-#stage{position:absolute;left:0;top:0;transform-origin:0 0;overflow:hidden}
-#barExt{position:absolute;left:0;right:0;bottom:0;pointer-events:none;background:linear-gradient(#e6e7ea,#d8d9dd);border-top:3px solid var(--cyan);display:none}
+#root{position:fixed;inset:0;overflow:clip}
+#stage{position:absolute;left:0;top:0;transform-origin:0 0;overflow:clip}
+#barExt{position:absolute;left:0;right:0;bottom:0;pointer-events:none;transition:transform .45s cubic-bezier(.45,0,.2,1);background:linear-gradient(#e6e7ea,#d8d9dd);border-top:3px solid var(--cyan);display:none}
 
 /* ================= HEALTH & SAFETY ================= */
 #warning{position:absolute;inset:0;z-index:80;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#fff;transition:opacity .6s ease;cursor:pointer}
@@ -56,7 +56,7 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 #menu{position:absolute;inset:0;visibility:hidden}
 #menu.boot{animation:fadeIn .8s ease both}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-#pages{position:absolute;left:0;top:0;overflow:hidden;transition:transform .5s cubic-bezier(.45,0,.2,1),opacity .45s ease}
+#pages{position:absolute;left:0;top:0;overflow:clip;transition:transform .5s cubic-bezier(.45,0,.2,1),opacity .45s ease}
 #track{position:absolute;left:0;top:0;height:100%;display:flex;transition:transform .55s cubic-bezier(.45,0,.2,1)}
 .page{position:relative;height:100%}
 .grid{position:absolute;display:grid}
@@ -154,7 +154,7 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 .cc-inner{max-width:1000px;margin:0 auto}
 .cc-foot{flex:0 0 auto;display:flex;justify-content:center;align-items:center;gap:clamp(12px,4vw,48px);flex-wrap:wrap;padding:16px;padding-bottom:max(16px,env(safe-area-inset-bottom));border-top:3px solid var(--cyan);background:linear-gradient(#ededef,#dfe0e3)}
 .cc-foot .pill{width:min(260px,42vw);height:62px;font-size:24px}
-@media (max-height:500px){.cc-head{padding:8px 16px}.cc-head .ico{width:64px;height:36px}.cc-foot{padding:8px}.cc-foot .pill{height:46px;font-size:20px}}
+@media (max-height:500px){.cc-head{padding:8px 16px}.cc-head .ico{width:64px;height:36px}.cc-foot{padding:8px;flex-wrap:nowrap;gap:10px}.cc-foot .pill{height:44px;font-size:18px;width:auto;flex:1 1 0;max-width:220px;padding:0 14px}}
 
 .sec-h{font-size:19px;font-weight:700;color:#55575c;margin:30px 0 12px}
 .sec-h:first-child{margin-top:0}
@@ -238,7 +238,8 @@ video{width:100%;border-radius:12px;background:#000;margin-top:12px;display:bloc
 @media (prefers-reduced-motion:reduce){
   .bn *,.spin,.ch.hot,.parrow.show svg,#mailBtn .env,.warn-press{animation:none !important}
   .warn-press{opacity:1}
-  #track,#pvZoom,#pages,#bar,#pvBottom{transition-duration:.01s !important}
+  #track,#pvZoom,#pages,#bar,#barExt,#pvBottom,#fader,#bubble{transition-duration:.01s !important}
+  #sysmenu .sys-row,#content,#menu.boot{animation:none !important}
 }
 </style>
 </head>
@@ -669,7 +670,7 @@ function computeLayout(){
   if (a < .9){
     const W = 720, H = Math.round(Math.max(1100, Math.min(1700, W/a))), cols = 2, rows = 4, gx = 16, gy = 18, mx = 60;
     const tw = (W - 2*mx - gx*(cols-1)) / cols, th = 188, gridH = rows*th + (rows-1)*gy;
-    const barTop = H - 200, top = Math.max(60, Math.round((barTop - gridH)*.4));
+    const barTop = H - 200, top = Math.max(60, Math.round((barTop - gridH)*.5));
     const zh = 470;
     return { mode:'portrait', W, H, cols, rows, per:cols*rows, gx, gy, mx, tw, th, top, barTop, s:190, zoom:{l:0,t:Math.round((H-148-zh)/2),w:720,h:zh}, arrowY:top + gridH/2 - 41 };
   }
@@ -736,8 +737,11 @@ function buildGrid(){
   ['pvL','pvR'].forEach(id => document.getElementById(id).style.top = (L.zoom.t + L.zoom.h/2 - 41)+'px');
   document.getElementById('pvL').style.left = '22px'; document.getElementById('pvR').style.right = '22px';
   paintBannerTemp();
+  if (typeof pauseSMIL === 'function') pauseSMIL(track);
 }
+function unscroll(){ for (const el of [document.getElementById('root'), stage, pagesEl]) { el.scrollTop = 0; el.scrollLeft = 0; } }
 function fit(){
+  unscroll();
   const w = innerWidth, h = innerHeight;
   SCALE = Math.min(w/L.W, h/L.H);
   OX = (w - L.W*SCALE)/2;
@@ -748,14 +752,16 @@ function fit(){
   else barExt.style.display='none';
 }
 function relayout(force){
-  const next = computeLayout();
+  const next = computeLayout(), prevMode = L && L.mode;
   const changed = force || !L || next.mode!==L.mode || next.W!==L.W || next.H!==L.H;
   L = next;
   document.body.classList.toggle('portrait', L.mode==='portrait');
   if (changed){
-    if (state==='preview' || state==='opening' || state==='closing') forceClosePreview();
+    const keep = state==='preview' && prevMode===L.mode;
+    if (!keep && (state==='preview' || state==='opening' || state==='closing')) forceClosePreview();
     if (state==='content' && contentFrom==='preview') camera(false);
-    buildBar(); buildGrid(); setPage(Math.min(page, PAGES-1), true, true);
+    buildBar(); buildGrid(); setPage(keep ? Math.floor(current/L.per) : Math.min(page, PAGES-1), true, true);
+    if (keep){ [pagesEl, bar, barExt, pvZoom].forEach(el => el.style.transition='none'); placeZoom(L.zoom, 0); camera(true, current); pvZoom.offsetWidth; [pagesEl, bar, barExt, pvZoom].forEach(el => el.style.transition=''); }
   }
   fit();
 }
@@ -835,9 +841,12 @@ function updateBubble(){
 document.addEventListener('pointerover', e => {
   if (e.pointerType === 'touch' || ['opening','closing','leaving'].includes(state)) return;
   const el = e.target.closest('[data-hot]');
-  setHot(el && !el.disabled && el.offsetParent !== null ? el : null);
+  const next = el && !el.disabled && el.offsetParent !== null ? el : null;
+  if (next !== hotEl && document.activeElement && document.activeElement !== document.body && document.activeElement.closest('#stage')) document.activeElement.blur();
+  setHot(next);
 });
-document.documentElement.addEventListener('mouseleave', () => setHot(null));
+document.documentElement.addEventListener('mouseleave', () => { setHot(null); hand.style.opacity = 0; });
+document.documentElement.addEventListener('mouseenter', () => { hand.style.opacity = ''; });
 document.addEventListener('focusin', e => { if (!lastKey) return; const el = e.target.closest('[data-hot]'); if (el) setHot(el, true); });
 
 /* =====================================================================
@@ -847,8 +856,11 @@ document.addEventListener('focusin', e => { if (!lastKey) return; const el = e.t
 let state = 'warning', started = false, page = 0, current = -1, pvTimer = null;
 const menu = document.getElementById('menu'), warning = document.getElementById('warning');
 
+let pressReady = reduced;
+document.querySelector('.warn-press').addEventListener('animationend', () => { pressReady = true; });
+setTimeout(() => { pressReady = true; }, 3000);
 function startMenu(){
-  if (started || performance.now() < 1600) return;   // A is only accepted once the prompt has appeared
+  if (started || !pressReady) return;   // A is only accepted once the prompt has appeared
   started = true; audio(); SFX.press(); setTimeout(startMusic, 900);
   warning.classList.add('gone');
   menu.style.visibility = 'visible'; menu.classList.add('boot');
@@ -867,8 +879,9 @@ function setPage(p, silent, instant){
   if (instant){ track.offsetWidth; track.style.transition=''; }
   [...track.children].forEach((pg,i) => pg.inert = i !== page);
   arrL.classList.toggle('show', page>0); arrR.classList.toggle('show', page<PAGES-1);
+  if ((document.activeElement===arrL && page===0) || (document.activeElement===arrR && page===PAGES-1)){ const t = tiles[page*L.per]; if (t) t.focus({preventScroll:true}); }
   arrL.disabled = page===0; arrR.disabled = page===PAGES-1;
-  if (!silent) SFX.page(page >= prev ? 1 : -1);
+  if (!silent && page !== prev) SFX.page(page >= prev ? 1 : -1);
   setHot(null);
 }
 arrL.onclick = () => setPage(page-1);
@@ -888,11 +901,11 @@ function camera(on, idx){
     const r = tileRect(idx);
     pagesEl.style.transformOrigin = `${r.l + r.w/2}px ${r.t + r.h/2}px`;
     pagesEl.style.transform = 'scale(3.2)'; pagesEl.style.opacity = '0';
-    bar.style.transform = 'translateY(230px)';
+    bar.style.transform = barExt.style.transform = 'translateY(230px)';
     arrL.style.opacity = arrR.style.opacity = '0';
   } else {
     pagesEl.style.transform = ''; pagesEl.style.opacity = '';
-    bar.style.transform = ''; arrL.style.opacity = arrR.style.opacity = '';
+    bar.style.transform = barExt.style.transform = ''; arrL.style.opacity = arrR.style.opacity = '';
   }
 }
 function openPreview(idx, dir){
@@ -908,11 +921,12 @@ function openPreview(idx, dir){
   } else if (state === 'preview'){
     SFX.page(); stopJingle();
     pvZoom.innerHTML = `<div class="bn">${B[ch.art]()}</div>`;
-    pvZoom.animate([{opacity:0, transform:`translateX(${dir*60}px)`},{opacity:1, transform:'none'}],{duration:260,easing:'ease-out'});
+    if (!reduced) pvZoom.animate([{opacity:0, transform:`translateX(${dir*60}px)`},{opacity:1, transform:'none'}],{duration:260,easing:'ease-out'});
     setTimeout(()=>{ if (current===idx && state==='preview') playJingle(ch.jingle); }, 200);
   } else return;
   document.getElementById('pvL').style.visibility = idx>0 ? 'visible':'hidden';
   document.getElementById('pvR').style.visibility = idx<CHANNELS.length-1 ? 'visible':'hidden';
+  if (document.activeElement && document.activeElement.style.visibility === 'hidden') document.getElementById('pvStart').focus({preventScroll:true});
 }
 function closePreview(silent){
   if (state !== 'preview' && state !== 'opening') return;
@@ -962,9 +976,9 @@ const fader = document.getElementById('fader');
 function openContent(idx){
   if (state !== 'preview') return;
   const ch = CHANNELS[idx]; SFX.start(); stopJingle();
-  state = 'content'; contentFrom = 'preview';
+  state = 'entering'; contentFrom = 'preview';
   fader.classList.add('on');
-  setTimeout(() => { showScreen(ch.screen, ch.name, ch.sub, ch.art); fader.classList.remove('on'); }, 260);
+  setTimeout(() => { state = 'content'; showScreen(ch.screen, ch.name, ch.sub, ch.art); fader.classList.remove('on'); unscroll(); }, 260);
 }
 // "Wii Menu" from inside a channel returns to the channel grid: fade to white,
 // then zoom the banner back down into its tile (rebuilt for the current layout).
@@ -997,8 +1011,8 @@ function closeContent(){
 
 /* --- Wii button / SD / mail --- */
 const sys = document.getElementById('sysmenu');
-function openSys(){ if(state!=='menu') return; SFX.select(); sys.classList.add('open'); state='sys'; bubble.classList.remove('on'); pagesEl.style.visibility='hidden'; arrL.style.visibility = arrR.style.visibility = 'hidden'; if (lastKey) document.getElementById('sysData').focus({preventScroll:true}); }
-function closeSys(){ if(state!=='sys') return; SFX.back(); sys.classList.remove('open'); state='menu'; pagesEl.style.visibility=''; arrL.style.visibility = arrR.style.visibility = ''; if (lastKey) document.getElementById('wiiBtn').focus({preventScroll:true}); }
+function openSys(){ if(state!=='menu') return; SFX.select(); sys.classList.add('open'); state='sys'; bubble.classList.remove('on'); setHot(null, true); bar.inert = true; pagesEl.style.visibility='hidden'; arrL.style.visibility = arrR.style.visibility = 'hidden'; if (lastKey) document.getElementById('sysData').focus({preventScroll:true}); }
+function closeSys(){ if(state!=='sys') return; SFX.back(); sys.classList.remove('open'); state='menu'; bar.inert = false; pagesEl.style.visibility=''; arrL.style.visibility = arrR.style.visibility = ''; if (lastKey) document.getElementById('wiiBtn').focus({preventScroll:true}); }
 const musicBtn = document.getElementById('musicToggle');
 const paintMusic = () => musicBtn.textContent = 'Music: ' + (musicOn ? 'On' : 'Off');
 paintMusic();
@@ -1009,8 +1023,8 @@ document.getElementById('sysClose').onclick = closeSys;
 document.getElementById('sysData').onclick = () => window.open(RESUME,'_blank','noopener');
 document.getElementById('sysSettings').onclick = () => { location.href = ASSET; };
 document.getElementById('sdBtn').onclick = () => { if (state==='menu'){ SFX.select(); window.open(RESUME,'_blank','noopener'); } };
-document.getElementById('mailBtn').onclick = () => { if(state!=='menu') return; SFX.select(); state='content'; contentFrom='menu'; bubble.classList.remove('on');
-  fader.classList.add('on'); setTimeout(() => { showScreen('board','Wii Message Board','Contact Zach',null); fader.classList.remove('on'); }, 260); };
+document.getElementById('mailBtn').onclick = () => { if(state!=='menu') return; SFX.select(); contentFrom='menu'; bubble.classList.remove('on');
+  state='entering'; fader.classList.add('on'); setTimeout(() => { state='content'; showScreen('board','Wii Message Board','Contact Zach',null); fader.classList.remove('on'); }, 260); };
 
 /* --- keyboard: arrows move the highlight, Enter/A = select, Esc/Backspace/B = back --- */
 let kFocus = 0;
@@ -1032,9 +1046,11 @@ addEventListener('keydown', e => {
     else return;
     e.preventDefault();
     if (n===null || n<0) return;
-    n = Math.min(n, CHANNELS.length-1);
+    if (n >= CHANNELS.length){ if (e.key==='ArrowDown') return; n = CHANNELS.length-1; }
     const p = Math.floor(n/per); if (p!==page) setPage(p);
     kFocus = n; tiles[n].focus({preventScroll:true}); setHot(tiles[n]);
+  } else if (state === 'opening'){
+    if (back){ e.preventDefault(); closePreview(); }
   } else if (state === 'preview'){
     if (back){ e.preventDefault(); closePreview(); }
     else if (e.key==='Enter' || e.key==='a' || e.key==='A') openContent(current);
@@ -1043,9 +1059,13 @@ addEventListener('keydown', e => {
   } else if (state === 'content'){
     if (e.key==='Escape' || ((e.key==='Backspace' || e.key==='b' || e.key==='B') && !onControl)){ e.preventDefault(); closeContent(); }
   } else if (state === 'sys'){
-    if (back) closeSys();
-    else if (e.key==='ArrowRight' || e.key==='ArrowDown') document.getElementById('sysSettings').focus();
-    else if (e.key==='ArrowLeft' || e.key==='ArrowUp') document.getElementById('sysData').focus();
+    if (back) return closeSys();
+    const order = ['sysData','sysSettings','musicToggle','sysClose'].map(id=>document.getElementById(id));
+    let i = order.indexOf(document.activeElement);
+    const moves = { ArrowRight:1, ArrowLeft:-1, ArrowDown:2, ArrowUp:-2 };
+    if (moves[e.key] === undefined) return;
+    e.preventDefault(); i = i < 0 ? 0 : Math.max(0, Math.min(3, i + moves[e.key]));
+    order[i].focus({preventScroll:true}); setHot(order[i], false);
   }
 });
 
@@ -1055,7 +1075,9 @@ addEventListener('touchstart', e => { tsx = e.touches[0].clientX; tsy = e.touche
 addEventListener('touchend', e => {
   if (tsx===null) return; const dx = e.changedTouches[0].clientX - tsx, dy = e.changedTouches[0].clientY - tsy; tsx = null;
   if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy)) return;
-  if (state==='menu') setPage(page + (dx<0?1:-1));
+  if (state==='menu'){ const t = page + (dx<0?1:-1);
+    if (t < 0 || t >= PAGES){ if (!reduced) track.animate([{transform:`translateX(${-page*L.W}px)`},{transform:`translateX(${-page*L.W + (dx<0?-30:30)}px)`},{transform:`translateX(${-page*L.W}px)`}],{duration:260,easing:'ease-out'}); }
+    else setPage(t); }
   else if (state==='preview'){ const n = current + (dx<0?1:-1); if (n>=0 && n<CHANNELS.length) openPreview(n, dx<0?1:-1); }
 });
 
@@ -1086,6 +1108,10 @@ function loadWeather(){
   });
 }
 new MutationObserver(paintBannerTemp).observe(pvZoom,{childList:true});
+// prefers-reduced-motion: CSS can't stop SMIL, so pause banner SVG animations directly
+function pauseSMIL(root){ if (reduced) root.querySelectorAll('svg').forEach(s => s.pauseAnimations && s.pauseAnimations()); }
+new MutationObserver(() => pauseSMIL(pvZoom)).observe(pvZoom,{childList:true});
+pauseSMIL(document);
 
 function wirePoll(){
   document.querySelectorAll('[data-vote]').forEach(b=>b.onclick=()=>{
