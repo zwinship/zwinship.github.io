@@ -46,10 +46,9 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 .warn-body{width:min(880px,88%);font-size:30px;line-height:1.55;font-weight:500;color:#222}
 .warn-body b{font-weight:700}
 .warn-body .url{display:block;margin-top:26px}
-.warn-press{margin-top:80px;font-size:30px;font-weight:500;color:#222;display:flex;align-items:center;gap:12px;opacity:0;animation:pressIn .6s ease 1.6s forwards, pressPulse 2.2s ease-in-out 2.2s infinite}
+.warn-press{margin-top:80px;font-size:30px;font-weight:500;color:#222;display:flex;align-items:center;gap:12px;opacity:0;animation:pressIn .6s ease 1.6s forwards}
 .a-btn{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:50%;background:#222;color:#fff;font-size:24px;font-weight:700}
 @keyframes pressIn{to{opacity:1}}
-@keyframes pressPulse{0%,100%{opacity:1}50%{opacity:.45}}
 .portrait .warn-title{font-size:40px;flex-direction:column;gap:10px}
 .portrait .warn-body{font-size:34px}
 
@@ -65,8 +64,7 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 /* --- channel tile --- */
 .ch{position:relative;border-radius:18px;background:#fff;border:2px solid var(--tile-border);padding:0;transition:border-color .1s,box-shadow .1s;outline:none}
 .ch .bn{position:absolute;inset:4px;border-radius:13px;overflow:hidden}
-.ch.hot,.ch:focus-visible{border-color:var(--cyan);box-shadow:0 0 0 1px var(--cyan),0 0 7px 2px rgba(52,190,237,.45);z-index:3;animation:hotPulse 1.4s ease-in-out infinite}
-@keyframes hotPulse{0%,100%{box-shadow:0 0 0 1px var(--cyan),0 0 6px 1px rgba(52,190,237,.35)}50%{box-shadow:0 0 0 1px var(--cyan),0 0 9px 3px rgba(52,190,237,.6)}}
+.ch.hot,.ch:focus-visible{border-color:var(--cyan);box-shadow:0 0 0 1px var(--cyan),0 0 7px 2px rgba(52,190,237,.45);z-index:3}
 .ch.empty{background:#ececee;border-color:#d2d3d6;cursor:default}
 .ch.empty .bn{display:flex;align-items:center;justify-content:center;background:repeating-linear-gradient(to bottom,#efeff1 0 2px,#e6e6e9 2px 4px)}
 .wii-mark{display:block;width:34%;max-width:96px}
@@ -126,8 +124,10 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 #pvL.hot svg{transform:scaleX(-1) scale(1.08)}
 
 /* ================= WII BUTTON SCREEN ================= */
-#sysmenu{position:absolute;inset:0;z-index:55;display:none;flex-direction:column;align-items:center;justify-content:center;gap:36px}
+#sysmenu{position:absolute;left:0;right:0;top:0;bottom:200px;z-index:55;display:none;flex-direction:column;align-items:center;justify-content:center;gap:36px}
 #sysmenu.open{display:flex;animation:fadeIn .25s ease}
+#sysmenu.open .sys-row{animation:sysIn .3s cubic-bezier(.45,0,.2,1)}
+@keyframes sysIn{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
 .sys-row{display:flex;gap:56px}
 .portrait .sys-row{flex-direction:column;gap:30px}
 .sysbtn{width:440px;height:200px;border-radius:24px;background:linear-gradient(#ffffff,#eeeff1);border:2px solid #c4c5c9;box-shadow:0 2px 4px rgba(0,0,0,.1);font-size:36px;font-weight:500;color:#55575c;transition:border-color .1s,box-shadow .1s;outline:none}
@@ -156,9 +156,9 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 .cc-foot .pill{width:min(260px,42vw);height:62px;font-size:24px}
 @media (max-height:500px){.cc-head{padding:8px 16px}.cc-head .ico{width:64px;height:36px}.cc-foot{padding:8px}.cc-foot .pill{height:46px;font-size:20px}}
 
-.sec-h{font-size:19px;font-weight:700;color:#55575c;margin:30px 0 12px;padding-bottom:8px;border-bottom:2px solid #d9dadd}
+.sec-h{font-size:19px;font-weight:700;color:#55575c;margin:30px 0 12px}
 .sec-h:first-child{margin-top:0}
-.card{background:#fff;border:2px solid #d5d6da;border-radius:18px;padding:22px 24px;margin-bottom:16px}
+.card{background:#fff;border:2px solid #d5d6da;border-radius:12px;padding:22px 24px;margin-bottom:16px}
 .card h3{font-size:21px;font-weight:700;color:#45474c;line-height:1.3}
 .card .meta{font-size:14px;font-weight:500;color:var(--cyan-text);margin:4px 0 10px}
 .card p{font-size:16.5px;line-height:1.7;color:#55575c}
@@ -185,9 +185,10 @@ video{width:100%;border-radius:12px;background:#000;margin-top:12px;display:bloc
 .shop-row .price{margin-left:auto;flex:0 0 auto;font-weight:700;color:var(--cyan-text);font-size:14px;text-align:right}
 @media (max-width:640px){.shop-row{flex-direction:column}.shop-row .thumb{width:100%;flex-basis:auto;height:auto;aspect-ratio:16/9}.shop-row .price{margin-left:0;text-align:left}}
 .wx{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
-.wx .card{text-align:center;background:linear-gradient(#e9f6fd,#fff 60%)}
-.wx .temp{font-size:64px;font-weight:700;color:#45474c;line-height:1}
-.wx .cond{font-weight:500;color:var(--cyan-text);margin-top:6px}
+.wx .card{text-align:center;background:linear-gradient(#3fa9e6,#8dd0f5);border-color:#5bb6e8;color:#fff}
+.wx .card h3,.wx .card .meta{color:#fff}
+.wx .temp{font-size:72px;font-weight:700;color:#fff;line-height:1}
+.wx .cond{font-weight:500;color:#eaf7ff;margin-top:6px}
 .poll-opts{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px}
 .poll-bar{height:28px;border-radius:999px;background:#eef0f2;overflow:hidden;margin-top:8px;border:1px solid #dedfe2}
 .poll-bar i{display:block;height:100%;border-radius:999px;transition:width .8s cubic-bezier(.45,0,.2,1)}
@@ -207,7 +208,9 @@ video{width:100%;border-radius:12px;background:#000;margin-top:12px;display:bloc
 .letter .from img{width:52px;height:52px;border-radius:12px;object-fit:cover;border:2px solid #d5d6da}
 .letter .from b{font-size:18px}
 /* themed content headers */
-#content[data-theme="shop"] .cc-head{background:linear-gradient(#e7f7fe,#fff)}
+#content[data-theme="shop"] .cc-head{background:#34beed;border-bottom-color:#1f9fd0}
+#content[data-theme="shop"] .cc-head h1,#content[data-theme="shop"] .cc-head p{color:#fff}
+#content[data-theme="shop"] .cc-body{background:#f2fbff}
 #content[data-theme="forecast"] .cc-head{background:linear-gradient(#bfe6fa,#fff)}
 #content[data-theme="news"] .cc-head{background:linear-gradient(#e8eef6,#fff)}
 #content[data-theme="board"] .cc-head{background:linear-gradient(#fbf9ec,#fff)}
@@ -221,6 +224,10 @@ video{width:100%;border-radius:12px;background:#000;margin-top:12px;display:bloc
 .bn .t{left:0;right:0;text-align:center;font-weight:700;white-space:nowrap}
 .bn .pv{display:none}
 #pvZoom .bn .pv{display:block}
+#pvZoom .bn .tick{font-size:6cqh !important}
+#fader{position:fixed;inset:0;z-index:75;background:#fff;opacity:0;pointer-events:none;transition:opacity .25s ease}
+#fader.on{opacity:1;pointer-events:auto}
+#musicToggle{width:300px;height:80px;font-size:28px}
 .spin{animation:spin 8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes walk{from{transform:translateX(-30cqw)}to{transform:translateX(130cqw)}}
@@ -250,7 +257,7 @@ video{width:100%;border-radius:12px;background:#000;margin-top:12px;display:bloc
     <div class="warn-rule"></div>
     <div class="warn-body">
       BEFORE BROWSING, READ ZACH'S <b>RÉSUMÉ</b> FOR IMPORTANT INFORMATION ABOUT HIS RESEARCH, PROJECTS AND EXPERIENCE.
-      <span class="url">Also online at<br>zwinship.github.io</span>
+      <span class="url">Also online at zwinship.github.io</span>
     </div>
     <div class="warn-press">Press <span class="a-btn">A</span> to continue.</div>
   </div>
@@ -291,7 +298,7 @@ video{width:100%;border-radius:12px;background:#000;margin-top:12px;display:bloc
         <button class="sysbtn" id="sysData" data-hot>Résumé</button>
         <button class="sysbtn" id="sysSettings" data-hot>Main Site</button>
       </div>
-      <button class="pill" id="sysClose" data-hot style="width:300px;height:80px;font-size:32px">Back</button>
+      <div class="sys-row" style="gap:40px"><button class="pill" id="musicToggle" data-hot>Music: On</button><button class="pill" id="sysClose" data-hot style="width:300px;height:80px;font-size:32px">Wii Menu</button></div>
     </div>
   </div>
 </div>
@@ -303,6 +310,8 @@ video{width:100%;border-radius:12px;background:#000;margin-top:12px;display:bloc
   <div class="cc-body" id="ccBody"><div class="cc-inner" id="ccInner"></div></div>
   <div class="cc-foot" id="ccFoot"></div>
 </div>
+
+<div id="fader"></div>
 
 <!-- ===== P1 hand pointer ===== -->
 <div id="hand" aria-hidden="true">
@@ -349,7 +358,7 @@ mii: () => {
      <div style="left:4.5cqh;top:19cqh;width:11cqh;height:14cqh;border-radius:30% 30% 16% 16%;background:${c}"></div>
      <div style="left:5.5cqh;top:32cqh;width:3.6cqh;height:12cqh;border-radius:2cqh;background:#6a6f78"></div>
      <div style="left:10.8cqh;top:32cqh;width:3.6cqh;height:12cqh;border-radius:2cqh;background:#6a6f78"></div></div>`).join('')}
-  <div style="right:6cqw;top:10cqh;width:30cqh;height:30cqh;border-radius:22%;overflow:hidden;border:.6cqh solid #d5d6da"><img src="${ASSET}images/zwinship.png" alt="" style="width:100%;height:100%;object-fit:cover"></div>
+  <div style="right:6cqw;top:10cqh;width:30cqh;height:30cqh;border-radius:22%;overflow:hidden;border:.6cqh solid #d5d6da"><img src="${ASSET}images/zwinship.png" alt="" style="width:100%;height:100%;object-fit:cover;object-position:62% 18%"></div>
   <div style="left:7cqw;top:14cqh;font-size:14cqh;font-weight:700;color:#7a7c81">About Me</div>`;
 },
 
@@ -387,7 +396,7 @@ news: () => `
       radial-gradient(ellipse 12% 10% at 86% 30%,#86d46f 98%,transparent),radial-gradient(ellipse 7% 12% at 90% 58%,#7dcf69 98%,transparent)"></div>
   </div>
   <div style="left:0;right:0;bottom:0;height:26cqh;background:#eef2f6;border-top:.5cqh solid #c9d6e3;overflow:hidden">
-    <div style="left:0;top:0;height:26cqh;line-height:26cqh;white-space:nowrap;font-size:9cqh;font-weight:500;color:#2b5d8f;animation:ticker 30s linear -8s infinite">${MEDIA.map(m=>`${m[1]}: ${m[2]}`).join('   ·   ')}   ·   Unlikely Instruments launches Sept 2026</div>
+    <div class="tick" style="left:0;top:0;height:26cqh;line-height:26cqh;white-space:nowrap;font-size:9cqh;font-weight:500;color:#2b5d8f;animation:ticker 30s linear -8s infinite">${MEDIA.map(m=>`${m[1]}: ${m[2]}`).join('   ·   ')}   ·   Unlikely Instruments launches Sept 2026</div>
   </div>`,
 
 internet: () => `
@@ -615,8 +624,8 @@ const SFX = {
   hover: () => { noise(.025, 3200, 2800, .05, 6); tone(1250,.04,'sine',.018); },
   select: () => { tone(520,.16,'sine',.05,0,1.9); tone(1600,.03,'triangle',.02); },
   back: () => tone(900,.15,'sine',.045,0,.55),
-  page: () => noise(.26, 500, 2200, .05, 1.2),
-  start: () => { tone(330,.35,'sine',.05,0,.6); noise(.3, 1800, 400, .03, 1); },
+  page: (dir=1) => dir>0 ? noise(.26, 500, 2200, .05, 1.2) : noise(.26, 2200, 500, .05, 1.2),
+  start: () => { tone(660,.25,'sine',.05,0,1.5); tone(1320,.2,'triangle',.02,.05); },
   press: () => tone(1500,.03,'triangle',.03),
 };
 const NOTE = n => { const m = /^([A-G])(#?)(\d)$/.exec(n); if (!m) return 0; const i = {C:0,D:2,E:4,F:5,G:7,A:9,B:11}[m[1]] + (m[2]?1:0); return 440*Math.pow(2,(i + (m[3]-4)*12 - 9)/12); };
@@ -627,6 +636,28 @@ function playJingle(str){
   let t = 0; const beat = .16;
   str.split(' ').forEach(n => { if (n !== '.'){ const f = NOTE(n); tone(f, .3, 'triangle', .045, t, 0, jingleGain); tone(f*2, .12, 'sine', .012, t, 0, jingleGain); } t += beat; });
 }
+/* Original ambient menu loop (not Nintendo's music): a soft Cmaj7–Am7–Dm7–G7
+   arpeggio through a lowpass, scheduled a little ahead of the audio clock. */
+let musicOn = true, musicGain = null, musicT = null, musicNext = 0, musicStep = 0;
+try{ musicOn = localStorage.getItem('wiiMusic') !== 'off'; }catch(e){}
+const MUSIC = ['C4 E4 G4 B4 E5 B4 G4 E4','A3 C4 E4 G4 C5 G4 E4 C4','D4 F4 A4 C5 F5 C5 A4 F4','G3 B3 D4 F4 B4 F4 D4 B3'].map(b=>b.split(' ').map(NOTE));
+function startMusic(){
+  const ac = audio(); if (!ac || musicGain) return;
+  const lp = ac.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value = 1800;
+  musicGain = ac.createGain(); musicGain.gain.value = musicOn ? 1 : 0;
+  musicGain.connect(lp).connect(ac.destination);
+  musicNext = ac.currentTime + .1;
+  musicT = setInterval(() => {
+    while (musicNext < ac.currentTime + .6){
+      const bar = MUSIC[Math.floor(musicStep/8) % 4], f = bar[musicStep % 8];
+      const when = musicNext - ac.currentTime;
+      tone(f, .55, 'triangle', .016, when, 0, musicGain);
+      if (musicStep % 8 === 0) tone(f/2, 1.6, 'sine', .014, when, 0, musicGain);
+      musicNext += .3; musicStep++;
+    }
+  }, 150);
+}
+function duckMusic(down){ if (!musicGain || !musicOn) return; musicGain.gain.setTargetAtTime(down ? 0 : 1, AC.currentTime, .12); }
 function stopJingle(){ if (jingleGain){ try{ jingleGain.gain.setTargetAtTime(0, AC.currentTime, .05); }catch(e){} jingleGain = null; } }
 
 /* =====================================================================
@@ -636,9 +667,11 @@ let L;
 function computeLayout(){
   const a = innerWidth / innerHeight;
   if (a < .9){
-    const W = 720, H = 1280, cols = 2, rows = 4, gx = 16, gy = 18, mx = 60;
-    const tw = (W - 2*mx - gx*(cols-1)) / cols, th = 188;
-    return { mode:'portrait', W, H, cols, rows, per:cols*rows, gx, gy, mx, tw, th, top:96, barTop:H-200, s:190, zoom:{l:0,t:260,w:720,h:405}, arrowY:96 + (rows*th+(rows-1)*gy)/2 - 41 };
+    const W = 720, H = Math.round(Math.max(1100, Math.min(1700, W/a))), cols = 2, rows = 4, gx = 16, gy = 18, mx = 60;
+    const tw = (W - 2*mx - gx*(cols-1)) / cols, th = 188, gridH = rows*th + (rows-1)*gy;
+    const barTop = H - 200, top = Math.max(60, Math.round((barTop - gridH)*.4));
+    const zh = 470;
+    return { mode:'portrait', W, H, cols, rows, per:cols*rows, gx, gy, mx, tw, th, top, barTop, s:190, zoom:{l:0,t:Math.round((H-148-zh)/2),w:720,h:zh}, arrowY:top + gridH/2 - 41 };
   }
   const H = 720, W = Math.round(Math.max(960, Math.min(1280, H*a)));
   const cols = 4, rows = 3, gx = 14, gy = 12, mx = Math.round(W*.074);
@@ -700,7 +733,7 @@ function buildGrid(){
   const ax = Math.max(6, L.mx/2-23);
   document.getElementById('arrL').style.cssText = `left:${ax}px;top:${L.arrowY}px`;
   document.getElementById('arrR').style.cssText = `right:${ax}px;top:${L.arrowY}px`;
-  ['pvL','pvR'].forEach(id => document.getElementById(id).style.top = (L.mode==='portrait' ? L.zoom.t + L.zoom.h + 40 : L.zoom.t + L.zoom.h/2 - 41)+'px');
+  ['pvL','pvR'].forEach(id => document.getElementById(id).style.top = (L.zoom.t + L.zoom.h/2 - 41)+'px');
   document.getElementById('pvL').style.left = '22px'; document.getElementById('pvR').style.right = '22px';
   paintBannerTemp();
 }
@@ -716,11 +749,12 @@ function fit(){
 }
 function relayout(force){
   const next = computeLayout();
-  const changed = force || !L || next.mode!==L.mode || next.W!==L.W;
+  const changed = force || !L || next.mode!==L.mode || next.W!==L.W || next.H!==L.H;
   L = next;
   document.body.classList.toggle('portrait', L.mode==='portrait');
   if (changed){
     if (state==='preview' || state==='opening' || state==='closing') forceClosePreview();
+    if (state==='content' && contentFrom==='preview') camera(false);
     buildBar(); buildGrid(); setPage(Math.min(page, PAGES-1), true, true);
   }
   fit();
@@ -761,14 +795,18 @@ const fine = matchMedia('(hover:hover) and (pointer:fine)').matches;
 const reduced = matchMedia('(prefers-reduced-motion:reduce)').matches;
 const hand = document.getElementById('hand');
 if (fine) document.documentElement.classList.add('has-hand');
-let mx = innerWidth/2, my = innerHeight/2, hx = mx, hy = my;
-addEventListener('pointermove', e => { mx = e.clientX; my = e.clientY; });
+let mx = innerWidth/2, my = innerHeight/2, hx = mx, hy = my, roll = 0, lastMove = 0, lastKey = false;
+addEventListener('pointermove', e => { mx = e.clientX; my = e.clientY; lastMove = performance.now(); lastKey = false; });
+addEventListener('pointerdown', () => { lastKey = false; }, true);
+addEventListener('keydown', () => { lastKey = true; }, true);
 addEventListener('pointerdown', () => hand.classList.add('press'));
 addEventListener('pointerup', () => hand.classList.remove('press'));
 (function loop(){
   const k = reduced ? 1 : .7;
   hx += (mx-hx)*k; hy += (my-hy)*k;
-  const roll = (mx/innerWidth - .5) * 14;  // the Wiimote "roll": tilts with where you point, not how fast
+  // A gentle "roll" toward where you point that settles upright when the hand rests.
+  const target = performance.now() - lastMove < 300 ? (mx/innerWidth - .5) * 12 : 0;
+  roll += (target - roll) * .08;
   hand.style.transform = `translate(${hx}px,${hy}px) rotate(${roll}deg)`;
   requestAnimationFrame(loop);
 })();
@@ -790,17 +828,17 @@ function updateBubble(){
     const cx = L.mx + col*(L.tw+L.gx) + L.tw/2, by = L.top + (row+1)*L.th + row*L.gy;
     const half = bubble.offsetWidth/2 || 120;
     bubble.style.left = Math.max(half+10, Math.min(L.W-half-10, cx)) + 'px';
-    bubble.style.top = Math.min(by - 22, L.barTop - 40) + 'px';
+    bubble.style.top = Math.min(by - 8, L.barTop - 46) + 'px';
     bubble.classList.add('on');
   } else bubble.classList.remove('on');
 }
 document.addEventListener('pointerover', e => {
-  if (e.pointerType === 'touch') return;
+  if (e.pointerType === 'touch' || ['opening','closing','leaving'].includes(state)) return;
   const el = e.target.closest('[data-hot]');
   setHot(el && !el.disabled && el.offsetParent !== null ? el : null);
 });
 document.documentElement.addEventListener('mouseleave', () => setHot(null));
-document.addEventListener('focusin', e => { const el = e.target.closest('[data-hot]'); if (el) setHot(el, true); });
+document.addEventListener('focusin', e => { if (!lastKey) return; const el = e.target.closest('[data-hot]'); if (el) setHot(el, true); });
 
 /* =====================================================================
    STATE MACHINE: warning → menu → opening → preview → content
@@ -810,8 +848,8 @@ let state = 'warning', started = false, page = 0, current = -1, pvTimer = null;
 const menu = document.getElementById('menu'), warning = document.getElementById('warning');
 
 function startMenu(){
-  if (started) return;
-  started = true; audio(); SFX.press();
+  if (started || performance.now() < 1600) return;   // A is only accepted once the prompt has appeared
+  started = true; audio(); SFX.press(); setTimeout(startMusic, 900);
   warning.classList.add('gone');
   menu.style.visibility = 'visible'; menu.classList.add('boot');
   state = 'menu';
@@ -822,13 +860,15 @@ warning.addEventListener('click', startMenu);
 /* --- paging --- */
 const arrL = document.getElementById('arrL'), arrR = document.getElementById('arrR');
 function setPage(p, silent, instant){
+  const prev = page;
   page = Math.max(0, Math.min(PAGES-1, p));
   if (instant){ track.style.transition='none'; }
   track.style.transform = `translateX(${-page*L.W}px)`;
   if (instant){ track.offsetWidth; track.style.transition=''; }
+  [...track.children].forEach((pg,i) => pg.inert = i !== page);
   arrL.classList.toggle('show', page>0); arrR.classList.toggle('show', page<PAGES-1);
   arrL.disabled = page===0; arrR.disabled = page===PAGES-1;
-  if (!silent) SFX.page();
+  if (!silent) SFX.page(page >= prev ? 1 : -1);
   setHot(null);
 }
 arrL.onclick = () => setPage(page-1);
@@ -836,6 +876,7 @@ arrR.onclick = () => setPage(page+1);
 
 /* --- preview: the menu "camera" pushes into the tile while its banner grows --- */
 const preview = document.getElementById('preview'), pvZoom = document.getElementById('pvZoom');
+preview.inert = true;
 function tileRect(idx){
   const s = idx % L.per, col = s % L.cols, row = Math.floor(s / L.cols);
   const w = L.tw-12, h = L.tw/L.th < 1.6 ? w*9/16 : L.th-12;
@@ -860,10 +901,10 @@ function openPreview(idx, dir){
     state = 'opening'; SFX.select(); bubble.classList.remove('on');
     pvZoom.innerHTML = `<div class="bn">${B[ch.art]()}</div>`;
     pvZoom.style.transition = 'none'; placeZoom(tileRect(idx), 13); pvZoom.offsetWidth; pvZoom.style.transition = '';
-    preview.classList.remove('closing'); preview.classList.add('open');
+    preview.classList.remove('closing'); preview.classList.add('open'); preview.inert = false;
     requestAnimationFrame(() => { placeZoom(L.zoom, 0); camera(true, idx); });
-    clearTimeout(pvTimer);
-    pvTimer = setTimeout(() => { if (state!=='opening') return; state = 'preview'; preview.classList.add('shown'); document.getElementById('pvStart').focus({preventScroll:true}); playJingle(ch.jingle); }, 480);
+    clearTimeout(pvTimer); duckMusic(true);
+    pvTimer = setTimeout(() => { if (state!=='opening') return; state = 'preview'; preview.classList.add('shown'); if (lastKey) document.getElementById('pvStart').focus({preventScroll:true}); playJingle(ch.jingle); }, 480);
   } else if (state === 'preview'){
     SFX.page(); stopJingle();
     pvZoom.innerHTML = `<div class="bn">${B[ch.art]()}</div>`;
@@ -873,21 +914,22 @@ function openPreview(idx, dir){
   document.getElementById('pvL').style.visibility = idx>0 ? 'visible':'hidden';
   document.getElementById('pvR').style.visibility = idx<CHANNELS.length-1 ? 'visible':'hidden';
 }
-function closePreview(){
+function closePreview(silent){
   if (state !== 'preview' && state !== 'opening') return;
-  state = 'closing'; clearTimeout(pvTimer); stopJingle(); SFX.back();
+  state = 'closing'; clearTimeout(pvTimer); stopJingle(); if (!silent) SFX.back(); duckMusic(false);
   preview.classList.remove('shown'); preview.classList.add('closing');
   const p = Math.floor(current / L.per); if (p !== page) setPage(p, true, true);
   placeZoom(tileRect(current), 13); camera(false);
   pvTimer = setTimeout(() => {
-    preview.classList.remove('open','closing'); pvZoom.innerHTML=''; pvZoom.style.width='0';
+    preview.classList.remove('open','closing'); preview.inert = true; pvZoom.innerHTML=''; pvZoom.style.width='0';
     state = 'menu';
-    if (tiles[current]){ if (!coarse) tiles[current].focus({preventScroll:true}); setHot(coarse ? null : tiles[current], true); }
+    if (lastKey && tiles[current]){ tiles[current].focus({preventScroll:true}); setHot(tiles[current], true); }
+    else if (!coarse){ const el = document.elementFromPoint(mx, my); const h = el && el.closest('[data-hot]'); setHot(h && !h.disabled ? h : null, true); }
   }, 480);
 }
 function forceClosePreview(){
   clearTimeout(pvTimer); stopJingle(); camera(false);
-  preview.classList.remove('open','shown','closing'); pvZoom.innerHTML=''; pvZoom.style.width='0';
+  preview.classList.remove('open','shown','closing'); preview.inert = true; pvZoom.innerHTML=''; pvZoom.style.width='0';
   if (state!=='content') state = 'menu';
 }
 document.getElementById('pvMenu').onclick = closePreview;
@@ -916,35 +958,59 @@ function showScreen(key, title, sub, art){
   if (key === 'forecast') loadWeather();
   if (key === 'votes') wirePoll();
 }
+const fader = document.getElementById('fader');
 function openContent(idx){
   if (state !== 'preview') return;
   const ch = CHANNELS[idx]; SFX.start(); stopJingle();
   state = 'content'; contentFrom = 'preview';
-  showScreen(ch.screen, ch.name, ch.sub, ch.art);
+  fader.classList.add('on');
+  setTimeout(() => { showScreen(ch.screen, ch.name, ch.sub, ch.art); fader.classList.remove('on'); }, 260);
 }
+// "Wii Menu" from inside a channel returns to the channel grid: fade to white,
+// then zoom the banner back down into its tile (rebuilt for the current layout).
 function closeContent(){
   if (state !== 'content') return;
   state = 'leaving'; SFX.back();
   content.querySelectorAll('video').forEach(v=>v.pause());
-  content.classList.add('leaving');
+  fader.classList.add('on');
   setTimeout(() => {
-    content.classList.remove('open','leaving'); document.getElementById('ccInner').innerHTML = '';
+    content.classList.remove('open'); document.getElementById('ccInner').innerHTML = '';
     document.documentElement.classList.remove('in-content'); stage.inert = false;
-    if (contentFrom === 'preview'){ state = 'preview'; preview.classList.add('shown'); document.getElementById('pvStart').focus({preventScroll:true}); }
-    else { state = 'menu'; if (!coarse) document.getElementById('mailBtn').focus({preventScroll:true}); }
-  }, 200);
+    if (contentFrom === 'preview'){
+      const ch = CHANNELS[current], p = Math.floor(current / L.per);
+      if (p !== page) setPage(p, true, true);
+      [pagesEl, bar, pvZoom].forEach(el => el.style.transition = 'none');
+      pvZoom.innerHTML = `<div class="bn">${B[ch.art]()}</div>`;
+      placeZoom(L.zoom, 0); camera(true, current);
+      preview.classList.add('open'); preview.classList.remove('shown'); preview.inert = false;
+      pvZoom.offsetWidth;
+      [pagesEl, bar, pvZoom].forEach(el => el.style.transition = '');
+      fader.classList.remove('on');
+      state = 'preview';
+      setTimeout(() => closePreview(true), 180);
+    } else {
+      fader.classList.remove('on');
+      state = 'menu'; if (lastKey) document.getElementById('mailBtn').focus({preventScroll:true});
+    }
+  }, 260);
 }
 
 /* --- Wii button / SD / mail --- */
 const sys = document.getElementById('sysmenu');
-function openSys(){ if(state!=='menu') return; SFX.select(); sys.classList.add('open'); state='sys'; bubble.classList.remove('on'); document.getElementById('sysData').focus({preventScroll:true}); }
-function closeSys(){ if(state!=='sys') return; SFX.back(); sys.classList.remove('open'); state='menu'; if (!coarse) document.getElementById('wiiBtn').focus({preventScroll:true}); }
+function openSys(){ if(state!=='menu') return; SFX.select(); sys.classList.add('open'); state='sys'; bubble.classList.remove('on'); pagesEl.style.visibility='hidden'; arrL.style.visibility = arrR.style.visibility = 'hidden'; if (lastKey) document.getElementById('sysData').focus({preventScroll:true}); }
+function closeSys(){ if(state!=='sys') return; SFX.back(); sys.classList.remove('open'); state='menu'; pagesEl.style.visibility=''; arrL.style.visibility = arrR.style.visibility = ''; if (lastKey) document.getElementById('wiiBtn').focus({preventScroll:true}); }
+const musicBtn = document.getElementById('musicToggle');
+const paintMusic = () => musicBtn.textContent = 'Music: ' + (musicOn ? 'On' : 'Off');
+paintMusic();
+musicBtn.onclick = () => { musicOn = !musicOn; paintMusic(); try{ localStorage.setItem('wiiMusic', musicOn ? 'on' : 'off'); }catch(e){}
+  if (musicGain) musicGain.gain.setTargetAtTime(musicOn ? 1 : 0, AC.currentTime, .1); else if (musicOn) startMusic(); };
 document.getElementById('wiiBtn').onclick = openSys;
 document.getElementById('sysClose').onclick = closeSys;
 document.getElementById('sysData').onclick = () => window.open(RESUME,'_blank','noopener');
 document.getElementById('sysSettings').onclick = () => { location.href = ASSET; };
 document.getElementById('sdBtn').onclick = () => { if (state==='menu'){ SFX.select(); window.open(RESUME,'_blank','noopener'); } };
-document.getElementById('mailBtn').onclick = () => { if(state!=='menu') return; SFX.select(); state='content'; contentFrom='menu'; showScreen('board','Wii Message Board','Contact Zach',null); };
+document.getElementById('mailBtn').onclick = () => { if(state!=='menu') return; SFX.select(); state='content'; contentFrom='menu'; bubble.classList.remove('on');
+  fader.classList.add('on'); setTimeout(() => { showScreen('board','Wii Message Board','Contact Zach',null); fader.classList.remove('on'); }, 260); };
 
 /* --- keyboard: arrows move the highlight, Enter/A = select, Esc/Backspace/B = back --- */
 let kFocus = 0;
