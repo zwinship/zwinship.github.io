@@ -75,10 +75,8 @@ document.head.insertAdjacentHTML('beforeend', `<style>
 .card .face{position:absolute;left:14px;right:14px;top:14px;bottom:14px;border:1px solid currentColor;display:flex;flex-direction:column;align-items:center;justify-content:center;background:repeating-linear-gradient(45deg,#fff7d0 0 4px,#ffe9a0 4px 8px);font:bold 26px "Times New Roman",serif}
 .card .face small{font-size:18px}
 .card.back{background:#fff}
-.card.back::before{content:"";position:absolute;inset:3px;border-radius:2px;background:
-  repeating-linear-gradient(45deg,transparent 0 3px,rgba(255,255,255,.35) 3px 4px),
-  repeating-linear-gradient(-45deg,transparent 0 3px,rgba(255,255,255,.35) 3px 4px),#1f3fbf;border:1px solid #001070}
-.card.back::after{content:"Z";position:absolute;left:0;right:0;top:32px;text-align:center;font:bold 26px "Times New Roman";color:#ffd800;text-shadow:1px 1px 0 #000}
+.card.back::before{content:"";position:absolute;inset:3px;border-radius:2px;background:var(--back,#1f3fbf);border:1px solid #001070}
+.card.back::after{content:var(--mark,"Z");position:absolute;left:0;right:0;top:32px;text-align:center;font:bold 26px "Times New Roman";color:var(--markc,#ffd800);text-shadow:1px 1px 0 #000}
 .card.drag{box-shadow:2px 2px 0 rgba(0,0,0,.4)}
 .card.hl{filter:invert(1)}
 /* Calculator */
@@ -135,7 +133,7 @@ const PAL = ['#000000','#808080','#800000','#808000','#008000','#008080','#00008
 APPS.paint = { title:'untitled - Paint', icon:'paint', w:700, h:520, minW:420, minH:320, render(w){
   const TOOLS = [['tfree',0],['tselect',0],['eraser',1],['fill',1],['picker',1],['tzoom',0],['pencil',1],['brush',1],['spray',1],['ttext',1],['tline',1],['tcurve',0],['trect',1],['tpoly',0],['tellipse',1],['trrect',1]];
   const NAMES = {tfree:'Free-Form Select',tselect:'Select',eraser:'Eraser/Color Eraser',fill:'Fill With Color',picker:'Pick Color',tzoom:'Magnifier',pencil:'Pencil',brush:'Brush',spray:'Airbrush',ttext:'Text',tline:'Line',tcurve:'Curve',trect:'Rectangle',tpoly:'Polygon',tellipse:'Ellipse',trrect:'Rounded Rectangle'};
-  let tool = 'pencil', fg = '#000000', bg = '#ffffff', size = 1, undo = [];
+  let tool = 'pencil', prevTool = 'pencil', fg = '#000000', bg = '#ffffff', size = 1, undo = [];
   w.body.innerHTML = menubar([['File',[['New','new'],['Save As PNG...','save'],'-',['Exit','close']]],['Edit',[['Undo','undo']]],['View',[]],['Image',[['Invert Colors','invert'],['Clear Image','clear']]],['Colors',[]],['Help',[['About Paint','abt']]]])
     + `<div class="pt"><div class="pt-main">
         <div class="pt-tools"><div class="pt-grid">${TOOLS.map(([t,ok])=>`<button data-tool="${t}" title="${NAMES[t]}" ${ok?'':'disabled'}>${icon(t,16)}</button>`).join('')}</div>
@@ -156,7 +154,8 @@ APPS.paint = { title:'untitled - Paint', icon:'paint', w:700, h:520, minW:420, m
     optsEl.innerHTML = s.map(v=>`<div data-s="${v}" class="${v===size?'on':''}"><i style="width:${Math.min(30,Math.max(2,v*(tool==='spray'?1:2)))}px;height:${Math.min(10,Math.max(2,v))}px;border-radius:${tool==='tline'?0:'50%'}"></i></div>`).join('');
     optsEl.querySelectorAll('[data-s]').forEach(d=>d.onclick=()=>{ size=+d.dataset.s; renderOpts(); });
   }
-  w.body.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>{ tool=b.dataset.tool; w.body.querySelectorAll('[data-tool]').forEach(x=>x.classList.toggle('on',x===b)); renderOpts(); });
+  const selectTool = t => { if (t==='picker' && tool!=='picker') prevTool = tool; tool = t; w.body.querySelectorAll('[data-tool]').forEach(x=>x.classList.toggle('on',x.dataset.tool===t)); renderOpts(); };
+  w.body.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>selectTool(b.dataset.tool));
   w.body.querySelector('[data-tool="pencil"]').classList.add('on');
   w.body.querySelectorAll('.pt-pal i').forEach(i=>{ i.onclick=()=>{fg=i.dataset.c;paintCur();}; i.oncontextmenu=e=>{e.preventDefault();bg=i.dataset.c;paintCur();}; });
   paintCur(); renderOpts();
@@ -196,10 +195,10 @@ APPS.paint = { title:'untitled - Paint', icon:'paint', w:700, h:520, minW:420, m
   cv.addEventListener('pointerdown', e => {
     e.preventDefault(); cv.setPointerCapture(e.pointerId);
     const [x,y] = pos(e); col = e.button===2 ? bg : fg; down = true; sx=lx=x; sy=ly=y;
-    if (tool==='picker'){ const p = ctx.getImageData(x,y,1,1).data; const c='#'+[p[0],p[1],p[2]].map(v=>v.toString(16).padStart(2,'0')).join(''); if(e.button===2) bg=c; else fg=c; paintCur(); down=false; return; }
+    if (tool==='picker'){ const p = ctx.getImageData(x,y,1,1).data; const c='#'+[p[0],p[1],p[2]].map(v=>v.toString(16).padStart(2,'0')).join(''); if(e.button===2) bg=c; else fg=c; paintCur(); down=false; selectTool(prevTool); return; }
+    if (tool==='ttext'){ down=false; const t = prompt('Text:'); if (t){ pushUndo(); ctx.fillStyle=col; ctx.font='16px Arial'; ctx.fillText(t,x,y); } return; }
     pushUndo();
     if (tool==='fill'){ flood(x,y,col); down=false; return; }
-    if (tool==='ttext'){ down=false; const t = prompt('Text:'); if (t){ ctx.fillStyle=col; ctx.font='16px Arial'; ctx.fillText(t,x,y); } return; }
     if (tool==='pencil'||tool==='brush'||tool==='eraser'){ ctx.fillStyle = tool==='eraser'?bg:col; ctx.fillRect(x-Math.floor(size/2), y-Math.floor(size/2), size, size); }
     if (tool==='spray'){ const go=()=>{ ctx.fillStyle=col; for(let k=0;k<12;k++){ const a=Math.random()*6.28, r=Math.random()*size; ctx.fillRect(Math.round(lx+Math.cos(a)*r), Math.round(ly+Math.sin(a)*r),1,1);} }; go(); sprayT=setInterval(go,30); }
   });
@@ -248,30 +247,41 @@ function cardHTML(c){
   else mid = PIPS[c.r].map(([x,y])=>`<div class="pip" style="left:calc(${x}% - 8px);top:calc(${y}% - 8px)${y>50?';transform:rotate(180deg)':''}">${s}</div>`).join('');
   return `<div class="c1">${r}<span>${s}</span></div>${mid}<div class="c2">${r}<span>${s}</span></div>`;
 }
+const DECKS = {
+  classic:{ name:'Classic', css:'repeating-linear-gradient(45deg,transparent 0 3px,rgba(255,255,255,.35) 3px 4px),repeating-linear-gradient(-45deg,transparent 0 3px,rgba(255,255,255,.35) 3px 4px),#1f3fbf', mark:'Z', col:'#ffd800' },
+  nyu:{ name:'NYU Torch', css:'radial-gradient(circle at 50% 45%,#8a3fc7 0 18%,transparent 19%),#57068c', mark:'🔥', col:'#fff' },
+  mbta:{ name:'MBTA', css:'repeating-linear-gradient(0deg,#da291c 0 8px,#ed8b00 8px 16px,#00843d 16px 24px,#003da5 24px 32px)', mark:'T', col:'#fff' },
+  ufc:{ name:'Octagon', css:'radial-gradient(circle,#c00 0 30%,#111 31%)', mark:'8', col:'#fff' },
+  fish:{ name:'Aquarium', css:'linear-gradient(#5fb7ff,#1c5fbf)', mark:'><>', col:'#ffd800' },
+};
 APPS.sol = { title:'Solitaire', icon:'cards', w:600, h:540, minW:300, minH:260, render(w){
   const COLX = i => 10 + i*81, TOPY = 10, TABY = 122;
+  let opt = { draw:3, vegas:false, deck:'classic' };
+  try{ Object.assign(opt, JSON.parse(localGet('z98sol')||'{}')); }catch(e){}
+  const saveOpt = () => localSet('z98sol', JSON.stringify(opt));
   let stock, waste, found, tab, score, secs, timer, history, won;
-  w.body.innerHTML = menubar([['Game',[['Deal','deal'],'-',['Undo','undo'],'-',['Exit','close']]],['Help',[['How to Play','how'],['About Solitaire','abt']]]])
+  w.body.innerHTML = menubar([['Game',[['Deal','deal'],'-',['Undo','undo'],['Deck...','deck'],['Options...','opts'],'-',['Exit','close']]],['Help',[['How to Play','how'],['About Solitaire','abt']]]])
     + `<div class="sol"><div class="sol-board"></div><canvas style="position:absolute;inset:0;display:none" data-win></canvas></div>
-       <div class="status-bar"><p class="status-bar-field" data-msg>Drag cards to build the foundations from Ace to King.</p><p class="status-bar-field" style="flex:0 0 150px" data-score></p></div>`;
+       <div class="status-bar"><p class="status-bar-field" data-msg>Drag cards to build the foundations from Ace to King.</p><p class="status-bar-field" style="flex:0 0 170px" data-score></p></div>`;
   const sol = w.body.querySelector('.sol'), board = w.body.querySelector('.sol-board'), scoreEl = w.body.querySelector('[data-score]');
   const fit = () => { const s = Math.min(1, sol.clientWidth/580, sol.clientHeight/470); board.style.transform = `scale(${s})`; board.dataset.s = s; };
   w.onResize = fit; new ResizeObserver(fit).observe(sol);
+  const applyDeck = () => { const d = DECKS[opt.deck] || DECKS.classic; sol.style.setProperty('--back', d.css); sol.style.setProperty('--mark', `"${d.mark}"`); sol.style.setProperty('--markc', d.col); };
   const snap = () => JSON.stringify({stock,waste,found,tab,score});
   function deal(){
     const deck = []; for (let s=0;s<4;s++) for (let r=1;r<=13;r++) deck.push({s,r,up:false});
     for (let i=deck.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [deck[i],deck[j]]=[deck[j],deck[i]]; }
     tab = Array.from({length:7},(_,i)=>{ const col = deck.splice(0,i+1); col[col.length-1].up = true; return col; });
-    stock = deck; waste = []; found = [[],[],[],[]]; score = 0; secs = 0; history = []; won = false;
-    clearInterval(timer); timer = setInterval(()=>{ if(!won){ secs++; status(); } },1000);
+    stock = deck; waste = []; found = [[],[],[],[]]; score = opt.vegas ? -52 : 0; secs = 0; history = []; won = false;
+    clearInterval(timer); timer = setInterval(()=>{ if(!won){ secs++; if (!opt.vegas && secs%10===0) score = Math.max(0, score-2); status(); } },1000);
     w.body.querySelector('[data-win]').style.display='none';
-    render();
+    applyDeck(); render();
   }
-  const status = () => { scoreEl.textContent = `Score: ${score}  Time: ${secs}`; };
+  const status = () => { scoreEl.textContent = opt.vegas ? `Score: $${score}` : `Score: ${score}  Time: ${secs}`; };
   const save = () => { history.push(snap()); if (history.length>50) history.shift(); };
   function canTab(card, col){ const top = col[col.length-1]; if (!top) return card.r===13; return top.up && isRed(top.s)!==isRed(card.s) && top.r===card.r+1; }
   function canFound(card, f){ const top = f[f.length-1]; return top ? (top.s===card.s && card.r===top.r+1) : card.r===1; }
-  function flipTops(){ tab.forEach(col=>{ const t=col[col.length-1]; if (t && !t.up){ t.up=true; score+=5; } }); }
+  function flipTops(){ tab.forEach(col=>{ const t=col[col.length-1]; if (t && !t.up){ t.up=true; if (!opt.vegas) score+=5; } }); }
   function el(card, x, y, src){
     const d = document.createElement('div');
     d.className = 'card ' + (card.up ? (isRed(card.s)?'red':'blk') : 'back');
@@ -285,67 +295,66 @@ APPS.sol = { title:'Solitaire', icon:'cards', w:600, h:540, minW:300, minH:260, 
     slot(COLX(0),TOPY,'stock',{pile:'stock'});
     if (stock.length) el(stock[stock.length-1], COLX(0), TOPY, {pile:'stock'});
     slot(COLX(1),TOPY,'',{pile:'waste'});
-    if (waste.length) el(waste[waste.length-1], COLX(1), TOPY, {pile:'waste', idx:waste.length-1});
+    const show = waste.slice(-Math.min(opt.draw, waste.length));
+    show.forEach((c,k)=>el(c, COLX(1) + k*14, TOPY, k===show.length-1 ? {pile:'waste', idx:waste.length-1} : {}));
     found.forEach((f,i)=>{ slot(COLX(3+i),TOPY,'found',{pile:'found',n:i}); if (f.length) el(f[f.length-1], COLX(3+i), TOPY, {pile:'found', n:i, idx:f.length-1}); });
     tab.forEach((col,i)=>{ slot(COLX(i),TABY,'',{pile:'tab',n:i}); let y = TABY; col.forEach((c,k)=>{ el(c, COLX(i), y, {pile:'tab', n:i, idx:k}); y += c.up ? 18 : 4; }); });
     status(); fit();
-    if (!won && found.every(f=>f.length===13)){ won = true; clearInterval(timer); setTimeout(cascade, 200); }
+    if (!won && found.every(f=>f.length===13)){ won = true; clearInterval(timer); if (!opt.vegas) score += Math.max(0, Math.round(700000/Math.max(30,secs))); status(); setTimeout(cascade, 200); }
   }
-  function autoFound(card, from){
-    for (let i=0;i<4;i++) if (canFound(card, found[i])){ save(); from(); found[i].push(card); score+=10; flipTops(); render(); return true; }
+  // Send a card to a foundation (double-click, or tap on touch screens)
+  function toFoundation(pile, n, idx){
+    let card, from;
+    if (pile==='waste' && waste.length){ card = waste[waste.length-1]; from = () => waste.pop(); }
+    else if (pile==='tab'){ const col = tab[n]; if (idx!==col.length-1) return false; card = col[col.length-1]; from = () => col.pop(); }
+    else return false;
+    for (let i=0;i<4;i++) if (canFound(card, found[i])){ save(); from(); found[i].push(card); score += opt.vegas ? 5 : 10; flipTops(); render(); return true; }
     return false;
   }
-  // stock click
-  board.addEventListener('click', e => {
-    const t = e.target.closest('[data-pile="stock"]'); if (!t) return;
+  function drawStock(){
+    if (!stock.length && !waste.length) return;
     save();
-    if (stock.length){ const c = stock.pop(); c.up = true; waste.push(c); }
-    else { stock = waste.reverse().map(c=>({...c,up:false})); waste = []; score = Math.max(0, score-100); }
+    if (stock.length){ for (let k=0;k<opt.draw && stock.length;k++){ const c = stock.pop(); c.up = true; waste.push(c); } }
+    else { stock = waste.reverse().map(c=>({...c,up:false})); waste = []; if (!opt.vegas) score = Math.max(0, score - (opt.draw===1 ? 100 : 0)); }
     render();
-  });
-  // double-click to foundation
-  board.addEventListener('dblclick', e => {
-    const t = e.target.closest('.card'); if (!t || !t.classList.contains('red') && !t.classList.contains('blk')) return;
-    const p = t.dataset.pile;
-    if (p==='waste') autoFound(waste[waste.length-1], ()=>waste.pop());
-    else if (p==='tab'){ const col = tab[+t.dataset.n]; if (+t.dataset.idx===col.length-1) autoFound(col[col.length-1], ()=>col.pop()); }
-  });
-  // dragging
-  let drag = null;
+  }
+  // pointer handling: no pointer capture until a real drag starts, so click/dblclick keep their targets
+  let drag = null, lastTap = 0;
   board.addEventListener('pointerdown', e => {
-    const t = e.target.closest('.card'); if (!t || t.classList.contains('back') || e.button!==0) return;
+    if (e.button!==0) return;
+    if (e.target.closest('[data-pile="stock"]')){ drawStock(); return; }
+    const t = e.target.closest('.card'); if (!t || t.classList.contains('back') || !t.dataset.pile) return;
     const p = t.dataset.pile, idx = +t.dataset.idx;
     let cards, els;
     if (p==='tab'){ const col = tab[+t.dataset.n]; cards = col.slice(idx); els = [...board.querySelectorAll(`.card[data-pile="tab"][data-n="${t.dataset.n}"]`)].filter(x=>+x.dataset.idx>=idx); }
     else if (p==='waste' || p==='found'){ cards = [p==='waste' ? waste[waste.length-1] : found[+t.dataset.n].slice(-1)[0]]; els = [t]; }
     else return;
     const s = +board.dataset.s || 1;
-    drag = { p, n:+t.dataset.n, idx, cards, els, sx:e.clientX, sy:e.clientY, s, moved:false, orig: els.map(x=>[x.offsetLeft,x.offsetTop]) };
-    els.forEach(x=>{ x.style.zIndex = 1000; x.classList.add('drag'); });
-    board.setPointerCapture(e.pointerId);
+    drag = { p, n:+t.dataset.n, idx, cards, els, sx:e.clientX, sy:e.clientY, s, moved:false, id:e.pointerId, orig: els.map(x=>[x.offsetLeft,x.offsetTop]) };
   });
   board.addEventListener('pointermove', e => {
     if (!drag) return;
     const dx = (e.clientX-drag.sx)/drag.s, dy = (e.clientY-drag.sy)/drag.s;
-    if (Math.abs(dx)+Math.abs(dy) > 3) drag.moved = true;
+    if (!drag.moved){ if (Math.abs(dx)+Math.abs(dy) <= 4) return; drag.moved = true; try{ board.setPointerCapture(drag.id); }catch(err){} drag.els.forEach(x=>{ x.style.zIndex = 1000; x.classList.add('drag'); }); }
     drag.els.forEach((x,k)=>{ x.style.left = (drag.orig[k][0]+dx)+'px'; x.style.top = (drag.orig[k][1]+dy)+'px'; });
   });
   board.addEventListener('pointerup', e => {
     if (!drag) return; const d = drag; drag = null;
-    if (!d.moved){ d.els.forEach((x,k)=>{ x.style.left=d.orig[k][0]+'px'; x.style.top=d.orig[k][1]+'px'; x.style.zIndex=''; x.classList.remove('drag'); });
-      if (matchMedia('(pointer:coarse)').matches) board.dispatchEvent(new MouseEvent('dblclick',{bubbles:true}));
-      return; }
+    if (!d.moved){
+      const now = performance.now(), coarse = e.pointerType==='touch';
+      if (coarse || now - lastTap < 400){ lastTap = 0; toFoundation(d.p, d.n, d.idx); } else lastTap = now;
+      return;
+    }
     const cx = d.els[0].offsetLeft + 35, cy = d.els[0].offsetTop + 30;
     const card = d.cards[0];
     const remove = () => { if (d.p==='tab') tab[d.n].splice(d.idx); else if (d.p==='waste') waste.pop(); else found[d.n].pop(); };
     let done = false;
-    // foundations
     if (cy < TABY - 10 && d.cards.length===1){
       const i = Math.round((cx - 10 - 35)/81) - 3;
-      if (i>=0 && i<4 && canFound(card, found[i]) && !(d.p==='found' && d.n===i)){ save(); remove(); found[i].push(card); score += d.p==='found'?0:10; done = true; }
+      if (i>=0 && i<4 && canFound(card, found[i]) && !(d.p==='found' && d.n===i)){ save(); remove(); found[i].push(card); score += d.p==='found' ? 0 : (opt.vegas ? 5 : 10); done = true; }
     } else {
       const i = Math.max(0, Math.min(6, Math.round((cx - 10 - 35)/81)));
-      if (!(d.p==='tab' && d.n===i) && canTab(card, tab[i])){ save(); remove(); tab[i].push(...d.cards); score += d.p==='waste'?5:d.p==='found'?-15:0; done = true; }
+      if (!(d.p==='tab' && d.n===i) && canTab(card, tab[i])){ save(); remove(); tab[i].push(...d.cards); if (!opt.vegas) score += d.p==='waste'?5:d.p==='found'?-15:0; done = true; }
     }
     if (done) flipTops();
     render();
@@ -356,7 +365,7 @@ APPS.sol = { title:'Solitaire', icon:'cards', w:600, h:540, minW:300, minH:260, 
     const cvs = w.body.querySelector('[data-win]'); cvs.style.display='block';
     cvs.width = sol.clientWidth; cvs.height = sol.clientHeight;
     const c = cvs.getContext('2d'), s = +board.dataset.s || 1;
-    const cards = []; found.forEach((f,i)=>f.slice().reverse().forEach(card=>cards.push({card, x:COLX(3+i)*s, y:TOPY*s})));
+    const cards = []; for (let r=13;r>=1;r--) found.forEach((f,i)=>cards.push({card:f[r-1], x:COLX(3+i)*s, y:TOPY*s}));
     let k = 0, cur = null;
     const draw = (card,x,y) => {
       c.fillStyle='#fff'; c.strokeStyle='#000'; c.fillRect(x,y,71*s,96*s); c.strokeRect(x+.5,y+.5,71*s-1,96*s-1);
@@ -373,9 +382,29 @@ APPS.sol = { title:'Solitaire', icon:'cards', w:600, h:540, minW:300, minH:260, 
       requestAnimationFrame(step);
     })();
   }
+  function optionsDialog(){
+    openWin('solopts', { title:'Options', dialog:true, center:true, w:300, h:220, render(d){
+      d.body.innerHTML = `<fieldset><legend>Draw</legend><div class="field-row"><input type="radio" id="so1" name="sod" ${opt.draw===1?'checked':''}><label for="so1">Draw One</label></div><div class="field-row"><input type="radio" id="so3" name="sod" ${opt.draw===3?'checked':''}><label for="so3">Draw Three</label></div></fieldset>
+        <fieldset style="margin-top:6px"><legend>Scoring</legend><div class="field-row"><input type="radio" id="sos" name="sos" ${!opt.vegas?'checked':''}><label for="sos">Standard</label></div><div class="field-row"><input type="radio" id="sov" name="sos" ${opt.vegas?'checked':''}><label for="sov">Vegas</label></div></fieldset>
+        <div class="btn-row"><button class="default" data-ok>OK</button><button data-c>Cancel</button></div>`;
+      d.body.querySelector('[data-c]').onclick = d.close;
+      d.body.querySelector('[data-ok]').onclick = () => { opt.draw = d.body.querySelector('#so1').checked ? 1 : 3; opt.vegas = d.body.querySelector('#sov').checked; saveOpt(); d.close(); deal(); };
+    }});
+  }
+  function deckDialog(){
+    openWin('soldeck', { title:'Select Card Back', dialog:true, center:true, w:420, h:210, render(d){
+      d.body.innerHTML = `<div style="display:flex;gap:8px;justify-content:center;padding:8px">${Object.entries(DECKS).map(([k,v])=>`<div data-k="${k}" title="${v.name}" style="width:60px;height:82px;border:1px solid #000;border-radius:4px;padding:3px;background:#fff;outline:${k===opt.deck?'2px dotted #000':'none'};outline-offset:2px;cursor:default"><div style="height:100%;border-radius:2px;background:${v.css};display:flex;align-items:center;justify-content:center;color:${v.col};font:bold 18px 'Times New Roman';text-shadow:1px 1px 0 #000">${v.mark}</div></div>`).join('')}</div>
+        <div class="btn-row"><button class="default" data-ok>OK</button><button data-c>Cancel</button></div>`;
+      let pick = opt.deck;
+      d.body.querySelectorAll('[data-k]').forEach(x=>x.onclick=()=>{ pick = x.dataset.k; d.body.querySelectorAll('[data-k]').forEach(y=>y.style.outline = y===x ? '2px dotted #000' : 'none'); });
+      d.body.querySelector('[data-c]').onclick = d.close;
+      d.body.querySelector('[data-ok]').onclick = () => { opt.deck = pick; saveOpt(); applyDeck(); d.close(); };
+    }});
+  }
   wireMenubar(w, {
     deal, undo:()=>{ const h=history.pop(); if(h){ ({stock,waste,found,tab,score} = JSON.parse(h)); render(); } },
-    how:()=>msgbox('How to Play','Build each foundation up by suit from Ace to King. In the tableau, stack cards in descending order, alternating red and black. Click the deck to draw a card. Double-click a card to send it to a foundation.','info'),
+    opts:optionsDialog, deck:deckDialog,
+    how:()=>msgbox('How to Play','Build each foundation up by suit from Ace to King. In the tableau, stack cards in descending order, alternating red and black. Click the deck to draw. Double-click (or tap) a card to send it to a foundation. Game > Options switches Draw One / Draw Three and Vegas scoring.','info'),
     abt:()=>msgbox('About Solitaire','Solitaire<br>Zach 98 Edition.','info'),
   });
   w.onClose = () => { clearInterval(timer); won = true; };
@@ -392,24 +421,29 @@ APPS.calc = { title:'Calculator', icon:'calc', w:270, h:290, noMax:true, noResiz
     <div class="calc-row"><div class="mem" data-m></div><button class="w red" data-k="back">Backspace</button><button class="w red" data-k="ce">CE</button><button class="w red" data-k="c">C</button></div>
     <div class="calc-grid">
       ${[['MC','7','8','9','/','sqrt'],['MR','4','5','6','*','%'],['MS','1','2','3','-','1/x'],['M+','0','+/-','.','+','=']].map(r=>
-        `<button class="k red" data-k="${r[0]}">${r[0]}</button><span></span>${r.slice(1).map(k=>`<button class="k ${/[0-9.]|\+\/-/.test(k)&&k.length<=3&&!/[\/*\-+=]$/.test(k)||k==='+/-'?'blue':'red'}" data-k="${k}">${k}</button>`).join('')}`).join('')}
+        `<button class="k red" data-k="${r[0]}">${r[0]}</button><span></span>${r.slice(1).map(k=>`<button class="k ${/^[0-9.]$|^\+\/-$|^sqrt$|^%$|^1\/x$/.test(k)?'blue':'red'}" data-k="${k}">${k}</button>`).join('')}`).join('')}
     </div></div>`;
   const disp = w.body.querySelector('[data-d]'), memEl = w.body.querySelector('[data-m]');
-  const show = () => { disp.value = cur.length>18 ? Number(cur).toExponential(10) : cur; memEl.textContent = mem ? 'M' : ''; memEl.style.textAlign='center'; memEl.style.lineHeight='26px'; };
-  const calc = (a,b,o) => o==='+'?a+b : o==='-'?a-b : o==='*'?a*b : o==='/'?(b===0?NaN:a/b) : b;
-  const fmt = n => isNaN(n) ? 'Cannot divide by zero' : String(+n.toPrecision(14));
+  let err = false, lastOp = null, lastArg = 0;
+  const show = () => { disp.value = (/^-?[\d.]+(e[+-]?\d+)?$/.test(cur) && cur.replace(/[-.]/g,'').length>16) ? Number(cur).toExponential(10) : (/^-?\d+$/.test(cur) ? cur + '.' : cur); memEl.textContent = mem ? 'M' : ''; memEl.style.textAlign='center'; memEl.style.lineHeight='26px'; };
+  const calc = (a,b,o) => o==='+'?a+b : o==='-'?a-b : o==='*'?a*b : o==='/'?(b===0?Infinity:a/b) : b;
+  const fmt = n => { if (!isFinite(n)){ err = true; return isNaN(n) ? 'Invalid input for function.' : 'Cannot divide by zero.'; } return String(+n.toPrecision(14)); };
   function key(k){
+    if (err && k!=='c' && k!=='ce') return;
+    if (err){ err = false; }
     if (/^[0-9]$/.test(k)){ cur = fresh || cur==='0' ? k : cur + k; fresh = false; }
     else if (k==='.'){ if (fresh){ cur='0.'; fresh=false; } else if (!cur.includes('.')) cur += '.'; }
     else if (k==='back'){ if (!fresh){ cur = cur.length>1 ? cur.slice(0,-1) : '0'; } }
     else if (k==='ce'){ cur='0'; fresh=true; }
     else if (k==='c'){ cur='0'; acc=null; op=null; fresh=true; }
     else if (k==='+/-'){ cur = cur.startsWith('-') ? cur.slice(1) : (cur==='0'?cur:'-'+cur); }
-    else if (k==='sqrt'){ cur = fmt(Math.sqrt(+cur)); fresh=true; }
+    else if (k==='sqrt'){ cur = +cur < 0 ? (err = true, 'Invalid input for function.') : fmt(Math.sqrt(+cur)); fresh=true; }
     else if (k==='1/x'){ cur = fmt(1/+cur); fresh=true; }
     else if (k==='%'){ cur = fmt((acc||0)*(+cur)/100); fresh=true; }
     else if ('+-*/'.includes(k)){ if (op && !fresh){ acc = calc(acc, +cur, op); cur = fmt(acc); } else acc = +cur; op = k; fresh = true; }
-    else if (k==='='){ if (op){ const r = calc(acc, +cur, op); cur = fmt(r); acc = null; op = null; fresh = true; } }
+    else if (k==='='){
+      if (op){ lastOp = op; lastArg = +cur; const r = calc(acc, +cur, op); cur = fmt(r); acc = null; op = null; fresh = true; }
+      else if (lastOp){ cur = fmt(calc(+cur, lastArg, lastOp)); fresh = true; } }
     else if (k==='MC') mem = 0; else if (k==='MR'){ cur = fmt(mem); fresh = true; } else if (k==='MS') mem = +cur; else if (k==='M+') mem += +cur;
     show();
   }
@@ -440,21 +474,21 @@ function imSound(){ try{ AC = AC || new (window.AudioContext||window.webkitAudio
 const BOT = [
   [/\b(hi|hey|hello|yo|sup|hiya)\b/, () => `hey! thanks for stopping by my site :) ask me about my research, projects, résumé, or how to reach me`],
   [/a\/?s\/?l/, () => `lol. econ grad student / NYC`],
-  [/(nber|ems|ambulance|congestion|research|paper)/, () => { setTimeout(()=>openApp('research'),900); return `my main research: NBER Working Paper No. 35414 on NYC congestion pricing + EMS response times. diff-in-disc at the 60th St boundary, ~63-70 sec faster ambulance trips. opening the Research drive for you!`; }],
-  [/(project|portfolio|built|build)/, () => { setTimeout(()=>openApp('mycomputer'),900); return `everything's on My Computer: Research is C:, personal projects are D:. the UFC model and the MBTA LED art are my favorites`; }],
+  [/\b(nber|ems|ambulances?|congestion|research|papers?)\b/, () => { setTimeout(()=>openApp('research'),900); return `my main research: NBER Working Paper No. 35414 on NYC congestion pricing + EMS response times. diff-in-disc at the 60th St boundary, ~63-70 sec faster ambulance trips. opening the Research drive for you!`; }],
+  [/\b(projects?|portfolio|built|build)\b/, () => { setTimeout(()=>openApp('mycomputer'),900); return `everything's on My Computer: Research is C:, personal projects are D:. the UFC model and the MBTA LED art are my favorites`; }],
   [/(resume|résumé|cv)/, () => { setTimeout(()=>openApp('resume'),900); return `sure, pulling up my résumé now`; }],
-  [/(email|contact|reach|mail)/, () => `email me: ${EMAIL}. or linkedin.com/in/zwinship`],
+  [/\b(e-?mail|contact|reach|mail)\b/, () => `email me: ${EMAIL}. or linkedin.com/in/zwinship`],
   [/(hire|job|intern|position|opportunit|recruit)/, () => `I'd love to chat! best way is email: ${EMAIL}`],
-  [/(ufc|octa|fight|mma)/, () => `OctaStats! a UFC fight prediction model, rebuilt as a dynamic logit for v2. there's also Tale of the Tape, a daily UFC guessing game`],
-  [/(mbta|train|\bt\b|subway|led)/, () => `MBTA stuff: an ARIMA ridership forecast in R, and a Raspberry Pi LED map that tracks trains in real time (frame still in progress)`],
-  [/(nyu|grad|school|masters|ms\b)/, () => `I'm in NYU's MS in Quantitative Economics (May 2027) and TA intro macro`],
-  [/(bentley|undergrad|college)/, () => `Bentley '26, BS Quantitative Economics, minors in math + data tech`],
-  [/(skill|python|stata|\br\b|code|language)/, () => `Python, R, Stata mostly. causal inference (RD, diff-in-disc), forecasting, ML, some web dev`],
-  [/(blog|unlikely|instrument)/, () => { setTimeout(()=>openApp('blog'),900); return `Unlikely Instruments: a blog about weird proxy variables. launching Sept 2026`; }],
-  [/(llm|ai\b|agent|silicus)/, () => `Homo silicus: using LLMs as simulated economic agents to replicate classic experiments. coming soon`],
-  [/(wii)/, () => `there's a Wii version of this site too 👀 try Start > Run > wii`],
-  [/(bye|gtg|ttyl|later|cya)/, () => `ttyl! :)`],
-  [/(lol|haha|lmao)/, () => `haha`],
+  [/\b(ufc|octastats|octa|fights?|mma)\b/, () => `OctaStats! a UFC fight prediction model, rebuilt as a dynamic logit for v2. there's also Tale of the Tape, a daily UFC guessing game`],
+  [/\b(mbta|trains?|subway|led|the t)\b/, () => `MBTA stuff: an ARIMA ridership forecast in R, and a Raspberry Pi LED map that tracks trains in real time (frame still in progress)`],
+  [/\b(nyu|grad school|masters|ms|graduate)\b/, () => `I'm in NYU's MS in Quantitative Economics (May 2027) and TA intro macro`],
+  [/\b(bentley|undergrad|college)\b/, () => `Bentley '26, BS Quantitative Economics, minors in math + data tech`],
+  [/\b(skills?|python|stata|r|code|coding|languages?)\b/, () => `Python, R, Stata mostly. causal inference (RD, diff-in-disc), forecasting, ML, some web dev`],
+  [/\b(blog|unlikely|instruments?)\b/, () => { setTimeout(()=>openApp('blog'),900); return `Unlikely Instruments: a blog about weird proxy variables. launching Sept 2026`; }],
+  [/\b(llms?|ai|agents?|silicus)\b/, () => `Homo silicus: using LLMs as simulated economic agents to replicate classic experiments. coming soon`],
+  [/\bwii\b/, () => `there's a Wii version of this site too 👀 try Start > Run > wii`],
+  [/\b(bye|gtg|ttyl|later|cya)\b/, () => `ttyl! :)`],
+  [/\b(lol|haha+|lmao)\b/, () => `haha`],
   [/(\?)$/, () => `good question. try asking about research, projects, résumé, UFC, MBTA, or contact`],
 ];
 function botReply(msg){
@@ -494,13 +528,13 @@ APPS.zimchat = { title:'ZachW98 - Instant Message', icon:'zim', w:420, h:380, re
   const log = w.body.querySelector('.chat-log'), inp = w.body.querySelector('.chat-in');
   const add = html => { log.insertAdjacentHTML('beforeend', `<div>${html}</div>`); log.scrollTop = log.scrollHeight; };
   const them = (t, auto) => { add(`<span class="them">ZachW98${auto?' <span class="sys">(Auto-Response)</span>':''}:</span> ${esc(t)}`); imSound(); };
-  let typingT;
+  const pending = [];
   const send = () => {
     const t = inp.value.trim(); if (!t) return; inp.value = '';
     add(`<span class="me">Visitor:</span> ${esc(t)}`);
     const reply = botReply(t);
     w.setTitle('ZachW98 is typing...');
-    clearTimeout(typingT); typingT = setTimeout(()=>{ w.setTitle('ZachW98 - Instant Message'); them(reply, true); }, 700 + Math.min(1600, reply.length*12));
+    pending.push(setTimeout(()=>{ w.setTitle('ZachW98 - Instant Message'); them(reply, true); }, 700 + Math.min(1600, reply.length*12) + pending.length*150));
   };
   inp.onkeydown = e => { if (e.key==='Enter' && !e.shiftKey){ e.preventDefault(); send(); } };
   w.body.querySelector('[data-send]').onclick = send;
@@ -509,7 +543,7 @@ APPS.zimchat = { title:'ZachW98 - Instant Message', icon:'zim', w:420, h:380, re
   add(`<span class="sys">ZachW98 signed on at ${new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})}.</span>`);
   setTimeout(()=>them("hey! I'm away from my computer, but my auto-responder knows a lot. ask about my research, projects, résumé, or contact info", true), 500);
   setTimeout(()=>inp.focus(), 50);
-  w.onClose = () => clearTimeout(typingT);
+  w.onClose = () => pending.forEach(clearTimeout);
 }};
 
 /* =====================================================================
@@ -545,7 +579,7 @@ APPS.taskmgr = { title:'Close Program', dialog:true, center:true, top:true, w:34
   const list = () => [...wins.values()].filter(x=>x!==w && !x.opts.dialog).map(x=>({ name:x.el.querySelector('.title-bar-text span').textContent, w:x }));
   w.body.style.display='flex'; w.body.style.flexDirection='column';
   const render = () => {
-    const items = [...list().map(i=>i.name), 'Explorer', 'Systray', 'Zim'];
+    const items = [...list().map(i=>i.name), 'Explorer', 'Systray'];
     w.body.innerHTML = `<div class="panel-white" style="flex:1;padding:0">${items.map((n,i)=>`<div class="tmi" data-i="${i}" style="padding:1px 4px">${esc(n)}</div>`).join('')}</div>
       <p style="margin:8px 2px;line-height:1.35">WARNING: Pressing CTRL+ALT+DEL again will restart your computer. You will lose unsaved information in all programs that are running.</p>
       <div class="btn-row"><button data-end>End Task</button><button data-shut>Shut Down</button><button class="default" data-cancel>Cancel</button></div>`;
@@ -624,7 +658,7 @@ Object.assign(RUN, {
   d.addEventListener('click', e => { iconsEl.querySelectorAll('.sel').forEach(x=>x.classList.remove('sel')); d.classList.add('sel'); if (matchMedia('(pointer:coarse)').matches) open(); e.stopPropagation(); });
   d.addEventListener('dblclick', open);
   d.addEventListener('keydown', e => { if (e.key==='Enter') open(); });
-  iconsEl.insertBefore(d, iconsEl.lastElementChild);
+  iconsEl.appendChild(d);
 });
 
 // Start > Programs: Accessories, Games, System Tools, Online
@@ -658,6 +692,7 @@ function showCtx(x, y, items){
   ctxEl.querySelectorAll('.mi').forEach(mi => { const it = items[+mi.dataset.i]; if (it[1]) mi.onclick = () => { ctxEl.style.display='none'; it[1](); }; });
 }
 document.addEventListener('pointerdown', e => { if (!e.target.closest('#ctx')) ctxEl.style.display='none'; });
+addEventListener('keydown', e => { if (e.key==='Escape') ctxEl.style.display='none'; });
 desktop.addEventListener('contextmenu', e => {
   if (e.target.closest('.app')) return;
   e.preventDefault();
@@ -674,15 +709,24 @@ desktop.addEventListener('contextmenu', e => {
 function arrangeIcons(){
   const icons = [...iconsEl.children], rows = Math.max(1, Math.floor((desktop.clientHeight - 8) / 76));
   icons.forEach((d,i)=>{ d.style.left = (4 + Math.floor(i/rows)*78)+'px'; d.style.top = (4 + (i%rows)*76)+'px'; });
-  try{ localStorage.removeItem('z98icons'); }catch(e){}
+  if (matchMedia('(pointer:coarse)').matches) return;
+  try{ localStorage.removeItem('z98icons2'); }catch(e){}
+}
+const iconLabel = d => d.querySelector('.lbl').textContent;
+function saveIcons(){ const o = {}; [...iconsEl.children].forEach(x=>o[iconLabel(x)]=[x.offsetLeft,x.offsetTop]); try{ localStorage.setItem('z98icons2', JSON.stringify(o)); }catch(err){} }
+// Lay icons out in columns, then restore any positions the visitor dragged them to.
+function layoutIcons(){
+  if (matchMedia('(pointer:coarse)').matches) return;
+  [...iconsEl.children].forEach(d => { d.style.position='absolute'; });
+  let saved = null; try{ saved = JSON.parse(localStorage.getItem('z98icons2')||'null'); }catch(e){}
+  const rows = Math.max(1, Math.floor((desktop.clientHeight - 8) / 76));
+  [...iconsEl.children].forEach((d,i)=>{ d.style.left = (4 + Math.floor(i/rows)*78)+'px'; d.style.top = (4 + (i%rows)*76)+'px'; });
+  if (saved) [...iconsEl.children].forEach(d=>{ const p = saved[iconLabel(d)]; if (p){ d.style.left=p[0]+'px'; d.style.top=p[1]+'px'; } });
 }
 if (!matchMedia('(pointer:coarse)').matches){
   iconsEl.style.cssText = 'position:absolute;inset:0;display:block';
-  [...iconsEl.children].forEach(d => { d.style.position='absolute'; });
-  let saved = null; try{ saved = JSON.parse(localStorage.getItem('z98icons')||'null'); }catch(e){}
-  arrangeIcons();
-  if (saved) [...iconsEl.children].forEach((d,i)=>{ if (saved[i]){ d.style.left=saved[i][0]+'px'; d.style.top=saved[i][1]+'px'; } });
-  addEventListener('resize', () => { if (!localStorage.getItem('z98icons')) arrangeIcons(); });
+  layoutIcons();
+  addEventListener('resize', layoutIcons);
   iconsEl.addEventListener('pointerdown', e => {
     const d = e.target.closest('.dicon'); if (!d || e.button!==0) return;
     const sx = e.clientX, sy = e.clientY, ox = d.offsetLeft, oy = d.offsetTop; let moved = false;
@@ -690,8 +734,12 @@ if (!matchMedia('(pointer:coarse)').matches){
       d.style.left = (ox+dx)+'px'; d.style.top = (oy+dy)+'px'; d.style.opacity = .7; };
     const up = () => { removeEventListener('pointermove', mv); removeEventListener('pointerup', up); d.style.opacity='';
       if (!moved) return;
-      d.style.left = Math.max(0, Math.round((d.offsetLeft-4)/78)*78+4)+'px'; d.style.top = Math.max(0, Math.round((d.offsetTop-4)/76)*76+4)+'px';
-      try{ localStorage.setItem('z98icons', JSON.stringify([...iconsEl.children].map(x=>[x.offsetLeft,x.offsetTop]))); }catch(err){} };
+      let cx = Math.max(0, Math.round((d.offsetLeft-4)/78)), cy = Math.max(0, Math.round((d.offsetTop-4)/76));
+      const rows = Math.max(1, Math.floor((desktop.clientHeight-8)/76));
+      const taken = (x,y) => [...iconsEl.children].some(o => o!==d && Math.round((o.offsetLeft-4)/78)===x && Math.round((o.offsetTop-4)/76)===y);
+      while (taken(cx,cy)){ cy++; if (cy >= rows){ cy = 0; cx++; } }
+      d.style.left = (cx*78+4)+'px'; d.style.top = (cy*76+4)+'px';
+      saveIcons(); };
     addEventListener('pointermove', mv); addEventListener('pointerup', up);
   });
 }
