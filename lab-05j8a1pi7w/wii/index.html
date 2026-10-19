@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <title>Wii Menu · Zach Winship</title>
 <link rel="icon" href="../../images/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@400;500;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <!--
   Layout reference: the bottom-bar silhouette, button geometry and page
   arrow are adapted from tobieche110/wii-portfolio (MIT License,
@@ -17,881 +17,1072 @@
 -->
 <style>
 :root{
-  --wii-cyan:#34beed;
-  --wii-cyan-lt:#8fdcf7;
-  --wii-gray:#8f9196;
-  --wii-gray-dk:#5c5e63;
-  --wii-bar:#e1e2e6;
-  --wii-bar-dk:#d4d5d9;
-  --tile-border:#c3c4c8;
-  --bg:#f4f4f4;
+  --cyan:#34beed;
+  --cyan-text:#1f7fae;
+  --gray-text:#6e7075;
+  --ink:#4a4c50;
+  --tile-border:#bdbec2;
   --font:'M PLUS 1p','Helvetica Neue',Arial,sans-serif;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--font);color:#4a4c50;-webkit-font-smoothing:antialiased;user-select:none}
-button{font-family:inherit;border:0;background:none;color:inherit}
-.has-hand, .has-hand *{cursor:none !important}
+html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--ink);-webkit-font-smoothing:antialiased;user-select:none;-webkit-tap-highlight-color:transparent}
+button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer}
+.has-hand #root, .has-hand #root *{cursor:none !important}
 
-/* The faint horizontal scanlines of the Wii Menu background */
-.scan{
-  background-color:#f7f7f7;
-  background-image:repeating-linear-gradient(to bottom,#f7f7f7 0 2px,#ececec 2px 4px);
-}
+/* Wii Menu background: near-white with faint horizontal lines */
+.scan{background-color:#fafafa;background-image:repeating-linear-gradient(to bottom,#fafafa 0 2px,#f0f0f0 2px 4px)}
 
-/* ================= STAGE (fixed 1280x720, scaled to fit) ================= */
-#root{position:fixed;inset:0;overflow:hidden}
-#stage{position:absolute;left:0;top:0;width:1280px;height:720px;transform-origin:0 0;overflow:hidden}
+/* ================= STAGE ================= */
+#root{position:fixed;inset:0;overflow:clip}
+#stage{position:absolute;left:0;top:0;transform-origin:0 0;overflow:clip}
+#barExt{position:absolute;left:0;right:0;bottom:0;pointer-events:none;transition:transform .45s cubic-bezier(.45,0,.2,1);background:linear-gradient(#e6e7ea,#d8d9dd);border-top:3px solid var(--cyan);display:none}
 
 /* ================= HEALTH & SAFETY ================= */
-#warning{position:absolute;inset:0;z-index:80;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#fff;transition:opacity .7s ease}
+#warning{position:absolute;inset:0;z-index:80;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#fff;transition:opacity .6s ease;cursor:pointer}
 #warning.gone{opacity:0;pointer-events:none}
-.warn-title{display:flex;align-items:center;gap:18px;font-size:46px;font-weight:800;color:#222;letter-spacing:.5px}
-.warn-title svg{width:58px;height:58px}
-.warn-rule{width:880px;height:3px;background:#222;margin:22px 0 34px}
-.warn-body{width:880px;font-size:30px;line-height:1.55;font-weight:500;color:#222}
-.warn-body b{font-weight:800}
-.warn-body .url{display:block;margin-top:26px;color:#222}
-.warn-press{margin-top:80px;font-size:30px;font-weight:700;color:#222;display:flex;align-items:center;gap:12px;animation:blink 1.6s ease-in-out infinite}
-.a-btn{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;background:#222;color:#fff;font-size:26px;font-weight:800}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.warn-title{display:flex;align-items:center;gap:18px;font-size:44px;font-weight:700;color:#222;letter-spacing:.5px;text-align:center}
+.warn-title svg{width:56px;height:56px;flex:0 0 auto}
+.warn-rule{width:min(880px,88%);height:3px;background:#222;margin:22px 0 34px}
+.warn-body{width:min(880px,88%);font-size:30px;line-height:1.55;font-weight:500;color:#222}
+.warn-body b{font-weight:700}
+.warn-body .url{display:block;margin-top:26px}
+.warn-press{margin-top:80px;font-size:30px;font-weight:500;color:#222;display:flex;align-items:center;gap:12px;opacity:0;animation:pressIn .6s ease 1.6s forwards}
+.a-btn{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:50%;background:#222;color:#fff;font-size:24px;font-weight:700}
+@keyframes pressIn{to{opacity:1}}
+.portrait .warn-title{font-size:40px;flex-direction:column;gap:10px}
+.portrait .warn-body{font-size:34px}
 
 /* ================= MENU ================= */
-#menu{position:absolute;inset:0}
-#menu.boot{animation:menuBoot .9s ease both}
-@keyframes menuBoot{from{opacity:0;transform:scale(1.04)}to{opacity:1;transform:none}}
-
-#pages{position:absolute;left:0;top:0;width:1280px;height:560px;overflow:hidden}
-#track{position:absolute;left:0;top:0;height:100%;display:flex;transition:transform .6s cubic-bezier(.3,.9,.3,1)}
-.page{width:1280px;height:560px;position:relative;flex:0 0 1280px}
-.grid{position:absolute;left:94px;top:42px;display:grid;grid-template-columns:repeat(4,258px);grid-template-rows:repeat(3,152px);gap:16px 20px}
+#menu{position:absolute;inset:0;visibility:hidden}
+#menu.boot{animation:fadeIn .8s ease both}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+#pages{position:absolute;left:0;top:0;overflow:clip;transition:transform .5s cubic-bezier(.45,0,.2,1),opacity .45s ease}
+#track{position:absolute;left:0;top:0;height:100%;display:flex;transition:transform .55s cubic-bezier(.45,0,.2,1)}
+.page{position:relative;height:100%}
+.grid{position:absolute;display:grid}
 
 /* --- channel tile --- */
-.ch{position:relative;border-radius:22px;background:#fff;border:3px solid var(--tile-border);box-shadow:0 2px 3px rgba(0,0,0,.08);padding:4px;transition:border-color .12s,box-shadow .12s,transform .18s}
-.ch .bn{position:absolute;inset:4px;border-radius:16px;overflow:hidden}
-.ch.hot{border-color:var(--wii-cyan);box-shadow:0 0 0 2px var(--wii-cyan-lt),0 0 16px 3px rgba(52,190,237,.55);z-index:3}
-.ch.empty{background:#e6e6e8;border-color:#cfd0d3;box-shadow:inset 0 1px 3px rgba(0,0,0,.06)}
-.ch.empty .bn{display:flex;align-items:center;justify-content:center;background:repeating-linear-gradient(to bottom,#ebebed 0 2px,#e1e1e4 2px 4px)}
-.wii-logo{font-family:var(--font);font-weight:800;letter-spacing:-1px;color:#c9cacd;font-size:44px;font-style:italic;text-shadow:0 1px 0 #f6f6f7}
+.ch{position:relative;border-radius:18px;background:#fff;border:2px solid var(--tile-border);padding:0;transition:border-color .1s,box-shadow .1s;outline:none}
+.ch .bn{position:absolute;inset:4px;border-radius:13px;overflow:hidden}
+.ch.hot,.ch:focus-visible{border-color:var(--cyan);box-shadow:0 0 0 1px var(--cyan),0 0 7px 2px rgba(52,190,237,.45);z-index:3}
+.ch.empty{background:#ececee;border-color:#d2d3d6;cursor:default}
+.ch.empty .bn{display:flex;align-items:center;justify-content:center;background:repeating-linear-gradient(to bottom,#efeff1 0 2px,#e6e6e9 2px 4px)}
+.wii-mark{display:block;width:34%;max-width:96px}
+/* 4:3 tiles: show the 16:9 banner letterboxed, like the real menu did */
+.grid.narrow .ch .bn{top:50%;bottom:auto;aspect-ratio:16/9;transform:translateY(-50%);border-radius:8px}
+.grid.narrow .ch.empty .bn{inset:4px;transform:none;aspect-ratio:auto}
 
-/* hover label bubble */
-#bubble{position:absolute;z-index:40;pointer-events:none;padding:9px 38px;border-radius:999px;background:#fff;border:3px solid #c9cacd;box-shadow:0 4px 10px rgba(0,0,0,.18);font-size:23px;font-weight:700;color:#4a4c50;white-space:nowrap;opacity:0;transform:translate(-50%,6px) scale(.9);transition:opacity .12s,transform .12s}
-#bubble.on{opacity:1;transform:translate(-50%,0) scale(1)}
+/* hover label */
+#bubble{position:absolute;z-index:40;pointer-events:none;padding:6px 28px;border-radius:999px;background:#fff;border:2px solid #b9babd;box-shadow:0 2px 4px rgba(0,0,0,.12);font-size:22px;font-weight:500;color:#4a4c50;white-space:nowrap;opacity:0;transform:translate(-50%,4px) scale(.92);transition:opacity .12s,transform .16s cubic-bezier(.3,1.6,.5,1)}
+#bubble.on{opacity:1;transform:translate(-50%,0) scale(1);transition-delay:.18s}
 
 /* page arrows */
-.parrow{position:absolute;top:230px;width:46px;height:82px;z-index:5;opacity:0;transition:opacity .25s,transform .15s}
-.parrow svg{width:100%;height:100%;filter:drop-shadow(0 2px 3px rgba(20,60,120,.3))}
-.parrow.show{opacity:1}
-.parrow.hot{transform:scale(1.15)}
-#arrR{right:22px}
-#arrL{left:22px}
+.parrow{position:absolute;width:46px;height:82px;z-index:5;opacity:0;pointer-events:none;transition:opacity .25s}
+.parrow svg{width:100%;height:100%;filter:drop-shadow(0 2px 2px rgba(20,60,120,.25))}
+.parrow.show{opacity:1;pointer-events:auto}
+.parrow.show svg{animation:arrowPulse 1.6s ease-in-out infinite}
+.parrow.hot svg{animation:none;transform:scale(1.08)}
 #arrL svg{transform:scaleX(-1)}
+#arrL.show svg{animation:arrowPulseL 1.6s ease-in-out infinite}
+#arrL.hot svg{animation:none;transform:scaleX(-1) scale(1.08)}
+@keyframes arrowPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+@keyframes arrowPulseL{0%,100%{transform:scaleX(-1) scale(1)}50%{transform:scaleX(-1) scale(1.07)}}
 
 /* ================= BOTTOM BAR ================= */
-#bar{position:absolute;left:0;top:520px;width:1280px;height:200px}
+#bar{position:absolute;left:0;height:200px;transition:transform .45s cubic-bezier(.45,0,.2,1)}
 #bar svg.shape{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
-#clock{position:absolute;left:0;right:0;top:20px;display:flex;justify-content:center;align-items:flex-start;height:62px}
-#clock svg{height:62px}
-#date{position:absolute;left:0;right:0;top:120px;text-align:center;font-size:34px;font-weight:700;color:#8a8c91;letter-spacing:.5px}
-.round-btn{position:absolute;top:65px;width:132px;height:132px;border-radius:50%}
-.round-btn .face{position:absolute;inset:8px;border-radius:50%;background:radial-gradient(circle at 40% 30%,#f3f3f4 0%,#dadadc 60%,#cfd0d2 100%);border:4px solid var(--wii-cyan);box-shadow:0 4px 6px rgba(0,0,0,.18),inset 0 2px 2px #fff;display:flex;align-items:center;justify-content:center;transition:box-shadow .15s,transform .15s}
-.round-btn .face::before{content:"";position:absolute;left:14%;top:8%;width:60%;height:44%;border-radius:50%;background:linear-gradient(#ffffffd0,#ffffff00);transform:rotate(-25deg)}
-.round-btn.hot .face{box-shadow:0 0 0 4px var(--wii-cyan-lt),0 0 18px 4px rgba(52,190,237,.6),0 4px 6px rgba(0,0,0,.18);transform:scale(1.05)}
+#clock{position:absolute;left:0;right:0;top:18px;display:flex;justify-content:center;height:62px}
+#date{position:absolute;left:0;right:0;top:122px;text-align:center;font-size:30px;font-weight:500;color:#7d7f84;letter-spacing:.5px}
+.round-btn{position:absolute;top:65px;width:132px;height:132px;border-radius:50%;outline:none}
+.round-btn .face{position:absolute;inset:8px;border-radius:50%;background:linear-gradient(#f2f2f3,#d9d9db);border:4px solid var(--cyan);box-shadow:0 3px 4px rgba(0,0,0,.16);display:flex;align-items:center;justify-content:center;transition:box-shadow .12s}
+.round-btn.hot .face,.round-btn:focus-visible .face{box-shadow:0 0 0 3px rgba(52,190,237,.35),0 0 8px 2px rgba(52,190,237,.45),0 3px 4px rgba(0,0,0,.16)}
 #wiiBtn{left:58px}
 #mailBtn{right:58px}
-.round-btn .lbl{position:relative;font-weight:800;font-size:38px;color:#a1a0a4;letter-spacing:-1px;font-style:italic}
-#mailBtn .dot{position:absolute;right:16px;top:14px;width:22px;height:22px;border-radius:50%;background:#34beed;border:3px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.25);animation:pulse 1.8s ease-in-out infinite}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
-#sdBtn{position:absolute;left:214px;top:102px;width:46px;height:56px}
+#wiiBtn .wii-mark{width:70px;max-width:none}
+#mailBtn .env{fill:#a1a0a4;animation:mailGlow 2.4s ease-in-out infinite}
+@keyframes mailGlow{0%,100%{fill:#a1a0a4}50%{fill:#34beed}}
+#sdBtn{position:absolute;top:100px;width:50px;height:60px;border-radius:8px;outline:none;padding:2px}
+#sdBtn svg{width:100%;height:100%}
+#sdBtn.hot svg path:first-child,#sdBtn:focus-visible svg path:first-child{stroke:var(--cyan);stroke-width:3}
 
-/* ================= CHANNEL PREVIEW (zoomed banner) ================= */
+/* ================= CHANNEL PREVIEW ================= */
 #preview{position:absolute;inset:0;z-index:50;pointer-events:none}
 #preview.open{pointer-events:auto}
-#pvBg{position:absolute;inset:0;opacity:0;transition:opacity .35s}
-#preview.open #pvBg{opacity:1}
-#pvZoom{position:absolute;border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 0 0 rgba(0,0,0,0);transition:left .45s cubic-bezier(.3,.9,.3,1),top .45s cubic-bezier(.3,.9,.3,1),width .45s cubic-bezier(.3,.9,.3,1),height .45s cubic-bezier(.3,.9,.3,1),border-radius .45s}
+#preview.closing{pointer-events:none}
+#pvZoom{position:absolute;overflow:hidden;background:#fff;transition:left .5s cubic-bezier(.45,0,.2,1),top .5s cubic-bezier(.45,0,.2,1),width .5s cubic-bezier(.45,0,.2,1),height .5s cubic-bezier(.45,0,.2,1),border-radius .5s}
 #pvZoom .bn{position:absolute;inset:0}
-#pvBottom{position:absolute;left:0;right:0;bottom:0;height:148px;display:flex;align-items:center;justify-content:center;gap:120px;opacity:0;transition:opacity .25s;border-top:3px solid #34beed;box-shadow:0 -2px 8px rgba(0,0,0,.08)}
-#preview.shown #pvBottom{opacity:1}
-.pill{position:relative;width:360px;height:96px;border-radius:999px;background:linear-gradient(#ffffff 0%,#f2f4f7 45%,#dfe3ea 100%);border:3px solid #b9d9ea;box-shadow:0 4px 8px rgba(0,0,0,.18),inset 0 -4px 8px rgba(160,175,195,.35);font-size:38px;font-weight:500;color:#4b4f55;transition:box-shadow .12s,border-color .12s,transform .12s}
-.pill::before{content:"";position:absolute;left:30px;right:30px;top:6px;height:32px;border-radius:999px;background:linear-gradient(#ffffffee,#ffffff00)}
-.pill span{position:relative}
-.pill.hot{border-color:var(--wii-cyan);box-shadow:0 0 0 3px var(--wii-cyan-lt),0 0 18px 4px rgba(52,190,237,.55),0 4px 8px rgba(0,0,0,.18);transform:scale(1.04)}
-.pvarrow{position:absolute;top:245px;width:46px;height:82px;opacity:0;transition:opacity .25s,transform .15s}
+#pvBottom{position:absolute;left:0;right:0;bottom:0;height:148px;display:flex;align-items:center;justify-content:center;gap:9%;transform:translateY(100%);transition:transform .35s cubic-bezier(.45,0,.2,1)}
+#preview.shown #pvBottom{transform:none}
+.pill{position:relative;width:400px;height:88px;border-radius:999px;background:linear-gradient(#fdfdfd,#e9e9eb);border:2px solid #c4c5c9;box-shadow:0 2px 3px rgba(0,0,0,.12);font-size:36px;font-weight:500;color:#55575c;transition:border-color .1s,box-shadow .1s;outline:none}
+.pill.hot,.pill:focus-visible{border-color:var(--cyan);box-shadow:0 0 0 1px var(--cyan),0 0 8px 2px rgba(52,190,237,.45)}
+.portrait .pill{width:300px;height:84px;font-size:32px}
+.pvarrow{position:absolute;width:46px;height:82px;opacity:0;transition:opacity .25s;outline:none}
 #preview.shown .pvarrow{opacity:1}
-.pvarrow svg{width:100%;height:100%;filter:drop-shadow(0 2px 3px rgba(20,60,120,.3))}
-.pvarrow.hot{transform:scale(1.15)}
-#pvL{left:22px} #pvL svg{transform:scaleX(-1)}
-#pvR{right:22px}
+.pvarrow svg{width:100%;height:100%;filter:drop-shadow(0 2px 2px rgba(20,60,120,.25))}
+.pvarrow.hot svg{transform:scale(1.08)}
+#pvL svg{transform:scaleX(-1)}
+#pvL.hot svg{transform:scaleX(-1) scale(1.08)}
 
-/* ================= WII BUTTON MENU (system options) ================= */
-#sysmenu{position:absolute;inset:0;z-index:55;display:none;flex-direction:column;align-items:center;justify-content:center;gap:40px}
-#sysmenu.open{display:flex;animation:fadeIn .3s ease}
-#sysmenu .sys-title{font-size:40px;font-weight:700;color:#6a6c71}
-.sys-row{display:flex;gap:60px}
-.sysbtn{width:420px;height:230px;border-radius:30px;background:linear-gradient(#fff,#eceef1);border:3px solid #c7c8cc;box-shadow:0 4px 10px rgba(0,0,0,.12);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;font-size:34px;font-weight:700;color:#55575c;transition:box-shadow .12s,border-color .12s,transform .12s}
-.sysbtn svg{width:96px;height:96px}
-.sysbtn.hot{border-color:var(--wii-cyan);box-shadow:0 0 0 3px var(--wii-cyan-lt),0 0 18px 4px rgba(52,190,237,.5);transform:scale(1.03)}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-
-#rotate{display:none;position:fixed;left:16px;right:16px;bottom:24px;text-align:center;font-size:14px;font-weight:700;color:#8a8c91}
-@media (orientation:portrait) and (max-width:700px){#rotate{display:block}}
+/* ================= WII BUTTON SCREEN ================= */
+#sysmenu{position:absolute;left:0;right:0;top:0;bottom:200px;z-index:55;display:none;flex-direction:column;align-items:center;justify-content:center;gap:36px}
+#sysmenu.open{display:flex;animation:fadeIn .25s ease}
+#sysmenu.open .sys-row{animation:sysIn .3s cubic-bezier(.45,0,.2,1)}
+@keyframes sysIn{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
+.sys-row{display:flex;gap:56px}
+.portrait .sys-row{flex-direction:column;gap:30px}
+.sysbtn{width:440px;height:200px;border-radius:24px;background:linear-gradient(#ffffff,#eeeff1);border:2px solid #c4c5c9;box-shadow:0 2px 4px rgba(0,0,0,.1);font-size:36px;font-weight:500;color:#55575c;transition:border-color .1s,box-shadow .1s;outline:none}
+.sysbtn.hot,.sysbtn:focus-visible{border-color:var(--cyan);box-shadow:0 0 0 1px var(--cyan),0 0 8px 2px rgba(52,190,237,.45)}
 
 /* ================= HAND CURSOR ================= */
 #hand{position:fixed;left:0;top:0;z-index:9999;pointer-events:none;width:58px;height:70px;margin:-6px 0 0 -18px;display:none;transform-origin:18px 6px;will-change:transform}
 .has-hand #hand{display:block}
-#hand.press svg{transform:scale(.9)}
-#hand svg{width:100%;height:100%;transition:transform .08s;filter:drop-shadow(1px 3px 2px rgba(0,0,0,.3))}
+.has-hand.in-content #hand{display:none}
+#hand svg{width:100%;height:100%;transition:transform .08s;filter:drop-shadow(1px 2px 1px rgba(0,0,0,.28))}
+#hand.press svg{transform:scale(.92)}
 
-/* ================= CHANNEL CONTENT (unscaled, responsive) ================= */
-#content{position:fixed;inset:0;z-index:70;display:none;flex-direction:column}
-#content.open{display:flex;animation:fadeIn .35s ease}
-.cc-head{flex:0 0 auto;display:flex;align-items:center;gap:16px;padding:18px clamp(16px,4vw,48px);background:linear-gradient(#ffffff,#eef0f3);border-bottom:3px solid var(--wii-cyan)}
-.cc-head .ico{width:52px;height:52px;border-radius:14px;overflow:hidden;border:3px solid var(--tile-border);flex:0 0 auto;position:relative;background:#fff}
+/* ================= CHANNEL CONTENT ================= */
+#content{position:fixed;inset:0;z-index:70;display:none;flex-direction:column;cursor:auto}
+#content.open{display:flex;animation:fadeIn .3s ease}
+#content.leaving{animation:fadeOut .2s ease forwards}
+@keyframes fadeOut{to{opacity:0}}
+.cc-head{flex:0 0 auto;display:flex;align-items:center;gap:16px;padding:16px clamp(16px,4vw,48px);padding-top:max(16px,env(safe-area-inset-top));background:#fff;border-bottom:2px solid #d9dadd}
+.cc-head .ico{width:92px;height:52px;border-radius:10px;overflow:hidden;border:2px solid var(--tile-border);flex:0 0 auto;position:relative;background:#fff}
 .cc-head .ico .bn{position:absolute;inset:0}
-.cc-head h1{font-size:clamp(22px,3vw,32px);font-weight:800;color:#55575c}
-.cc-head p{font-size:14px;color:#8a8c91;font-weight:500}
-.cc-body{flex:1;overflow-y:auto;padding:28px clamp(16px,4vw,48px) 40px;-webkit-overflow-scrolling:touch;user-select:text}
-.cc-inner{max-width:1040px;margin:0 auto}
-.cc-foot{flex:0 0 auto;display:flex;justify-content:center;gap:24px;padding:14px 16px;background:linear-gradient(#eceef1,#dcdee2);border-top:2px solid #cfd0d4}
-.cc-foot .pill{width:240px;height:58px;font-size:24px}
-.cc-foot .pill::before{top:4px;height:20px;left:22px;right:22px}
+.cc-head h1{font-size:clamp(22px,3vw,30px);font-weight:700;color:#55575c;line-height:1.15;outline:none}
+.cc-head p{font-size:14px;color:var(--gray-text);font-weight:500}
+.cc-body{flex:1;overflow-y:auto;padding:26px clamp(16px,4vw,48px) 40px;-webkit-overflow-scrolling:touch;user-select:text}
+.cc-inner{max-width:1000px;margin:0 auto}
+.cc-foot{flex:0 0 auto;display:flex;justify-content:center;align-items:center;gap:clamp(12px,4vw,48px);flex-wrap:wrap;padding:16px;padding-bottom:max(16px,env(safe-area-inset-bottom));border-top:3px solid var(--cyan);background:linear-gradient(#ededef,#dfe0e3)}
+.cc-foot .pill{width:min(260px,42vw);height:62px;font-size:24px}
+@media (max-height:500px){.cc-head{padding:8px 16px}.cc-head .ico{width:64px;height:36px}.cc-foot{padding:8px;flex-wrap:nowrap;gap:10px}.cc-foot .pill{height:44px;font-size:18px;width:auto;flex:1 1 0;max-width:220px;padding:0 14px}}
 
-.sec-h{font-size:15px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#34a9d6;margin:30px 0 14px;display:flex;align-items:center;gap:12px}
-.sec-h::after{content:"";flex:1;height:2px;background:linear-gradient(90deg,#bfe7f6,transparent)}
+.sec-h{font-size:19px;font-weight:700;color:#55575c;margin:30px 0 12px}
 .sec-h:first-child{margin-top:0}
-.card{background:#fff;border:3px solid #d5d6da;border-radius:22px;padding:22px 24px;margin-bottom:16px;box-shadow:0 2px 4px rgba(0,0,0,.05);transition:border-color .15s,box-shadow .15s}
-.card:hover{border-color:var(--wii-cyan);box-shadow:0 0 0 2px #c9eefb,0 6px 16px rgba(52,190,237,.18)}
-.card h3{font-size:21px;font-weight:800;color:#45474c;line-height:1.3}
-.card .meta{font-size:13px;font-weight:700;color:#34a9d6;margin:4px 0 10px;letter-spacing:.3px}
-.card p{font-size:15.5px;line-height:1.65;color:#5a5c61}
-.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
-.tag{font-size:12px;font-weight:700;color:#6a6c71;background:#f0f1f3;border:2px solid #dedfe2;border-radius:999px;padding:2px 11px}
+.card{background:#fff;border:2px solid #d5d6da;border-radius:12px;padding:22px 24px;margin-bottom:16px}
+.card h3{font-size:21px;font-weight:700;color:#45474c;line-height:1.3}
+.card .meta{font-size:14px;font-weight:500;color:var(--cyan-text);margin:4px 0 10px}
+.card p{font-size:16.5px;line-height:1.7;color:#55575c}
+.card p + p{margin-top:12px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.tag{font-size:13px;font-weight:500;color:#6a6c71;background:#f3f3f5;border:1px solid #dcdde0;border-radius:8px;padding:2px 10px}
 .links{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
-.wbtn{display:inline-flex;align-items:center;gap:8px;padding:8px 20px;border-radius:999px;background:linear-gradient(#fff,#e7ebf0);border:2px solid #b9d9ea;color:#3f4348;font-weight:700;font-size:14px;text-decoration:none;box-shadow:0 2px 4px rgba(0,0,0,.1);transition:all .12s}
-.wbtn:hover{border-color:var(--wii-cyan);box-shadow:0 0 0 2px #c9eefb,0 0 10px rgba(52,190,237,.5)}
-.wbtn.blue{background:linear-gradient(#5fd0f6,#22a8dc);border-color:#1b93c4;color:#fff;text-shadow:0 1px 0 rgba(0,0,0,.2)}
-.grid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.wbtn{display:inline-flex;align-items:center;padding:9px 22px;border-radius:999px;background:linear-gradient(#ffffff,#eeeff1);border:2px solid #c6c7cb;color:#4a4c50;font-weight:500;font-size:15px;text-decoration:none;transition:border-color .1s,box-shadow .1s}
+.wbtn:hover,.wbtn:focus-visible{border-color:var(--cyan);box-shadow:0 0 0 1px var(--cyan),0 0 6px rgba(52,190,237,.45);outline:none}
+.grid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px}
 .grid2 .card{margin:0}
-.badge{display:inline-block;font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:3px 10px;border-radius:999px;background:#34beed;color:#fff;margin-right:6px;vertical-align:middle}
-.badge.gray{background:#a9abb0}
+.badge{display:inline-block;font-size:12px;font-weight:700;padding:3px 10px;border-radius:6px;background:var(--cyan);color:#fff;margin:0 6px 8px 0}
+.badge.gray{background:#9a9ca1}
 .about-top{display:flex;gap:28px;align-items:center;flex-wrap:wrap}
-.about-top img{width:170px;height:170px;object-fit:cover;border-radius:30px;border:4px solid #fff;box-shadow:0 0 0 3px #d5d6da,0 6px 14px rgba(0,0,0,.12)}
-.about-top h2{font-size:34px;font-weight:800;color:#45474c}
-.about-top .sub{color:#34a9d6;font-weight:700;margin-top:2px}
-video{width:100%;border-radius:14px;background:#000;margin-top:12px;display:block}
+.about-top img{width:160px;height:160px;object-fit:cover;border-radius:24px;border:2px solid #d5d6da}
+.about-top h2{font-size:32px;font-weight:700;color:#45474c}
+.about-top .sub{color:var(--cyan-text);font-weight:500;margin-top:2px}
+video{width:100%;border-radius:12px;background:#000;margin-top:12px;display:block}
 .vids{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:10px}
-.vids figcaption{font-size:13px;font-weight:700;color:#6a6c71;margin-top:6px}
+.vids figcaption{font-size:13px;font-weight:500;color:#6a6c71;margin-top:6px}
 .shop-row{display:flex;gap:18px;align-items:flex-start}
-.shop-row .thumb{flex:0 0 150px;height:96px;border-radius:14px;overflow:hidden;position:relative;border:3px solid #d5d6da;container-type:size}
+.shop-row .thumb{flex:0 0 150px;height:85px;border-radius:12px;overflow:hidden;position:relative;border:2px solid #d5d6da}
 .shop-row .thumb .bn{position:absolute;inset:0}
-.shop-row .price{margin-left:auto;flex:0 0 auto;font-weight:800;color:#34a9d6;font-size:14px;text-align:right}
-@media (max-width:640px){.shop-row{flex-direction:column}.shop-row .thumb{width:100%;flex-basis:auto;height:140px}.shop-row .price{margin-left:0;text-align:left}}
-.wx{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
-.wx .card{text-align:center}
-.wx .temp{font-size:64px;font-weight:800;color:#45474c;line-height:1}
-.wx .cond{font-weight:700;color:#34a9d6;margin-top:6px}
+.shop-row .price{margin-left:auto;flex:0 0 auto;font-weight:700;color:var(--cyan-text);font-size:14px;text-align:right}
+@media (max-width:640px){.shop-row{flex-direction:column}.shop-row .thumb{width:100%;flex-basis:auto;height:auto;aspect-ratio:16/9}.shop-row .price{margin-left:0;text-align:left}}
+.wx{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.wx .card{text-align:center;background:linear-gradient(#3fa9e6,#8dd0f5);border-color:#5bb6e8;color:#fff}
+.wx .card h3,.wx .card .meta{color:#fff}
+.wx .temp{font-size:72px;font-weight:700;color:#fff;line-height:1}
+.wx .cond{font-weight:500;color:#eaf7ff;margin-top:6px}
 .poll-opts{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px}
-.poll-bar{height:30px;border-radius:999px;background:#eef0f2;overflow:hidden;margin-top:8px;border:2px solid #dedfe2}
-.poll-bar i{display:block;height:100%;border-radius:999px;transition:width .8s cubic-bezier(.3,.9,.3,1)}
+.poll-bar{height:28px;border-radius:999px;background:#eef0f2;overflow:hidden;margin-top:8px;border:1px solid #dedfe2}
+.poll-bar i{display:block;height:100%;border-radius:999px;transition:width .8s cubic-bezier(.45,0,.2,1)}
 .list-plain{list-style:none}
-.list-plain li{padding:10px 0;border-bottom:2px dashed #e4e5e8;font-size:15px}
+.list-plain li{padding:10px 0;border-bottom:1px solid #e4e5e8;font-size:16px}
 .list-plain li:last-child{border:0}
-.list-plain a{color:#1f8fc0;font-weight:700;text-decoration:none}
+.list-plain a{color:var(--cyan-text);font-weight:500;text-decoration:none}
 .list-plain a:hover{text-decoration:underline}
-.pdf-frame{width:100%;height:70vh;border:3px solid #d5d6da;border-radius:18px;background:#fff}
+.pdf-frame{width:100%;height:70vh;border:2px solid #d5d6da;border-radius:16px;background:#fff}
+/* Message Board */
+.board-date{display:flex;align-items:baseline;gap:14px;margin-bottom:18px}
+.board-date .d{font-size:64px;font-weight:700;color:#45474c;line-height:1}
+.board-date .m{font-size:22px;font-weight:500;color:var(--gray-text)}
+.letter{background:#fffef6;border:2px solid #e3dfc4;border-radius:14px;padding:30px 34px;max-width:720px;background-image:repeating-linear-gradient(transparent 0 33px,#ece8cf 33px 34px);background-position:0 18px}
+.letter p{font-size:18px;line-height:34px;color:#4a4c50}
+.letter .from{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.letter .from img{width:52px;height:52px;border-radius:12px;object-fit:cover;border:2px solid #d5d6da}
+.letter .from b{font-size:18px}
+/* themed content headers */
+#content[data-theme="shop"] .cc-head{background:#34beed;border-bottom-color:#1f9fd0}
+#content[data-theme="shop"] .cc-head h1,#content[data-theme="shop"] .cc-head p{color:#fff}
+#content[data-theme="shop"] .cc-body{background:#f2fbff}
+#content[data-theme="forecast"] .cc-head{background:linear-gradient(#bfe6fa,#fff)}
+#content[data-theme="news"] .cc-head{background:linear-gradient(#e8eef6,#fff)}
+#content[data-theme="board"] .cc-head{background:linear-gradient(#fbf9ec,#fff)}
 
 /* ================= BANNERS =================
-   Every banner is drawn in container units so the same markup works
-   on a channel tile, in the zoomed preview and in the content header. */
+   Drawn in container units (cqw/cqh) so the same markup works on a tile,
+   in the zoomed preview and in the content header. `.pv` elements only
+   show when the banner is large (preview). */
 .bn{container-type:size;font-family:var(--font)}
 .bn *{position:absolute}
-.bn .t{left:0;right:0;text-align:center;font-weight:800;white-space:nowrap}
-.spin{animation:spin 6s linear infinite}
+.bn .t{left:0;right:0;text-align:center;font-weight:700;white-space:nowrap}
+.bn .pv{display:none}
+#pvZoom .bn .pv{display:block}
+#pvZoom .bn .tick{font-size:6cqh !important}
+#fader{position:fixed;inset:0;z-index:75;background:#fff;opacity:0;pointer-events:none;transition:opacity .25s ease}
+#fader.on{opacity:1;pointer-events:auto}
+#musicToggle{width:300px;height:80px;font-size:28px}
+.spin{animation:spin 8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6%)}}
 @keyframes walk{from{transform:translateX(-30cqw)}to{transform:translateX(130cqw)}}
 @keyframes ticker{from{transform:translateX(100cqw)}to{transform:translateX(-100%)}}
 @keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-@keyframes floaty{0%,100%{transform:translate(0,0)}50%{transform:translate(2cqw,-3cqh)}}
-@keyframes ledrun{from{offset-distance:0%}to{offset-distance:100%}}
-@keyframes grow{from{transform:scaleX(.05)}to{transform:scaleX(1)}}
-@keyframes draw{from{stroke-dashoffset:400}to{stroke-dashoffset:0}}
-@keyframes twinkle{0%,100%{opacity:.25}50%{opacity:1}}
+@keyframes drift{0%,100%{transform:translateX(0)}50%{transform:translateX(4cqw)}}
+
+@media (prefers-reduced-motion:reduce){
+  .bn *,.spin,.ch.hot,.parrow.show svg,#mailBtn .env,.warn-press{animation:none !important}
+  .warn-press{opacity:1}
+  #track,#pvZoom,#pages,#bar,#barExt,#pvBottom,#fader,#bubble{transition-duration:.01s !important}
+  #sysmenu .sys-row,#content,#menu.boot{animation:none !important}
+}
 </style>
 </head>
 <body class="scan">
 
 <div id="root" class="scan">
+<div id="barExt"></div>
 <div id="stage" class="scan">
 
   <!-- ===== Health & Safety ===== -->
-  <div id="warning">
+  <div id="warning" role="button" tabindex="0" aria-label="Press A to continue">
     <div class="warn-title">
-      <svg viewBox="0 0 60 60"><path d="M30 4 57 54H3Z" fill="#222"/><path d="M27.5 20h5l-1 20h-3zM27.5 44h5v5h-5z" fill="#fff"/></svg>
-      WARNING-HEALTH AND SAFETY
+      <svg viewBox="0 0 60 60" aria-hidden="true"><path d="M30 4 57 54H3Z" fill="#222"/><path d="M27.5 20h5l-1 20h-3zM27.5 44h5v5h-5z" fill="#fff"/></svg>
+      <span>WARNING-HEALTH AND SAFETY</span>
     </div>
     <div class="warn-rule"></div>
     <div class="warn-body">
       BEFORE BROWSING, READ ZACH'S <b>RÉSUMÉ</b> FOR IMPORTANT INFORMATION ABOUT HIS RESEARCH, PROJECTS AND EXPERIENCE.
-      <span class="url">Also online at<br>zwinship.github.io</span>
+      <span class="url">Also online at zwinship.github.io</span>
     </div>
     <div class="warn-press">Press <span class="a-btn">A</span> to continue.</div>
   </div>
 
   <!-- ===== Wii Menu ===== -->
-  <div id="menu" style="visibility:hidden">
+  <div id="menu">
     <div id="pages"><div id="track"></div></div>
-
     <button class="parrow" id="arrL" aria-label="Previous page" data-hot></button>
     <button class="parrow" id="arrR" aria-label="Next page" data-hot></button>
 
     <div id="bar">
-      <svg class="shape" viewBox="0 0 1280 200" preserveAspectRatio="none" aria-hidden="true">
-        <defs>
-          <linearGradient id="barG" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#e9eaed"/><stop offset=".35" stop-color="#e1e2e6"/><stop offset="1" stop-color="#d6d7db"/>
-          </linearGradient>
-          <linearGradient id="tabG" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#dcdcde"/><stop offset="1" stop-color="#cfcfd2"/>
-          </linearGradient>
-          <filter id="barShadow" x="-5%" y="-30%" width="110%" height="160%">
-            <feDropShadow dx="0" dy="-2" stdDeviation="4" flood-color="#6c7c8c" flood-opacity=".18"/>
-          </filter>
-          <filter id="tabShadow" x="-20%" y="-20%" width="140%" height="160%">
-            <feDropShadow dx="2" dy="4" stdDeviation="3" flood-color="#000" flood-opacity=".18"/>
-          </filter>
-        </defs>
-        <!-- silhouette: raised shoulders at the corners, a dip in the middle -->
-        <path filter="url(#barShadow)" fill="url(#barG)" d="M0,44 H204 C236,44 275,44 322,84 C354,112 384,130 442,130 H838 C896,130 926,112 958,84 C1005,44 1044,44 1076,44 H1280 V200 H0 Z"/>
-        <path fill="none" stroke="#fff" stroke-width="5" opacity=".8" d="M0,47 H204 C236,47 275,47 322,87 C354,115 384,133 442,133 H838 C896,133 926,115 958,87 C1005,47 1044,47 1076,47 H1280"/>
-        <path fill="none" stroke="#34beed" stroke-width="3" d="M0,44 H204 C236,44 275,44 322,84 C354,112 384,130 442,130 H838 C896,130 926,112 958,84 C1005,44 1044,44 1076,44 H1280"/>
-        <!-- button holder tabs -->
-        <path filter="url(#tabShadow)" fill="url(#tabG)" d="M0,61 H118 C155,61 186,92 186,130 C186,168 155,199 118,199 H0 Z"/>
-        <path filter="url(#tabShadow)" fill="url(#tabG)" d="M1280,61 H1162 C1125,61 1094,92 1094,130 C1094,168 1125,199 1162,199 H1280 Z"/>
-      </svg>
-      <div id="clock" aria-label="Clock"></div>
+      <svg class="shape" preserveAspectRatio="none" aria-hidden="true"></svg>
+      <div id="clock" aria-hidden="true"></div>
       <div id="date"></div>
-      <button class="round-btn" id="wiiBtn" aria-label="Wii Menu options" data-hot><span class="face"><span class="lbl">Wii</span></span></button>
-      <button class="round-btn" id="mailBtn" aria-label="Wii Message Board" data-hot>
-        <span class="face"><svg width="58" height="42" viewBox="0 0 96 64" style="position:relative"><path d="M0 4v8l46.7 22.9c.8.4 1.8.4 2.6 0L96 12V4c0-2.2-1.8-4-4-4H4C1.8 0 0 1.8 0 4z" fill="#a1a0a4"/><path d="M46.7 43.8 0 20.5V60c0 2.2 1.8 4 4 4h88c2.2 0 4-1.8 4-4V20.5L49.3 43.8c-.8.4-1.8.4-2.6 0z" fill="#a1a0a4"/></svg></span>
-        <span class="dot"></span>
+      <button class="round-btn" id="wiiBtn" aria-label="Wii Menu options" data-hot><span class="face"><span class="wii-mark-slot"></span></span></button>
+      <button id="sdBtn" aria-label="SD Card: résumé" data-hot><svg viewBox="0 0 46 56" aria-hidden="true"><path d="M4 2h26l14 14v36a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" fill="#cbcccf" stroke="#a9aaae" stroke-width="2"/><g fill="#e9e9eb"><rect x="8" y="6" width="4" height="9" rx="1"/><rect x="14" y="6" width="4" height="9" rx="1"/><rect x="20" y="6" width="4" height="9" rx="1"/><rect x="26" y="6" width="4" height="9" rx="1"/></g><text x="23" y="42" text-anchor="middle" font-family="M PLUS 1p,Arial" font-weight="700" font-size="13" fill="#9a9b9f">SD</text></svg></button>
+      <button class="round-btn" id="mailBtn" aria-label="Wii Message Board: contact Zach" data-hot>
+        <span class="face"><svg width="58" height="40" viewBox="0 0 96 64" style="position:relative"><path class="env" d="M0 4v8l46.7 22.9c.8.4 1.8.4 2.6 0L96 12V4c0-2.2-1.8-4-4-4H4C1.8 0 0 1.8 0 4z"/><path class="env" d="M46.7 43.8 0 20.5V60c0 2.2 1.8 4 4 4h88c2.2 0 4-1.8 4-4V20.5L49.3 43.8c-.8.4-1.8.4-2.6 0z"/></svg></span>
       </button>
-      <svg id="sdBtn" viewBox="0 0 46 56" aria-hidden="true"><path d="M4 2h26l14 14v36a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" fill="#c9cacd" stroke="#a9aaae" stroke-width="2"/><g fill="#e8e8ea"><rect x="8" y="6" width="4" height="9" rx="1"/><rect x="14" y="6" width="4" height="9" rx="1"/><rect x="20" y="6" width="4" height="9" rx="1"/><rect x="26" y="6" width="4" height="9" rx="1"/></g><text x="23" y="42" text-anchor="middle" font-family="M PLUS 1p,Arial" font-weight="800" font-size="13" fill="#9a9b9f">SD</text></svg>
     </div>
 
-    <div id="bubble"></div>
+    <div id="bubble" aria-hidden="true"></div>
 
     <!-- ===== Channel preview ===== -->
-    <div id="preview">
-      <div id="pvBg" class="scan"></div>
+    <div id="preview" role="dialog" aria-modal="true" aria-label="Channel preview">
       <div id="pvZoom"></div>
       <button class="pvarrow" id="pvL" aria-label="Previous channel" data-hot></button>
       <button class="pvarrow" id="pvR" aria-label="Next channel" data-hot></button>
-      <div id="pvBottom">
-        <button class="pill" id="pvMenu" data-hot><span>Wii Menu</span></button>
-        <button class="pill" id="pvStart" data-hot><span>Start</span></button>
+      <div id="pvBottom" class="scan">
+        <button class="pill" id="pvMenu" data-hot>Wii Menu</button>
+        <button class="pill" id="pvStart" data-hot>Start</button>
       </div>
     </div>
 
-    <!-- ===== Wii button: system menu ===== -->
-    <div id="sysmenu" class="scan">
-      <div class="sys-title">Wii Menu</div>
+    <!-- ===== Wii button screen ===== -->
+    <div id="sysmenu" class="scan" role="dialog" aria-modal="true" aria-label="Wii Menu options">
       <div class="sys-row">
-        <button class="sysbtn" id="sysData" data-hot>
-          <svg viewBox="0 0 96 96"><rect x="14" y="10" width="68" height="76" rx="8" fill="#e9eaec" stroke="#a1a0a4" stroke-width="4"/><path d="M28 32h40M28 46h40M28 60h26" stroke="#34beed" stroke-width="6" stroke-linecap="round"/></svg>
-          Résumé (PDF)
-        </button>
-        <button class="sysbtn" id="sysSettings" data-hot>
-          <svg viewBox="0 0 96 96"><circle cx="48" cy="48" r="16" fill="none" stroke="#a1a0a4" stroke-width="6"/><path d="M48 10v12M48 74v12M10 48h12M74 48h12M21 21l9 9M66 66l9 9M75 21l-9 9M30 66l-9 9" stroke="#34beed" stroke-width="7" stroke-linecap="round"/></svg>
-          Back to Main Site
-        </button>
+        <button class="sysbtn" id="sysData" data-hot>Résumé</button>
+        <button class="sysbtn" id="sysSettings" data-hot>Main Site</button>
       </div>
-      <div style="margin-top:20px"><button class="pill" id="sysClose" data-hot style="width:300px;height:80px;font-size:32px"><span>Close</span></button></div>
+      <div class="sys-row" style="gap:40px"><button class="pill" id="musicToggle" data-hot>Music: On</button><button class="pill" id="sysClose" data-hot style="width:300px;height:80px;font-size:32px">Wii Menu</button></div>
     </div>
   </div>
 </div>
 </div>
 
-<div id="rotate">Rotate your phone for the full Wii Menu. Swipe to change pages.</div>
-
 <!-- ===== Channel content (full screen, unscaled) ===== -->
-<div id="content" class="scan">
-  <div class="cc-head"><div class="ico" id="ccIco"></div><div><h1 id="ccTitle"></h1><p id="ccSub"></p></div></div>
+<div id="content" class="scan" role="dialog" aria-modal="true" aria-labelledby="ccTitle">
+  <div class="cc-head"><div class="ico" id="ccIco"></div><div><h1 id="ccTitle" tabindex="-1"></h1><p id="ccSub"></p></div></div>
   <div class="cc-body" id="ccBody"><div class="cc-inner" id="ccInner"></div></div>
-  <div class="cc-foot"><button class="pill" id="ccBack" data-hot><span>Wii Menu</span></button></div>
+  <div class="cc-foot" id="ccFoot"></div>
 </div>
+
+<div id="fader"></div>
 
 <!-- ===== P1 hand pointer ===== -->
 <div id="hand" aria-hidden="true">
   <svg viewBox="0 0 58 70">
-    <defs><linearGradient id="handG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#cdeefc"/></linearGradient></defs>
+    <defs><linearGradient id="handG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#d4f0fc"/></linearGradient></defs>
     <path d="M14 30V9.5a5 5 0 0 1 10 0V26l.2-1.2a4.6 4.6 0 0 1 9 .2V28a4.6 4.6 0 0 1 9 0v3a4.4 4.4 0 0 1 8.6 1V46c0 11-8 20-20 20h-3C18 66 12 60 8.5 53L3.3 42.5a4.6 4.6 0 0 1 7.6-5L14 41z" fill="url(#handG)" stroke="#2b6fa8" stroke-width="2.6" stroke-linejoin="round"/>
-    <path d="M24 26v10M33.2 28v8M42.2 31v6" stroke="#2b6fa8" stroke-width="2" stroke-linecap="round" opacity=".55"/>
-    <text x="31" y="56" text-anchor="middle" font-family="M PLUS 1p,Arial" font-weight="800" font-size="15" fill="#2b6fa8">1</text>
+    <path d="M24 26v10M33.2 28v8M42.2 31v6" stroke="#2b6fa8" stroke-width="2" stroke-linecap="round" opacity=".5"/>
+    <text x="31" y="56" text-anchor="middle" font-family="M PLUS 1p,Arial" font-weight="700" font-size="15" fill="#2b6fa8">1</text>
   </svg>
 </div>
 
 <script src="../shared/data.js"></script>
 <script>
-/* =====================================================================
-   DATA
-   ===================================================================== */
 const ASSET = '../../';
-const LINK = (href, label, cls='') => `<a class="wbtn ${cls}" href="${href}" target="_blank" rel="noopener">${label}</a>`;
+const EXT = (href, label) => `<a class="wbtn" href="${href}" ${href.startsWith('mailto:')?'':'target="_blank" rel="noopener"'}>${label}</a>`;
 const TAGS = arr => `<div class="tags">${arr.map(t=>`<span class="tag">${t}</span>`).join('')}</div>`;
-
 PERSONAL[4].media = `<video src="${ASSET+PERSONAL[4].video}" controls playsinline preload="none" poster="${ASSET+PERSONAL[4].poster}"></video>`;
 
+/* An upright, rounded "Wii" wordmark drawn as strokes (not the official logo file). */
+const WII_MARK = (col='#a5a6aa') => `<svg class="wii-mark" viewBox="0 0 100 44" aria-hidden="true"><g fill="none" stroke="${col}" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 10l9 28 9-22 9 22 9-28"/><path d="M62 20v18M84 20v18"/></g><circle cx="62" cy="9" r="4.6" fill="${col}"/><circle cx="84" cy="9" r="4.6" fill="${col}"/></svg>`;
+document.querySelector('.wii-mark-slot').outerHTML = WII_MARK();
+
 /* =====================================================================
-   BANNERS (container-unit art: cqw / cqh)
+   BANNERS — light backgrounds, one accent, one title; detail lines are
+   `.pv` (preview only). Only a few banners animate, each with one motion.
    ===================================================================== */
 const B = {
 disc: () => `
-  <div style="inset:0;background:linear-gradient(#ffffff,#e9eaec)"></div>
-  <div style="left:6cqw;top:12cqh;width:76cqh;height:76cqh;border-radius:50%;background:conic-gradient(from 20deg,#dfe7f3,#f7f2ff,#e2f7ff,#fff7e6,#e8f0ff,#f5e9ff,#dfe7f3);box-shadow:0 1cqh 3cqh rgba(0,0,0,.18),inset 0 0 0 .6cqh #c9ccd2" class="spin">
-    <div style="inset:34%;border-radius:50%;background:#f3f4f6;box-shadow:inset 0 0 0 .6cqh #c9ccd2"></div>
-    <div style="inset:44%;border-radius:50%;background:#d8dade"></div>
-    <div style="left:12%;top:20%;font-size:6cqh;font-weight:800;color:#8a8f99;transform:rotate(-30deg)">NBER</div>
+  <div style="inset:0;background:#fff"></div>
+  <div style="left:9cqw;top:14cqh;width:72cqh;height:72cqh;border-radius:50%;background:conic-gradient(from 20deg,#e6ebf2,#f7f4fb,#e9f5fb,#fbf7ee,#ecf1fa,#f6eef9,#e6ebf2);box-shadow:inset 0 0 0 .5cqh #c9ccd2" class="spin">
+    <div style="inset:35%;border-radius:50%;background:#f5f5f7;box-shadow:inset 0 0 0 .5cqh #c9ccd2"></div>
+    <div style="inset:45%;border-radius:50%;background:#fff;box-shadow:inset 0 0 0 .5cqh #c9ccd2"></div>
   </div>
-  <div style="left:50cqw;right:4cqw;top:22cqh;font-size:13cqh;font-weight:800;color:#6b6e74;line-height:1.05">Research</div>
-  <div style="left:50cqw;top:44cqh;font-size:6cqh;font-weight:700;color:#34a9d6;line-height:1.45;white-space:nowrap">NBER WP No. 35414<br><span style="position:static;color:#8a8c91">Congestion Pricing &amp; EMS</span></div>`,
+  <div style="left:52cqw;top:36cqh;font-size:14cqh;font-weight:700;color:#7a7c81">Research</div>
+  <div class="pv" style="left:52cqw;top:58cqh;font-size:5.5cqh;font-weight:500;color:#1f7fae;line-height:1.5">NBER Working Paper No. 35414<br>Congestion Pricing &amp; EMS Response</div>`,
 
 mii: () => {
-  const miis = [['#e64646',0,0],['#3b8de0',-2.3,1],['#f2b632',-4.6,0],['#5fbf4a',-6.9,1],['#b46ad8',-9.2,0]];
-  return `<div style="inset:0;background:radial-gradient(circle at 50% 40%,#ffffff,#eef0f2)"></div>
-  <div style="left:0;right:0;bottom:0;height:22cqh;background:linear-gradient(#e7e9ec,#d8dbdf)"></div>
-  ${miis.map(([c,d,f])=>`<div style="left:0;bottom:14cqh;width:16cqh;height:44cqh;animation:walk 11.5s linear ${d}s infinite">
-     <div style="left:3cqh;top:0;width:10cqh;height:12cqh;border-radius:45%;background:#f6d6b8;box-shadow:inset 0 2.4cqh 0 ${c==='#f2b632'?'#6b3f1f':'#3a2a20'};animation:bob .5s ease-in-out ${f*.25}s infinite"></div>
-     <div style="left:2cqh;top:13cqh;width:12cqh;height:17cqh;border-radius:40% 40% 20% 20%;background:${c}"></div>
-     <div style="left:3cqh;top:29cqh;width:4cqh;height:12cqh;border-radius:2cqh;background:#4a5568"></div>
-     <div style="left:9cqh;top:29cqh;width:4cqh;height:12cqh;border-radius:2cqh;background:#4a5568"></div></div>`).join('')}
-  <div style="right:6cqw;top:10cqh;width:30cqh;height:30cqh;border-radius:24%;overflow:hidden;border:1cqh solid #fff;box-shadow:0 1cqh 3cqh rgba(0,0,0,.2)"><img src="${ASSET}images/zwinship.png" alt="" style="width:100%;height:100%;object-fit:cover"></div>
-  <div class="t" style="top:12cqh;left:6cqw;right:auto;font-size:14cqh;color:#6b6e74">About Me</div>`;
+  const miis = [['#e05050',0],['#3d8ee0',-2.2],['#f0b232',-4.4],['#58b84a',-6.6],['#a46ad0',-8.8]];
+  return `<div style="inset:0;background:#fff"></div>
+  <div style="left:0;right:0;bottom:0;height:20cqh;background:#eef0f2"></div>
+  ${miis.map(([c,d])=>`<div style="left:0;bottom:12cqh;width:20cqh;height:46cqh;animation:walk 12s linear ${d}s infinite">
+     <div style="left:2cqh;top:0;width:16cqh;height:18cqh;border-radius:48% 48% 44% 44%;background:#f6d9bd;box-shadow:inset 0 3cqh 0 #4a3426"></div>
+     <div style="left:6.5cqh;top:9cqh;width:1.4cqh;height:2cqh;border-radius:1cqh;background:#333"></div><div style="left:12cqh;top:9cqh;width:1.4cqh;height:2cqh;border-radius:1cqh;background:#333"></div>
+     <div style="left:4.5cqh;top:19cqh;width:11cqh;height:14cqh;border-radius:30% 30% 16% 16%;background:${c}"></div>
+     <div style="left:5.5cqh;top:32cqh;width:3.6cqh;height:12cqh;border-radius:2cqh;background:#6a6f78"></div>
+     <div style="left:10.8cqh;top:32cqh;width:3.6cqh;height:12cqh;border-radius:2cqh;background:#6a6f78"></div></div>`).join('')}
+  <div style="right:6cqw;top:10cqh;width:30cqh;height:30cqh;border-radius:22%;overflow:hidden;border:.6cqh solid #d5d6da"><img src="${ASSET}images/zwinship.png" alt="" style="width:100%;height:100%;object-fit:cover;object-position:62% 18%"></div>
+  <div style="left:7cqw;top:14cqh;font-size:14cqh;font-weight:700;color:#7a7c81">About Me</div>`;
 },
 
 photo: () => {
-  const frames = [['#ffd36b','RD Design'],['#9fdcff','VAR · VECM'],['#c8f0a0','Rural Roads'],['#ffb3c7','Diff-in-Disc'],['#d8c4ff','Effort Model'],['#ffe1a8','NYC Tolls']];
-  const strip = frames.concat(frames).map(([c,l],i)=>`<div style="position:relative;display:inline-block;width:30cqw;height:44cqh;margin-right:4cqw;background:#fff;border-radius:1.5cqh;padding:1.6cqh;box-shadow:0 1cqh 2.5cqh rgba(0,0,0,.18);transform:rotate(${i%2?3:-3}deg)">
-     <div style="position:relative;width:100%;height:100%;border-radius:1cqh;background:linear-gradient(135deg,${c},#ffffff)"><div style="left:0;right:0;bottom:12%;text-align:center;font-size:6cqh;font-weight:800;color:#5a5c61">${l}</div><div style="left:40%;top:22%;width:0;height:0;border-left:7cqh solid rgba(90,92,97,.55);border-top:4.5cqh solid transparent;border-bottom:4.5cqh solid transparent"></div></div></div>`).join('');
-  return `<div style="inset:0;background:linear-gradient(#f8f8f8,#e5e7ea)"></div>
-  <div style="left:0;top:34cqh;white-space:nowrap;animation:slide 18s linear infinite">${strip}</div>
-  <div class="t" style="top:7cqh;font-size:14cqh;color:#6b6e74">Presentations</div>`;
+  const frames = [['#ffe08a','RD Design'],['#bfe5fb','VAR · VECM'],['#cdeeb2','Rural Roads'],['#ffc6d4','Diff-in-Disc'],['#dccdfa','Effort Model'],['#ffe3b5','NYC Tolls']];
+  const strip = frames.concat(frames).map(([c,l])=>`<div style="position:relative;display:inline-block;width:30cqw;height:42cqh;margin-right:3cqw;background:#fff;border:.5cqh solid #d5d6da;border-radius:1.2cqh;padding:1.4cqh">
+     <div style="position:relative;width:100%;height:100%;border-radius:.8cqh;background:${c}"><div style="left:0;right:0;bottom:12%;text-align:center;font-size:5.5cqh;font-weight:500;color:#55575c">${l}</div></div></div>`).join('');
+  return `<div style="inset:0;background:#fff"></div>
+  <div style="left:0;top:38cqh;white-space:nowrap;animation:slide 22s linear infinite">${strip}</div>
+  <div class="t" style="top:10cqh;font-size:13cqh;color:#7a7c81">Presentations</div>`;
 },
 
 shop: () => `
-  <div style="inset:0;background:linear-gradient(#e8f8ff,#bfe9fa)"></div>
-  <div style="inset:0;background:repeating-linear-gradient(-45deg,rgba(255,255,255,.35) 0 3cqw,transparent 3cqw 6cqw)"></div>
-  <div style="left:50%;top:14cqh;width:34cqh;height:36cqh;margin-left:-17cqh;animation:bob 2.4s ease-in-out infinite">
-    <div style="left:9cqh;top:0;width:16cqh;height:12cqh;border:2.2cqh solid #2aa6d8;border-bottom:0;border-radius:8cqh 8cqh 0 0"></div>
-    <div style="left:0;top:9cqh;width:34cqh;height:27cqh;border-radius:3cqh;background:linear-gradient(#5fd0f6,#22a8dc);box-shadow:0 1.5cqh 3cqh rgba(20,120,170,.35)"></div>
-    <div style="left:0;right:0;top:15cqh;text-align:center;font-size:11cqh;font-weight:800;color:#fff">11</div>
-  </div>
-  <div class="t" style="top:60cqh;font-size:13cqh;color:#1d7fae">Project Shop</div>
-  <div class="t" style="top:80cqh;font-size:6cqh;color:#4b9cc4;font-weight:700">Research &amp; Personal Projects</div>`,
+  <div style="inset:0;background:#fff"></div>
+  <div style="left:0;right:0;bottom:0;height:26cqh;background:#e9f7fd"></div>
+  <svg viewBox="0 0 40 40" style="left:50%;top:12cqh;width:38cqh;height:38cqh;margin-left:-19cqh"><path d="M13 14V11a7 7 0 0114 0v3" fill="none" stroke="#2aa6d8" stroke-width="3"/><rect x="5" y="13" width="30" height="23" rx="4" fill="#fff" stroke="#2aa6d8" stroke-width="3"/></svg>
+  <div class="t" style="top:56cqh;font-size:12cqh;color:#1f8fc4">Project Shop</div>
+  <div class="t pv" style="top:80cqh;font-size:5.5cqh;font-weight:500;color:#4b9cc4">Research &amp; personal projects</div>`,
 
 forecast: () => `
-  <div style="inset:0;background:linear-gradient(#4fb3ec,#a9ddf8 70%,#e6f6ff)"></div>
-  <div style="left:10cqw;top:14cqh;width:30cqh;height:30cqh;border-radius:50%;background:radial-gradient(circle at 40% 40%,#fff6b0,#ffc531 60%,#ffab1a);box-shadow:0 0 6cqh #ffd86b"></div>
-  <div style="left:22cqw;top:30cqh;width:44cqh;height:20cqh;border-radius:10cqh;background:#fff;box-shadow:inset 0 -2cqh 0 #e3eef6;animation:floaty 6s ease-in-out infinite"><div style="left:8cqh;top:-9cqh;width:20cqh;height:20cqh;border-radius:50%;background:#fff"></div></div>
-  <div class="wx-temp" style="right:7cqw;top:14cqh;font-size:22cqh;font-weight:800;color:#fff;text-shadow:0 .6cqh 1.4cqh rgba(0,60,120,.35)">--°</div>
-  <div style="right:7cqw;top:44cqh;font-size:7cqh;font-weight:800;color:#fff;text-align:right;text-shadow:0 .4cqh 1cqh rgba(0,60,120,.35)">New York, NY</div>
-  <div style="left:0;right:0;bottom:0;height:20cqh;background:linear-gradient(#ffffffaa,#ffffffee);text-align:center"><div style="position:relative;font-size:8cqh;font-weight:800;color:#2c8fc6;line-height:20cqh">Forecast</div></div>`,
+  <div style="inset:0;background:linear-gradient(#5db9ee,#b8e2f8 75%,#e6f5fd)"></div>
+  <div style="left:12cqw;top:16cqh;width:28cqh;height:28cqh;border-radius:50%;background:#ffc93a"></div>
+  <div style="left:22cqw;top:31cqh;width:44cqh;height:18cqh;border-radius:9cqh;background:#fff;animation:drift 9s ease-in-out infinite"><div style="left:8cqh;top:-9cqh;width:20cqh;height:20cqh;border-radius:50%;background:#fff"></div></div>
+  <div class="wx-temp" style="right:8cqw;top:14cqh;font-size:22cqh;font-weight:700;color:#fff;display:none"></div>
+  <div class="wx-city pv" style="right:8cqw;top:44cqh;font-size:6cqh;font-weight:500;color:#fff;text-align:right">New York, NY</div>
+  <div style="left:0;right:0;bottom:0;height:22cqh;background:#fff;text-align:center"><div style="position:relative;font-size:10cqh;font-weight:700;color:#2c8fc6;line-height:22cqh">Forecast</div></div>`,
 
 news: () => `
-  <div style="inset:0;background:radial-gradient(circle at 50% 35%,#1b4f86,#0b2240)"></div>
-  ${Array.from({length:18},(_,i)=>`<div style="left:${(i*37)%100}cqw;top:${(i*53)%60}cqh;width:.8cqh;height:.8cqh;border-radius:50%;background:#fff;animation:twinkle ${2+i%3}s ease-in-out ${i*.2}s infinite"></div>`).join('')}
-  <div style="left:50%;top:8cqh;width:58cqh;height:58cqh;margin-left:-29cqh;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 35% 30%,#7fd3ff,#1f7fcf 55%,#0d4a8c);box-shadow:0 0 5cqh rgba(110,200,255,.5)">
-    <div style="left:0;top:0;height:100%;width:200%;animation:slide 14s linear infinite;background:
-      radial-gradient(ellipse 9% 14% at 10% 38%,#7ccf6a 98%,transparent),radial-gradient(ellipse 6% 18% at 22% 62%,#6cc35a 98%,transparent),
-      radial-gradient(ellipse 12% 10% at 36% 30%,#86d46f 98%,transparent),radial-gradient(ellipse 7% 12% at 40% 58%,#7ccf6a 98%,transparent),
-      radial-gradient(ellipse 9% 14% at 60% 38%,#7ccf6a 98%,transparent),radial-gradient(ellipse 6% 18% at 72% 62%,#6cc35a 98%,transparent),
-      radial-gradient(ellipse 12% 10% at 86% 30%,#86d46f 98%,transparent),radial-gradient(ellipse 7% 12% at 90% 58%,#7ccf6a 98%,transparent)"></div>
-    <div style="inset:0;border-radius:50%;background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.45),transparent 45%)"></div>
+  <div style="inset:0;background:#fff"></div>
+  <div style="left:50%;top:8cqh;width:56cqh;height:56cqh;margin-left:-28cqh;border-radius:50%;overflow:hidden;background:#3d9be0;box-shadow:inset 0 0 0 .5cqh #2a7fc0">
+    <div style="left:0;top:0;height:100%;width:200%;animation:slide 18s linear infinite;background:
+      radial-gradient(ellipse 9% 14% at 10% 38%,#7dcf69 98%,transparent),radial-gradient(ellipse 6% 18% at 22% 62%,#6cc35a 98%,transparent),
+      radial-gradient(ellipse 12% 10% at 36% 30%,#86d46f 98%,transparent),radial-gradient(ellipse 7% 12% at 40% 58%,#7dcf69 98%,transparent),
+      radial-gradient(ellipse 9% 14% at 60% 38%,#7dcf69 98%,transparent),radial-gradient(ellipse 6% 18% at 72% 62%,#6cc35a 98%,transparent),
+      radial-gradient(ellipse 12% 10% at 86% 30%,#86d46f 98%,transparent),radial-gradient(ellipse 7% 12% at 90% 58%,#7dcf69 98%,transparent)"></div>
   </div>
-  <div style="left:0;right:0;bottom:0;height:24cqh;background:linear-gradient(#ffffff,#dfe6ee);overflow:hidden">
-    <div style="left:0;top:0;height:24cqh;line-height:24cqh;white-space:nowrap;font-size:9cqh;font-weight:800;color:#1d4f86;animation:ticker 26s linear infinite">${MEDIA.map(m=>`${m[1]}: ${m[2]}`).join('  ·  ')}  ·  Unlikely Instruments launches Sept 2026</div>
+  <div style="left:0;right:0;bottom:0;height:26cqh;background:#eef2f6;border-top:.5cqh solid #c9d6e3;overflow:hidden">
+    <div class="tick" style="left:0;top:0;height:26cqh;line-height:26cqh;white-space:nowrap;font-size:9cqh;font-weight:500;color:#2b5d8f;animation:ticker 30s linear -8s infinite">${MEDIA.map(m=>`${m[1]}: ${m[2]}`).join('   ·   ')}   ·   Unlikely Instruments launches Sept 2026</div>
   </div>`,
 
 internet: () => `
-  <div style="inset:0;background:linear-gradient(#ffffff,#e6e8eb)"></div>
-  <div style="left:12cqw;top:16cqh;width:62cqh;height:62cqh;border-radius:50%;background:radial-gradient(circle at 35% 30%,#bfe9ff,#3fa7e6 60%,#1a6fb8);box-shadow:0 1.5cqh 4cqh rgba(20,90,160,.3)" class="spin">
-    <div style="inset:0;border-radius:50%;border:1cqh solid rgba(255,255,255,.55)"></div>
-    <div style="left:22%;top:0;bottom:0;width:56%;border-radius:50%;border:.9cqh solid rgba(255,255,255,.55)"></div>
-    <div style="left:0;right:0;top:48%;height:.9cqh;background:rgba(255,255,255,.55)"></div>
-    <div style="left:6%;right:6%;top:24%;height:.9cqh;background:rgba(255,255,255,.4)"></div>
-    <div style="left:6%;right:6%;top:72%;height:.9cqh;background:rgba(255,255,255,.4)"></div>
-  </div>
-  <div style="left:52cqw;top:26cqh;font-size:13cqh;font-weight:800;color:#6b6e74">Links</div>
-  <div style="left:52cqw;top:50cqh;font-size:6cqh;font-weight:700;color:#34a9d6;line-height:1.5">GitHub · LinkedIn<br>Email · Live Sites</div>`,
+  <div style="inset:0;background:#fff"></div>
+  <svg viewBox="0 0 40 40" style="left:12cqw;top:16cqh;width:64cqh;height:64cqh"><circle cx="20" cy="20" r="18" fill="#e9f5fc" stroke="#3aa0dc" stroke-width="2"/><ellipse cx="20" cy="20" rx="8" ry="18" fill="none" stroke="#3aa0dc" stroke-width="1.6"/><path d="M2 20h36M5 11h30M5 29h30" stroke="#3aa0dc" stroke-width="1.6"/></svg>
+  <div style="left:54cqw;top:34cqh;font-size:14cqh;font-weight:700;color:#7a7c81">Links</div>
+  <div class="pv" style="left:54cqw;top:56cqh;font-size:5.5cqh;font-weight:500;color:#1f7fae;line-height:1.5">GitHub · LinkedIn · Email<br>Live project sites</div>`,
 
 votes: () => `
-  <div style="inset:0;background:linear-gradient(#fff7e0,#ffe7a8)"></div>
-  <div class="t" style="top:8cqh;font-size:8.5cqh;color:#8a6a1f">Do polls predict or influence?</div>
-  <div style="left:10cqw;right:10cqw;top:32cqh;height:14cqh;border-radius:7cqh;background:#fff;box-shadow:inset 0 0 0 .6cqh #f1d38a;overflow:hidden"><div style="left:0;top:0;bottom:0;width:72%;background:linear-gradient(#5fd0f6,#22a8dc);transform-origin:left;animation:grow 3s cubic-bezier(.3,.9,.3,1) infinite alternate"></div><div style="left:4cqw;top:0;line-height:14cqh;font-size:7cqh;font-weight:800;color:#fff">Indicator</div></div>
-  <div style="left:10cqw;right:10cqw;top:52cqh;height:14cqh;border-radius:7cqh;background:#fff;box-shadow:inset 0 0 0 .6cqh #f1d38a;overflow:hidden"><div style="left:0;top:0;bottom:0;width:28%;background:linear-gradient(#ff8a8a,#e44d4d);transform-origin:left;animation:grow 3s cubic-bezier(.3,.9,.3,1) .4s infinite alternate"></div><div style="left:4cqw;top:0;line-height:14cqh;font-size:7cqh;font-weight:800;color:#b03a3a">Catalyst</div></div>
-  <div class="t" style="top:76cqh;font-size:7cqh;color:#8a6a1f">Everybody Votes · 2024</div>`,
+  <div style="inset:0;background:#fffaea"></div>
+  <div class="t" style="top:9cqh;font-size:10cqh;color:#8a6a1f">Election Polling</div>
+  <div style="left:12cqw;right:12cqw;top:36cqh;height:14cqh;border-radius:7cqh;background:#fff;border:.5cqh solid #ecd9a2;overflow:hidden"><div style="left:0;top:0;bottom:0;width:72%;background:#36b3e3"></div><div style="left:4cqw;top:0;line-height:13cqh;font-size:6.5cqh;font-weight:700;color:#fff">Indicator</div></div>
+  <div style="left:12cqw;right:12cqw;top:56cqh;height:14cqh;border-radius:7cqh;background:#fff;border:.5cqh solid #ecd9a2;overflow:hidden"><div style="left:0;top:0;bottom:0;width:28%;background:#ec6464"></div><div style="left:4cqw;top:0;line-height:13cqh;font-size:6.5cqh;font-weight:700;color:#b03a3a">Catalyst</div></div>
+  <div class="t pv" style="top:80cqh;font-size:5.5cqh;font-weight:500;color:#8a6a1f">Do polls predict elections, or move them?</div>`,
 
 resume: () => `
-  <div style="inset:0;background:linear-gradient(135deg,#34beed,#1b8fc4)"></div>
-  <div style="inset:0;background:repeating-linear-gradient(to bottom,rgba(255,255,255,.08) 0 2px,transparent 2px 4px)"></div>
-  <div style="left:12cqw;top:12cqh;width:30cqh;height:76cqh;border-radius:2cqh;background:#fff;box-shadow:0 1.5cqh 3cqh rgba(0,40,80,.35);transform:rotate(-6deg);animation:bob 3s ease-in-out infinite">
-    <div style="left:12%;top:10%;width:40%;height:9%;border-radius:1cqh;background:#34beed"></div>
-    ${[26,36,46,56,66,76].map(t=>`<div style="left:12%;right:12%;top:${t}%;height:3.5%;border-radius:1cqh;background:#d5dbe2"></div>`).join('')}
-  </div>
-  <div style="left:46cqw;top:22cqh;font-size:16cqh;font-weight:800;color:#fff;letter-spacing:.5cqw">RÉSUMÉ</div>
-  <div style="left:46cqw;top:52cqh;font-size:7cqh;font-weight:700;color:#d8f4ff">Zach Winship · PDF</div>`,
+  <div style="inset:0;background:#fff"></div>
+  <svg viewBox="0 0 30 40" style="left:14cqw;top:12cqh;width:57cqh;height:76cqh"><path d="M3 2h17l7 7v29H3z" fill="#fff" stroke="#9fa1a6" stroke-width="1.6"/><path d="M20 2v7h7" fill="#eceef1" stroke="#9fa1a6" stroke-width="1.6"/><rect x="7" y="9" width="9" height="3" rx="1" fill="#34beed"/><path d="M7 17h16M7 21h16M7 25h16M7 29h11" stroke="#c7c9cd" stroke-width="1.6"/></svg>
+  <div style="left:50cqw;top:34cqh;font-size:15cqh;font-weight:700;color:#7a7c81">Résumé</div>
+  <div class="pv" style="left:50cqw;top:58cqh;font-size:5.5cqh;font-weight:500;color:#1f7fae">Zach Winship · Summer 2026 · PDF</div>`,
 
 experience: () => `
-  <div style="inset:0;background:linear-gradient(#f3efe8,#ddd3c4)"></div>
-  <div style="left:9cqw;top:22cqh;width:44cqh;height:46cqh;animation:bob 2.6s ease-in-out infinite">
-    <div style="left:13cqh;top:0;width:18cqh;height:10cqh;border:2cqh solid #7a4f2a;border-bottom:0;border-radius:3cqh 3cqh 0 0"></div>
-    <div style="left:0;top:8cqh;width:44cqh;height:34cqh;border-radius:4cqh;background:linear-gradient(#a8703f,#7a4f2a);box-shadow:0 1.5cqh 3cqh rgba(60,30,10,.3)"></div>
-    <div style="left:0;right:0;top:20cqh;height:2cqh;background:#5e3c1f"></div>
-    <div style="left:18cqh;top:18cqh;width:8cqh;height:7cqh;border-radius:1cqh;background:#e4c27a"></div>
-  </div>
-  <div style="left:50cqw;top:20cqh;font-size:13cqh;font-weight:800;color:#6a4a2c">Experience</div>
-  <div style="left:50cqw;top:44cqh;font-size:6.2cqh;font-weight:700;color:#8a6a4a;line-height:1.5">NYU · Bentley<br>American Action Forum</div>`,
+  <div style="inset:0;background:#fff"></div>
+  <svg viewBox="0 0 40 34" style="left:10cqw;top:20cqh;width:56cqh;height:48cqh"><path d="M14 8V5a2 2 0 012-2h8a2 2 0 012 2v3" fill="none" stroke="#8a6440" stroke-width="2.4"/><rect x="2" y="8" width="36" height="24" rx="4" fill="#b98858"/><path d="M2 17h36" stroke="#8a6440" stroke-width="2"/><rect x="17" y="15" width="6" height="5" rx="1" fill="#e7cf8f"/></svg>
+  <div style="left:52cqw;top:34cqh;font-size:13cqh;font-weight:700;color:#7a7c81">Experience</div>
+  <div class="pv" style="left:52cqw;top:56cqh;font-size:5.5cqh;font-weight:500;color:#1f7fae;line-height:1.5">NYU · Bentley<br>American Action Forum</div>`,
 
 octa: () => `
-  <div style="inset:0;background:radial-gradient(circle at 50% 40%,#3a3a3f,#121214)"></div>
-  <div style="left:50%;top:10cqh;width:56cqh;height:56cqh;margin-left:-28cqh;clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%);background:linear-gradient(#e33b3b,#a51616)">
+  <div style="inset:0;background:#1b1b1e"></div>
+  <div style="left:50%;top:12cqh;width:56cqh;height:56cqh;margin-left:-28cqh;clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%);background:#d63434">
     <div style="inset:2.5cqh;clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%);background:#1b1b1e"></div>
-    <div style="left:0;right:0;top:15cqh;text-align:center;font-size:10cqh;font-weight:800;color:#fff;letter-spacing:.3cqh">OCTA</div>
-    <div style="left:0;right:0;top:27cqh;text-align:center;font-size:10cqh;font-weight:800;color:#e33b3b;letter-spacing:.3cqh">STATS</div>
+    <div style="left:0;right:0;top:15cqh;text-align:center;font-size:10cqh;font-weight:700;color:#fff">OCTA</div>
+    <div style="left:0;right:0;top:27cqh;text-align:center;font-size:10cqh;font-weight:700;color:#e04646">STATS</div>
   </div>
-  <div style="left:0;right:0;bottom:6cqh;text-align:center;font-size:6.5cqh;font-weight:700;color:#bbb">UFC Prediction Model · V2</div>`,
+  <div class="t pv" style="bottom:8cqh;font-size:5.5cqh;font-weight:500;color:#bbb">UFC Fight Prediction Model · V2</div>`,
 
 tape: () => `
-  <div style="inset:0;background:linear-gradient(90deg,#c62828 0 50%,#1565c0 50%)"></div>
-  <div style="left:50%;top:0;bottom:0;width:1cqw;margin-left:-.5cqw;background:#fff"></div>
-  <div style="left:0;right:0;top:36cqh;height:20cqh;background:repeating-linear-gradient(90deg,#ffd54a 0 3cqw,#f2c11a 3cqw 3.3cqw);box-shadow:0 1cqh 2cqh rgba(0,0,0,.3);animation:slide 8s linear infinite;width:200%"></div>
-  <div style="left:50%;top:30cqh;width:32cqh;height:32cqh;margin-left:-16cqh;border-radius:50%;background:#fff;box-shadow:0 1cqh 3cqh rgba(0,0,0,.35);text-align:center;line-height:32cqh;font-size:13cqh;font-weight:800;color:#222">VS</div>
-  <div class="t" style="top:6cqh;font-size:10cqh;color:#fff;text-shadow:0 .6cqh 1.4cqh rgba(0,0,0,.4)">Tale of the Tape</div>
-  <div class="t" style="top:74cqh;font-size:6.5cqh;color:#fff;font-weight:700">UFC Daily Challenge</div>`,
+  <div style="inset:0;background:linear-gradient(90deg,#c43c3c 0 50%,#2f66b8 50%)"></div>
+  <div style="left:0;right:0;top:40cqh;height:16cqh;background:repeating-linear-gradient(90deg,#ffd54a 0 3cqw,#e9bd2a 3cqw 3.3cqw)"></div>
+  <div style="left:50%;top:32cqh;width:32cqh;height:32cqh;margin-left:-16cqh;border-radius:50%;background:#fff;text-align:center;line-height:32cqh;font-size:13cqh;font-weight:700;color:#333">VS</div>
+  <div class="t" style="top:8cqh;font-size:10cqh;color:#fff">Tale of the Tape</div>
+  <div class="t pv" style="top:76cqh;font-size:5.5cqh;color:#fff;font-weight:500">UFC Daily Challenge</div>`,
 
 micro: () => `
   <div style="inset:0;background:#fff"></div>
-  <div style="inset:0;background-image:linear-gradient(#eef2f6 1px,transparent 1px),linear-gradient(90deg,#eef2f6 1px,transparent 1px);background-size:6cqw 6cqw"></div>
-  <svg viewBox="0 0 100 60" preserveAspectRatio="none" style="left:6cqw;top:10cqh;width:50cqw;height:72cqh;overflow:visible">
-    <path d="M2 2V58H98" fill="none" stroke="#5a5c61" stroke-width="1.2"/>
-    <path d="M10 8 Q50 30 92 52" fill="none" stroke="#e44d4d" stroke-width="2.4" stroke-dasharray="400" style="animation:draw 3s ease-out infinite alternate"/>
-    <path d="M10 52 Q50 30 92 8" fill="none" stroke="#22a8dc" stroke-width="2.4" stroke-dasharray="400" style="animation:draw 3s ease-out .3s infinite alternate"/>
-    <circle cx="51" cy="30" r="2.6" fill="#f2b632"/>
+  <svg viewBox="0 0 100 60" preserveAspectRatio="none" style="left:7cqw;top:14cqh;width:44cqw;height:66cqh;overflow:visible">
+    <path d="M2 2V58H98" fill="none" stroke="#7a7c81" stroke-width="1.4"/>
+    <path d="M10 8 Q50 30 92 52" fill="none" stroke="#e05050" stroke-width="2.6"/>
+    <path d="M10 52 Q50 30 92 8" fill="none" stroke="#2aa6d8" stroke-width="2.6"/>
+    <circle cx="51" cy="30" r="3" fill="#7a7c81"/>
   </svg>
-  <div style="left:60cqw;top:18cqh;font-size:10cqh;font-weight:800;color:#45474c;line-height:1.05">Micro<br>Course</div>
-  <div style="left:60cqw;top:50cqh;font-size:6cqh;font-weight:700;color:#34a9d6;line-height:1.4">12 weeks<br>+ Course AI</div>`,
+  <div style="left:58cqw;top:30cqh;font-size:12cqh;font-weight:700;color:#7a7c81;line-height:1.05">Micro<br>Course</div>
+  <div class="pv" style="left:58cqw;top:62cqh;font-size:5.5cqh;font-weight:500;color:#1f7fae;line-height:1.5">12 weeks · Ask the Course AI</div>`,
 
 led: () => {
   const lines = [['#da291c','M5 30 C30 30 40 10 95 10'],['#ed8b00','M50 2 L50 58'],['#00843d','M5 50 C35 50 60 30 95 30'],['#003da5','M10 5 C40 20 60 45 95 55']];
-  return `<div style="inset:0;background:#0b0d12"></div>
+  return `<div style="inset:0;background:#15171c"></div>
   <svg viewBox="0 0 100 60" style="inset:0;width:100%;height:100%">
-    <defs><filter id="ledGlow" x="-200%" y="-200%" width="500%" height="500%"><feGaussianBlur stdDeviation="1.1" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
-    ${lines.map(([c,d],i)=>`<path d="${d}" fill="none" stroke="${c}" stroke-width=".8" opacity=".35"/>`+
-      [0,1,2].map(k=>`<circle r="1.3" fill="${c}" filter="url(#ledGlow)"><animateMotion dur="${7+i}s" begin="${-(k*2.4+i)}s" repeatCount="indefinite" path="${d}"/></circle>`).join('')).join('')}
+    ${lines.map(([c,d],i)=>`<path d="${d}" fill="none" stroke="${c}" stroke-width=".8" opacity=".4"/>`+
+      [0,1,2].map(k=>`<circle r="1.4" fill="${c}"><animateMotion dur="${8+i}s" begin="${-(k*2.6+i)}s" repeatCount="indefinite" path="${d}"/></circle>`).join('')).join('')}
   </svg>
-  <div class="t" style="bottom:6cqh;font-size:8cqh;color:#e8e8e8;text-shadow:0 0 2cqh rgba(255,255,255,.4)">MBTA Live LED Art</div>`;
+  <div class="t" style="bottom:7cqh;font-size:8cqh;color:#e8e8e8">MBTA Live LED Art</div>`;
 },
 
 ts: () => `
-  <div style="inset:0;background:linear-gradient(#f6fbf6,#e2efe4)"></div>
-  <svg viewBox="0 0 100 60" preserveAspectRatio="none" style="left:5cqw;top:20cqh;width:90cqw;height:50cqh">
-    <path d="M0 40 L6 34 L12 38 L18 26 L24 30 L30 20 L36 28 L42 18 L48 24 L54 14 L60 22 L66 12 L72 20" fill="none" stroke="#00843d" stroke-width="1.6" stroke-dasharray="400" style="animation:draw 4s ease-out infinite"/>
-    <path d="M72 20 L78 16 L84 22 L90 12 L96 18" fill="none" stroke="#ed8b00" stroke-width="1.6" stroke-dasharray="3 2"/>
-    <path d="M72 14 L96 4 L96 30 L72 26Z" fill="#ed8b00" opacity=".12"/>
+  <div style="inset:0;background:#fff"></div>
+  <svg viewBox="0 0 100 60" preserveAspectRatio="none" style="left:6cqw;top:26cqh;width:88cqw;height:44cqh">
+    <path d="M0 40 L6 34 L12 38 L18 26 L24 30 L30 20 L36 28 L42 18 L48 24 L54 14 L60 22 L66 12 L72 20" fill="none" stroke="#00843d" stroke-width="1.8"/>
+    <path d="M72 20 L78 16 L84 22 L90 12 L96 18" fill="none" stroke="#ed8b00" stroke-width="1.8" stroke-dasharray="3 2"/>
   </svg>
-  <div class="t" style="top:6cqh;font-size:10cqh;color:#2e5d3a">MBTA Ridership</div>
-  <div class="t" style="top:78cqh;font-size:6.5cqh;color:#5f8a69;font-weight:700">ARIMA Forecasting · R</div>`,
+  <div class="t" style="top:8cqh;font-size:11cqh;color:#7a7c81">MBTA Ridership</div>
+  <div class="t pv" style="top:80cqh;font-size:5.5cqh;color:#3f7a4c;font-weight:500">ARIMA forecasting in R</div>`,
 
 llm: () => `
-  <div style="inset:0;background:linear-gradient(#f2edff,#dcd0ff)"></div>
-  ${[0,1,2].map(i=>`<div style="left:${14+i*26}cqw;top:24cqh;width:18cqw;height:40cqh;animation:bob 2s ease-in-out ${i*.3}s infinite">
-     <div style="left:50%;top:0;width:.8cqw;height:6cqh;background:#7c5cd6;margin-left:-.4cqw"></div><div style="left:50%;top:-2cqh;width:3cqh;height:3cqh;border-radius:50%;background:#f2b632;margin-left:-1.5cqh"></div>
-     <div style="left:0;right:0;top:5cqh;height:24cqh;border-radius:4cqh;background:#fff;box-shadow:0 1cqh 2cqh rgba(80,50,160,.25)"><div style="left:22%;top:35%;width:3.4cqh;height:3.4cqh;border-radius:50%;background:#7c5cd6"></div><div style="right:22%;top:35%;width:3.4cqh;height:3.4cqh;border-radius:50%;background:#7c5cd6"></div></div>
-     <div style="left:18%;right:18%;top:30cqh;height:10cqh;border-radius:2cqh;background:#b9a5f2"></div></div>`).join('')}
-  <div class="t" style="top:5cqh;font-size:8.5cqh;color:#5b3fb4">Homo silicus</div>
-  <div class="t" style="top:78cqh;font-size:6.5cqh;color:#7c5cd6">Agentic LLMs · Coming Soon</div>`,
+  <div style="inset:0;background:#fff"></div>
+  <div style="left:12cqw;top:26cqh;width:34cqw;height:20cqh;border-radius:6cqh;background:#ece6fb"></div>
+  <div style="left:52cqw;top:40cqh;width:34cqw;height:20cqh;border-radius:6cqh;background:#d9cff7"></div>
+  <div style="left:16cqw;top:32cqh;width:22cqw;height:3cqh;border-radius:2cqh;background:#a996e6"></div>
+  <div style="left:56cqw;top:46cqh;width:24cqw;height:3cqh;border-radius:2cqh;background:#8c74da"></div>
+  <div class="t" style="top:68cqh;font-size:10cqh;color:#6b55c4">Homo silicus</div>
+  <div class="t pv" style="top:84cqh;font-size:5.5cqh;font-weight:500;color:#7c66cf">Agentic LLMs · coming soon</div>`,
 };
 
 /* =====================================================================
    CONTENT SCREENS
    ===================================================================== */
 const card = p => `<div class="card">
-  ${p.badge?`<span class="badge">${p.badge}</span>`:''}${p.soon?`<span class="badge gray">Coming Soon</span>`:''}
-  <h3 style="margin-top:${p.badge||p.soon?'8px':'0'}">${p.title}</h3>
+  ${p.badge?`<span class="badge">${p.badge}</span>`:''}${p.soon?`<span class="badge gray">Coming soon</span>`:''}
+  <h3>${p.title}</h3>
   <div class="meta">${p.meta}${p.year?' · '+p.year:''}</div>
   <p>${p.body}</p>${p.media||''}${TAGS(p.tags)}
-  ${p.links&&p.links.length?`<div class="links">${p.links.map(l=>LINK(...l)).join('')}</div>`:''}
+  ${p.links&&p.links.length?`<div class="links">${p.links.map(l=>EXT(l[0],l[1])).join('')}</div>`:''}
 </div>`;
-
 const shopRow = (p, art) => `<div class="card"><div class="shop-row">
   <div class="thumb"><div class="bn">${B[art]()}</div></div>
   <div style="flex:1;min-width:0"><h3>${p.title}</h3><div class="meta">${p.meta}</div><p>${p.body}</p>${TAGS(p.tags)}
-  ${p.links.length?`<div class="links">${p.links.map(l=>LINK(...l)).join('')}</div>`:''}</div>
-  <div class="price">${p.soon?'COMING SOON':p.year}</div>
+  ${p.links.length?`<div class="links">${p.links.map(l=>EXT(l[0],l[1])).join('')}</div>`:''}</div>
+  <div class="price">${p.soon?'Coming soon':p.year}</div>
 </div></div>`;
+const coarse = matchMedia('(pointer:coarse)').matches;
+const RESUME = ASSET+'about_me/resume.pdf';
 
 const SCREENS = {
-  research: () => `<div class="sec-h">Featured · NBER Working Paper</div>${card(RESEARCH[0])}
-    <div class="card"><h3>Media Coverage</h3><ul class="list-plain" style="margin-top:8px">
-      <li>NBER Digest <span class="tag">forthcoming, Sept. 2026</span></li>
-      <li>ProMarket, Chicago Booth Stigler Center <span class="tag">forthcoming</span></li>
-      ${MEDIA.map(m=>`<li><a href="${m[0]}" target="_blank" rel="noopener">${m[1]}</a> — ${m[2]}</li>`).join('')}</ul></div>
-    <div class="sec-h">More Research</div>${RESEARCH.slice(1,4).map(card).join('')}`,
+  research: { actions:[['NBER Paper','https://www.nber.org/papers/w35414']], html: () => `<div class="sec-h">Featured: NBER Working Paper</div>${card(RESEARCH[0])}
+    <div class="card"><h3>Media coverage</h3><ul class="list-plain" style="margin-top:8px">
+      <li>NBER Digest (forthcoming, Sept. 2026)</li><li>ProMarket, Chicago Booth Stigler Center (forthcoming)</li>
+      ${MEDIA.map(m=>`<li><a href="${m[0]}" target="_blank" rel="noopener">${m[1]}</a> · ${m[2]}</li>`).join('')}</ul></div>
+    <div class="sec-h">More research</div>${RESEARCH.slice(1,4).map(card).join('')}` },
 
-  about: () => `<div class="card"><div class="about-top">
+  about: { actions:[['Email','mailto:'+EMAIL],['Résumé',RESUME]], html: () => `<div class="card"><div class="about-top">
       <img src="${ASSET}images/zwinship.png" alt="Zach Winship">
       <div><h2>Zach Winship</h2><div class="sub">Quantitative Economist and Data Analyst</div>
-      <div class="links">${LINK('mailto:'+EMAIL,'Email','blue')}${LINK('https://linkedin.com/in/zwinship','LinkedIn')}${LINK('https://github.com/zwinship','GitHub')}${LINK(ASSET+'about_me/resume.pdf','Resume PDF')}</div></div></div></div>
-    <div class="card"><p>I recently graduated from <b>Bentley University</b> with a BS in Quantitative Economics and a double minor in Mathematics and Data Technologies. I'm now pursuing the <b>MS in Quantitative Economics</b> at New York University, with expected graduation in May 2027, where I also work as a teaching assistant for Introductory Macroeconomics.</p><br>
-      <p>My work sits at the intersection of data and policy. I'm drawn to questions where careful empirical methods can cut through noise and say something concrete about how the world works. I'm currently a co-author on an <b>NBER working paper</b> studying how NYC's congestion pricing program affected EMS response times, and I've built tools for sports prediction, transportation research, and political economy, always trying to combine rigor with work that's actually interesting to look at.</p><br>
-      <p>Outside of coursework I spend a lot of time on personal projects. I'm especially interested in <b>transportation economics</b>, spatial analytics, optimization problems, and the emerging field of <b>Homo silicus</b> — using large language models as simulated economic agents to replicate and extend classic experiments in economics and game theory. I also write, bi-monthly, at <b>Unlikely Instruments</b>, a blog about unusual proxy variables and data sources nobody would think to look at. Feel free to look around. I had a lot of fun building these.</p></div>
+      <div class="links">${EXT('https://linkedin.com/in/zwinship','LinkedIn')}${EXT('https://github.com/zwinship','GitHub')}</div></div></div></div>
+    <div class="card"><p>I recently graduated from Bentley University with a BS in Quantitative Economics and a double minor in Mathematics and Data Technologies. I'm now pursuing the MS in Quantitative Economics at New York University, with expected graduation in May 2027, where I also work as a teaching assistant for Introductory Macroeconomics.</p>
+      <p>My work sits at the intersection of data and policy. I'm drawn to questions where careful empirical methods can cut through noise and say something concrete about how the world works. I'm currently a co-author on an NBER working paper studying how NYC's congestion pricing program affected EMS response times, and I've built tools for sports prediction, transportation research, and political economy, always trying to combine rigor with work that's actually interesting to look at.</p>
+      <p>Outside of coursework I spend a lot of time on personal projects. I'm especially interested in transportation economics, spatial analytics, optimization problems, and the emerging field of Homo silicus — using large language models as simulated economic agents to replicate and extend classic experiments in economics and game theory. I also write, bi-monthly, at Unlikely Instruments, a blog about unusual proxy variables and data sources nobody would think to look at. Feel free to look around. I had a lot of fun building these.</p></div>
     <div class="sec-h">Education</div>
     <div class="grid2"><div class="card"><h3>MS in Quantitative Economics</h3><div class="meta">New York University · Starting Summer 2026</div><p>Expected May 2027. NYU Economics Teaching Fellowship, Summer 2026.</p></div>
     <div class="card"><h3>BS in Quantitative Economics</h3><div class="meta">Bentley University · Graduated May 2026</div><p>Double Minor in Mathematics and Data Technologies. GPA: 3.74. Relevant coursework: Econometrics, Statistical Analysis, Data Analytics, Mathematical Economics, Public Policy Analysis.</p></div></div>
-    <div class="sec-h">Technical Skills</div><div class="card">${TAGS(SKILLS)}</div>`,
+    <div class="sec-h">Technical skills</div><div class="card">${TAGS(SKILLS)}</div>` },
 
-  presentations: () => PRESENTATIONS.map(p=>`<div class="card"><h3>${p.title}</h3><div class="meta">${p.meta}</div><p>${p.body}</p>
+  presentations: { actions:[], html: () => PRESENTATIONS.map(p=>`<div class="card"><h3>${p.title}</h3><div class="meta">${p.meta}</div><p>${p.body}</p>
     ${p.vids?`<div class="vids">${p.vids.map(v=>`<figure><video src="${ASSET+v[0]}" controls playsinline preload="metadata"></video><figcaption>${v[1]}</figcaption></figure>`).join('')}</div>`:''}
-    ${TAGS(p.tags)}<div class="links">${p.pdf?LINK(ASSET+p.pdf,'Download PDF','blue'):''}${p.gh?LINK(p.gh,'View on GitHub'):''}</div></div>`).join(''),
+    ${TAGS(p.tags)}<div class="links">${p.pdf?EXT(ASSET+p.pdf,'Download PDF'):''}${p.gh?EXT(p.gh,'View on GitHub'):''}</div></div>`).join('') },
 
-  shop: () => {
+  shop: { theme:'shop', actions:[['GitHub','https://github.com/zwinship']], html: () => {
     const arts = ['disc','disc','disc','votes','micro','llm','octa','octa','tape','ts','led'];
     return `<div class="sec-h">Research</div>${RESEARCH.map((p,i)=>shopRow(p,arts[i])).join('')}
-      <div class="sec-h">Personal Projects</div>${PERSONAL.map((p,i)=>shopRow(p,arts[6+i])).join('')}`;
-  },
+      <div class="sec-h">Personal projects</div>${PERSONAL.map((p,i)=>shopRow(p,arts[6+i])).join('')}`; } },
 
-  forecast: () => `<div class="sec-h">Where I've been</div><div class="wx" id="wxCards">
-      ${[['New York, NY','NYU · MS Quantitative Economics'],['Waltham, MA','Bentley University'],['Gray, ME',"43°53'N 70°20'W · Home"]].map(([c,s],i)=>`<div class="card" data-wx="${i}"><div class="meta" style="margin:0 0 8px">${s}</div><div class="temp">--°</div><div class="cond">Loading forecast…</div><h3 style="margin-top:10px">${c}</h3></div>`).join('')}
-    </div><p style="font-size:13px;color:#8a8c91;margin-top:10px">Live conditions from Open-Meteo.</p>`,
+  forecast: { theme:'forecast', actions:[], html: () => `<div class="sec-h">Where I've been</div><div class="wx" id="wxCards">
+      ${[['New York, NY','NYU · MS Quantitative Economics'],['Waltham, MA','Bentley University'],['Gray, ME',"43°53'N 70°20'W · Home"]].map(([c,s],i)=>`<div class="card" data-wx="${i}"><div class="meta" style="margin:0 0 8px">${s}</div><div class="temp">--</div><div class="cond">Loading forecast…</div><h3 style="margin-top:10px">${c}</h3></div>`).join('')}
+    </div><p style="font-size:13px;color:var(--gray-text);margin-top:10px">Live conditions from Open-Meteo.</p>` },
 
-  news: () => `<div class="sec-h">In the News · Congestion Pricing &amp; EMS</div>
-    <div class="grid2">${MEDIA.map(m=>`<div class="card"><div class="meta" style="margin-top:0">${m[1]}</div><h3>${m[2]}</h3><div class="links">${LINK(m[0],'Read article','blue')}</div></div>`).join('')}</div>
-    <div class="sec-h">Unlikely Instruments · Blog</div>
+  news: { theme:'news', actions:[], html: () => `<div class="sec-h">In the news: congestion pricing and EMS</div>
+    <div class="grid2">${MEDIA.map(m=>`<div class="card"><div class="meta" style="margin-top:0">${m[1]}</div><h3>${m[2]}</h3><div class="links">${EXT(m[0],'Read article')}</div></div>`).join('')}</div>
+    <div class="sec-h">Unlikely Instruments (blog)</div>
     <div class="card"><p>Bi-monthly · Launching Sept 2026. A blog about unusual, creative ways to find and use data — especially proxy variables and data sources nobody would think to look at. New post every two months.</p></div>
-    ${BLOG.map((b,i)=>`<div class="card"><div class="meta" style="margin-top:0">0${i+1} · ${b[2]}</div><h3>${b[0]}</h3>${TAGS(b[1].split(' · '))}</div>`).join('')}`,
+    ${BLOG.map((b,i)=>`<div class="card"><div class="meta" style="margin-top:0">0${i+1} · ${b[2]}</div><h3>${b[0]}</h3>${TAGS(b[1].split(' · '))}</div>`).join('')}` },
 
-  links: () => `<div class="grid2">
-    ${[['GitHub','https://github.com/zwinship','Code for every project'],['LinkedIn','https://linkedin.com/in/zwinship','Professional profile'],['Email','mailto:'+EMAIL,EMAIL],['Résumé',ASSET+'about_me/resume.pdf','PDF, Summer 2026'],['Course Site','https://falconeconsim.github.io/','Intermediate Microeconomics'],['OctaStats','https://octastats.github.io/index.html','UFC prediction model'],['Tale of the Tape','https://taleofthetape.github.io','UFC daily guessing game'],['NBER Paper','https://www.nber.org/papers/w35414','Working Paper No. 35414'],['Main Site','../../','zwinship.github.io']].map(([t,h,s])=>`<div class="card"><h3>${t}</h3><div class="meta">${s}</div><div class="links">${LINK(h,'Open','blue')}</div></div>`).join('')}
-  </div>`,
+  links: { actions:[], html: () => `<div class="grid2">
+    ${[['GitHub','https://github.com/zwinship','Code for every project'],['LinkedIn','https://linkedin.com/in/zwinship','Professional profile'],['Email','mailto:'+EMAIL,EMAIL],['Résumé',RESUME,'PDF, Summer 2026'],['Course Site','https://falconeconsim.github.io/','Intermediate Microeconomics'],['OctaStats','https://octastats.github.io/index.html','UFC prediction model'],['Tale of the Tape','https://taleofthetape.github.io','UFC daily guessing game'],['NBER Paper','https://www.nber.org/papers/w35414','Working Paper No. 35414'],['Main Site','../../','zwinship.github.io']].map(([t,h,s])=>`<div class="card"><h3>${t}</h3><div class="meta">${s}</div><div class="links">${EXT(h,'Open')}</div></div>`).join('')}
+  </div>` },
 
-  votes: () => `${card(RESEARCH[3])}
+  votes: { actions:[], html: () => `${card(RESEARCH[3])}
     <div class="card"><h3>Cast your vote</h3><p>Do polls predict elections, or do they move them?</p>
-      <div class="poll-opts"><button class="wbtn blue" data-vote="0">Indicator</button><button class="wbtn" data-vote="1" style="border-color:#f2a3a3">Catalyst</button></div>
+      <div class="poll-opts"><button class="wbtn" data-vote="0">Indicator</button><button class="wbtn" data-vote="1">Catalyst</button></div>
       <div id="pollRes" style="margin-top:14px;display:none">
-        <div style="font-weight:800;font-size:14px;color:#1d7fae">Indicator <span id="pv0"></span></div><div class="poll-bar"><i id="pb0" style="width:0;background:linear-gradient(#5fd0f6,#22a8dc)"></i></div>
-        <div style="font-weight:800;font-size:14px;color:#b03a3a;margin-top:10px">Catalyst <span id="pv1"></span></div><div class="poll-bar"><i id="pb1" style="width:0;background:linear-gradient(#ff8a8a,#e44d4d)"></i></div>
-        <p style="font-size:13px;color:#8a8c91;margin-top:10px">The paper's answer: polls behave as an indicator, not a catalyst.</p>
-      </div></div>`,
+        <div style="font-weight:700;font-size:14px;color:#1f7fae">Indicator <span id="pv0"></span></div><div class="poll-bar"><i id="pb0" style="width:0;background:#36b3e3"></i></div>
+        <div style="font-weight:700;font-size:14px;color:#b03a3a;margin-top:10px">Catalyst <span id="pv1"></span></div><div class="poll-bar"><i id="pb1" style="width:0;background:#ec6464"></i></div>
+        <p style="font-size:13px;color:var(--gray-text);margin-top:10px">The paper's answer: polls behave as an indicator, not a catalyst.</p>
+      </div></div>` },
 
-  resume: () => `<div class="links" style="margin:0 0 14px">${LINK(ASSET+'about_me/resume.pdf','Open in new tab','blue')}${LINK(ASSET+'about_me/transcript.pdf','Transcript')}</div>
-    <iframe class="pdf-frame" src="${ASSET}about_me/resume.pdf" title="Résumé"></iframe>`,
+  resume: { actions:[['Open PDF',RESUME]], html: () => coarse
+    ? `<div class="card" style="text-align:center"><h3>Résumé · Summer 2026</h3><p>Open the PDF in your browser's viewer.</p><div class="links" style="justify-content:center">${EXT(RESUME,'Open Résumé PDF')}${EXT(ASSET+'about_me/transcript.pdf','Transcript')}</div></div>`
+    : `<div class="links" style="margin:0 0 14px">${EXT(ASSET+'about_me/transcript.pdf','Transcript')}</div><iframe class="pdf-frame" src="${RESUME}" title="Résumé"></iframe>` },
 
-  experience: () => EXPERIENCE.map(e=>`<div class="card"><h3>${e.role}</h3><div class="meta">${e.org} · ${e.when}</div><p>${e.body}</p>${e.links?`<div class="links">${e.links.map(l=>LINK(...l)).join('')}</div>`:''}</div>`).join(''),
+  experience: { actions:[], html: () => EXPERIENCE.map(e=>`<div class="card"><h3>${e.role}</h3><div class="meta">${e.org} · ${e.when}</div><p>${e.body}</p>${e.links?`<div class="links">${e.links.map(l=>EXT(l[0],l[1])).join('')}</div>`:''}</div>`).join('') },
 
-  octa: () => card(PERSONAL[0]) + card(PERSONAL[1]),
-  tape: () => card(PERSONAL[2]),
-  micro: () => card(RESEARCH[4]),
-  led: () => card(PERSONAL[4]),
-  ts: () => card(PERSONAL[3]),
-  llm: () => card(RESEARCH[5]),
+  board: { theme:'board', actions:[['Reply','mailto:'+EMAIL]], html: () => { const d = new Date(); return `
+    <div class="board-date"><span class="d">${d.getMonth()+1}/${d.getDate()}</span><span class="m">${d.toLocaleDateString('en-US',{weekday:'long'})}</span></div>
+    <div class="letter"><div class="from"><img src="${ASSET}images/zwinship.png" alt=""><b>From: Zach</b></div>
+      <p>Thanks for stopping by my Wii! I'm a quantitative economist (NYU MS '27, Bentley '26) working on causal inference, transportation and policy.</p>
+      <p>If you'd like to talk research, projects or opportunities, the best way to reach me is email: <b>${EMAIL}</b>.</p>
+      <p>You can also find me on LinkedIn and GitHub. Hope you have fun looking around!</p></div>
+    <div class="links">${EXT('https://linkedin.com/in/zwinship','LinkedIn')}${EXT('https://github.com/zwinship','GitHub')}${EXT(RESUME,'Résumé')}</div>`; } },
+
+  octa: { actions:[['Live Site','https://octastats.github.io/index.html']], html: () => card(PERSONAL[0]) + card(PERSONAL[1]) },
+  tape: { actions:[['Play','https://taleofthetape.github.io']], html: () => card(PERSONAL[2]) },
+  micro: { actions:[['Course Site','https://falconeconsim.github.io/']], html: () => card(RESEARCH[4]) },
+  led: { actions:[['GitHub','https://github.com/zwinship/MBTA_Live_Art']], html: () => card(PERSONAL[4]) },
+  ts: { actions:[], html: () => card(PERSONAL[3]) },
+  llm: { actions:[], html: () => card(RESEARCH[5]) },
 };
 
 /* =====================================================================
-   CHANNEL REGISTRY  (12 per page, like the real menu)
+   CHANNEL REGISTRY
+   jingle: an original short motif played when the channel preview opens.
    ===================================================================== */
 const CHANNELS = [
-  { id:'disc',       name:'Disc Channel',          title:'Research',             art:'disc',       screen:'research' },
-  { id:'mii',        name:'Mii Channel',           title:'About Me',             art:'mii',        screen:'about' },
-  { id:'photo',      name:'Photo Channel',         title:'Presentations',        art:'photo',      screen:'presentations' },
-  { id:'shop',       name:'Wii Shop Channel',      title:'Project Shop',         art:'shop',       screen:'shop' },
-  { id:'forecast',   name:'Forecast Channel',      title:'Forecast',             art:'forecast',   screen:'forecast' },
-  { id:'news',       name:'News Channel',          title:'News & Blog',          art:'news',       screen:'news' },
-  { id:'internet',   name:'Internet Channel',      title:'Links',                art:'internet',   screen:'links' },
-  { id:'votes',      name:'Everybody Votes Channel', title:'Election Polling',   art:'votes',      screen:'votes' },
-  { id:'resume',     name:'Résumé',                title:'Résumé',               art:'resume',     screen:'resume' },
-  { id:'experience', name:'Experience',            title:'Experience',           art:'experience', screen:'experience' },
-  { id:'octa',       name:'OctaStats',             title:'OctaStats UFC Model',  art:'octa',       screen:'octa' },
-  { id:'tape',       name:'Tale of the Tape',      title:'Tale of the Tape',     art:'tape',       screen:'tape' },
-  { id:'micro',      name:'Microeconomics Course', title:'Intermediate Micro',   art:'micro',      screen:'micro' },
-  { id:'led',        name:'MBTA LED Art',          title:'MBTA Live Tracker',    art:'led',        screen:'led' },
-  { id:'ts',         name:'MBTA Time Series',      title:'MBTA Time Series',     art:'ts',         screen:'ts' },
-  { id:'llm',        name:'Agentic LLMs',          title:'Agentic LLMs',         art:'llm',        screen:'llm' },
+  { name:'Research',      sub:'Disc Channel',            art:'disc',       screen:'research',      jingle:'E5 G5 B5 . A5 G5 E5 . D5 E5' },
+  { name:'About Me',      sub:'Mii Channel',             art:'mii',        screen:'about',         jingle:'C5 E5 G5 E5 F5 A5 G5 . E5 C5' },
+  { name:'Résumé',        sub:'Résumé',                  art:'resume',     screen:'resume',        jingle:'G4 C5 E5 G5 . E5 G5' },
+  { name:'Project Shop',  sub:'Shop Channel',            art:'shop',       screen:'shop',          jingle:'D5 F#5 A5 . B5 A5 F#5 . E5 D5 E5 F#5' },
+  { name:'Presentations', sub:'Photo Channel',           art:'photo',      screen:'presentations', jingle:'A4 C5 E5 A5 . G5 E5 C5 D5' },
+  { name:'News & Blog',   sub:'News Channel',            art:'news',       screen:'news',          jingle:'C5 C5 G5 . F5 E5 D5 C5' },
+  { name:'Forecast',      sub:'Forecast Channel',        art:'forecast',   screen:'forecast',      jingle:'F5 A5 C6 . A5 . G5 F5' },
+  { name:'Links',         sub:'Internet Channel',        art:'internet',   screen:'links',         jingle:'E5 B5 . G#5 E5 F#5' },
+  { name:'Experience',    sub:'Experience',              art:'experience', screen:'experience',    jingle:'D5 A4 D5 F#5 . E5 D5' },
+  { name:'Election Polling', sub:'Everybody Votes Channel', art:'votes',   screen:'votes',         jingle:'C5 D5 E5 . E5 D5 C5 D5' },
+  { name:'OctaStats',     sub:'UFC Model',               art:'octa',       screen:'octa',          jingle:'A3 A3 C4 . A3 E4 D4' },
+  { name:'Tale of the Tape', sub:'UFC Daily Game',       art:'tape',       screen:'tape',          jingle:'G4 G4 . D5 . C5 B4 A4 G4' },
+  { name:'Micro Course',  sub:'Course Website',          art:'micro',      screen:'micro',         jingle:'C5 G4 A4 E4 F4 C4 F4 G4' },
+  { name:'MBTA LED Art',  sub:'Hardware Project',        art:'led',        screen:'led',           jingle:'E5 . E5 G5 . E5 D5' },
+  { name:'MBTA Ridership', sub:'Time Series Project',    art:'ts',         screen:'ts',            jingle:'C5 D5 F5 E5 G5 F5 A5' },
+  { name:'Agentic LLMs',  sub:'Coming Soon',             art:'llm',        screen:'llm',           jingle:'B4 D5 F#5 A5 . F#5' },
 ];
-const PAGES = Math.ceil(CHANNELS.length / 12);
 
 /* =====================================================================
-   SOUND (synthesized; no audio files)
+   SOUND — all synthesized
    ===================================================================== */
-let AC = null;
-function audio(){ if(!AC){ try{ AC = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } return AC; }
-function tone(freq, dur=.06, type='sine', vol=.05, when=0, slide=0){
+let AC = null, noiseBuf = null, jingleGain = null;
+function audio(){
+  if (!AC){ try{ AC = new (window.AudioContext||window.webkitAudioContext)();
+    noiseBuf = AC.createBuffer(1, AC.sampleRate*.5, AC.sampleRate); const d = noiseBuf.getChannelData(0); for (let i=0;i<d.length;i++) d[i] = Math.random()*2-1; }catch(e){} }
+  return AC;
+}
+function tone(freq, dur=.06, type='sine', vol=.05, when=0, slide=0, dest){
   const ac = audio(); if(!ac) return;
   const t = ac.currentTime + when, o = ac.createOscillator(), g = ac.createGain();
   o.type = type; o.frequency.setValueAtTime(freq, t);
   if (slide) o.frequency.exponentialRampToValueAtTime(freq*slide, t+dur);
-  g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t+.006); g.gain.exponentialRampToValueAtTime(.0001, t+dur);
-  o.connect(g).connect(ac.destination); o.start(t); o.stop(t+dur+.02);
+  g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t+.008); g.gain.exponentialRampToValueAtTime(.0001, t+dur);
+  o.connect(g).connect(dest||ac.destination); o.start(t); o.stop(t+dur+.02);
+}
+function noise(dur, f0, f1, vol=.03, q=2){
+  const ac = audio(); if(!ac) return;
+  const t = ac.currentTime, s = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain();
+  s.buffer = noiseBuf; f.type = 'bandpass'; f.Q.value = q;
+  f.frequency.setValueAtTime(f0, t); f.frequency.exponentialRampToValueAtTime(f1, t+dur);
+  g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t+dur*.3); g.gain.exponentialRampToValueAtTime(.0001, t+dur);
+  s.connect(f).connect(g).connect(ac.destination); s.start(t); s.stop(t+dur+.02);
 }
 const SFX = {
-  hover: () => tone(1900,.035,'sine',.035),
-  select: () => { tone(880,.09,'triangle',.06); tone(1320,.14,'triangle',.05,.06); },
-  back: () => { tone(1100,.08,'triangle',.05); tone(740,.12,'triangle',.045,.06); },
-  page: () => tone(600,.12,'sine',.04,0,1.8),
-  start: () => [523,659,784,1047].forEach((f,i)=>tone(f,.25,'triangle',.05,i*.08)),
+  hover: () => { noise(.025, 3200, 2800, .05, 6); tone(1250,.04,'sine',.018); },
+  select: () => { tone(520,.16,'sine',.05,0,1.9); tone(1600,.03,'triangle',.02); },
+  back: () => tone(900,.15,'sine',.045,0,.55),
+  page: (dir=1) => dir>0 ? noise(.26, 500, 2200, .05, 1.2) : noise(.26, 2200, 500, .05, 1.2),
+  start: () => { tone(660,.25,'sine',.05,0,1.5); tone(1320,.2,'triangle',.02,.05); },
+  press: () => tone(1500,.03,'triangle',.03),
 };
-
-/* =====================================================================
-   STAGE SCALING
-   ===================================================================== */
-const stage = document.getElementById('stage');
-let SCALE = 1, OX = 0, OY = 0;
-function fit(){
-  const w = innerWidth, h = innerHeight;
-  SCALE = Math.min(w/1280, h/720);
-  OX = (w - 1280*SCALE)/2; OY = (h - 720*SCALE)/2;
-  stage.style.transform = `translate(${OX}px,${OY}px) scale(${SCALE})`;
+const NOTE = n => { const m = /^([A-G])(#?)(\d)$/.exec(n); if (!m) return 0; const i = {C:0,D:2,E:4,F:5,G:7,A:9,B:11}[m[1]] + (m[2]?1:0); return 440*Math.pow(2,(i + (m[3]-4)*12 - 9)/12); };
+function playJingle(str){
+  const ac = audio(); if (!ac || !str) return;
+  stopJingle();
+  jingleGain = ac.createGain(); jingleGain.gain.value = 1; jingleGain.connect(ac.destination);
+  let t = 0; const beat = .16;
+  str.split(' ').forEach(n => { if (n !== '.'){ const f = NOTE(n); tone(f, .3, 'triangle', .045, t, 0, jingleGain); tone(f*2, .12, 'sine', .012, t, 0, jingleGain); } t += beat; });
 }
-addEventListener('resize', fit); fit();
-
-/* =====================================================================
-   BUILD MENU
-   ===================================================================== */
-const track = document.getElementById('track');
-track.style.width = (PAGES*1280)+'px';
-const tiles = [];
-for (let p=0; p<PAGES; p++){
-  const page = document.createElement('div'); page.className='page';
-  const grid = document.createElement('div'); grid.className='grid';
-  for (let s=0; s<12; s++){
-    const idx = p*12+s, ch = CHANNELS[idx];
-    const el = document.createElement('button');
-    if (ch){
-      el.className = 'ch'; el.dataset.hot = ''; el.dataset.idx = idx;
-      el.setAttribute('aria-label', ch.name + (ch.title!==ch.name?' — '+ch.title:''));
-      el.innerHTML = `<div class="bn">${B[ch.art]()}</div>`;
-      tiles[idx] = el;
-    } else {
-      el.className = 'ch empty'; el.tabIndex = -1; el.setAttribute('aria-hidden','true');
-      el.innerHTML = `<div class="bn"><span class="wii-logo" style="position:static">Wii</span></div>`;
+/* Original ambient menu loop (not Nintendo's music): a soft Cmaj7–Am7–Dm7–G7
+   arpeggio through a lowpass, scheduled a little ahead of the audio clock. */
+let musicOn = true, musicGain = null, musicT = null, musicNext = 0, musicStep = 0;
+try{ musicOn = localStorage.getItem('wiiMusic') !== 'off'; }catch(e){}
+const MUSIC = ['C4 E4 G4 B4 E5 B4 G4 E4','A3 C4 E4 G4 C5 G4 E4 C4','D4 F4 A4 C5 F5 C5 A4 F4','G3 B3 D4 F4 B4 F4 D4 B3'].map(b=>b.split(' ').map(NOTE));
+function startMusic(){
+  const ac = audio(); if (!ac || musicGain) return;
+  const lp = ac.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value = 1800;
+  musicGain = ac.createGain(); musicGain.gain.value = musicOn ? 1 : 0;
+  musicGain.connect(lp).connect(ac.destination);
+  musicNext = ac.currentTime + .1;
+  musicT = setInterval(() => {
+    while (musicNext < ac.currentTime + .6){
+      const bar = MUSIC[Math.floor(musicStep/8) % 4], f = bar[musicStep % 8];
+      const when = musicNext - ac.currentTime;
+      tone(f, .55, 'triangle', .016, when, 0, musicGain);
+      if (musicStep % 8 === 0) tone(f/2, 1.6, 'sine', .014, when, 0, musicGain);
+      musicNext += .3; musicStep++;
     }
-    grid.appendChild(el);
+  }, 150);
+}
+function duckMusic(down){ if (!musicGain || !musicOn) return; musicGain.gain.setTargetAtTime(down ? 0 : 1, AC.currentTime, .12); }
+function stopJingle(){ if (jingleGain){ try{ jingleGain.gain.setTargetAtTime(0, AC.currentTime, .05); }catch(e){} jingleGain = null; } }
+
+/* =====================================================================
+   LAYOUT — 16:9 (and wider), 4:3, and a portrait mode for phones.
+   ===================================================================== */
+let L;
+function computeLayout(){
+  const a = innerWidth / innerHeight;
+  if (a < .9){
+    const W = 720, H = Math.round(Math.max(1100, Math.min(1700, W/a))), cols = 2, rows = 4, gx = 16, gy = 18, mx = 60;
+    const tw = (W - 2*mx - gx*(cols-1)) / cols, th = 188, gridH = rows*th + (rows-1)*gy;
+    const barTop = H - 200, top = Math.max(60, Math.round((barTop - gridH)*.5));
+    const zh = 470;
+    return { mode:'portrait', W, H, cols, rows, per:cols*rows, gx, gy, mx, tw, th, top, barTop, s:190, zoom:{l:0,t:Math.round((H-148-zh)/2),w:720,h:zh}, arrowY:top + gridH/2 - 41 };
   }
-  page.appendChild(grid); track.appendChild(page);
+  const H = 720, W = Math.round(Math.max(960, Math.min(1280, H*a)));
+  const cols = 4, rows = 3, gx = 14, gy = 12, mx = Math.round(W*.074);
+  const tw = (W - 2*mx - gx*(cols-1)) / cols, th = 156;
+  return { mode:'land', W, H, cols, rows, per:cols*rows, gx, gy, mx, tw, th, top:40, barTop:H-200, s:204, zoom:{l:0,t:0,w:W,h:572}, arrowY:40 + (rows*th+(rows-1)*gy)/2 - 41 };
+}
+const stage = document.getElementById('stage'), track = document.getElementById('track'), pagesEl = document.getElementById('pages');
+const bar = document.getElementById('bar'), barExt = document.getElementById('barExt');
+let SCALE = 1, OX = 0, OY = 0, PAGES = 1;
+const tiles = [];
+
+function barPath(W, s){
+  const d = s + (W/2 - s)*.55, k = (d - s)/238;
+  const X = v => (s + v*k).toFixed(1), R = v => (W - s - v*k).toFixed(1);
+  return `M0,44 H${s} C${X(32)},44 ${X(71)},44 ${X(118)},84 C${X(150)},112 ${X(180)},130 ${X(238)},130 H${R(238)} C${R(180)},130 ${R(150)},112 ${R(118)},84 C${R(71)},44 ${R(32)},44 ${W-s},44 H${W}`;
+}
+function buildBar(){
+  const W = L.W, top = barPath(W, L.s);
+  const svg = bar.querySelector('svg.shape');
+  svg.setAttribute('viewBox', `0 0 ${W} 200`);
+  svg.innerHTML = `<defs><linearGradient id="barG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e8e9ec"/><stop offset=".4" stop-color="#e1e2e6"/><stop offset="1" stop-color="#d6d7db"/></linearGradient>
+      <linearGradient id="tabG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dcdcdf"/><stop offset="1" stop-color="#d0d0d3"/></linearGradient>
+      <filter id="tabShadow" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="1" dy="3" stdDeviation="2.5" flood-color="#000" flood-opacity=".1"/></filter></defs>
+    <path fill="url(#barG)" d="${top} V200 H0 Z"/>
+    <path fill="none" stroke="#34beed" stroke-width="3" d="${top}"/>
+    <path filter="url(#tabShadow)" fill="url(#tabG)" d="M0,61 H118 C155,61 186,92 186,130 C186,168 155,199 118,199 H0 Z"/>
+    <path filter="url(#tabShadow)" fill="url(#tabG)" d="M${W},61 H${W-118} C${W-155},61 ${W-186},92 ${W-186},130 C${W-186},168 ${W-155},199 ${W-118},199 H${W} Z"/>`;
+  Object.assign(bar.style, { top:L.barTop+'px', width:W+'px' });
+  const sd = document.getElementById('sdBtn');
+  sd.style.left = '212px'; sd.style.display = L.mode==='portrait' ? 'none' : '';
+  document.getElementById('clock').style.transform = L.mode==='portrait' ? 'scale(.85)' : '';
+}
+function buildGrid(){
+  PAGES = Math.ceil(CHANNELS.length / L.per);
+  track.innerHTML = ''; tiles.length = 0;
+  Object.assign(pagesEl.style, { width:L.W+'px', height:(L.barTop+60)+'px' });
+  track.style.width = (PAGES*L.W)+'px';
+  for (let p=0; p<PAGES; p++){
+    const pg = document.createElement('div'); pg.className='page'; pg.style.width = L.W+'px';
+    const grid = document.createElement('div'); grid.className = 'grid' + (L.tw/L.th < 1.6 ? ' narrow' : '');
+    Object.assign(grid.style, { left:L.mx+'px', top:L.top+'px', gridTemplateColumns:`repeat(${L.cols},${L.tw}px)`, gridTemplateRows:`repeat(${L.rows},${L.th}px)`, gap:`${L.gy}px ${L.gx}px` });
+    for (let s=0; s<L.per; s++){
+      const idx = p*L.per+s, ch = CHANNELS[idx];
+      const el = document.createElement('button');
+      if (ch){
+        el.className = 'ch'; el.dataset.hot = ''; el.dataset.idx = idx;
+        el.setAttribute('aria-label', ch.name);
+        el.innerHTML = `<div class="bn">${B[ch.art]()}</div>`;
+        el.addEventListener('click', () => { if (state==='menu') openPreview(idx); });
+        tiles[idx] = el;
+      } else {
+        el.className = 'ch empty'; el.tabIndex = -1; el.setAttribute('aria-hidden','true');
+        el.innerHTML = `<div class="bn"><span style="position:static;display:contents">${WII_MARK('#d0d1d4')}</span></div>`;
+      }
+      grid.appendChild(el);
+    }
+    pg.appendChild(grid); track.appendChild(pg);
+  }
+  const ax = Math.max(6, L.mx/2-23);
+  document.getElementById('arrL').style.cssText = `left:${ax}px;top:${L.arrowY}px`;
+  document.getElementById('arrR').style.cssText = `right:${ax}px;top:${L.arrowY}px`;
+  ['pvL','pvR'].forEach(id => document.getElementById(id).style.top = (L.zoom.t + L.zoom.h/2 - 41)+'px');
+  document.getElementById('pvL').style.left = '22px'; document.getElementById('pvR').style.right = '22px';
+  paintBannerTemp();
+  if (typeof pauseSMIL === 'function') pauseSMIL(track);
+}
+function unscroll(){ for (const el of [document.getElementById('root'), stage, pagesEl]) { el.scrollTop = 0; el.scrollLeft = 0; } }
+function fit(){
+  unscroll();
+  const w = innerWidth, h = innerHeight;
+  SCALE = Math.min(w/L.W, h/L.H);
+  OX = (w - L.W*SCALE)/2;
+  OY = h - L.H*SCALE;              // bottom-align so the bar always touches the bottom edge
+  Object.assign(stage.style, { width:L.W+'px', height:L.H+'px', transform:`translate(${OX}px,${OY}px) scale(${SCALE})` });
+  // Extend the bar beyond the stage on ultra-wide screens
+  if (OX > 1 && L.mode!=='portrait'){ barExt.style.display='block'; barExt.style.height = ((200-44)*SCALE)+'px'; }
+  else barExt.style.display='none';
+}
+function relayout(force){
+  const next = computeLayout(), prevMode = L && L.mode;
+  const changed = force || !L || next.mode!==L.mode || next.W!==L.W || next.H!==L.H;
+  L = next;
+  document.body.classList.toggle('portrait', L.mode==='portrait');
+  if (changed){
+    const keep = state==='preview' && prevMode===L.mode;
+    if (!keep && (state==='preview' || state==='opening' || state==='closing')) forceClosePreview();
+    if (state==='content' && contentFrom==='preview') camera(false);
+    buildBar(); buildGrid(); setPage(keep ? Math.floor(current/L.per) : Math.min(page, PAGES-1), true, true);
+    if (keep){ [pagesEl, bar, barExt, pvZoom].forEach(el => el.style.transition='none'); placeZoom(L.zoom, 0); camera(true, current); pvZoom.offsetWidth; [pagesEl, bar, barExt, pvZoom].forEach(el => el.style.transition=''); }
+  }
+  fit();
 }
 
-const ARROW_SVG = `<svg viewBox="0 0 55 98"><defs><radialGradient id="arG" cx="24" cy="49" r="45" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#cbf6ff"/><stop offset="1" stop-color="#62d6ff"/></radialGradient></defs><path d="M4.16 2.07 52.25 48.28a1 1 0 0 1 0 1.44L4.16 95.93c-.7.66-1.84.07-1.68-.88L9.92 49 2.48 2.95c-.16-.95.98-1.54 1.68-.88Z" fill="url(#arG)" stroke="#24479b" stroke-width="3"/></svg>`;
+/* =====================================================================
+   ARROWS, CLOCK
+   ===================================================================== */
+const ARROW_SVG = `<svg viewBox="0 0 55 98" aria-hidden="true"><defs><radialGradient id="arG" cx="24" cy="49" r="45" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#cbf6ff"/><stop offset="1" stop-color="#62d6ff"/></radialGradient></defs><path d="M4.16 2.07 52.25 48.28a1 1 0 0 1 0 1.44L4.16 95.93c-.7.66-1.84.07-1.68-.88L9.92 49 2.48 2.95c-.16-.95.98-1.54 1.68-.88Z" fill="url(#arG)" stroke="#24479b" stroke-width="3"/></svg>`;
 ['arrL','arrR','pvL','pvR'].forEach(id => document.getElementById(id).innerHTML = ARROW_SVG);
 
-/* ---- clock: seven-segment digits drawn in SVG ---- */
-const SEG = { // a b c d e f g
-  0:'1111110',1:'0110000',2:'1101101',3:'1111001',4:'0110011',5:'1011011',6:'1011111',7:'1110000',8:'1111111',9:'1111011',' ':'0000000' };
-const SEG_POLY = [
-  'M6,2 H30 L26,7 H10 Z', 'M31,4 V30 L27,27 V8 Z', 'M31,34 V60 L27,56 V37 Z',
-  'M6,62 H30 L26,57 H10 Z', 'M5,34 V60 L9,56 V37 Z', 'M5,4 V30 L9,27 V8 Z', 'M7,32 L10,29.5 H26 L29,32 L26,34.5 H10 Z'];
-function digitSVG(ch, x){
-  const on = SEG[ch] || SEG[' '];
-  return `<g transform="translate(${x},0)">${SEG_POLY.map((d,i)=>on[i]==='1'?`<path d="${d}" fill="#97999e"/>`:'').join('')}</g>`;
-}
+const SEG = {0:'1111110',1:'0110000',2:'1101101',3:'1111001',4:'0110011',5:'1011011',6:'1011111',7:'1110000',8:'1111111',9:'1111011'};
+// thinner, slightly rounded segments
+const SEG_POLY = ['M8,3 H28 L25,6.5 H11 Z','M30,5 V29 L26.5,26.5 V8.5 Z','M30,35 V59 L26.5,55.5 V37.5 Z','M8,61 H28 L25,57.5 H11 Z','M6,35 V59 L9.5,55.5 V37.5 Z','M6,5 V29 L9.5,26.5 V8.5 Z','M8.5,32 L11,29.8 H25 L27.5,32 L25,34.2 H11 Z'];
+const SEG_COL = '#a5a7ab';
+const digitSVG = (ch, x) => `<g transform="translate(${x},0)">${SEG_POLY.map((d,i)=>(SEG[ch]||'0000000')[i]==='1'?`<path d="${d}" fill="${SEG_COL}" stroke="${SEG_COL}" stroke-width="1" stroke-linejoin="round"/>`:'').join('')}</g>`;
 let colon = true;
 function tick(){
   const now = new Date();
   let h = now.getHours(); const m = now.getMinutes();
   const ampm = h>=12 ? 'PM' : 'AM'; h = h%12 || 12;
-  const hs = String(h).padStart(2,' '), ms = String(m).padStart(2,'0');
+  const hs = String(h), ms = String(m).padStart(2,'0');
   let x = 0, svg = '';
-  if (hs[0] !== ' ') { svg += digitSVG(hs[0], x); x += 40; }
-  svg += digitSVG(hs[1], x); x += 40;
-  svg += `<g opacity="${colon?1:.15}"><rect x="${x+2}" y="18" width="7" height="7" rx="1.5" fill="#97999e"/><rect x="${x+2}" y="40" width="7" height="7" rx="1.5" fill="#97999e"/></g>`; x += 16;
-  svg += digitSVG(ms[0], x); x += 40; svg += digitSVG(ms[1], x); x += 40;
-  svg += `<text x="${x+4}" y="20" font-family="M PLUS 1p,Arial" font-weight="800" font-size="17" fill="#97999e">${ampm}</text>`; x += 34;
+  for (const c of hs){ svg += digitSVG(c, x); x += 38; }
+  svg += `<g opacity="${colon?1:.12}"><rect x="${x+1}" y="20" width="6" height="6" rx="2" fill="${SEG_COL}"/><rect x="${x+1}" y="40" width="6" height="6" rx="2" fill="${SEG_COL}"/></g>`; x += 14;
+  svg += digitSVG(ms[0], x); x += 38; svg += digitSVG(ms[1], x); x += 38;
+  svg += `<text x="${x+3}" y="17" font-family="M PLUS 1p,Arial" font-weight="500" font-size="13" fill="${SEG_COL}">${ampm}</text>`; x += 28;
   document.getElementById('clock').innerHTML = `<svg viewBox="0 0 ${x} 64" width="${x}" height="62">${svg}</svg>`;
-  const wd = now.toLocaleDateString('en-US',{weekday:'short'});
-  document.getElementById('date').textContent = `${wd} ${now.getMonth()+1}/${now.getDate()}`;
+  document.getElementById('date').textContent = `${now.toLocaleDateString('en-US',{weekday:'short'})} ${now.getMonth()+1}/${now.getDate()}`;
   colon = !colon;
 }
 tick(); setInterval(tick, 1000);
 
 /* =====================================================================
-   HAND POINTER + HOVER SYSTEM
+   HAND POINTER + HOVER
    ===================================================================== */
 const fine = matchMedia('(hover:hover) and (pointer:fine)').matches;
+const reduced = matchMedia('(prefers-reduced-motion:reduce)').matches;
 const hand = document.getElementById('hand');
 if (fine) document.documentElement.classList.add('has-hand');
-let mx = innerWidth/2, my = innerHeight/2, hx = mx, hy = my, tilt = 0;
-addEventListener('pointermove', e => { mx = e.clientX; my = e.clientY; });
+let mx = innerWidth/2, my = innerHeight/2, hx = mx, hy = my, roll = 0, lastMove = 0, lastKey = false;
+addEventListener('pointermove', e => { mx = e.clientX; my = e.clientY; lastMove = performance.now(); lastKey = false; });
+addEventListener('pointerdown', () => { lastKey = false; }, true);
+addEventListener('keydown', () => { lastKey = true; }, true);
 addEventListener('pointerdown', () => hand.classList.add('press'));
 addEventListener('pointerup', () => hand.classList.remove('press'));
 (function loop(){
-  const dx = mx - hx; hx += dx*.45; hy += (my-hy)*.45;
-  tilt += (Math.max(-18, Math.min(18, dx*.5)) - tilt) * .2;
-  hand.style.transform = `translate(${hx}px,${hy}px) rotate(${tilt}deg)`;
+  const k = reduced ? 1 : .7;
+  hx += (mx-hx)*k; hy += (my-hy)*k;
+  // A gentle "roll" toward where you point that settles upright when the hand rests.
+  const target = performance.now() - lastMove < 300 ? (mx/innerWidth - .5) * 12 : 0;
+  roll += (target - roll) * .08;
+  hand.style.transform = `translate(${hx}px,${hy}px) rotate(${roll}deg)`;
   requestAnimationFrame(loop);
 })();
 
 let hotEl = null;
 const bubble = document.getElementById('bubble');
-function setHot(el){
+function setHot(el, silent){
   if (el === hotEl) return;
   if (hotEl) hotEl.classList.remove('hot');
   hotEl = el;
-  if (el){ el.classList.add('hot'); if (started) SFX.hover(); }
+  if (el){ el.classList.add('hot'); if (started && !silent) SFX.hover(); }
   updateBubble();
 }
 function updateBubble(){
   if (hotEl && hotEl.classList.contains('ch') && state==='menu'){
-    const ch = CHANNELS[+hotEl.dataset.idx];
+    const idx = +hotEl.dataset.idx, ch = CHANNELS[idx];
     bubble.textContent = ch.name;
-    const r = hotEl.getBoundingClientRect();
-    const cx = ((r.left + r.width/2) - OX)/SCALE, by = (r.bottom - OY)/SCALE;
-    bubble.style.left = Math.max(170, Math.min(1110, cx)) + 'px';
-    bubble.style.top = Math.min(by - 26, 490) + 'px';
+    const s = idx % L.per, col = s % L.cols, row = Math.floor(s / L.cols);
+    const cx = L.mx + col*(L.tw+L.gx) + L.tw/2, by = L.top + (row+1)*L.th + row*L.gy;
+    const half = bubble.offsetWidth/2 || 120;
+    bubble.style.left = Math.max(half+10, Math.min(L.W-half-10, cx)) + 'px';
+    bubble.style.top = Math.min(by - 8, L.barTop - 46) + 'px';
     bubble.classList.add('on');
   } else bubble.classList.remove('on');
 }
 document.addEventListener('pointerover', e => {
+  if (e.pointerType === 'touch' || ['opening','closing','leaving'].includes(state)) return;
   const el = e.target.closest('[data-hot]');
-  setHot(el && !el.disabled ? el : null);
+  const next = el && !el.disabled && el.offsetParent !== null ? el : null;
+  if (next !== hotEl && document.activeElement && document.activeElement !== document.body && document.activeElement.closest('#stage')) document.activeElement.blur();
+  setHot(next);
 });
-document.addEventListener('pointerleave', () => setHot(null));
+document.documentElement.addEventListener('mouseleave', () => { setHot(null); hand.style.opacity = 0; });
+document.documentElement.addEventListener('mouseenter', () => { hand.style.opacity = ''; });
+document.addEventListener('focusin', e => { if (!lastKey) return; const el = e.target.closest('[data-hot]'); if (el) setHot(el, true); });
 
 /* =====================================================================
-   STATE MACHINE: warning → menu → preview → content
+   STATE MACHINE: warning → menu → opening → preview → content
+                              ↖ closing ↙
    ===================================================================== */
-let state = 'warning', started = false, page = 0, current = -1;
-const menu = document.getElementById('menu');
-const warning = document.getElementById('warning');
+let state = 'warning', started = false, page = 0, current = -1, pvTimer = null;
+const menu = document.getElementById('menu'), warning = document.getElementById('warning');
 
+let pressReady = reduced;
+document.querySelector('.warn-press').addEventListener('animationend', () => { pressReady = true; });
+setTimeout(() => { pressReady = true; }, 3000);
 function startMenu(){
-  if (started) return;
-  started = true; audio(); SFX.start();
+  if (started || !pressReady) return;   // A is only accepted once the prompt has appeared
+  started = true; audio(); SFX.press(); setTimeout(startMusic, 900);
   warning.classList.add('gone');
   menu.style.visibility = 'visible'; menu.classList.add('boot');
-  state = 'menu'; setPage(0, true);
-  setTimeout(()=>{ warning.remove(); }, 800);
+  state = 'menu';
+  setTimeout(()=>{ warning.remove(); }, 700);
 }
 warning.addEventListener('click', startMenu);
 
 /* --- paging --- */
 const arrL = document.getElementById('arrL'), arrR = document.getElementById('arrR');
-function setPage(p, silent){
+function setPage(p, silent, instant){
+  const prev = page;
   page = Math.max(0, Math.min(PAGES-1, p));
-  track.style.transform = `translateX(${-page*1280}px)`;
-  arrL.classList.toggle('show', page>0);
-  arrR.classList.toggle('show', page<PAGES-1);
+  if (instant){ track.style.transition='none'; }
+  track.style.transform = `translateX(${-page*L.W}px)`;
+  if (instant){ track.offsetWidth; track.style.transition=''; }
+  [...track.children].forEach((pg,i) => pg.inert = i !== page);
+  arrL.classList.toggle('show', page>0); arrR.classList.toggle('show', page<PAGES-1);
+  if ((document.activeElement===arrL && page===0) || (document.activeElement===arrR && page===PAGES-1)){ const t = tiles[page*L.per]; if (t) t.focus({preventScroll:true}); }
   arrL.disabled = page===0; arrR.disabled = page===PAGES-1;
-  if (!silent) SFX.page();
+  if (!silent && page !== prev) SFX.page(page >= prev ? 1 : -1);
   setHot(null);
 }
 arrL.onclick = () => setPage(page-1);
 arrR.onclick = () => setPage(page+1);
 
-/* --- channel preview: zoom the tile's banner to full screen --- */
-const preview = document.getElementById('preview');
-const pvZoom = document.getElementById('pvZoom');
-function tileRectInStage(idx){
-  const r = tiles[idx].getBoundingClientRect();
-  return { l:(r.left-OX)/SCALE+7, t:(r.top-OY)/SCALE+7, w:r.width/SCALE-14, h:r.height/SCALE-14 };
+/* --- preview: the menu "camera" pushes into the tile while its banner grows --- */
+const preview = document.getElementById('preview'), pvZoom = document.getElementById('pvZoom');
+preview.inert = true;
+function tileRect(idx){
+  const s = idx % L.per, col = s % L.cols, row = Math.floor(s / L.cols);
+  const w = L.tw-12, h = L.tw/L.th < 1.6 ? w*9/16 : L.th-12;
+  return { l:L.mx + col*(L.tw+L.gx) + 6, t:L.top + row*(L.th+L.gy) + (L.th-h)/2, w, h };
 }
 function placeZoom(r, radius){ Object.assign(pvZoom.style, { left:r.l+'px', top:r.t+'px', width:r.w+'px', height:r.h+'px', borderRadius:radius+'px' }); }
-function openPreview(idx, fromSide){
-  current = idx; const ch = CHANNELS[idx];
-  pvZoom.innerHTML = `<div class="bn">${B[ch.art]()}</div>`;
-  if (state === 'menu'){
-    state = 'preview'; SFX.select(); bubble.classList.remove('on');
-    pvZoom.style.transition = 'none'; placeZoom(tileRectInStage(idx), 16);
-    pvZoom.offsetWidth; pvZoom.style.transition = '';
-    requestAnimationFrame(()=>{ placeZoom({l:0,t:0,w:1280,h:572}, 0); });
-    preview.classList.add('open');
-    setTimeout(()=>preview.classList.add('shown'), 380);
+function camera(on, idx){
+  if (on){
+    const r = tileRect(idx);
+    pagesEl.style.transformOrigin = `${r.l + r.w/2}px ${r.t + r.h/2}px`;
+    pagesEl.style.transform = 'scale(3.2)'; pagesEl.style.opacity = '0';
+    bar.style.transform = barExt.style.transform = 'translateY(230px)';
+    arrL.style.opacity = arrR.style.opacity = '0';
   } else {
-    SFX.page();
-    pvZoom.animate([{opacity:0, transform:`translateX(${fromSide*60}px)`},{opacity:1, transform:'none'}],{duration:280,easing:'ease-out'});
+    pagesEl.style.transform = ''; pagesEl.style.opacity = '';
+    bar.style.transform = barExt.style.transform = ''; arrL.style.opacity = arrR.style.opacity = '';
   }
+}
+function openPreview(idx, dir){
+  current = idx; const ch = CHANNELS[idx];
+  if (state === 'menu'){
+    state = 'opening'; SFX.select(); bubble.classList.remove('on');
+    pvZoom.innerHTML = `<div class="bn">${B[ch.art]()}</div>`;
+    pvZoom.style.transition = 'none'; placeZoom(tileRect(idx), 13); pvZoom.offsetWidth; pvZoom.style.transition = '';
+    preview.classList.remove('closing'); preview.classList.add('open'); preview.inert = false;
+    requestAnimationFrame(() => { placeZoom(L.zoom, 0); camera(true, idx); });
+    clearTimeout(pvTimer); duckMusic(true);
+    pvTimer = setTimeout(() => { if (state!=='opening') return; state = 'preview'; preview.classList.add('shown'); if (lastKey) document.getElementById('pvStart').focus({preventScroll:true}); playJingle(ch.jingle); }, 480);
+  } else if (state === 'preview'){
+    SFX.page(); stopJingle();
+    pvZoom.innerHTML = `<div class="bn">${B[ch.art]()}</div>`;
+    if (!reduced) pvZoom.animate([{opacity:0, transform:`translateX(${dir*60}px)`},{opacity:1, transform:'none'}],{duration:260,easing:'ease-out'});
+    setTimeout(()=>{ if (current===idx && state==='preview') playJingle(ch.jingle); }, 200);
+  } else return;
   document.getElementById('pvL').style.visibility = idx>0 ? 'visible':'hidden';
   document.getElementById('pvR').style.visibility = idx<CHANNELS.length-1 ? 'visible':'hidden';
+  if (document.activeElement && document.activeElement.style.visibility === 'hidden') document.getElementById('pvStart').focus({preventScroll:true});
 }
-function closePreview(){
-  if (state !== 'preview') return;
-  SFX.back(); preview.classList.remove('shown');
-  const p = Math.floor(current/12); if (p !== page) setPage(p, true);
-  placeZoom(tileRectInStage(current), 16);
-  setTimeout(()=>{ preview.classList.remove('open'); pvZoom.innerHTML=''; pvZoom.style.width='0'; state='menu'; }, 450);
+function closePreview(silent){
+  if (state !== 'preview' && state !== 'opening') return;
+  state = 'closing'; clearTimeout(pvTimer); stopJingle(); if (!silent) SFX.back(); duckMusic(false);
+  preview.classList.remove('shown'); preview.classList.add('closing');
+  const p = Math.floor(current / L.per); if (p !== page) setPage(p, true, true);
+  placeZoom(tileRect(current), 13); camera(false);
+  pvTimer = setTimeout(() => {
+    preview.classList.remove('open','closing'); preview.inert = true; pvZoom.innerHTML=''; pvZoom.style.width='0';
+    state = 'menu';
+    if (lastKey && tiles[current]){ tiles[current].focus({preventScroll:true}); setHot(tiles[current], true); }
+    else if (!coarse){ const el = document.elementFromPoint(mx, my); const h = el && el.closest('[data-hot]'); setHot(h && !h.disabled ? h : null, true); }
+  }, 480);
+}
+function forceClosePreview(){
+  clearTimeout(pvTimer); stopJingle(); camera(false);
+  preview.classList.remove('open','shown','closing'); preview.inert = true; pvZoom.innerHTML=''; pvZoom.style.width='0';
+  if (state!=='content') state = 'menu';
 }
 document.getElementById('pvMenu').onclick = closePreview;
 document.getElementById('pvL').onclick = () => current>0 && openPreview(current-1, -1);
 document.getElementById('pvR').onclick = () => current<CHANNELS.length-1 && openPreview(current+1, 1);
 document.getElementById('pvStart').onclick = () => openContent(current);
 
-tiles.forEach((t,i) => t && t.addEventListener('click', () => state==='menu' && openPreview(i)));
-
 /* --- channel content --- */
-const content = document.getElementById('content');
-function openContent(idx){
-  const ch = CHANNELS[idx]; SFX.start();
-  document.getElementById('ccIco').innerHTML = `<div class="bn">${B[ch.art]()}</div>`;
-  document.getElementById('ccTitle').textContent = ch.title;
-  document.getElementById('ccSub').textContent = ch.name;
-  document.getElementById('ccInner').innerHTML = SCREENS[ch.screen]();
+const content = document.getElementById('content'), ccFoot = document.getElementById('ccFoot');
+let contentFrom = 'preview';
+function showScreen(key, title, sub, art){
+  const sc = SCREENS[key];
+  document.getElementById('ccIco').innerHTML = art ? `<div class="bn">${B[art]()}</div>` : `<div class="bn"><div style="inset:0;background:#fffef6"></div><svg viewBox="0 0 96 64" style="left:25%;top:20%;width:50%;height:60%"><path d="M0 4v8l46.7 22.9c.8.4 1.8.4 2.6 0L96 12V4c0-2.2-1.8-4-4-4H4C1.8 0 0 1.8 0 4z" fill="#34beed"/><path d="M46.7 43.8 0 20.5V60c0 2.2 1.8 4 4 4h88c2.2 0 4-1.8 4-4V20.5L49.3 43.8c-.8.4-1.8.4-2.6 0z" fill="#34beed"/></svg></div>`;
+  document.getElementById('ccTitle').textContent = title;
+  document.getElementById('ccSub').textContent = sub;
+  document.getElementById('ccInner').innerHTML = sc.html();
+  ccFoot.innerHTML = `<button class="pill" id="ccBack" data-hot>Wii Menu</button>` +
+    (sc.actions||[]).map(([l,h])=>`<a class="pill" data-hot href="${h}" ${h.startsWith('mailto:')?'':'target="_blank" rel="noopener"'} style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none">${l}</a>`).join('');
+  document.getElementById('ccBack').onclick = closeContent;
+  content.dataset.theme = sc.theme || '';
   document.getElementById('ccBody').scrollTop = 0;
-  content.classList.add('open'); state = 'content';
-  if (ch.screen === 'forecast') loadWeather();
-  if (ch.screen === 'votes') wirePoll();
+  content.classList.remove('leaving'); content.classList.add('open');
+  document.documentElement.classList.add('in-content');
+  stage.inert = true;
+  setTimeout(()=>document.getElementById('ccTitle').focus({preventScroll:true}), 50);
+  if (key === 'forecast') loadWeather();
+  if (key === 'votes') wirePoll();
 }
-document.getElementById('ccBack').onclick = () => {
-  content.classList.remove('open');
+const fader = document.getElementById('fader');
+function openContent(idx){
+  if (state !== 'preview') return;
+  const ch = CHANNELS[idx]; SFX.start(); stopJingle();
+  state = 'entering'; contentFrom = 'preview';
+  fader.classList.add('on');
+  setTimeout(() => { state = 'content'; showScreen(ch.screen, ch.name, ch.sub, ch.art); fader.classList.remove('on'); unscroll(); }, 260);
+}
+// "Wii Menu" from inside a channel returns to the channel grid: fade to white,
+// then zoom the banner back down into its tile (rebuilt for the current layout).
+function closeContent(){
+  if (state !== 'content') return;
+  state = 'leaving'; SFX.back();
   content.querySelectorAll('video').forEach(v=>v.pause());
-  document.getElementById('ccInner').innerHTML = '';
-  state = 'preview'; closePreview();
-};
+  fader.classList.add('on');
+  setTimeout(() => {
+    content.classList.remove('open'); document.getElementById('ccInner').innerHTML = '';
+    document.documentElement.classList.remove('in-content'); stage.inert = false;
+    if (contentFrom === 'preview'){
+      const ch = CHANNELS[current], p = Math.floor(current / L.per);
+      if (p !== page) setPage(p, true, true);
+      [pagesEl, bar, pvZoom].forEach(el => el.style.transition = 'none');
+      pvZoom.innerHTML = `<div class="bn">${B[ch.art]()}</div>`;
+      placeZoom(L.zoom, 0); camera(true, current);
+      preview.classList.add('open'); preview.classList.remove('shown'); preview.inert = false;
+      pvZoom.offsetWidth;
+      [pagesEl, bar, pvZoom].forEach(el => el.style.transition = '');
+      fader.classList.remove('on');
+      state = 'preview';
+      setTimeout(() => closePreview(true), 180);
+    } else {
+      fader.classList.remove('on');
+      state = 'menu'; if (lastKey) document.getElementById('mailBtn').focus({preventScroll:true});
+    }
+  }, 260);
+}
 
-/* --- Wii button / mail button --- */
+/* --- Wii button / SD / mail --- */
 const sys = document.getElementById('sysmenu');
-document.getElementById('wiiBtn').onclick = () => { if(state!=='menu') return; SFX.select(); sys.classList.add('open'); state='sys'; };
-document.getElementById('sysClose').onclick = () => { SFX.back(); sys.classList.remove('open'); state='menu'; };
-document.getElementById('sysData').onclick = () => window.open(ASSET+'about_me/resume.pdf','_blank');
+function openSys(){ if(state!=='menu') return; SFX.select(); sys.classList.add('open'); state='sys'; bubble.classList.remove('on'); setHot(null, true); bar.inert = true; pagesEl.style.visibility='hidden'; arrL.style.visibility = arrR.style.visibility = 'hidden'; if (lastKey) document.getElementById('sysData').focus({preventScroll:true}); }
+function closeSys(){ if(state!=='sys') return; SFX.back(); sys.classList.remove('open'); state='menu'; bar.inert = false; pagesEl.style.visibility=''; arrL.style.visibility = arrR.style.visibility = ''; if (lastKey) document.getElementById('wiiBtn').focus({preventScroll:true}); }
+const musicBtn = document.getElementById('musicToggle');
+const paintMusic = () => musicBtn.textContent = 'Music: ' + (musicOn ? 'On' : 'Off');
+paintMusic();
+musicBtn.onclick = () => { musicOn = !musicOn; paintMusic(); try{ localStorage.setItem('wiiMusic', musicOn ? 'on' : 'off'); }catch(e){}
+  if (musicGain) musicGain.gain.setTargetAtTime(musicOn ? 1 : 0, AC.currentTime, .1); else if (musicOn) startMusic(); };
+document.getElementById('wiiBtn').onclick = openSys;
+document.getElementById('sysClose').onclick = closeSys;
+document.getElementById('sysData').onclick = () => window.open(RESUME,'_blank','noopener');
 document.getElementById('sysSettings').onclick = () => { location.href = ASSET; };
-document.getElementById('mailBtn').onclick = () => { if(state!=='menu') return; SFX.select(); location.href = 'mailto:'+EMAIL; };
+document.getElementById('sdBtn').onclick = () => { if (state==='menu'){ SFX.select(); window.open(RESUME,'_blank','noopener'); } };
+document.getElementById('mailBtn').onclick = () => { if(state!=='menu') return; SFX.select(); contentFrom='menu'; bubble.classList.remove('on');
+  state='entering'; fader.classList.add('on'); setTimeout(() => { state='content'; showScreen('board','Wii Message Board','Contact Zach',null); fader.classList.remove('on'); }, 260); };
 
-/* --- keyboard: arrows move the cursor focus, Enter = A, Esc/Backspace = B --- */
+/* --- keyboard: arrows move the highlight, Enter/A = select, Esc/Backspace/B = back --- */
 let kFocus = 0;
 addEventListener('keydown', e => {
+  const onControl = e.target.closest && e.target.closest('button,a,video,iframe,input');
   if (state === 'warning'){ if (['Enter',' ','a','A'].includes(e.key)){ e.preventDefault(); startMenu(); } return; }
+  if (onControl && (e.key==='Enter' || e.key===' ')) return;  // native buttons handle their own activation
+  const back = ['Escape','Backspace','b','B'].includes(e.key);
   if (state === 'menu'){
-    const cols = 4, onPage = i => Math.floor(i/12) === page;
     if (hotEl && hotEl.dataset.idx) kFocus = +hotEl.dataset.idx;
-    let n = kFocus;
-    if (e.key==='ArrowRight'){ n = (kFocus%4===3) ? Math.min(CHANNELS.length-1,(page+1)*12) : kFocus+1; }
-    else if (e.key==='ArrowLeft'){ n = (kFocus%4===0) ? Math.max(0, page*12-9) : kFocus-1; }
-    else if (e.key==='ArrowDown'){ n = kFocus+cols; }
-    else if (e.key==='ArrowUp'){ n = kFocus-cols; }
-    else if (e.key==='Enter' || e.key==='a'){ if (hotEl && hotEl.dataset.idx) openPreview(+hotEl.dataset.idx); else openPreview(kFocus); return; }
+    const per = L.per, cols = L.cols, s = kFocus % per, row = Math.floor(s/cols), col = s % cols;
+    let n = null;
+    if (!hotEl && e.key.startsWith('Arrow')) n = page*per;
+    else if (e.key==='ArrowRight') n = col < cols-1 ? kFocus+1 : (page < PAGES-1 ? (page+1)*per + row*cols : null);
+    else if (e.key==='ArrowLeft') n = col > 0 ? kFocus-1 : (page > 0 ? (page-1)*per + row*cols + cols-1 : null);
+    else if (e.key==='ArrowDown') n = row < L.rows-1 ? kFocus+cols : null;
+    else if (e.key==='ArrowUp') n = row > 0 ? kFocus-cols : null;
+    else if (e.key==='Enter' || e.key==='a' || e.key==='A'){ if (hotEl && hotEl.classList.contains('ch')) openPreview(+hotEl.dataset.idx); return; }
     else return;
     e.preventDefault();
-    if (n<0 || n>=CHANNELS.length) return;
-    const p = Math.floor(n/12); if (p!==page) setPage(p);
-    kFocus = n; setHot(tiles[n]);
+    if (n===null || n<0) return;
+    if (n >= CHANNELS.length){ if (e.key==='ArrowDown') return; n = CHANNELS.length-1; }
+    const p = Math.floor(n/per); if (p!==page) setPage(p);
+    kFocus = n; tiles[n].focus({preventScroll:true}); setHot(tiles[n]);
+  } else if (state === 'opening'){
+    if (back){ e.preventDefault(); closePreview(); }
   } else if (state === 'preview'){
-    if (e.key==='Escape' || e.key==='Backspace' || e.key==='b') closePreview();
-    else if (e.key==='Enter' || e.key==='a') openContent(current);
+    if (back){ e.preventDefault(); closePreview(); }
+    else if (e.key==='Enter' || e.key==='a' || e.key==='A') openContent(current);
     else if (e.key==='ArrowLeft' && current>0) openPreview(current-1,-1);
     else if (e.key==='ArrowRight' && current<CHANNELS.length-1) openPreview(current+1,1);
   } else if (state === 'content'){
-    if (e.key==='Escape') document.getElementById('ccBack').click();
+    if (e.key==='Escape' || ((e.key==='Backspace' || e.key==='b' || e.key==='B') && !onControl)){ e.preventDefault(); closeContent(); }
   } else if (state === 'sys'){
-    if (e.key==='Escape') document.getElementById('sysClose').click();
+    if (back) return closeSys();
+    const order = ['sysData','sysSettings','musicToggle','sysClose'].map(id=>document.getElementById(id));
+    let i = order.indexOf(document.activeElement);
+    const moves = { ArrowRight:1, ArrowLeft:-1, ArrowDown:2, ArrowUp:-2 };
+    if (moves[e.key] === undefined) return;
+    e.preventDefault(); i = i < 0 ? 0 : Math.max(0, Math.min(3, i + moves[e.key]));
+    order[i].focus({preventScroll:true}); setHot(order[i], false);
   }
 });
 
-/* --- touch: swipe between pages --- */
-let tsx = null;
-addEventListener('touchstart', e => { if(state==='menu') tsx = e.touches[0].clientX; }, {passive:true});
+/* --- touch: swipe pages in the menu, channels in the preview --- */
+let tsx = null, tsy = null;
+addEventListener('touchstart', e => { tsx = e.touches[0].clientX; tsy = e.touches[0].clientY; }, {passive:true});
 addEventListener('touchend', e => {
-  if (tsx===null) return; const dx = e.changedTouches[0].clientX - tsx; tsx = null;
-  if (Math.abs(dx) > 60) setPage(page + (dx<0?1:-1));
+  if (tsx===null) return; const dx = e.changedTouches[0].clientX - tsx, dy = e.changedTouches[0].clientY - tsy; tsx = null;
+  if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy)) return;
+  if (state==='menu'){ const t = page + (dx<0?1:-1);
+    if (t < 0 || t >= PAGES){ if (!reduced) track.animate([{transform:`translateX(${-page*L.W}px)`},{transform:`translateX(${-page*L.W + (dx<0?-30:30)}px)`},{transform:`translateX(${-page*L.W}px)`}],{duration:260,easing:'ease-out'}); }
+    else setPage(t); }
+  else if (state==='preview'){ const n = current + (dx<0?1:-1); if (n>=0 && n<CHANNELS.length) openPreview(n, dx<0?1:-1); }
 });
 
 /* =====================================================================
-   LIVE DATA: Forecast + poll
+   LIVE DATA: forecast + poll
    ===================================================================== */
 const WX_CODES = {0:'Clear',1:'Mostly Clear',2:'Partly Cloudy',3:'Cloudy',45:'Fog',48:'Fog',51:'Drizzle',53:'Drizzle',55:'Drizzle',61:'Rain',63:'Rain',65:'Heavy Rain',71:'Snow',73:'Snow',75:'Heavy Snow',80:'Showers',81:'Showers',82:'Showers',95:'Thunderstorms'};
 const CITIES = [[40.73,-73.99],[42.39,-71.22],[43.89,-70.33]];
@@ -904,20 +1095,23 @@ function fetchWeather(){
   return wxCache;
 }
 function paintBannerTemp(){
-  fetchWeather().then(d=>{ if(!d) return; const t = Math.round(d[0].current.temperature_2m)+'°';
-    document.querySelectorAll('.wx-temp').forEach(el=>el.textContent=t); });
+  fetchWeather().then(d=>{ if(!d || !d[0] || !d[0].current) return; const t = Math.round(d[0].current.temperature_2m)+'°';
+    document.querySelectorAll('.wx-temp').forEach(el=>{ el.textContent=t; el.style.display='block'; }); });
 }
 function loadWeather(){
   fetchWeather().then(d=>{
     document.querySelectorAll('#wxCards [data-wx]').forEach((el,i)=>{
-      if(!d || !d[i]){ el.querySelector('.cond').textContent='Forecast unavailable'; return; }
+      if(!d || !d[i] || !d[i].current){ el.querySelector('.temp').textContent='—'; el.querySelector('.cond').textContent='Forecast unavailable right now'; return; }
       el.querySelector('.temp').textContent = Math.round(d[i].current.temperature_2m)+'°F';
       el.querySelector('.cond').textContent = WX_CODES[d[i].current.weather_code] || '—';
     });
   });
 }
-paintBannerTemp();
 new MutationObserver(paintBannerTemp).observe(pvZoom,{childList:true});
+// prefers-reduced-motion: CSS can't stop SMIL, so pause banner SVG animations directly
+function pauseSMIL(root){ if (reduced) root.querySelectorAll('svg').forEach(s => s.pauseAnimations && s.pauseAnimations()); }
+new MutationObserver(() => pauseSMIL(pvZoom)).observe(pvZoom,{childList:true});
+pauseSMIL(document);
 
 function wirePoll(){
   document.querySelectorAll('[data-vote]').forEach(b=>b.onclick=()=>{
@@ -929,6 +1123,12 @@ function wirePoll(){
       requestAnimationFrame(()=>document.getElementById('pb'+i).style.width = pct+'%'); });
   });
 }
+
+/* =====================================================================
+   GO
+   ===================================================================== */
+relayout(true);
+let rT; addEventListener('resize', () => { clearTimeout(rT); rT = setTimeout(()=>relayout(false), 80); });
 </script>
 </body>
 </html>

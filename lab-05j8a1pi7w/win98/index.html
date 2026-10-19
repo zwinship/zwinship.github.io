@@ -99,6 +99,8 @@ img,svg{image-rendering:pixelated}
 .dropdown{position:absolute;left:0;top:100%;z-index:50;background:var(--face);box-shadow:var(--raised);padding:3px;min-width:170px;display:none}
 .menubar > div.open .dropdown{display:block}
 .dropdown .mi{height:20px;padding:0 20px}
+.dropdown .mi.dis{color:#808080;text-shadow:1px 1px #fff}
+.dropdown .mi.dis:hover{background:none;color:#808080}
 .dropdown .mi.check::before{content:"✓";position:absolute;left:6px}
 .toolbar{display:flex;flex:0 0 auto;align-items:stretch;gap:0;padding:2px 2px;box-shadow:inset 0 1px var(--hl),inset 0 -1px var(--sh),inset 0 2px var(--lt)}
 .tbtn{min-width:0 !important;min-height:0 !important;padding:2px 6px !important;display:flex;flex-direction:column;align-items:center;gap:1px;box-shadow:none !important;background:none !important}
@@ -207,7 +209,7 @@ textarea.notepad{flex:1;resize:none;border:0;width:100%;font:13px/1.35 "Courier 
 .mail-body{flex:1;resize:none;font:13px Arial,sans-serif;padding:6px;border:0;box-shadow:var(--sunken)}
 
 /* minesweeper */
-.ms{display:inline-flex;flex-direction:column;background:var(--face);padding:6px;box-shadow:inset -1px -1px var(--sh),inset 1px 1px var(--hl),inset -2px -2px var(--sh),inset 2px 2px var(--hl),inset -3px -3px var(--sh),inset 3px 3px var(--hl)}
+.ms{display:inline-flex;align-self:flex-start;flex-direction:column;background:var(--face);padding:6px;box-shadow:inset -1px -1px var(--sh),inset 1px 1px var(--hl),inset -2px -2px var(--sh),inset 2px 2px var(--hl),inset -3px -3px var(--sh),inset 3px 3px var(--hl)}
 .ms-head{display:flex;justify-content:space-between;align-items:center;padding:4px 5px;margin-bottom:6px;box-shadow:inset -1px -1px var(--hl),inset 1px 1px var(--sh),inset -2px -2px var(--hl),inset 2px 2px var(--sh)}
 .led{background:#000;color:#f00;font:bold 22px/1 "Courier New",monospace;letter-spacing:1px;padding:1px 2px;box-shadow:inset -1px -1px var(--hl),inset 1px 1px var(--sh);min-width:41px;text-align:center;text-shadow:0 0 2px #f00}
 .ms-face{min-width:0 !important;min-height:0 !important;width:26px;height:26px;padding:0 !important;font-size:16px;line-height:1;display:flex;align-items:center;justify-content:center}
@@ -273,7 +275,7 @@ a.btnlink{color:inherit;text-decoration:none}
 
 <div id="startMenu" role="menu">
   <div class="band"><span><b>Zach</b>98</span></div>
-  <div class="mi" data-open="welcome"><span data-i="update"></span><span>Welcome to Zach 98</span></div>
+  <div class="mi" data-open="wupdate"><span data-i="update"></span><span>Zach 98 Update</span></div>
   <div class="msep"></div>
   <div class="mi sub" data-sub="programs"><span data-i="programs"></span><span><u>P</u>rograms</span></div>
   <div class="mi sub" data-sub="favorites"><span data-i="favorites"></span><span>F<u>a</u>vorites</span></div>
@@ -314,6 +316,7 @@ a.btnlink{color:inherit;text-decoration:none}
    ===================================================================== */
 const PAGE = (fold='#fff') => `<path d="M7 2h13l6 6v22H7z" fill="${fold}" stroke="#000"/><path d="M20 2v6h6" fill="#c0c0c0" stroke="#000"/>`;
 const ICON = {
+  network:`<rect x="2" y="4" width="13" height="10" fill="#c0c0c0" stroke="#000"/><rect x="4" y="6" width="9" height="6" fill="#008080"/><rect x="17" y="4" width="13" height="10" fill="#c0c0c0" stroke="#000"/><rect x="19" y="6" width="9" height="6" fill="#008080"/><rect x="9" y="18" width="14" height="10" fill="#c0c0c0" stroke="#000"/><rect x="11" y="20" width="10" height="6" fill="#008080"/><path d="M8 14v2h16v-2M16 16v2" stroke="#000" fill="none"/><path d="M4 30h24" stroke="#000"/><path d="M16 28v2" stroke="#000"/>`,
   computer:`<rect x="5" y="3" width="22" height="17" fill="#c0c0c0" stroke="#000"/><rect x="8" y="6" width="16" height="11" fill="#008080" stroke="#808080"/><rect x="9" y="7" width="7" height="2" fill="#5ff"/><rect x="12" y="20" width="8" height="3" fill="#808080" stroke="#000"/><rect x="3" y="23" width="26" height="6" fill="#c0c0c0" stroke="#000"/><rect x="21" y="25" width="5" height="2" fill="#0a0"/><rect x="6" y="25" width="10" height="1" fill="#808080"/>`,
   folder:`<path d="M2 7h10l2 3h15v18H2z" fill="#c9a000" stroke="#000"/><path d="M2 12h27v16H2z" fill="#ffe36b" stroke="#000"/><path d="M3 13h25" stroke="#fff6b8"/>`,
   docfolder:`<path d="M2 7h10l2 3h15v18H2z" fill="#c9a000" stroke="#000"/><path d="M8 5h14v14H8z" fill="#fff" stroke="#000"/><path d="M10 8h10M10 11h10M10 14h7" stroke="#000080"/><path d="M2 14h27v14H2z" fill="#ffe36b" stroke="#000"/>`,
@@ -440,12 +443,18 @@ const wins = new Map();   // key -> win object
 function focusWin(w){
   if (!w) return;
   wins.forEach(o => { o.el.querySelector('.title-bar').classList.toggle('inactive', o!==w); o.task.classList.toggle('on', o===w && !o.el.classList.contains('min')); });
+  if (Z > 4000){ Z = 10; [...wins.values()].filter(o=>!o.opts.top).sort((a,b)=>a.el.style.zIndex-b.el.style.zIndex).forEach(o=>o.el.style.zIndex = ++Z); }
   w.el.style.zIndex = w.opts.top ? 7600 : ++Z;
   w.el.classList.remove('min');
   w.task.classList.add('on');
   active = w;
 }
 let active = null;
+function focusTop(){
+  active = null;
+  const top = [...wins.values()].filter(o=>!o.el.classList.contains('min')).sort((a,b)=>b.el.style.zIndex-a.el.style.zIndex)[0];
+  if (top) focusWin(top); else wins.forEach(o => o.el.querySelector('.title-bar').classList.add('inactive'));
+}
 
 function zoomFrom(rect, w){
   const z = document.getElementById('zoomRect'); if (!rect) return;
@@ -479,18 +488,19 @@ function openWin(key, opts, fromRect){
   const w = { key, el, body, task, opts, onClose:null };
   wins.set(key, w);
 
-  const close = () => { if (w.onClose) w.onClose(); el.remove(); task.remove(); wins.delete(key); if (active===w){ active=null; const top=[...wins.values()].sort((a,b)=>b.el.style.zIndex-a.el.style.zIndex)[0]; if(top && !top.el.classList.contains('min')) focusWin(top); } };
+  const close = () => { if (w.onClose) w.onClose(); el.remove(); task.remove(); wins.delete(key); if (active===w) focusTop(); };
   w.close = close;
   w.setTitle = t => { el.querySelector('.title-bar-text span').textContent = t; task.querySelector('span').textContent = t; };
   el.querySelector('[aria-label=Close]').onclick = close;
   const minB = el.querySelector('[aria-label=Minimize]');
-  if (minB) minB.onclick = e => { e.stopPropagation(); el.classList.add('min'); task.classList.remove('on'); active=null; };
+  if (minB) minB.onclick = e => { e.stopPropagation(); el.classList.add('min'); task.classList.remove('on'); focusTop(); };
   const maxB = el.querySelector('[aria-label=Maximize]');
-  const toggleMax = () => { if (opts.noMax) return; el.classList.toggle('max'); maxB.setAttribute('aria-label', el.classList.contains('max')?'Restore':'Maximize'); if (w.onResize) w.onResize(); };
+  const toggleMax = () => { if (opts.noMax || !maxB) return; el.classList.toggle('max'); maxB.setAttribute('aria-label', el.classList.contains('max')?'Restore':'Maximize'); if (w.onResize) w.onResize(); };
+  w.maximize = () => { if (!el.classList.contains('max')) toggleMax(); };
   if (maxB) maxB.onclick = toggleMax;
   const helpB = el.querySelector('[aria-label=Help]');
   if (helpB) helpB.onclick = () => openApp('help');
-  task.onclick = () => { if (active===w && !el.classList.contains('min')){ el.classList.add('min'); task.classList.remove('on'); active=null; } else focusWin(w); };
+  task.onclick = () => { if (active===w && !el.classList.contains('min')){ el.classList.add('min'); task.classList.remove('on'); focusTop(); } else focusWin(w); };
   el.addEventListener('pointerdown', () => { if (active!==w) focusWin(w); }, true);
 
   // drag
@@ -527,7 +537,9 @@ function openWin(key, opts, fromRect){
 
 /* --- menus inside windows --- */
 function menubar(menus){
-  return `<div class="menubar">${menus.map(([name, items])=>`<div>${name}<div class="dropdown">${(items||[]).map(it=> it==='-' ? '<div class="msep"></div>' : `<div class="mi${it[2]?' check':''}" data-act="${it[1]}">${it[0]}</div>`).join('')}</div></div>`).join('')}</div>`;
+  const STOCK = { Edit:['Undo','-','Cut','Copy','Paste','-','Select All'], View:['Toolbar','Status Bar','-','Options...'], Insert:['Date and Time...','Object...'], Format:['Font...','Paragraph...'],
+    Help:['Help Topics','-','About'], Tools:['Options...'], Message:['Reply to Sender','Forward'], Play:['Play/Pause','Stop'], Favorites:['Add to Favorites...'], Go:['Back','Forward'], Colors:['Edit Colors...'], People:['Get Info'] };
+  return `<div class="menubar">${menus.map(([name, items])=>`<div>${name}<div class="dropdown">${(items&&items.length ? items : (STOCK[name]||['(empty)']).map(t=>t==='-'?'-':[t,'',false,true])).map(it=> it==='-' ? '<div class="msep"></div>' : it[3] ? `<div class="mi dis">${it[0]}</div>` : it==='-' ? '<div class="msep"></div>' : `<div class="mi${it[2]?' check':''}" data-act="${it[1]}">${it[0]}</div>`).join('')}</div></div>`).join('')}</div>`;
 }
 function wireMenubar(w, handlers){
   const mb = w.body.querySelector('.menubar'); if (!mb) return;
@@ -542,11 +554,12 @@ function wireMenubar(w, handlers){
     m.addEventListener('pointerenter', () => { if (mb.querySelector(':scope > div.open') && !m.classList.contains('open')){ mb.querySelectorAll(':scope > div').forEach(x=>x.classList.remove('open')); m.classList.add('open'); } });
   });
   mb.querySelectorAll('.dropdown .mi').forEach(mi => mi.addEventListener('click', e => {
-    e.stopPropagation(); mb.querySelectorAll(':scope > div').forEach(x=>x.classList.remove('open'));
+    e.stopPropagation(); if (mi.classList.contains('dis')) return;
+    mb.querySelectorAll(':scope > div').forEach(x=>x.classList.remove('open'));
     const a = mi.dataset.act; if (handlers[a]) handlers[a](); else if (a==='close') w.close(); else if (a.startsWith('app:')) openApp(a.slice(4)); else if (a.startsWith('url:')) ext(a.slice(4));
   }));
 }
-document.addEventListener('pointerdown', () => document.querySelectorAll('.menubar > div.open').forEach(x=>x.classList.remove('open')));
+document.addEventListener('pointerdown', e => { if (e.target.closest && e.target.closest('.menubar')) return; document.querySelectorAll('.menubar > div.open').forEach(x=>x.classList.remove('open')); });
 
 /* --- message boxes --- */
 function msgbox(title, text, kind='info', buttons=['OK'], cb){
@@ -773,10 +786,21 @@ const APPS = {
   recycle:    { title:'Recycle Bin', icon:'recyclefull', w:580, h:360, render:w=>explorer(w, FOLDERS.recycle()) },
 
   notepad: { title:'About Me.txt - Notepad', icon:'notepad', w:560, h:440, render(w){
-    w.body.innerHTML = menubar([['File',[['New','new'],['Open...','app:mydocs'],'-',['Exit','close']]],['Edit',[['Select All','selall']]],['Search',[['Find...','app:find']]],['Help',[['About Notepad','abt']]]])
-      + `<textarea class="notepad" spellcheck="false"></textarea>`;
-    const ta = w.body.querySelector('textarea'); ta.value = ABOUT_TXT;
-    wireMenubar(w, { new:()=>{ta.value='';w.setTitle('Untitled - Notepad');}, selall:()=>ta.select(), abt:()=>msgbox('About Notepad','Notepad<br>Zach 98 Edition','info') });
+    let wrap = false;
+    const stamp = () => new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}) + ' ' + new Date().toLocaleDateString('en-US');
+    const draw = () => {
+      const val = w.body.querySelector('textarea') ? w.body.querySelector('textarea').value : ABOUT_TXT;
+      w.body.innerHTML = menubar([['File',[['New','new'],['Open...','app:mydocs'],'-',['Exit','close']]],['Edit',[['Time/Date  F5','time'],'-',['Select All','selall'],'-',['Word Wrap','wrap',wrap]]],['Search',[['Find...','app:find']]],['Help',[['About Notepad','abt']]]])
+        + `<textarea class="notepad" spellcheck="false" style="white-space:${wrap?'pre-wrap':'pre'};overflow:auto"></textarea>`;
+      const ta = w.body.querySelector('textarea'); ta.value = val;
+      const insert = t => { const a = ta.selectionStart; ta.setRangeText(t, a, ta.selectionEnd, 'end'); ta.focus(); };
+      ta.onkeydown = e => { if (e.key==='F5'){ e.preventDefault(); insert(stamp()); } };
+      wireMenubar(w, { new:()=>{ta.value='';w.setTitle('Untitled - Notepad');}, selall:()=>ta.select(), time:()=>insert(stamp()), wrap:()=>{ wrap=!wrap; draw(); },
+        abt:()=>msgbox('About Notepad','Notepad<br>Zach 98 Edition. Tip: a file that starts with .LOG gets a timestamp every time it opens.','info') });
+      return ta;
+    };
+    const ta = draw();
+    if (ta.value.startsWith('.LOG')) ta.value += '\n' + stamp() + '\n';
   }},
 
   wordpad: { title:'Experience.doc - WordPad', icon:'doc', w:720, h:520, render(w){
@@ -984,13 +1008,32 @@ const APPS = {
     const print = s => { out.insertAdjacentHTML('beforeend', s+'\n'); };
     let line;
     const prompt = () => { out.insertAdjacentHTML('beforeend', `<span>C:\\ZACH&gt;</span><input spellcheck="false" autocomplete="off">`); line = out.querySelector('input:last-of-type'); line.focus(); out.scrollTop = out.scrollHeight;
-      line.onkeydown = e => { if (e.key!=='Enter') return; const v = line.value; line.replaceWith(document.createTextNode(v)); out.insertAdjacentHTML('beforeend','\n'); exec(v.trim()); }; };
+      let hp = hist.length;
+      line.onkeydown = e => {
+        if (e.key==='ArrowUp' && hist.length){ e.preventDefault(); hp = Math.max(0, hp-1); line.value = hist[hp]; return; }
+        if (e.key==='ArrowDown' && hist.length){ e.preventDefault(); hp = Math.min(hist.length, hp+1); line.value = hist[hp] || ''; return; }
+        if (e.key!=='Enter') return; const v = line.value; if (v.trim()) hist.push(v); line.replaceWith(document.createTextNode(v)); out.insertAdjacentHTML('beforeend','\n'); exec(v.trim()); }; };
+    const hist = [];
     const exec = v => {
       const c = v.toLowerCase().split(/\s+/)[0];
       if (!c) {}
-      else if (c==='help') print('Commands: DIR, TYPE ABOUT.TXT, PROJECTS, RESUME, CONTACT, VER, CLS, WII, EXIT');
+      else if (c==='help') print('Commands: DIR, TYPE ABOUT.TXT, TREE, PROJECTS, RESUME, CONTACT, MEM, ECHO, VER, CLS, WIN, WII, EXIT');
       else if (c==='dir') print(` Volume in drive C is ZACH98\n Directory of C:\\ZACH\n\nABOUT    TXT     2,048  05-01-26\nRESUME   PDF    84,417  06-01-26\nRESEARCH     &lt;DIR&gt;        07-07-26\nPROJECTS     &lt;DIR&gt;        08-15-26\nPRESENT      &lt;DIR&gt;        04-20-26\n        2 file(s)     86,465 bytes\n        3 dir(s)   NBER 35,414 MB free`);
-      else if (c==='type') print(esc(ABOUT_TXT));
+      else if (c==='type'){ const f = (v.split(/\s+/)[1]||'').toLowerCase();
+        if (!f) print('Required parameter missing');
+        else if (f.startsWith('about')) print(esc(ABOUT_TXT));
+        else if (f.startsWith('resume')) print('This file is a PDF. Opening it in the PDF Viewer instead...'), openApp('resume');
+        else print('File not found - ' + esc(f.toUpperCase())); }
+      else if (c==='tree') print(`Folder PATH listing for volume ZACH98\nC:.\n├───RESEARCH\n${RESEARCH.map(p=>'│   ├───'+esc(shortName(p.title)).toUpperCase()).join('\n')}\n├───PROJECTS\n${PERSONAL.map(p=>'│   ├───'+esc(shortName(p.title)).toUpperCase()).join('\n')}\n└───PRESENT`);
+      else if (c==='cd' || c==='cd..' || c==='chdir') print(v.split(/\s+/)[1] ? 'Invalid directory' : 'C:\\ZACH');
+      else if (c==='echo') print(esc(v.slice(5)) || 'ECHO is on');
+      else if (c==='mem') print(`\nMemory Type        Total  =   Used  +   Free\n----------------  -------   -------   -------\nConventional          640K      35K      605K\nEconometrics       65,536K   65,536K        0K\n\nLargest executable program size       605K (619,520 bytes)`);
+      else if (c==='date' || c==='time') print('Current ' + c + ' is ' + (c==='date' ? new Date().toLocaleDateString('en-US',{weekday:'short',month:'2-digit',day:'2-digit',year:'numeric'}) : new Date().toLocaleTimeString('en-US')));
+      else if (c==='edit') { openApp('notepad'); print('Starting Notepad...'); }
+      else if (c==='win') { print('Starting Zach 98...'); setTimeout(()=>{ if (w.el.classList.contains('max')) w.el.querySelector('[aria-label=Restore]')?.click(); }, 300); }
+      else if (c==='deltree') print('Nice try.');
+      else if (c==='format'){ print('WARNING: ALL DATA ON NON-REMOVABLE DISK\nDRIVE C: WILL BE LOST!\nProceed with Format (Y/N)? Y');
+        let pct = 0; const id = setInterval(()=>{ pct += 7; if (pct >= 100){ clearInterval(id); if (w.el.isConnected){ bsod(); print('\nFormat aborted. (Your portfolio is safe.)'); prompt(); } return; } out.lastChild && out.insertAdjacentHTML('beforeend', `\r${pct} percent completed.\n`); out.scrollTop = out.scrollHeight; }, 160); return; }
       else if (c==='ver') print('\nZach 98 [Version 4.10.2026]\n');
       else if (c==='cls') out.innerHTML='';
       else if (c==='projects' || c==='dir/p') { print(ALL_PROJECTS.map(p=>`${p.year.padEnd(14)} ${p.title}`).join('\n')); }
@@ -1011,6 +1054,7 @@ const APPS = {
     document.getElementById('shutdim').style.display='block';
     w.onClose = () => document.getElementById('shutdim').style.display='none';
     w.body.innerHTML = `<div class="err" style="padding:8px 4px">${icon('shutdown')}<div><p style="margin:0 0 8px">What do you want the computer to do?</p>
+      <div class="field-row"><input id="sd0" type="radio" name="sd"><label for="sd0">S<u>t</u>and by</label></div>
       <div class="field-row"><input id="sd1" type="radio" name="sd" checked><label for="sd1"><u>S</u>hut down</label></div>
       <div class="field-row"><input id="sd2" type="radio" name="sd"><label for="sd2"><u>R</u>estart</label></div>
       <div class="field-row"><input id="sd3" type="radio" name="sd"><label for="sd3">Restart in&nbsp;<u>M</u>S-DOS mode</label></div>
@@ -1019,10 +1063,12 @@ const APPS = {
     w.body.querySelector('[data-cancel]').onclick = w.close;
     w.body.querySelector('[data-help]').onclick = () => openApp('help');
     w.body.querySelector('[data-ok]').onclick = () => {
-      const pick = ['sd1','sd2','sd3','sd4'].find(id=>w.body.querySelector('#'+id).checked); w.close();
-      if (pick==='sd1') { closeAll(); document.getElementById('safe').style.display='flex'; }
+      const pick = ['sd0','sd1','sd2','sd3','sd4'].find(id=>w.body.querySelector('#'+id).checked); w.close();
+      if (pick==='sd0') { setTimeout(screensaver, 200); }
+      if (pick==='sd1') { closeAll(); const sp = document.getElementById('splash'); sp.querySelector('.tag').textContent = 'Please wait while your computer shuts down.'; sp.style.display='flex';
+        setTimeout(()=>{ sp.style.display='none'; sp.querySelector('.tag').textContent = 'Quantitative Economics Edition'; document.getElementById('safe').style.display='flex'; }, 1800); }
       if (pick==='sd2') { closeAll(); boot(); }
-      if (pick==='sd3') { closeAll(); const d = openApp('dos'); d.el.classList.add('max'); }
+      if (pick==='sd3') { closeAll(); openApp('dos').maximize(); }
       if (pick==='sd4') location.href='../wii/';
     };
   }},
@@ -1075,7 +1121,7 @@ function browser(w, start){
       <table align="center" cellspacing="6"><tr>
         <td style="width:160px;text-align:center"><img src="${ASSET}images/zwinship.png" alt="Zach" width="140" height="140" style="object-fit:cover;border:3px ridge #c0c0c0"><br><small>This is me!</small></td>
         <td style="max-width:420px">Hi! Welcome to my little corner of the Information Superhighway. I'm an economist who likes careful empirical methods and work that's actually fun to look at. Most portfolios are full of coursework &mdash; mine is made up entirely of self-driven projects.<br><br>
-        <b>Cool stuff on this site:</b><ul><li><a data-go="research">My Research</a> <span class="new blink">NEW!</span></li><li><a data-go="media">In the News</a></li><li><a data-go="blog">Unlikely Instruments</a> (my blog)</li><li><a data-app="mycomputer">All my projects</a></li></ul></td>
+        <b>Cool stuff on this site:</b><ul><li><a data-go="research">My Research</a> <span class="new blink">NEW!</span></li><li><a data-go="media">In the News</a></li><li><a data-go="blog">Unlikely Instruments</a> (my blog)</li><li><a data-app="mycomputer">All my projects</a></li><li><a data-go="search">ZachSearch!</a> (search my stuff)</li><li><a data-go="guestbook">Sign my guestbook</a></li></ul></td>
       </tr></table>
       <hr>
       <h2>&#9733; My Links &#9733;</h2>
@@ -1090,7 +1136,7 @@ function browser(w, start){
       </ul>
       <hr>
       <p class="center">You are visitor number <span class="counter">${'035414'.split('').map(d=>`<b>${d}</b>`).join('')}</span></p>
-      <p class="center"><a data-app="mail">Sign my guestbook!</a> &nbsp;|&nbsp; <a data-app="mail">E-mail me</a></p>
+      <p class="center"><a data-go="guestbook">Sign my guestbook!</a> &nbsp;|&nbsp; <a data-app="mail">E-mail me</a></p>
       <p class="center"><small>Best viewed in 800x600 with Internet Explorer 4.0 or higher.<br>Last updated: ${new Date().toLocaleDateString('en-US')}</small></p>` },
     research: { url:'http://www.zwinship.com/~zach/research.htm', title:'My Research', html:() => `
       <p><a data-go="home">&laquo; Back to Home</a></p><h1>My Research</h1><hr>
@@ -1107,12 +1153,47 @@ function browser(w, start){
       <table align="center" width="90%"><tr><th>#</th><th>Post</th><th>Topics</th><th>Status</th></tr>
       ${BLOG.map((b,i)=>`<tr><td>0${i+1}</td><td><b>${esc(b[0])}</b></td><td>${esc(b[1])}</td><td>${esc(b[2])}</td></tr>`).join('')}</table>
       <p class="center" style="margin-top:20px"><span class="uc"><span>COMING SOON</span></span></p>` },
+    search: { url:'http://www.zachsearch.com/', title:'ZachSearch!', html:() => `
+      <h1 style="color:#c00;font-family:Arial;font-style:italic;letter-spacing:-1px">Zach<span style="color:#000080">Search!</span></h1>
+      <p class="center"><input type="text" data-q style="width:60%;font-size:15px" placeholder="search Zach's projects"> <button data-s>Search</button></p>
+      <div data-res></div><hr>
+      <table align="center" width="94%"><tr>
+        <td width="33%"><b><a data-go="research">Research</a></b><br><small>${RESEARCH.slice(0,3).map(p=>esc(shortName(p.title))).join(', ')}...</small></td>
+        <td width="33%"><b><a data-app="personal">Personal Projects</a></b><br><small>${PERSONAL.map(p=>esc(shortName(p.title))).slice(0,3).join(', ')}...</small></td>
+        <td width="33%"><b><a data-go="media">News &amp; Media</a></b><br><small>Fortune, Gothamist, ABC7...</small></td></tr><tr>
+        <td><b><a data-app="media">Presentations</a></b><br><small>Talks, teaching, explainer videos</small></td>
+        <td><b><a data-go="blog">Blogs</a></b><br><small>Unlikely Instruments</small></td>
+        <td><b><a data-go="guestbook">Community</a></b><br><small>Guestbook, e-mail</small></td></tr></table>
+      <p class="center"><small>Copyright &copy; 1998-2026 ZachSearch! Inc. All rights reserved.</small></p>` },
+    guestbook: { url:'http://www.zwinship.com/~zach/guestbook.cgi', title:"Zach's Guestbook", html:() => {
+      let list = []; try{ list = JSON.parse(localStorage.getItem('z98gb')||'[]'); }catch(e){}
+      return `<p><a data-go="home">&laquo; Back to Home</a></p><h1>Sign My Guestbook!</h1>
+      <p class="center">Thanks for visiting! Leave a note below. <i>(Entries are saved in your own browser only. To actually reach Zach, <a data-app="mail">send an e-mail</a>.)</i></p>
+      <table align="center"><tr><td>Name:</td><td><input type="text" data-n style="width:240px"></td></tr>
+      <tr><td>Homepage:</td><td><input type="text" data-h style="width:240px" placeholder="http://"></td></tr>
+      <tr><td valign="top">Comments:</td><td><textarea data-c rows="4" style="width:240px"></textarea></td></tr>
+      <tr><td></td><td><button data-sign>Sign Guestbook</button></td></tr></table><hr>
+      ${list.length ? list.slice().reverse().map(e=>`<p><b>${esc(e.n)}</b> <small>(${esc(e.d)})</small><br>${esc(e.c)}</p>`).join('<hr>') : '<p class="center"><i>No entries yet. Be the first!</i></p>'}`; } },
   };
+  const ROUTES = { 'zachsearch':'search', 'search':'search', 'guestbook':'guestbook', 'unlikelyinstruments':'blog', 'blog':'blog', 'research':'research', 'news':'media', 'home':'home', 'zwinship':'home' };
+  function resolve(input){
+    const v = input.trim().toLowerCase();
+    for (const [id,pg] of Object.entries(PAGES)) if (pg.url.toLowerCase() === v || pg.url.toLowerCase().replace(/^http:\/\//,'') === v) return id;
+    for (const [k,id] of Object.entries(ROUTES)) if (v.includes(k)) return id;
+    return { err: /^https?:\/\//.test(v) ? v : 'http://' + v };
+  }
   const hist = [start]; let hi = 0;
   function render(){
-    const pg = PAGES[hist[hi]];
+    const cur = hist[hi];
+    const pg = typeof cur === 'string' ? PAGES[cur] : { url:cur.err, title:'Cannot find server', html:() => `
+      <div style="font-family:Arial;font-size:13px;background:#fff;margin:-14px -18px;padding:20px 26px;min-height:300px">
+      <h2 style="font:bold 18px Arial;color:#000">The page cannot be displayed</h2>
+      <p>The page you are looking for is currently unavailable. The Web site might be experiencing technical difficulties, or you may need to adjust your browser settings.</p><hr style="height:1px;background:#999">
+      <p>Please try the following:</p><ul><li>Click the <b>Refresh</b> button, or try again later.</li><li>If you typed the page address in the Address bar, make sure that it is spelled correctly.</li>
+      <li>Open <a data-href="${esc(cur.err)}">${esc(cur.err)}</a> in a real, modern browser window.</li><li>Visit <a data-go="search">ZachSearch!</a> to find what you're looking for.</li></ul>
+      <p style="color:#666">Cannot find server or DNS Error<br>Internet Explorer</p></div>` };
     w.setTitle(`${pg.title} - Internet Explorer`);
-    w.body.innerHTML = menubar([['File',[['Close','close']]],['Edit',[]],['View',[['Refresh','refresh']]],['Go',[['Home Page','home'],['Back','back'],['Forward','fwd']]],['Favorites',[['GitHub','url:https://github.com/zwinship'],['LinkedIn','url:https://linkedin.com/in/zwinship'],['NBER Paper','url:https://www.nber.org/papers/w35414'],['Unlikely Instruments','blogp']]],['Help',[['About Zach 98','app:about98']]]])
+    w.body.innerHTML = menubar([['File',[['Close','close']]],['Edit',[]],['View',[['Refresh','refresh']]],['Go',[['Home Page','home'],['Search the Web','search'],['Back','back'],['Forward','fwd']]],['Favorites',[['GitHub','url:https://github.com/zwinship'],['LinkedIn','url:https://linkedin.com/in/zwinship'],['NBER Paper','url:https://www.nber.org/papers/w35414'],['Unlikely Instruments','blogp']]],['Help',[['About Zach 98','app:about98']]]])
       + `<div class="toolbar">
           <button class="tbtn" data-t="back" ${hi>0?'':'disabled'}>${icon('back',20)}Back</button>
           <button class="tbtn" data-t="fwd" ${hi<hist.length-1?'':'disabled'}>${icon('fwd',20)}Forward</button>
@@ -1123,14 +1204,31 @@ function browser(w, start){
           <button class="tbtn" data-t="mail">${icon('mail',20)}Mail</button>
           <button class="tbtn" data-t="print">${icon('print',20)}Print</button>
         </div>
-        <div class="addr"><span>Address</span><div class="fld">${icon('web',16)}<span>${pg.url}</span></div><button style="min-width:0;padding:0 8px" data-t="refresh">Go</button></div>
+        <div class="addr"><span>Address</span><div class="fld">${icon('web',16)}<input data-addr type="text" value="${esc(pg.url)}" style="border:0;box-shadow:none;flex:1;min-width:0;height:17px;padding:0 2px;font:inherit"></div><button style="min-width:0;padding:0 8px" data-t="goaddr">Go</button></div>
         <div class="ie-page"><div class="web">${pg.html()}</div></div>
         <div class="status-bar"><p class="status-bar-field">Done</p><p class="status-bar-field" style="flex:0 0 120px">${icon('globe',16).replace('class="ico"','class="ico" style="display:inline;vertical-align:-3px;width:14px;height:14px"')} Internet zone</p></div>`;
-    const go = id => { hist.splice(hi+1); hist.push(id); hi++; render(); };
+    const go = id => { hist.splice(hi+1); hist.push(id); hi++; loading(); };
+    function loading(){ render(); const s = w.body.querySelector('.status-bar-field'); s.textContent = 'Opening page ' + (typeof hist[hi]==='string' ? PAGES[hist[hi]].url : hist[hi].err) + '...'; setTimeout(()=>{ if (s.isConnected) s.textContent = 'Done'; }, 450); }
+    const addr = w.body.querySelector('[data-addr]');
+    addr.onkeydown = e => { if (e.key==='Enter') go(resolve(addr.value)); };
+    addr.onfocus = () => addr.select();
+    const q = w.body.querySelector('[data-q]');
+    if (q){ const res = w.body.querySelector('[data-res]');
+      const search = () => { const t = q.value.trim().toLowerCase(); if (!t) return;
+        const hits = ALL_PROJECTS.filter(p => (p.title+' '+p.body+' '+p.tags.join(' ')+' '+p.meta).toLowerCase().includes(t));
+        res.innerHTML = `<p><b>${hits.length} match${hits.length===1?'':'es'} for "${esc(q.value)}"</b></p><ol>${hits.map((p,i)=>`<li><a data-hit="${i}">${esc(p.title)}</a><br><small>${esc(p.body.slice(0,140))}...</small></li>`).join('')}</ol>`;
+        res.querySelectorAll('[data-hit]').forEach(a=>a.onclick=()=>openProject(hits[+a.dataset.hit], a.getBoundingClientRect())); };
+      w.body.querySelector('[data-s]').onclick = search; q.onkeydown = e => { if (e.key==='Enter') search(); }; }
+    const sign = w.body.querySelector('[data-sign]');
+    if (sign) sign.onclick = () => { const n = w.body.querySelector('[data-n]').value.trim(), c = w.body.querySelector('[data-c]').value.trim();
+      if (!n || !c){ msgbox('Guestbook','Please enter your name and a comment.','warn'); return; }
+      let list = []; try{ list = JSON.parse(localStorage.getItem('z98gb')||'[]'); }catch(e){}
+      list.push({ n, c, d:new Date().toLocaleDateString('en-US') }); try{ localStorage.setItem('z98gb', JSON.stringify(list.slice(-50))); }catch(e){}
+      beep('tada'); render(); };
     w.body.querySelectorAll('[data-go]').forEach(a=>a.onclick=()=>go(a.dataset.go));
     w.body.querySelectorAll('[data-href]').forEach(a=>a.onclick=()=>ext(a.dataset.href));
     w.body.querySelectorAll('[data-app]').forEach(a=>a.onclick=()=>openApp(a.dataset.app));
-    const T = { back:()=>{ if(hi>0){hi--;render();} }, fwd:()=>{ if(hi<hist.length-1){hi++;render();} }, home:()=>go('home'), refresh:render, stop:()=>{}, mail:()=>openApp('mail'), print:()=>window.print(), blogp:()=>go('blog') };
+    const T = { back:()=>{ if(hi>0){hi--;render();} }, fwd:()=>{ if(hi<hist.length-1){hi++;render();} }, home:()=>go('home'), refresh:loading, stop:()=>{}, goaddr:()=>go(resolve(addr.value)), search:()=>go('search'), gb:()=>go('guestbook'), mail:()=>openApp('mail'), print:()=>window.print(), blogp:()=>go('blog') };
     w.body.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>T[b.dataset.t]());
     wireMenubar(w, T);
   }
@@ -1138,21 +1236,36 @@ function browser(w, start){
 }
 
 /* =====================================================================
-   MINESWEEPER (Beginner: 9×9, 10 mines)
+   MINESWEEPER (Beginner / Intermediate / Expert)
    ===================================================================== */
 function minesweeper(w){
-  const R=9, C=9, M=10;
-  let grid, opened, flags, over, first, timer, secs;
-  w.body.innerHTML = menubar([['Game',[['New','new'],'-',['Exit','close']]],['Help',[['About Minesweeper','abt']]]])
-    + `<div class="ms"><div class="ms-head"><div class="led" data-left>010</div><button class="ms-face" data-face></button><div class="led" data-time>000</div></div><div class="ms-grid" style="grid-template-columns:repeat(${C},16px)"></div></div>`;
-  w.body.style.background = 'var(--face)';
-  const gridEl = w.body.querySelector('.ms-grid'), face = w.body.querySelector('[data-face]');
-  const pad = n => String(Math.max(-99,Math.min(999,n))).padStart(3,'0');
+  const LEVELS = { beginner:[9,9,10], intermediate:[16,16,40], expert:[16,30,99] };
+  let level = localGet('z98mslvl') || 'beginner'; if (!LEVELS[level]) level = 'beginner';
+  let marks = localGet('z98msmarks') !== 'off';
+  let R, C, M, grid, opened, flags, over, first, timer, secs;
+  const LED = n => n<0 ? '-'+String(Math.min(99,-n)).padStart(2,'0') : String(Math.min(999,n)).padStart(3,'0');
+  function build(){
+    [R, C, M] = LEVELS[level];
+    w.body.innerHTML = menubar([['Game',[['New','new'],'-',['Beginner','lv:beginner',level==='beginner'],['Intermediate','lv:intermediate',level==='intermediate'],['Expert','lv:expert',level==='expert'],'-',['Marks (?)','marks',marks],'-',['Best Times...','best'],'-',['Exit','close']]],['Help',[['How to Play','how'],['About Minesweeper','abt']]]])
+      + `<div class="ms"><div class="ms-head"><div class="led" data-left>010</div><button class="ms-face" data-face></button><div class="led" data-time>000</div></div><div class="ms-grid" style="grid-template-columns:repeat(${C},16px)"></div></div>`;
+    w.body.style.background = 'var(--face)';
+    wireMenubar(w, {
+      new:reset, marks:()=>{ marks=!marks; localSet('z98msmarks', marks?'':'off'); build(); },
+      'lv:beginner':()=>setLevel('beginner'), 'lv:intermediate':()=>setLevel('intermediate'), 'lv:expert':()=>setLevel('expert'),
+      best:showBest,
+      how:()=>msgbox('How to Play','Left-click to uncover a square. Right-click (or long-press) to flag a mine. Click a number with all its mines flagged using both buttons or the middle button to clear its neighbors.','info'),
+      abt:()=>msgbox('About Minesweeper','Minesweeper<br>Zach 98 Edition.','info'),
+    });
+    wire(); reset();
+    requestAnimationFrame(()=>{ if (w.el.classList.contains('max')) return; const ms=w.body.querySelector('.ms'); w.el.style.width=(ms.offsetWidth+12)+'px'; w.el.style.height=(ms.offsetHeight+w.el.querySelector('.title-bar').offsetHeight+w.body.querySelector('.menubar').offsetHeight+14)+'px'; });
+  }
+  function setLevel(l){ level = l; localSet('z98mslvl', l); clearInterval(timer); build(); }
+  const $ = s => w.body.querySelector(s);
   function reset(){
-    grid = Array(R*C).fill(0); opened = Array(R*C).fill(false); flags = Array(R*C).fill(false);
+    grid = Array(R*C).fill(0); opened = Array(R*C).fill(false); flags = Array(R*C).fill(0); // 0 none, 1 flag, 2 ?
     over = false; first = true; secs = 0; clearInterval(timer);
-    face.innerHTML=FACE(); w.body.querySelector('[data-time]').textContent='000'; w.body.querySelector('[data-left]').textContent=pad(M);
-    gridEl.innerHTML=''; for (let i=0;i<R*C;i++){ const c=document.createElement('div'); c.className='cell'; c.dataset.i=i; gridEl.appendChild(c); }
+    $('[data-face]').innerHTML=FACE(); $('[data-time]').textContent='000'; $('[data-left]').textContent=LED(M);
+    const g = $('.ms-grid'); g.innerHTML=''; for (let i=0;i<R*C;i++){ const c=document.createElement('div'); c.className='cell'; c.dataset.i=i; g.appendChild(c); }
   }
   const nb = i => { const r=Math.floor(i/C), c=i%C, out=[]; for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){ if(!dr&&!dc)continue; const rr=r+dr, cc=c+dc; if(rr>=0&&rr<R&&cc>=0&&cc<C) out.push(rr*C+cc);} return out; };
   function plant(safe){
@@ -1160,33 +1273,79 @@ function minesweeper(w){
     while(n<M){ const k=Math.floor(Math.random()*R*C); if(grid[k]!==-1 && !banned.has(k)){ grid[k]=-1; n++; } }
     for(let i=0;i<R*C;i++) if(grid[i]!==-1) grid[i]=nb(i).filter(j=>grid[j]===-1).length;
   }
-  function paint(i){
-    const el = gridEl.children[i];
+  const QMARK = '<b style="font:bold 12px Arial">?</b>';
+  function paint(i, wrong){
+    const el = $('.ms-grid').children[i];
+    if (wrong){ el.className='cell open'; el.innerHTML = icon('mine',14)+'<svg viewBox="0 0 14 14" width="14" height="14" style="position:absolute;margin-left:-14px"><path d="M2 2l10 10M12 2L2 12" stroke="#f00" stroke-width="2"/></svg>'; return; }
     if (opened[i]){ el.className='cell open'; const v=grid[i]; if (v===-1) el.innerHTML = icon('mine',14); else el.textContent = v||''; if(v>0) el.classList.add('n'+v); }
-    else { el.className='cell'; el.innerHTML = flags[i]?FLAG:''; }
+    else { el.className='cell'; el.innerHTML = flags[i]===1 ? FLAG : flags[i]===2 ? QMARK : ''; }
   }
+  const counter = () => $('[data-left]').textContent = LED(M - flags.filter(f=>f===1).length);
   function open(i){
-    if (opened[i]||flags[i]) return; opened[i]=true; paint(i);
+    if (opened[i]||flags[i]===1) return; opened[i]=true; flags[i]=0; paint(i);
     if (grid[i]===0) nb(i).forEach(open);
   }
-  function click(i){
-    if (over || flags[i]) return;
-    if (first){ plant(i); first=false; timer=setInterval(()=>{ secs++; w.body.querySelector('[data-time]').textContent=pad(secs); },1000); }
-    if (grid[i]===-1){ over=true; clearInterval(timer); face.innerHTML=FACE('dead');
-      for(let k=0;k<R*C;k++) if(grid[k]===-1){ opened[k]=true; paint(k); }
-      gridEl.children[i].classList.add('boom'); return; }
-    open(i);
-    if (opened.filter(Boolean).length === R*C-M){ over=true; clearInterval(timer); face.innerHTML=FACE('cool'); beep('tada'); }
+  function lose(i){
+    over=true; clearInterval(timer); $('[data-face]').innerHTML=FACE('dead');
+    for(let k=0;k<R*C;k++){ if(grid[k]===-1 && flags[k]!==1){ opened[k]=true; paint(k); } else if (grid[k]!==-1 && flags[k]===1) paint(k, true); }
+    $('.ms-grid').children[i].classList.add('boom');
   }
-  gridEl.addEventListener('pointerdown', e => { if(!over && e.button===0 && e.target.dataset.i) face.innerHTML=FACE('oh'); });
-  gridEl.addEventListener('pointerup', e => { if(!over) face.innerHTML=FACE(); });
-  gridEl.addEventListener('click', e => { const i=e.target.dataset.i; if(i!==undefined) click(+i); });
-  gridEl.addEventListener('contextmenu', e => { e.preventDefault(); const i=+e.target.dataset.i; if(isNaN(i)||over||opened[i]) return; flags[i]=!flags[i]; paint(i); w.body.querySelector('[data-left]').textContent=pad(M-flags.filter(Boolean).length); });
-  face.onclick = reset;
-  wireMenubar(w, { new:reset, abt:()=>msgbox('About Minesweeper','Minesweeper<br>Zach 98 Edition. Right-click to flag a mine.','info') });
+  function checkWin(){
+    if (opened.filter(Boolean).length !== R*C-M) return;
+    over=true; clearInterval(timer); $('[data-face]').innerHTML=FACE('cool'); beep('tada');
+    for (let k=0;k<R*C;k++) if (grid[k]===-1){ flags[k]=1; paint(k); } counter();
+    const best = JSON.parse(localGet('z98msbest')||'{}');
+    if (!best[level] || secs < best[level].t){
+      setTimeout(()=>{ const name = prompt(`You have the fastest time for ${level} level. Please enter your name.`, 'Anonymous');
+        best[level] = { t:secs, n:(name||'Anonymous').slice(0,24) }; localSet('z98msbest', JSON.stringify(best)); showBest(); }, 300);
+    }
+  }
+  function click(i){
+    if (over || flags[i]===1) return;
+    if (first){ plant(i); first=false; timer=setInterval(()=>{ secs++; $('[data-time]').textContent=LED(secs); },1000); }
+    if (grid[i]===-1) return lose(i);
+    open(i); checkWin();
+  }
+  function chord(i){
+    if (over || !opened[i] || grid[i]<=0) return;
+    const ns = nb(i); if (ns.filter(j=>flags[j]===1).length !== grid[i]) return;
+    for (const j of ns){ if (!opened[j] && flags[j]!==1){ if (grid[j]===-1) return lose(j); open(j); } }
+    checkWin();
+  }
+  function toggleFlag(i){
+    if (over || opened[i]) return;
+    flags[i] = flags[i]===0 ? 1 : flags[i]===1 ? (marks?2:0) : 0;
+    paint(i); counter();
+  }
+  function showBest(){
+    const b = JSON.parse(localGet('z98msbest')||'{}');
+    msgbox('Fastest Mine Sweepers', ['beginner','intermediate','expert'].map(l=>`${l[0].toUpperCase()+l.slice(1)}: ${b[l]?b[l].t+' seconds &nbsp; '+esc(b[l].n):'999 seconds &nbsp; Anonymous'}`).join('<br>'), 'info');
+  }
+  function wire(){
+    const g = $('.ms-grid'), face = $('[data-face]');
+    let lp = null, lpFired = false, buttons = 0;
+    g.addEventListener('pointerdown', e => {
+      const i = e.target.closest('[data-i]'); if (!i || over) return;
+      buttons = e.buttons;
+      if (e.button===0 || e.button===1) face.innerHTML=FACE('oh');
+      if (e.pointerType==='touch'){ lpFired = false; lp = setTimeout(()=>{ lpFired = true; toggleFlag(+i.dataset.i); if (navigator.vibrate) navigator.vibrate(20); }, 420); }
+    });
+    g.addEventListener('pointerup', e => {
+      clearTimeout(lp);
+      const i = e.target.closest('[data-i]'); if (!i) return;
+      if (e.button===1 || buttons===3) { chord(+i.dataset.i); buttons = 0; }
+    });
+    addEventListener('pointerup', () => { if (!over && w.el.isConnected) face.innerHTML=FACE(); });
+    g.addEventListener('click', e => {
+      const i = e.target.closest('[data-i]'); if (!i) return;
+      if (lpFired){ lpFired = false; return; }
+      const k = +i.dataset.i; if (opened[k]) chord(k); else click(k);
+    });
+    g.addEventListener('contextmenu', e => { e.preventDefault(); const i = e.target.closest('[data-i]'); if (!i || e.buttons&1) return; toggleFlag(+i.dataset.i); });
+    face.onclick = reset;
+  }
   w.onClose = () => clearInterval(timer);
-  reset();
-  requestAnimationFrame(()=>{ const ms=w.body.querySelector('.ms'); w.el.style.width=(ms.offsetWidth+12)+'px'; w.el.style.height=(ms.offsetHeight+w.el.querySelector('.title-bar').offsetHeight+w.body.querySelector('.menubar').offsetHeight+14)+'px'; });
+  build();
 }
 
 /* =====================================================================
@@ -1195,18 +1354,19 @@ function minesweeper(w){
 const DESKTOP = [
   ['mycomputer','My Computer','computer'],
   ['mydocs','My Documents','docfolder'],
+  ['ie','The Internet','globe'],
+  ['network','Network Neighborhood','network'],
+  ['recycle','Recycle Bin','recyclefull'],
   ['research','Research','folder'],
   ['personal','Personal Projects','folder'],
   ['media','Presentations','media'],
   ['notepad','About Me.txt','notepad'],
   ['wordpad','Experience.doc','doc'],
   ['resume','Résumé.pdf','pdf'],
-  ['ie','The Internet','globe'],
   ['blog','Unlikely Instruments','blog'],
   ['mail','Email Zach','mail'],
   ['winmine','Minesweeper','mine'],
   ['dos','MS-DOS Prompt','dos'],
-  ['recycle','Recycle Bin','recyclefull'],
 ];
 const iconsEl = document.getElementById('icons');
 DESKTOP.forEach(([app,label,ic]) => {
@@ -1242,7 +1402,7 @@ function buildSub(id, items){
     } else {
       mi.addEventListener('pointerenter', () => hoverIntent(() => hideSubsBelow(el)));
       mi.addEventListener('click', () => { closeStart(); const t = it[2];
-        if (t==='@wii') location.href='../wii/'; else if (t.startsWith('@')) ext(t.slice(1)); else openApp(t); });
+        if (t==='@wii') location.href='../wii/'; else if (t==='@saver') setTimeout(screensaver,300); else if (t.startsWith('@')) ext(t.slice(1)); else openApp(t); });
     }
   });
   return el;
@@ -1312,5 +1472,7 @@ function boot(){
 document.getElementById('safe').onclick = () => { document.getElementById('safe').style.display='none'; boot(); };
 boot();
 </script>
+<script src="extras.js"></script>
+<script src="extras2.js"></script>
 </body>
 </html>
