@@ -1075,7 +1075,7 @@ function browser(w, start){
       <table align="center" cellspacing="6"><tr>
         <td style="width:160px;text-align:center"><img src="${ASSET}images/zwinship.png" alt="Zach" width="140" height="140" style="object-fit:cover;border:3px ridge #c0c0c0"><br><small>This is me!</small></td>
         <td style="max-width:420px">Hi! Welcome to my little corner of the Information Superhighway. I'm an economist who likes careful empirical methods and work that's actually fun to look at. Most portfolios are full of coursework &mdash; mine is made up entirely of self-driven projects.<br><br>
-        <b>Cool stuff on this site:</b><ul><li><a data-go="research">My Research</a> <span class="new blink">NEW!</span></li><li><a data-go="media">In the News</a></li><li><a data-go="blog">Unlikely Instruments</a> (my blog)</li><li><a data-app="mycomputer">All my projects</a></li></ul></td>
+        <b>Cool stuff on this site:</b><ul><li><a data-go="research">My Research</a> <span class="new blink">NEW!</span></li><li><a data-go="media">In the News</a></li><li><a data-go="blog">Unlikely Instruments</a> (my blog)</li><li><a data-app="mycomputer">All my projects</a></li><li><a data-go="search">ZachSearch!</a> (search my stuff)</li><li><a data-go="guestbook">Sign my guestbook</a></li></ul></td>
       </tr></table>
       <hr>
       <h2>&#9733; My Links &#9733;</h2>
@@ -1090,7 +1090,7 @@ function browser(w, start){
       </ul>
       <hr>
       <p class="center">You are visitor number <span class="counter">${'035414'.split('').map(d=>`<b>${d}</b>`).join('')}</span></p>
-      <p class="center"><a data-app="mail">Sign my guestbook!</a> &nbsp;|&nbsp; <a data-app="mail">E-mail me</a></p>
+      <p class="center"><a data-go="guestbook">Sign my guestbook!</a> &nbsp;|&nbsp; <a data-app="mail">E-mail me</a></p>
       <p class="center"><small>Best viewed in 800x600 with Internet Explorer 4.0 or higher.<br>Last updated: ${new Date().toLocaleDateString('en-US')}</small></p>` },
     research: { url:'http://www.zwinship.com/~zach/research.htm', title:'My Research', html:() => `
       <p><a data-go="home">&laquo; Back to Home</a></p><h1>My Research</h1><hr>
@@ -1107,12 +1107,47 @@ function browser(w, start){
       <table align="center" width="90%"><tr><th>#</th><th>Post</th><th>Topics</th><th>Status</th></tr>
       ${BLOG.map((b,i)=>`<tr><td>0${i+1}</td><td><b>${esc(b[0])}</b></td><td>${esc(b[1])}</td><td>${esc(b[2])}</td></tr>`).join('')}</table>
       <p class="center" style="margin-top:20px"><span class="uc"><span>COMING SOON</span></span></p>` },
+    search: { url:'http://www.zachsearch.com/', title:'ZachSearch!', html:() => `
+      <h1 style="color:#c00;font-family:Arial;font-style:italic;letter-spacing:-1px">Zach<span style="color:#000080">Search!</span></h1>
+      <p class="center"><input type="text" data-q style="width:60%;font-size:15px" placeholder="search Zach's projects"> <button data-s>Search</button></p>
+      <div data-res></div><hr>
+      <table align="center" width="94%"><tr>
+        <td width="33%"><b><a data-go="research">Research</a></b><br><small>${RESEARCH.slice(0,3).map(p=>esc(shortName(p.title))).join(', ')}...</small></td>
+        <td width="33%"><b><a data-app="personal">Personal Projects</a></b><br><small>${PERSONAL.map(p=>esc(shortName(p.title))).slice(0,3).join(', ')}...</small></td>
+        <td width="33%"><b><a data-go="media">News &amp; Media</a></b><br><small>Fortune, Gothamist, ABC7...</small></td></tr><tr>
+        <td><b><a data-app="media">Presentations</a></b><br><small>Talks, teaching, explainer videos</small></td>
+        <td><b><a data-go="blog">Blogs</a></b><br><small>Unlikely Instruments</small></td>
+        <td><b><a data-go="guestbook">Community</a></b><br><small>Guestbook, e-mail</small></td></tr></table>
+      <p class="center"><small>Copyright &copy; 1998-2026 ZachSearch! Inc. All rights reserved.</small></p>` },
+    guestbook: { url:'http://www.zwinship.com/~zach/guestbook.cgi', title:"Zach's Guestbook", html:() => {
+      let list = []; try{ list = JSON.parse(localStorage.getItem('z98gb')||'[]'); }catch(e){}
+      return `<p><a data-go="home">&laquo; Back to Home</a></p><h1>Sign My Guestbook!</h1>
+      <p class="center">Thanks for visiting! Leave a note below. <i>(Entries are saved in your own browser only. To actually reach Zach, <a data-app="mail">send an e-mail</a>.)</i></p>
+      <table align="center"><tr><td>Name:</td><td><input type="text" data-n style="width:240px"></td></tr>
+      <tr><td>Homepage:</td><td><input type="text" data-h style="width:240px" placeholder="http://"></td></tr>
+      <tr><td valign="top">Comments:</td><td><textarea data-c rows="4" style="width:240px"></textarea></td></tr>
+      <tr><td></td><td><button data-sign>Sign Guestbook</button></td></tr></table><hr>
+      ${list.length ? list.slice().reverse().map(e=>`<p><b>${esc(e.n)}</b> <small>(${esc(e.d)})</small><br>${esc(e.c)}</p>`).join('<hr>') : '<p class="center"><i>No entries yet. Be the first!</i></p>'}`; } },
   };
+  const ROUTES = { 'zachsearch':'search', 'search':'search', 'guestbook':'guestbook', 'unlikelyinstruments':'blog', 'blog':'blog', 'research':'research', 'news':'media', 'home':'home', 'zwinship':'home' };
+  function resolve(input){
+    const v = input.trim().toLowerCase();
+    for (const [id,pg] of Object.entries(PAGES)) if (pg.url.toLowerCase() === v || pg.url.toLowerCase().replace(/^http:\/\//,'') === v) return id;
+    for (const [k,id] of Object.entries(ROUTES)) if (v.includes(k)) return id;
+    return { err: /^https?:\/\//.test(v) ? v : 'http://' + v };
+  }
   const hist = [start]; let hi = 0;
   function render(){
-    const pg = PAGES[hist[hi]];
+    const cur = hist[hi];
+    const pg = typeof cur === 'string' ? PAGES[cur] : { url:cur.err, title:'Cannot find server', html:() => `
+      <div style="font-family:Arial;font-size:13px;background:#fff;margin:-14px -18px;padding:20px 26px;min-height:300px">
+      <h2 style="font:bold 18px Arial;color:#000">The page cannot be displayed</h2>
+      <p>The page you are looking for is currently unavailable. The Web site might be experiencing technical difficulties, or you may need to adjust your browser settings.</p><hr style="height:1px;background:#999">
+      <p>Please try the following:</p><ul><li>Click the <b>Refresh</b> button, or try again later.</li><li>If you typed the page address in the Address bar, make sure that it is spelled correctly.</li>
+      <li>Open <a data-href="${esc(cur.err)}">${esc(cur.err)}</a> in a real, modern browser window.</li><li>Visit <a data-go="search">ZachSearch!</a> to find what you're looking for.</li></ul>
+      <p style="color:#666">Cannot find server or DNS Error<br>Internet Explorer</p></div>` };
     w.setTitle(`${pg.title} - Internet Explorer`);
-    w.body.innerHTML = menubar([['File',[['Close','close']]],['Edit',[]],['View',[['Refresh','refresh']]],['Go',[['Home Page','home'],['Back','back'],['Forward','fwd']]],['Favorites',[['GitHub','url:https://github.com/zwinship'],['LinkedIn','url:https://linkedin.com/in/zwinship'],['NBER Paper','url:https://www.nber.org/papers/w35414'],['Unlikely Instruments','blogp']]],['Help',[['About Zach 98','app:about98']]]])
+    w.body.innerHTML = menubar([['File',[['Close','close']]],['Edit',[]],['View',[['Refresh','refresh']]],['Go',[['Home Page','home'],['Search the Web','search'],['Back','back'],['Forward','fwd']]],['Favorites',[['GitHub','url:https://github.com/zwinship'],['LinkedIn','url:https://linkedin.com/in/zwinship'],['NBER Paper','url:https://www.nber.org/papers/w35414'],['Unlikely Instruments','blogp']]],['Help',[['About Zach 98','app:about98']]]])
       + `<div class="toolbar">
           <button class="tbtn" data-t="back" ${hi>0?'':'disabled'}>${icon('back',20)}Back</button>
           <button class="tbtn" data-t="fwd" ${hi<hist.length-1?'':'disabled'}>${icon('fwd',20)}Forward</button>
@@ -1123,14 +1158,31 @@ function browser(w, start){
           <button class="tbtn" data-t="mail">${icon('mail',20)}Mail</button>
           <button class="tbtn" data-t="print">${icon('print',20)}Print</button>
         </div>
-        <div class="addr"><span>Address</span><div class="fld">${icon('web',16)}<span>${pg.url}</span></div><button style="min-width:0;padding:0 8px" data-t="refresh">Go</button></div>
+        <div class="addr"><span>Address</span><div class="fld">${icon('web',16)}<input data-addr type="text" value="${esc(pg.url)}" style="border:0;box-shadow:none;flex:1;min-width:0;height:17px;padding:0 2px;font:inherit"></div><button style="min-width:0;padding:0 8px" data-t="goaddr">Go</button></div>
         <div class="ie-page"><div class="web">${pg.html()}</div></div>
         <div class="status-bar"><p class="status-bar-field">Done</p><p class="status-bar-field" style="flex:0 0 120px">${icon('globe',16).replace('class="ico"','class="ico" style="display:inline;vertical-align:-3px;width:14px;height:14px"')} Internet zone</p></div>`;
-    const go = id => { hist.splice(hi+1); hist.push(id); hi++; render(); };
+    const go = id => { hist.splice(hi+1); hist.push(id); hi++; loading(); };
+    function loading(){ render(); const s = w.body.querySelector('.status-bar-field'); s.textContent = 'Opening page ' + (typeof hist[hi]==='string' ? PAGES[hist[hi]].url : hist[hi].err) + '...'; setTimeout(()=>{ if (s.isConnected) s.textContent = 'Done'; }, 450); }
+    const addr = w.body.querySelector('[data-addr]');
+    addr.onkeydown = e => { if (e.key==='Enter') go(resolve(addr.value)); };
+    addr.onfocus = () => addr.select();
+    const q = w.body.querySelector('[data-q]');
+    if (q){ const res = w.body.querySelector('[data-res]');
+      const search = () => { const t = q.value.trim().toLowerCase(); if (!t) return;
+        const hits = ALL_PROJECTS.filter(p => (p.title+' '+p.body+' '+p.tags.join(' ')+' '+p.meta).toLowerCase().includes(t));
+        res.innerHTML = `<p><b>${hits.length} match${hits.length===1?'':'es'} for "${esc(q.value)}"</b></p><ol>${hits.map((p,i)=>`<li><a data-hit="${i}">${esc(p.title)}</a><br><small>${esc(p.body.slice(0,140))}...</small></li>`).join('')}</ol>`;
+        res.querySelectorAll('[data-hit]').forEach(a=>a.onclick=()=>openProject(hits[+a.dataset.hit], a.getBoundingClientRect())); };
+      w.body.querySelector('[data-s]').onclick = search; q.onkeydown = e => { if (e.key==='Enter') search(); }; }
+    const sign = w.body.querySelector('[data-sign]');
+    if (sign) sign.onclick = () => { const n = w.body.querySelector('[data-n]').value.trim(), c = w.body.querySelector('[data-c]').value.trim();
+      if (!n || !c){ msgbox('Guestbook','Please enter your name and a comment.','warn'); return; }
+      let list = []; try{ list = JSON.parse(localStorage.getItem('z98gb')||'[]'); }catch(e){}
+      list.push({ n, c, d:new Date().toLocaleDateString('en-US') }); try{ localStorage.setItem('z98gb', JSON.stringify(list.slice(-50))); }catch(e){}
+      beep('tada'); render(); };
     w.body.querySelectorAll('[data-go]').forEach(a=>a.onclick=()=>go(a.dataset.go));
     w.body.querySelectorAll('[data-href]').forEach(a=>a.onclick=()=>ext(a.dataset.href));
     w.body.querySelectorAll('[data-app]').forEach(a=>a.onclick=()=>openApp(a.dataset.app));
-    const T = { back:()=>{ if(hi>0){hi--;render();} }, fwd:()=>{ if(hi<hist.length-1){hi++;render();} }, home:()=>go('home'), refresh:render, stop:()=>{}, mail:()=>openApp('mail'), print:()=>window.print(), blogp:()=>go('blog') };
+    const T = { back:()=>{ if(hi>0){hi--;render();} }, fwd:()=>{ if(hi<hist.length-1){hi++;render();} }, home:()=>go('home'), refresh:loading, stop:()=>{}, goaddr:()=>go(resolve(addr.value)), search:()=>go('search'), gb:()=>go('guestbook'), mail:()=>openApp('mail'), print:()=>window.print(), blogp:()=>go('blog') };
     w.body.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>T[b.dataset.t]());
     wireMenubar(w, T);
   }
