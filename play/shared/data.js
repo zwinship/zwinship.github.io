@@ -23,10 +23,10 @@ const RESEARCH = [
  },
  {
   "id": "cz",
-  "title": "NYC Congestion Pricing: Mobility and Commercial Effects",
+  "title": "Traffic, Transit, and the Toll: Causal Evidence from NYC's Congestion Pricing",
   "year": "2026",
   "meta": "Urban Economics · Causal Inference · Policy Research",
-  "body": "A difference-in-discontinuities design using C2Smart traffic camera data and MTA ridership records to estimate the effect of NYC's congestion pricing zone on vehicle traffic, pedestrian activity, subway ridership and commercial outcomes at the 60th Street boundary.",
+  "body": "My senior capstone at Bentley, advised by Dhaval Dave. A difference-in-discontinuities design at the 60th Street boundary, with distance measured along the road network, using C2Smart traffic camera data and MTA ridership. Near the boundary, passenger vehicles fell 20.6% and trucks 18.1%, while pedestrians rose 13.5% and bicycles 19.8%. Ridership at boundary subway stations fell 24.7%, which cuts against a simple shift from cars to transit. Presented at Bentley Undergraduate Research Day.",
   "tags": [
    "Python",
    "Stata",
@@ -319,7 +319,7 @@ const EXPERIENCE = [
   "role": "Teaching Assistant, Introductory Macroeconomics",
   "org": "New York University",
   "when": "Aug 2026 to present",
-  "body": "Weekly recitations on course material and problem sets, plus exam proctoring and grading."
+  "body": "Lead two recitation sections, about 90 students in all, and proctor and grade exams."
  },
  {
   "role": "Instructional Content Assistant",
@@ -337,13 +337,13 @@ const EXPERIENCE = [
   "role": "Research Assistant",
   "org": "Bentley University",
   "when": "May 2025 to Dec 2025",
-  "body": "Compiled and analyzed data on 2025 ASSA conference education sessions, with a focus on geographic distribution and representation, for Professor Savannah Adkins's research on global trends and socioeconomic bias in economics publishing."
+  "body": "Wrote Python scrapers to build a dataset of ASSA conference sessions, then analyzed geographic coverage and representation in economics research with Python, Stata and text analysis, for Professor Savannah Adkins."
  },
  {
   "role": "Regulatory Data Intern",
   "org": "American Action Forum, Washington, DC",
   "when": "May 2025 to Aug 2025",
-  "body": "Compiled and cleaned regulatory datasets in Python, produced statistical summaries, and reviewed literature on the economic impact of federal regulations. Attended congressional and agency hearings on regulatory policy.",
+  "body": "Automated the scraping and cleaning of the federal Unified Agenda, built datasets and dashboards on regulatory activity, and wrote policy analysis and literature reviews on federal regulation. Attended congressional and agency hearings.",
   "links": [
    [
     "https://policyinterns.com/author/typhoonscented11a6c9fde0/",
@@ -364,7 +364,8 @@ const PROFILE = {
  "about": [
   "This year I'm a research assistant to Professor Anna Vitali and a teaching assistant for Introductory Macroeconomics.",
   "My research so far is on transport and regulation in the US: congestion pricing in New York, the EPA's ozone standard, and ridership on Boston's subway. I also wrote rd2dnet, a package for boundary discontinuity designs on street networks.",
-  "Outside of that I build things: a UFC prediction model, a chess game, a daily guessing game, and an LED map of the T."
+  "Outside of that I build things: a UFC prediction model, a chess game, a daily guessing game, and an LED map of the T.",
+  "I work mostly in Python, R and Stata, along with SQL, JavaScript and LaTeX."
  ],
  "education": [
   {
@@ -377,7 +378,7 @@ const PROFILE = {
    "degree": "BS in Quantitative Economics",
    "school": "Bentley University",
    "when": "Graduated May 2026",
-   "note": "Double minor in Mathematics and Data Technologies. GPA 3.74. Coursework in econometrics, statistical analysis, data analytics, mathematical economics and public policy analysis."
+   "note": "Minors in Mathematics and Data Technologies. GPA 3.74, on the Dean's or President's List every semester. Coursework in econometrics, statistical analysis, data analytics, mathematical economics and public policy analysis."
   }
  ],
  "skills": [

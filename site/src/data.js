@@ -7,12 +7,12 @@ const p = id => byId(PERSONAL, id);
 
 const RESEARCH_ITEMS = [
   { id: 'nber', title: r('nber').title, year: '2026',
-    sub: 'NBER Working Paper 35414, under review. With Yulia Chikish, Greg Colman, Dhaval Dave, Brad Humphreys and Zachary Santamaria.',
+    sub: 'NBER Working Paper 35414, under review. With Yulia Chikish, Greg Colman, Dhaval Dave, Brad Humphreys and Zachary Santamaria. I led the data construction and empirical analysis.',
     blurb: 'EMS travel times in Manhattan fell by 63 to 70 seconds after the toll started.',
     body: [r('nber').body.replace(/^NBER Working Paper No\. 35414, under journal review\. /, '')],
     links: r('nber').links, press: MEDIA },
-  { id: 'cz', title: r('cz').title, year: '2026', sub: 'Working paper.',
-    blurb: 'Traffic, pedestrians, subway ridership and businesses on either side of the 60th Street boundary.',
+  { id: 'cz', title: r('cz').title, year: '2026', sub: 'Senior capstone, advised by Dhaval Dave.',
+    blurb: 'Traffic, pedestrians and subway ridership on either side of the 60th Street boundary.',
     body: [r('cz').body], links: r('cz').links.filter(([h]) => h !== 'https://github.com/zwinship') },
   { id: 'ozone', title: r('ozone').title, year: '2025', sub: 'Blog post, American Action Forum internship.',
     blurb: "Estimates that the EPA's ozone standard costs US manufacturers about $277M a year in revenue, a cost the EPA's own analysis leaves out.",

@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { motion, useScroll, useSpring } from 'motion/react';
 import { EMAIL, LINKS, PROFILE } from './content.js';
 import { LINES, pageById } from './data.js';
-import { navigate, parse, scrollToSection } from './router.js';
+import { navigate, parse, scrollToSection, setOrigin } from './router.js';
 
 const isExternal = href => /^https?:/.test(href);
 export function A({ href, children, ...rest }) {
@@ -62,7 +62,7 @@ function RouteBar({ current, progress }) {
 
 function Stop({ it }) {
   const title = it.body
-    ? <a href={`#/${it.id}`} onClick={e => go(e, `#/${it.id}`)}>{it.title}</a>
+    ? <a href={`#/${it.id}`} onClick={e => { setOrigin(e.currentTarget.closest('.stop')); go(e, `#/${it.id}`); }}>{it.title}</a>
     : it.title;
   return (
     <li className={`stop${it.body ? ' has-page' : ''}`} data-anchor={it.id}>

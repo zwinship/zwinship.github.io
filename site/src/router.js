@@ -50,6 +50,11 @@ export function useRoute() {
   return route;
 }
 
+// The element a visitor clicked to open an item, so open animations can start from it.
+let origin = null;
+export function setOrigin(el) { origin = el ? { rect: el.getBoundingClientRect(), el } : null; }
+export function getOrigin() { return origin; }
+
 export const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // Eased scroll that the visitor can interrupt with the wheel, touch or keys.

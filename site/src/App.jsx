@@ -1,13 +1,15 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { AnimatePresence, MotionConfig, motion } from 'motion/react';
 import Main from './Main.jsx';
-import ItemSheet from './ItemSheet.jsx';
+import { SHEETS, DEFAULT_SHEET } from './sheets/index.js';
 import { INTROS, DEFAULT_INTRO } from './intros/index.js';
 import FunPage from './FunPage.jsx';
 import { lineById, pageById } from './data.js';
 import { navigate, reduceMotion, scrollToSection, scrollToY, stopScroll, useRoute } from './router.js';
 
 // The intro plays on a bare visit to the home page, once per browser tab.
+const sheetParam = new URLSearchParams(location.search).get('open');
+const ItemSheet = SHEETS[sheetParam] || SHEETS[DEFAULT_SHEET];
 const introParam = new URLSearchParams(location.search).get('intro');
 const Intro = INTROS[introParam] || INTROS[DEFAULT_INTRO];
 function shouldPlayIntro() {
