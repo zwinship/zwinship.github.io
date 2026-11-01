@@ -38,7 +38,7 @@ img,svg{image-rendering:pixelated}
 #icons{position:absolute;left:4px;top:4px;bottom:4px;display:grid;grid-auto-flow:column;grid-template-rows:repeat(auto-fill,76px);grid-auto-columns:76px;gap:0 2px}
 .dicon{width:76px;height:74px;display:flex;flex-direction:column;align-items:center;padding-top:4px;color:#fff;text-align:center;cursor:default;outline:none}
 .dicon .ico{width:32px;height:32px}
-.dicon .lbl{margin-top:4px;padding:1px 2px;line-height:13px;max-width:74px;overflow-wrap:normal;word-break:normal;border:1px dotted transparent;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;line-clamp:3;overflow:hidden}
+.dicon .lbl{margin-top:4px;padding:1px 2px;line-height:13px;max-width:74px;min-width:min-content;overflow-wrap:normal;word-break:normal;border:1px dotted transparent;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;line-clamp:3;overflow:hidden}
 .dicon.sel .ico{filter:url(#selTint)}
 .dicon.sel .lbl{background:var(--navy);border-color:#ffff80}
 .dicon .arrow{position:absolute}
@@ -1056,7 +1056,7 @@ const APPS = {
       else if (c==='deltree') print('Nice try.');
       else if (c==='format'){ print('WARNING: ALL DATA ON NON-REMOVABLE DISK\nDRIVE C: WILL BE LOST!\nProceed with Format (Y/N)? Y');
         const prog = document.createElement('span'); out.appendChild(prog);
-        let pct = 0; const id = setInterval(()=>{ pct += 7; if (pct >= 100){ clearInterval(id); if (w.el.isConnected){ bsod(); print('\n\nFormat aborted. (Your portfolio is safe.)'); prompt(); } return; } prog.textContent = `${pct} percent completed.`; out.scrollTop = out.scrollHeight; }, 160); return; }
+        let pct = 0; const id = setInterval(()=>{ pct += 7; if (pct >= 100){ clearInterval(id); prog.textContent = '100 percent completed.'; if (w.el.isConnected){ bsod(); print('\n\nFormat aborted. (Your portfolio is safe.)'); prompt(); } return; } prog.textContent = `${pct} percent completed.`; out.scrollTop = out.scrollHeight; }, 160); return; }
       else if (c==='ver') print('\nZach 98 [Version 4.10.2026]\n');
       else if (c==='cls') out.innerHTML='';
       else if (c==='projects' || c==='dir/p') { print(ALL_PROJECTS.map(p=>`${p.year.padEnd(14)} ${p.title}`).join('\n')); }
