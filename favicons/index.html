@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Tab icon options</title>
+<style>
+body{margin:0;font:18px/1.5 system-ui,sans-serif;color:#15171a;background:#fff}
+main{max-width:860px;margin:0 auto;padding:48px 20px 80px}
+h1{font-size:32px;margin:0 0 6px}
+.note{color:#4b4f55;margin:0 0 32px}
+.opt{display:grid;grid-template-columns:120px minmax(0,1fr);gap:24px;align-items:center;padding:24px 0;border-top:1px solid #e3e4e6}
+.big{width:96px;height:96px}
+.tabs{display:flex;flex-direction:column;gap:8px}
+.tab{display:flex;align-items:center;gap:8px;width:250px;height:34px;padding:0 12px;border-radius:8px 8px 0 0;font-size:13px}
+.tab img{width:16px;height:16px}
+.light{background:#f1f3f4;color:#202124}
+.dark{background:#35363a;color:#e8eaed}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+h2{margin:0 0 4px;font-size:22px}
+p{margin:0 0 10px}
+.old{opacity:.8}
+</style>
+</head>
+<body>
+<main>
+<h1>Tab icon options</h1>
+<p class="note">Each one is shown large, then at real size in a light and a dark browser tab. Tell me the number.</p>
+
+<div class="opt"><img class="big" src="1.svg" alt=""><div><h2>1. Station</h2><p>A transfer station from the map: a black disc with a white centre. Simplest, reads at any size.</p><div class="tabs"><div class="tab light"><img src="1.svg" alt="">Zach Winship</div><div class="tab dark"><img src="1.svg" alt="">Zach Winship</div></div></div></div>
+
+<div class="opt"><img class="big" src="2.svg" alt=""><div><h2>2. Interchange</h2><p>Red, green and blue lines meeting at a station, like a corner of the map.</p><div class="tabs"><div class="tab light"><img src="2.svg" alt="">Zach Winship</div><div class="tab dark"><img src="2.svg" alt="">Zach Winship</div></div></div></div>
+
+<div class="opt"><img class="big" src="3.svg" alt=""><div><h2>3. Z line</h2><p>A Z drawn as a red line with a station at each end.</p><div class="tabs"><div class="tab light"><img src="3.svg" alt="">Zach Winship</div><div class="tab dark"><img src="3.svg" alt="">Zach Winship</div></div></div></div>
+
+<div class="opt"><img class="big" src="4.svg" alt=""><div><h2>4. Station sign</h2><p>A white Z on a black sign with the five line colours along the bottom, like the item pages.</p><div class="tabs"><div class="tab light"><img src="4.svg" alt="">Zach Winship</div><div class="tab dark"><img src="4.svg" alt="">Zach Winship</div></div></div></div>
+
+<div class="opt"><img class="big" src="5.svg" alt=""><div><h2>5. Line bullet</h2><p>A red route bullet with a white Z, like the round line markers on transit signs.</p><div class="tabs"><div class="tab light"><img src="5.svg" alt="">Zach Winship</div><div class="tab dark"><img src="5.svg" alt="">Zach Winship</div></div></div></div>
+
+<div class="opt old"><img class="big" src="/images/logo.png" alt="" style="image-rendering:pixelated"><div><h2>Current</h2><p>For comparison.</p><div class="tabs"><div class="tab light"><img src="/images/logo.png" alt="">Zach Winship</div><div class="tab dark"><img src="/images/logo.png" alt="">Zach Winship</div></div></div></div>
+</main>
+</body>
+</html>
