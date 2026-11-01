@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow, noarchive">
-<title>Wii Menu · Zach Winship</title>
+<title>Zach Winship: Wii Menu</title>
 <link rel="icon" href="../../images/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -172,7 +172,6 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 .row-year{font-size:14px;font-weight:500;color:var(--gray-text);padding-top:2px}
 @media (max-width:640px){.rows li{grid-template-columns:1fr}}
 .code{font:14px/1.5 ui-monospace,Menlo,Consolas,monospace;background:#f4f5f7;border:1px solid #dcdde0;border-radius:8px;padding:10px 14px;margin:14px 0 4px;overflow-x:auto;user-select:all}
-.tag{font-size:13px;font-weight:500;color:#6a6c71;background:#f3f3f5;border:1px solid #dcdde0;border-radius:8px;padding:2px 10px}
 .links{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
 .wbtn{display:inline-flex;align-items:center;padding:9px 22px;border-radius:999px;background:linear-gradient(#ffffff,#eeeff1);border:2px solid #c6c7cb;color:#4a4c50;font-weight:500;font-size:15px;text-decoration:none;transition:border-color .1s,box-shadow .1s}
 .wbtn:hover,.wbtn:focus-visible{border-color:var(--cyan);box-shadow:0 0 0 1px var(--cyan),0 0 6px rgba(52,190,237,.45);outline:none}
@@ -181,12 +180,10 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 .badge{display:inline-block;font-size:12px;font-weight:700;padding:3px 10px;border-radius:6px;background:var(--cyan);color:#fff;margin:0 6px 8px 0}
 .badge.gray{background:#9a9ca1}
 .about-top{display:flex;gap:28px;align-items:center;flex-wrap:wrap}
-.about-top img{width:160px;height:160px;object-fit:cover;border-radius:24px;border:2px solid #d5d6da}
+.about-top .zw{position:relative;flex:0 0 auto;width:160px;height:160px;border-radius:24px;border:2px solid #d5d6da}
 .about-top h2{font-size:32px;font-weight:700;color:#45474c}
 .about-top .sub{color:var(--cyan-text);font-weight:500;margin-top:2px}
 video{width:100%;border-radius:12px;background:#000;margin-top:12px;display:block}
-.vids{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:10px}
-.vids figcaption{font-size:13px;font-weight:500;color:#6a6c71;margin-top:6px}
 .shop-row{display:flex;gap:18px;align-items:flex-start}
 .shop-row .thumb{flex:0 0 150px;height:85px;border-radius:12px;overflow:hidden;position:relative;border:2px solid #d5d6da}
 .shop-row .thumb .bn{position:absolute;inset:0}
@@ -198,8 +195,6 @@ video{width:100%;border-radius:12px;background:#000;margin-top:12px;display:bloc
 .wx .temp{font-size:72px;font-weight:700;color:#fff;line-height:1}
 .wx .cond{font-weight:500;color:#eaf7ff;margin-top:6px}
 .poll-opts{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px}
-.poll-bar{height:28px;border-radius:999px;background:#eef0f2;overflow:hidden;margin-top:8px;border:1px solid #dedfe2}
-.poll-bar i{display:block;height:100%;border-radius:999px;transition:width .8s cubic-bezier(.45,0,.2,1)}
 .list-plain{list-style:none}
 .list-plain li{padding:10px 0;border-bottom:1px solid #e4e5e8;font-size:16px}
 .list-plain li:last-child{border:0}
@@ -213,7 +208,7 @@ video{width:100%;border-radius:12px;background:#000;margin-top:12px;display:bloc
 .letter{background:#fffef6;border:2px solid #e3dfc4;border-radius:14px;padding:30px 34px;max-width:720px;background-image:repeating-linear-gradient(transparent 0 33px,#ece8cf 33px 34px);background-position:0 18px}
 .letter p{font-size:18px;line-height:34px;color:#4a4c50}
 .letter .from{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-.letter .from img{width:52px;height:52px;border-radius:12px;object-fit:cover;border:2px solid #d5d6da}
+.letter .from .zw{position:relative;flex:0 0 auto;width:52px;height:52px;border-radius:12px;border:2px solid #d5d6da}
 .letter .from b{font-size:18px}
 /* themed content headers */
 #content[data-theme="shop"] .cc-head{background:#34beed;border-bottom-color:#1f9fd0}
@@ -233,15 +228,18 @@ video{width:100%;border-radius:12px;background:#000;margin-top:12px;display:bloc
 .bn .pv{display:none}
 #pvZoom .bn .pv{display:block}
 #pvZoom .bn .tick{font-size:6cqh !important}
+#pvZoom .bn .tickbar{height:15cqh !important}
 #fader{position:fixed;inset:0;z-index:75;background:#fff;opacity:0;pointer-events:none;transition:opacity .25s ease}
 #fader.on{opacity:1;pointer-events:auto}
 #musicToggle{width:300px;height:80px;font-size:28px}
 .spin{animation:spin 8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-@keyframes walk{from{transform:translateX(-30cqw)}to{transform:translateX(130cqw)}}
 @keyframes ticker{from{transform:translateX(100cqw)}to{transform:translateX(-100%)}}
-@keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-@keyframes drift{0%,100%{transform:translateX(0)}50%{transform:translateX(4cqw)}}
+/* Zach's photo (transparent PNG): head-and-shoulders crop, face centered */
+.zw{background:linear-gradient(#e8f3fa,#cfe4f2);overflow:hidden}
+.zw::before{content:'';position:absolute;inset:0;background:url(../../images/zwinship.png) 43% 11%/150% auto no-repeat}
+/* light gloss over each tile, like the real menu's glassy channel frames */
+.ch:not(.empty) .bn::after{content:'';position:absolute;left:0;right:0;top:0;height:48%;background:linear-gradient(rgba(255,255,255,.28),rgba(255,255,255,0));pointer-events:none}
 
 @media (prefers-reduced-motion:reduce){
   .bn *,.spin,.ch.hot,.parrow.show svg,#mailBtn .env,.warn-press{animation:none !important}
@@ -343,237 +341,199 @@ const WII_MARK = (col='#a5a6aa') => `<svg class="wii-mark" viewBox="0 0 100 44" 
 document.querySelector('.wii-mark-slot').outerHTML = WII_MARK();
 
 /* =====================================================================
-   BANNERS: light backgrounds, one accent, one title; detail lines are
-   `.pv` (preview only). Only a few banners animate, each with one motion.
+   BANNERS: built like real channel banners. A clean background in the
+   channel's own color, one wordmark, and at most one photo or one simple
+   mark. Lines marked `.pv` only show in the zoomed preview.
    ===================================================================== */
+const PV = (txt, css) => `<div class="pv" style="${css};font-size:5.5cqh;font-weight:500;line-height:1.5">${txt}</div>`;
 const B = {
 disc: () => `
-  <div style="inset:0;background:#fff"></div>
-  <div style="left:9cqw;top:14cqh;width:72cqh;height:72cqh;border-radius:50%;background:conic-gradient(from 20deg,#e6ebf2,#f7f4fb,#e9f5fb,#fbf7ee,#ecf1fa,#f6eef9,#e6ebf2);box-shadow:inset 0 0 0 .5cqh #c9ccd2" class="spin">
-    <div style="inset:35%;border-radius:50%;background:#f5f5f7;box-shadow:inset 0 0 0 .5cqh #c9ccd2"></div>
-    <div style="inset:45%;border-radius:50%;background:#fff;box-shadow:inset 0 0 0 .5cqh #c9ccd2"></div>
+  <div style="inset:0;background:linear-gradient(#ffffff,#eceff3)"></div>
+  <div class="spin" style="left:8cqw;top:13cqh;width:74cqh;height:74cqh;border-radius:50%;background:conic-gradient(from 30deg,#e7ebf1,#fafbfd,#e3e8ef,#f7f8fb,#e7ebf1);box-shadow:inset 0 0 0 .5cqh #c3c7ce,0 1cqh 2cqh rgba(0,0,0,.08)">
+    <div style="inset:34%;border-radius:50%;background:#f3f4f6;box-shadow:inset 0 0 0 .5cqh #c3c7ce"></div>
+    <div style="inset:44%;border-radius:50%;background:#fff;box-shadow:inset 0 0 0 .5cqh #c3c7ce"></div>
   </div>
-  <div style="left:52cqw;top:36cqh;font-size:14cqh;font-weight:700;color:#7a7c81">Research</div>
-  <div class="pv" style="left:52cqw;top:58cqh;font-size:5.5cqh;font-weight:500;color:#1f7fae;line-height:1.5">NBER Working Paper No. 35414<br>Congestion Pricing &amp; EMS Response</div>`,
+  <div style="left:calc(8cqw + 86cqh);top:35cqh;font-size:13cqh;font-weight:800;color:#5f6166;letter-spacing:-.2cqh">Research</div>
+  ${PV(`${RESEARCH[0].badge}<br>Congestion pricing and EMS response times`, 'left:calc(8cqw + 86cqh);right:4cqw;top:56cqh;color:#1f7fae')}`,
 
-mii: () => {
-  const miis = [['#e05050',0],['#3d8ee0',-2.2],['#f0b232',-4.4],['#58b84a',-6.6],['#a46ad0',-8.8]];
-  return `<div style="inset:0;background:#fff"></div>
-  <div style="left:0;right:0;bottom:0;height:20cqh;background:#eef0f2"></div>
-  ${miis.map(([c,d])=>`<div style="left:0;bottom:12cqh;width:20cqh;height:46cqh;animation:walk 12s linear ${d}s infinite">
-     <div style="left:2cqh;top:0;width:16cqh;height:18cqh;border-radius:48% 48% 44% 44%;background:#f6d9bd;box-shadow:inset 0 3cqh 0 #4a3426"></div>
-     <div style="left:6.5cqh;top:9cqh;width:1.4cqh;height:2cqh;border-radius:1cqh;background:#333"></div><div style="left:12cqh;top:9cqh;width:1.4cqh;height:2cqh;border-radius:1cqh;background:#333"></div>
-     <div style="left:4.5cqh;top:19cqh;width:11cqh;height:14cqh;border-radius:30% 30% 16% 16%;background:${c}"></div>
-     <div style="left:5.5cqh;top:32cqh;width:3.6cqh;height:12cqh;border-radius:2cqh;background:#6a6f78"></div>
-     <div style="left:10.8cqh;top:32cqh;width:3.6cqh;height:12cqh;border-radius:2cqh;background:#6a6f78"></div></div>`).join('')}
-  <div style="right:6cqw;top:10cqh;width:30cqh;height:30cqh;border-radius:22%;overflow:hidden;border:.6cqh solid #d5d6da"><img src="${ASSET}images/zwinship.png" alt="" style="width:100%;height:100%;object-fit:cover;object-position:62% 18%"></div>
-  <div style="left:7cqw;top:14cqh;font-size:14cqh;font-weight:700;color:#7a7c81">About Me</div>`;
-},
-
-photo: () => {
-  const frames = [['#ffe08a','RD Design'],['#bfe5fb','VAR · VECM'],['#cdeeb2','Rural Roads'],['#ffc6d4','Diff-in-Disc'],['#dccdfa','Effort Model'],['#ffe3b5','NYC Tolls']];
-  const strip = frames.concat(frames).map(([c,l])=>`<div style="position:relative;display:inline-block;width:30cqw;height:42cqh;margin-right:3cqw;background:#fff;border:.5cqh solid #d5d6da;border-radius:1.2cqh;padding:1.4cqh">
-     <div style="position:relative;width:100%;height:100%;border-radius:.8cqh;background:${c}"><div style="left:0;right:0;bottom:12%;text-align:center;font-size:5.5cqh;font-weight:500;color:#55575c">${l}</div></div></div>`).join('');
-  return `<div style="inset:0;background:#fff"></div>
-  <div style="left:0;top:38cqh;white-space:nowrap;animation:slide 22s linear infinite">${strip}</div>
-  <div class="t" style="top:10cqh;font-size:13cqh;color:#7a7c81">Presentations</div>`;
-},
+mii: () => `
+  <div style="inset:0;background:linear-gradient(#ffffff,#edf1f4)"></div>
+  <div class="zw" style="right:6cqw;top:13cqh;width:74cqh;height:74cqh;border-radius:12cqh;box-shadow:inset 0 0 0 .5cqh rgba(0,0,0,.08)"></div>
+  <div style="left:7cqw;top:35cqh;font-size:13cqh;font-weight:800;color:#5f6166;letter-spacing:-.2cqh">About Me</div>
+  ${PV(`${PROFILE.name}<br>${PROFILE.now}`, 'left:7cqw;right:calc(6cqw + 82cqh);top:56cqh;color:#1f7fae')}`,
 
 shop: () => `
-  <div style="inset:0;background:#fff"></div>
-  <div style="left:0;right:0;bottom:0;height:26cqh;background:#e9f7fd"></div>
-  <svg viewBox="0 0 40 40" style="left:50%;top:12cqh;width:38cqh;height:38cqh;margin-left:-19cqh"><path d="M13 14V11a7 7 0 0114 0v3" fill="none" stroke="#2aa6d8" stroke-width="3"/><rect x="5" y="13" width="30" height="23" rx="4" fill="#fff" stroke="#2aa6d8" stroke-width="3"/></svg>
-  <div class="t" style="top:56cqh;font-size:12cqh;color:#1f8fc4">Project Shop</div>
-  <div class="t pv" style="top:80cqh;font-size:5.5cqh;font-weight:500;color:#4b9cc4">Research &amp; personal projects</div>`,
+  <div style="inset:0;background:linear-gradient(#ffffff,#e4f5fc)"></div>
+  <svg viewBox="0 0 40 40" style="left:50%;top:12cqh;width:36cqh;height:36cqh;margin-left:-18cqh"><path d="M13 14V11a7 7 0 0114 0v3" fill="none" stroke="#2aa6d8" stroke-width="3"/><rect x="5" y="13" width="30" height="23" rx="4" fill="#fff" stroke="#2aa6d8" stroke-width="3"/></svg>
+  <div class="t" style="top:54cqh;font-size:13cqh;font-weight:800;color:#1f8fc4">Project Shop</div>
+  ${PV('Research and personal projects', 'left:0;right:0;text-align:center;top:78cqh;color:#4b9cc4')}`,
 
 forecast: () => `
-  <div style="inset:0;background:linear-gradient(#5db9ee,#b8e2f8 75%,#e6f5fd)"></div>
-  <div style="left:12cqw;top:16cqh;width:28cqh;height:28cqh;border-radius:50%;background:#ffc93a"></div>
-  <div style="left:22cqw;top:31cqh;width:44cqh;height:18cqh;border-radius:9cqh;background:#fff;animation:drift 9s ease-in-out infinite"><div style="left:8cqh;top:-9cqh;width:20cqh;height:20cqh;border-radius:50%;background:#fff"></div></div>
-  <div class="wx-temp" style="right:8cqw;top:14cqh;font-size:22cqh;font-weight:700;color:#fff;display:none"></div>
-  <div class="wx-city pv" style="right:8cqw;top:44cqh;font-size:6cqh;font-weight:500;color:#fff;text-align:right">New York, NY</div>
-  <div style="left:0;right:0;bottom:0;height:22cqh;background:#fff;text-align:center"><div style="position:relative;font-size:10cqh;font-weight:700;color:#2c8fc6;line-height:22cqh">Forecast</div></div>`,
+  <div style="inset:0;background:linear-gradient(#3fa6e6,#a9dbf6 80%)"></div>
+  <div style="left:8cqw;top:16cqh;font-size:10cqh;font-weight:700;color:#fff">New York</div>
+  <div class="wx-temp" style="left:8cqw;top:31cqh;font-size:30cqh;font-weight:700;color:#fff;line-height:1;display:none"></div>
+  <div style="left:0;right:0;bottom:0;height:24cqh;background:linear-gradient(#ffffff,#eef6fb)"></div>
+  <div class="t" style="bottom:4cqh;font-size:13cqh;font-weight:800;color:#2c8fc6">Forecast</div>`,
 
 news: () => `
-  <div style="inset:0;background:#fff"></div>
-  <div style="left:50%;top:8cqh;width:56cqh;height:56cqh;margin-left:-28cqh;border-radius:50%;overflow:hidden;background:#3d9be0;box-shadow:inset 0 0 0 .5cqh #2a7fc0">
-    <div style="left:0;top:0;height:100%;width:200%;animation:slide 18s linear infinite;background:
-      radial-gradient(ellipse 9% 14% at 10% 38%,#7dcf69 98%,transparent),radial-gradient(ellipse 6% 18% at 22% 62%,#6cc35a 98%,transparent),
-      radial-gradient(ellipse 12% 10% at 36% 30%,#86d46f 98%,transparent),radial-gradient(ellipse 7% 12% at 40% 58%,#7dcf69 98%,transparent),
-      radial-gradient(ellipse 9% 14% at 60% 38%,#7dcf69 98%,transparent),radial-gradient(ellipse 6% 18% at 72% 62%,#6cc35a 98%,transparent),
-      radial-gradient(ellipse 12% 10% at 86% 30%,#86d46f 98%,transparent),radial-gradient(ellipse 7% 12% at 90% 58%,#7dcf69 98%,transparent)"></div>
-  </div>
-  <div style="left:0;right:0;bottom:0;height:26cqh;background:#eef2f6;border-top:.5cqh solid #c9d6e3;overflow:hidden">
-    <div class="tick" style="left:0;top:0;height:26cqh;line-height:26cqh;white-space:nowrap;font-size:9cqh;font-weight:500;color:#2b5d8f;animation:ticker 30s linear -8s infinite">${MEDIA.map(m=>`${m[1]}: ${m[2]}`).join('   ·   ')}   ·   Unlikely Instruments: ${BLOG_STATUS.toLowerCase()}</div>
+  <div style="inset:0;background:linear-gradient(#ffffff,#edf1f6)"></div>
+  <div class="t" style="top:16cqh;font-size:20cqh;font-weight:800;color:#2b5d8f;letter-spacing:-.3cqh">News</div>
+  <div style="left:50%;top:44cqh;width:28cqh;height:1cqh;margin-left:-14cqh;border-radius:1cqh;background:#34beed"></div>
+  ${PV('Press coverage and the blog', 'left:0;right:0;text-align:center;top:50cqh;color:#2b5d8f')}
+  <div class="tickbar" style="left:0;right:0;bottom:0;height:24cqh;background:#2b5d8f;overflow:hidden">
+    <div class="tick" style="left:0;top:0;height:100%;display:flex;align-items:center;white-space:nowrap;font-size:9cqh;font-weight:500;color:#fff;animation:ticker 40s linear -8s infinite">${MEDIA.map(m=>`${m[1]}: ${m[2]}`).join('<span style="position:static;display:inline-block;width:12cqh"></span>')}</div>
   </div>`,
 
 internet: () => `
-  <div style="inset:0;background:#fff"></div>
-  <svg viewBox="0 0 40 40" style="left:12cqw;top:16cqh;width:64cqh;height:64cqh"><circle cx="20" cy="20" r="18" fill="#e9f5fc" stroke="#3aa0dc" stroke-width="2"/><ellipse cx="20" cy="20" rx="8" ry="18" fill="none" stroke="#3aa0dc" stroke-width="1.6"/><path d="M2 20h36M5 11h30M5 29h30" stroke="#3aa0dc" stroke-width="1.6"/></svg>
-  <div style="left:54cqw;top:34cqh;font-size:14cqh;font-weight:700;color:#7a7c81">Links</div>
-  <div class="pv" style="left:54cqw;top:56cqh;font-size:5.5cqh;font-weight:500;color:#1f7fae;line-height:1.5">GitHub · LinkedIn · Email<br>Live project sites</div>`,
+  <div style="inset:0;background:linear-gradient(#ffffff,#eceff3)"></div>
+  <div class="t" style="top:16cqh;font-size:17cqh;font-weight:800;color:#5f6166">Links</div>
+  <div style="left:14cqw;right:14cqw;top:52cqh;height:20cqh;border-radius:10cqh;background:#fff;border:.7cqh solid #34beed;box-shadow:0 .6cqh 1.4cqh rgba(0,0,0,.08)">
+    <div style="left:0;right:0;top:0;bottom:0;display:flex;align-items:center;justify-content:center;font-size:8cqh;font-weight:500;color:#5f6166">zwinship.github.io</div>
+  </div>`,
 
 votes: () => `
-  <div style="inset:0;background:#fffaea"></div>
-  <div class="t" style="top:9cqh;font-size:10cqh;color:#8a6a1f">Election Polling</div>
-  <div style="left:12cqw;right:12cqw;top:36cqh;height:14cqh;border-radius:7cqh;background:#fff;border:.5cqh solid #ecd9a2;overflow:hidden"><div style="left:0;top:0;bottom:0;width:72%;background:#36b3e3"></div><div style="left:4cqw;top:0;line-height:13cqh;font-size:6.5cqh;font-weight:700;color:#fff">Indicator</div></div>
-  <div style="left:12cqw;right:12cqw;top:56cqh;height:14cqh;border-radius:7cqh;background:#fff;border:.5cqh solid #ecd9a2;overflow:hidden"><div style="left:0;top:0;bottom:0;width:28%;background:#ec6464"></div><div style="left:4cqw;top:0;line-height:13cqh;font-size:6.5cqh;font-weight:700;color:#b03a3a">Catalyst</div></div>
-  <div class="t pv" style="top:80cqh;font-size:5.5cqh;font-weight:500;color:#8a6a1f">Do polls predict elections, or move them?</div>`,
+  <div style="inset:0;background:linear-gradient(#fffbea,#fbefc4)"></div>
+  <div class="t" style="top:14cqh;font-size:13cqh;font-weight:800;color:#8a6a1f">Election Polling</div>
+  <div style="left:14cqw;width:33cqw;top:46cqh;height:18cqh;border-radius:9cqh;background:#36b3e3;color:#fff;font-size:7.5cqh;font-weight:700;display:flex;align-items:center;justify-content:center">Indicator</div>
+  <div style="right:14cqw;width:33cqw;top:46cqh;height:18cqh;border-radius:9cqh;background:#e7574f;color:#fff;font-size:7.5cqh;font-weight:700;display:flex;align-items:center;justify-content:center">Catalyst</div>
+  ${PV('2024 U.S. presidential election', 'left:0;right:0;text-align:center;top:76cqh;color:#8a6a1f')}`,
 
 resume: () => `
-  <div style="inset:0;background:#fff"></div>
-  <svg viewBox="0 0 30 40" style="left:14cqw;top:12cqh;width:57cqh;height:76cqh"><path d="M3 2h17l7 7v29H3z" fill="#fff" stroke="#9fa1a6" stroke-width="1.6"/><path d="M20 2v7h7" fill="#eceef1" stroke="#9fa1a6" stroke-width="1.6"/><rect x="7" y="9" width="9" height="3" rx="1" fill="#34beed"/><path d="M7 17h16M7 21h16M7 25h16M7 29h11" stroke="#c7c9cd" stroke-width="1.6"/></svg>
-  <div style="left:50cqw;top:34cqh;font-size:15cqh;font-weight:700;color:#7a7c81">Résumé</div>
-  <div class="pv" style="left:50cqw;top:58cqh;font-size:5.5cqh;font-weight:500;color:#1f7fae">Zach Winship · Summer 2026 · PDF</div>`,
+  <div style="inset:0;background:linear-gradient(#ffffff,#eceff3)"></div>
+  <svg viewBox="0 0 30 40" style="left:12cqw;top:13cqh;width:55cqh;height:74cqh"><path d="M3 2h17l7 7v29H3z" fill="#fff" stroke="#9fa1a6" stroke-width="1.6"/><path d="M20 2v7h7" fill="#eceef1" stroke="#9fa1a6" stroke-width="1.6"/><rect x="7" y="9" width="9" height="3" rx="1" fill="#34beed"/><path d="M7 17h16M7 21h16M7 25h16M7 29h11" stroke="#c7c9cd" stroke-width="1.6"/></svg>
+  <div style="left:calc(12cqw + 66cqh);top:33cqh;font-size:15cqh;font-weight:800;color:#5f6166;letter-spacing:-.2cqh">Résumé</div>
+  ${PV('PDF', 'left:calc(12cqw + 66cqh);top:57cqh;color:#1f7fae')}`,
 
 experience: () => `
-  <div style="inset:0;background:#fff"></div>
-  <svg viewBox="0 0 40 34" style="left:10cqw;top:20cqh;width:56cqh;height:48cqh"><path d="M14 8V5a2 2 0 012-2h8a2 2 0 012 2v3" fill="none" stroke="#8a6440" stroke-width="2.4"/><rect x="2" y="8" width="36" height="24" rx="4" fill="#b98858"/><path d="M2 17h36" stroke="#8a6440" stroke-width="2"/><rect x="17" y="15" width="6" height="5" rx="1" fill="#e7cf8f"/></svg>
-  <div style="left:52cqw;top:34cqh;font-size:13cqh;font-weight:700;color:#7a7c81">Experience</div>
-  <div class="pv" style="left:52cqw;top:56cqh;font-size:5.5cqh;font-weight:500;color:#1f7fae;line-height:1.5">NYU · Bentley<br>American Action Forum</div>`,
+  <div style="inset:0;background:linear-gradient(#ffffff,#eceff3)"></div>
+  <div class="t" style="top:28cqh;font-size:15cqh;font-weight:800;color:#5f6166;letter-spacing:-.2cqh">Experience</div>
+  <div style="left:50%;top:53cqh;width:28cqh;height:1cqh;margin-left:-14cqh;border-radius:1cqh;background:#34beed"></div>
+  ${PV('New York University, Bentley University, American Action Forum', 'left:0;right:0;text-align:center;top:62cqh;color:#1f7fae')}`,
 
 octa: () => `
-  <div style="inset:0;background:#1b1b1e"></div>
+  <div style="inset:0;background:linear-gradient(#26262a,#141416)"></div>
   <div style="left:50%;top:12cqh;width:56cqh;height:56cqh;margin-left:-28cqh;clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%);background:#d63434">
     <div style="inset:2.5cqh;clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%);background:#1b1b1e"></div>
-    <div style="left:0;right:0;top:15cqh;text-align:center;font-size:10cqh;font-weight:700;color:#fff">OCTA</div>
-    <div style="left:0;right:0;top:27cqh;text-align:center;font-size:10cqh;font-weight:700;color:#e04646">STATS</div>
+    <div style="left:0;right:0;top:15cqh;text-align:center;font-size:10cqh;font-weight:800;color:#fff">OCTA</div>
+    <div style="left:0;right:0;top:27cqh;text-align:center;font-size:10cqh;font-weight:800;color:#e04646">STATS</div>
   </div>
-  <div class="t pv" style="bottom:8cqh;font-size:5.5cqh;font-weight:500;color:#bbb">UFC Fight Prediction Model · V2</div>`,
+  ${PV('UFC fight prediction model', 'left:0;right:0;text-align:center;bottom:8cqh;color:#bbb')}`,
 
 tape: () => `
   <div style="inset:0;background:linear-gradient(90deg,#c43c3c 0 50%,#2f66b8 50%)"></div>
-  <div style="left:0;right:0;top:40cqh;height:16cqh;background:repeating-linear-gradient(90deg,#ffd54a 0 3cqw,#e9bd2a 3cqw 3.3cqw)"></div>
-  <div style="left:50%;top:32cqh;width:32cqh;height:32cqh;margin-left:-16cqh;border-radius:50%;background:#fff;text-align:center;line-height:32cqh;font-size:13cqh;font-weight:700;color:#333">VS</div>
-  <div class="t" style="top:8cqh;font-size:10cqh;color:#fff">Tale of the Tape</div>
-  <div class="t pv" style="top:76cqh;font-size:5.5cqh;color:#fff;font-weight:500">UFC Daily Challenge</div>`,
+  <div class="t" style="top:20cqh;font-size:14cqh;font-weight:800;color:#fff">Tale of the Tape</div>
+  <div style="left:50%;top:46cqh;width:26cqh;height:26cqh;margin-left:-13cqh;border-radius:50%;background:#fff;text-align:center;line-height:26cqh;font-size:11cqh;font-weight:800;color:#333">VS</div>
+  ${PV('UFC daily challenge', 'left:0;right:0;text-align:center;top:80cqh;color:#fff')}`,
 
 micro: () => `
-  <div style="inset:0;background:#fff"></div>
-  <svg viewBox="0 0 100 60" preserveAspectRatio="none" style="left:7cqw;top:14cqh;width:44cqw;height:66cqh;overflow:visible">
-    <path d="M2 2V58H98" fill="none" stroke="#7a7c81" stroke-width="1.4"/>
+  <div style="inset:0;background:linear-gradient(#ffffff,#eceff3)"></div>
+  <svg viewBox="0 0 100 60" preserveAspectRatio="none" style="left:8cqw;top:16cqh;width:68cqh;height:64cqh;overflow:visible">
+    <path d="M2 2V58H98" fill="none" stroke="#9a9ca1" stroke-width="1.4"/>
     <path d="M10 8 Q50 30 92 52" fill="none" stroke="#e05050" stroke-width="2.6"/>
     <path d="M10 52 Q50 30 92 8" fill="none" stroke="#2aa6d8" stroke-width="2.6"/>
-    <circle cx="51" cy="30" r="3" fill="#7a7c81"/>
   </svg>
-  <div style="left:58cqw;top:30cqh;font-size:12cqh;font-weight:700;color:#7a7c81;line-height:1.05">Micro<br>Course</div>
-  <div class="pv" style="left:58cqw;top:62cqh;font-size:5.5cqh;font-weight:500;color:#1f7fae;line-height:1.5">12 weeks · Ask the Course AI</div>`,
+  <div style="left:calc(8cqw + 82cqh);top:28cqh;font-size:13cqh;font-weight:800;color:#5f6166;line-height:1.05">Micro<br>Course</div>
+  ${PV('Intermediate Microeconomics', 'left:calc(8cqw + 82cqh);right:4cqw;top:62cqh;color:#1f7fae')}`,
 
-led: () => {
-  const lines = [['#da291c','M5 30 C30 30 40 10 95 10'],['#ed8b00','M50 2 L50 58'],['#00843d','M5 50 C35 50 60 30 95 30'],['#003da5','M10 5 C40 20 60 45 95 55']];
-  return `<div style="inset:0;background:#15171c"></div>
-  <svg viewBox="0 0 100 60" style="inset:0;width:100%;height:100%">
-    ${lines.map(([c,d],i)=>`<path d="${d}" fill="none" stroke="${c}" stroke-width=".8" opacity=".4"/>`+
-      [0,1,2].map(k=>`<circle r="1.4" fill="${c}"><animateMotion dur="${8+i}s" begin="${-(k*2.6+i)}s" repeatCount="indefinite" path="${d}"/></circle>`).join('')).join('')}
-  </svg>
-  <div class="t" style="bottom:7cqh;font-size:8cqh;color:#e8e8e8">MBTA Live LED Art</div>`;
-},
+led: () => `
+  <img src="${ASSET}images/mbta_led_build.jpg" alt="" style="inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 42%">
+  <div style="left:0;right:0;bottom:0;height:24cqh;background:rgba(20,22,26,.82)"></div>
+  <div class="t" style="bottom:5cqh;font-size:11cqh;font-weight:800;color:#fff">MBTA LED Map</div>`,
 
 ts: () => `
-  <div style="inset:0;background:#fff"></div>
-  <svg viewBox="0 0 100 60" preserveAspectRatio="none" style="left:6cqw;top:26cqh;width:88cqw;height:44cqh">
-    <path d="M0 40 L6 34 L12 38 L18 26 L24 30 L30 20 L36 28 L42 18 L48 24 L54 14 L60 22 L66 12 L72 20" fill="none" stroke="#00843d" stroke-width="1.8"/>
-    <path d="M72 20 L78 16 L84 22 L90 12 L96 18" fill="none" stroke="#ed8b00" stroke-width="1.8" stroke-dasharray="3 2"/>
-  </svg>
-  <div class="t" style="top:8cqh;font-size:11cqh;color:#7a7c81">MBTA Ridership</div>
-  <div class="t pv" style="top:80cqh;font-size:5.5cqh;color:#3f7a4c;font-weight:500">ARIMA forecasting in R</div>`,
+  <div style="inset:0;background:linear-gradient(#ffffff,#eceff3)"></div>
+  <div class="t" style="top:22cqh;font-size:14cqh;font-weight:800;color:#5f6166;letter-spacing:-.2cqh">MBTA Ridership</div>
+  <div style="left:50%;top:48cqh;width:60cqh;height:3cqh;margin-left:-30cqh;border-radius:1.5cqh;overflow:hidden;background:linear-gradient(90deg,#da291c 0 25%,#ed8b00 25% 50%,#00843d 50% 75%,#003da5 75%)"></div>
+  ${PV('ARIMA forecasting in R', 'left:0;right:0;text-align:center;top:60cqh;color:#1f7fae')}`,
 
 rd2dnet: () => `
-  <div style="inset:0;background:#fff"></div>
-  <svg viewBox="0 0 100 60" style="left:6cqw;top:12cqh;width:46cqw;height:76cqh">
-    <g stroke="#b9bbc0" stroke-width="1.1" fill="none"><path d="M5 10 L95 30 M5 25 L95 45 M5 40 L95 60 M18 0 L6 60 M42 0 L30 60 M66 0 L54 60 M90 0 L78 60"/></g>
+  <div style="inset:0;background:linear-gradient(#ffffff,#eceff3)"></div>
+  <svg viewBox="0 0 100 60" style="left:6cqw;top:14cqh;width:84cqh;height:72cqh">
+    <g stroke="#c3c5ca" stroke-width="1.1" fill="none"><path d="M5 10 L95 30 M5 25 L95 45 M5 40 L95 60 M18 0 L6 60 M42 0 L30 60 M66 0 L54 60 M90 0 L78 60"/></g>
     <path d="M0 30 L100 52" stroke="#34beed" stroke-width="2.6" fill="none"/>
-    <g fill="#7a7c81"><circle cx="30" cy="20" r="2.2"/><circle cx="58" cy="44" r="2.2"/><circle cx="74" cy="30" r="2.2"/></g>
   </svg>
-  <div style="left:56cqw;top:30cqh;font-size:15cqh;font-weight:700;color:#7a7c81">rd2dnet</div>
-  <div class="pv" style="left:56cqw;top:56cqh;font-size:5.5cqh;font-weight:500;color:#1f7fae;line-height:1.5">Boundary discontinuity designs<br>on street networks</div>`,
+  <div style="left:calc(6cqw + 96cqh);top:31cqh;font-size:16cqh;font-weight:800;color:#5f6166;letter-spacing:-.2cqh">rd2dnet</div>
+  ${PV('Boundary discontinuity designs<br>on street networks', 'left:calc(6cqw + 96cqh);right:4cqw;top:57cqh;color:#1f7fae')}`,
 
 chesque: () => `
-  <div style="inset:0;background:#1d2233"></div>
-  <div style="inset:0;background:repeating-linear-gradient(0deg,transparent 0 9cqh,rgba(255,255,255,.04) 9cqh 9.6cqh)"></div>
-  <div style="right:12cqw;top:16cqh;width:26cqh;height:26cqh;border-radius:50%;box-shadow:-5cqh 3cqh 0 0 #e9e4d6"></div>
-  <div style="left:8cqw;top:30cqh;font-size:17cqh;font-weight:800;color:#f1e9d8;letter-spacing:-.3cqh">Ches<span style="position:static;color:#f0a53a">que</span></div>
-  <div class="pv" style="left:8cqw;top:56cqh;font-size:5.5cqh;font-weight:500;color:#cfc6b3">Chess rules. Every piece is a hero.</div>`,
+  <div style="inset:0;background:linear-gradient(#262c40,#171b28)"></div>
+  <div class="t" style="top:30cqh;font-size:20cqh;font-weight:800;color:#f1e9d8;letter-spacing:-.3cqh">Ches<span style="position:static;color:#f0a53a">que</span></div>
+  ${PV('Chess rules, but every piece is a hero', 'left:0;right:0;text-align:center;top:62cqh;color:#cfc6b3')}`,
 
 llm: () => `
-  <div style="inset:0;background:#fff"></div>
-  <div style="left:12cqw;top:26cqh;width:34cqw;height:20cqh;border-radius:6cqh;background:#ece6fb"></div>
-  <div style="left:52cqw;top:40cqh;width:34cqw;height:20cqh;border-radius:6cqh;background:#d9cff7"></div>
-  <div style="left:16cqw;top:32cqh;width:22cqw;height:3cqh;border-radius:2cqh;background:#a996e6"></div>
-  <div style="left:56cqw;top:46cqh;width:24cqw;height:3cqh;border-radius:2cqh;background:#8c74da"></div>
-  <div class="t" style="top:68cqh;font-size:10cqh;color:#6b55c4">Homo silicus</div>
-  <div class="t pv" style="top:84cqh;font-size:5.5cqh;font-weight:500;color:#7c66cf">Agentic LLMs · coming soon</div>`,
+  <div style="inset:0;background:linear-gradient(#ffffff,#efebfa)"></div>
+  <div class="t" style="top:30cqh;font-size:15cqh;font-weight:800;color:#6b55c4;letter-spacing:-.2cqh">Agentic LLMs</div>
+  ${PV('In progress', 'left:0;right:0;text-align:center;top:58cqh;color:#7c66cf')}`,
 };
 
 /* =====================================================================
    CONTENT SCREENS
    ===================================================================== */
-const tagline = tags => tags && tags.length ? `<p class="tagline">${tags.join(', ')}</p>` : '';
+// Data strings use middle dots as separators; show them as plain commas.
+const plain = s => String(s || '').replace(/\s*·\s*/g, ', ');
 const links = ls => ls && ls.length ? `<div class="links">${ls.map(l=>EXT(l[0],l[1])).join('')}</div>` : '';
+const metaLine = p => plain(p.meta) + (p.year && !p.soon ? ', ' + p.year : '');
 const card = p => `<div class="card">
   ${p.badge?`<span class="badge">${p.badge}</span>`:''}${p.soon?`<span class="badge gray">In progress</span>`:''}
   <h3>${p.title}</h3>
-  <div class="meta">${p.meta}${p.year&&!p.soon?' · '+p.year:''}</div>
-  <p>${p.body}</p>${p.media||''}${tagline(p.tags)}${links(p.links)}
+  <div class="meta">${metaLine(p)}</div>
+  <p>${p.body}</p>${p.media||''}${links(p.links)}
 </div>`;
 // Secondary items read as a list, not as a wall of identical cards.
 const rows = items => `<ul class="rows">${items.map(p=>`<li><div class="row-year">${p.soon?'In progress':p.year}</div><div>
-  <h3>${p.title}</h3><p>${p.body}</p>${links(p.links)}</div></li>`).join('')}</ul>`;
+  <h3>${p.title}</h3>${p.body?`<p>${p.body}</p>`:''}${links(p.links)}</div></li>`).join('')}</ul>`;
 const shopRow = (p, art) => `<div class="card"><div class="shop-row">
   <div class="thumb"><div class="bn">${B[art]()}</div></div>
-  <div style="flex:1;min-width:0"><h3>${p.title}</h3><div class="meta">${p.meta}</div><p>${p.body}</p>${tagline(p.tags)}${links(p.links)}</div>
+  <div style="flex:1;min-width:0"><h3>${p.title}</h3><div class="meta">${plain(p.meta)}</div><p>${p.body}</p>${links(p.links)}</div>
   <div class="price">${p.soon?'In progress':p.year}</div>
 </div></div>`;
+const PHOTO = (cls='') => `<div class="zw ${cls}" role="img" aria-label="Photo of ${PROFILE.name}"></div>`;
 const coarse = matchMedia('(pointer:coarse)').matches;
 const RESUME = ASSET+'about_me/resume.pdf';
 const SHOP_ART = { nber:'disc', cz:'disc', ozone:'disc', polls:'votes', micro:'micro', llm:'llm', rd2dnet:'rd2dnet', octa2:'octa', octa1:'octa', tott:'tape', chesque:'chesque', 'mbta-ts':'ts', 'mbta-led':'led' };
 
 const SCREENS = {
-  research: { actions:[['NBER Paper','https://www.nber.org/papers/w35414']], html: () => `${card(RESEARCH[0])}
+  research: { actions:[['NBER Paper','https://www.nber.org/papers/w35414']], html: () => `${card(byId('nber'))}
     <div class="card"><h3>Coverage</h3><ul class="list-plain" style="margin-top:8px">
-      ${MEDIA.map(m=>`<li><a href="${m[0]}" target="_blank" rel="noopener">${m[1]}</a> · ${m[2]}</li>`).join('')}</ul></div>
-    <div class="sec-h">More research</div>${rows(RESEARCH.slice(1,4))}` },
+      ${MEDIA.map(m=>`<li><a href="${m[0]}" target="_blank" rel="noopener">${m[1]}</a>: ${m[2]}</li>`).join('')}</ul></div>
+    <div class="sec-h">More research</div>${rows(RESEARCH.filter(p=>p.id!=='nber'))}` },
 
   rd2dnet: { actions:[['GitHub','https://github.com/zwinship/rd2dnet'],['PyPI','https://pypi.org/project/rd2dnet/']], html: () => `<div class="card">
-      <span class="badge">${SOFTWARE.badge}</span><h3>${SOFTWARE.title}</h3><div class="meta">${SOFTWARE.meta}</div>
+      <span class="badge">${SOFTWARE.badge}</span><h3>${SOFTWARE.title}</h3><div class="meta">${metaLine(SOFTWARE)}</div>
       <p>${SOFTWARE.body}</p>
       <p class="tagline">${SOFTWARE.status}</p>
       <pre class="code">pip install rd2dnet</pre>
-      <p class="tagline">R: remotes::install_github("zwinship/rd2dnet", subdir = "R-package"). A Stata port is in testing.</p>
+      <pre class="code">remotes::install_github("zwinship/rd2dnet", subdir = "R-package")</pre>
       <p class="tagline">${SOFTWARE.credit}</p>${links(SOFTWARE.links)}</div>` },
 
   about: { actions:[['Email','mailto:'+EMAIL],['Résumé',RESUME]], html: () => `<div class="card"><div class="about-top">
-      <img src="${ASSET}images/zwinship.png" alt="Zach Winship">
-      <div><h2>${PROFILE.name}</h2><div class="sub">${PROFILE.title}</div>
-      <div class="links">${EXT('https://linkedin.com/in/zwinship','LinkedIn')}${EXT('https://github.com/zwinship','GitHub')}</div></div></div></div>
+      ${PHOTO()}
+      <div><h2>${PROFILE.name}</h2><div class="sub">${PROFILE.now}</div>
+      <div class="links">${EXT('https://linkedin.com/in/zwinship','LinkedIn')}${EXT('https://github.com/zwinship','GitHub')}${EXT('mailto:'+EMAIL,EMAIL)}</div></div></div></div>
     <div class="card">${PROFILE.about.map(p=>`<p>${p}</p>`).join('')}</div>
     <div class="sec-h">Education</div>
     ${rows(PROFILE.education.map(e=>({ year:e.when, title:`${e.degree}, ${e.school}`, body:e.note })))}
-    <div class="sec-h">Tools</div><p class="tagline" style="font-size:16px">${PROFILE.skills.join(', ')}</p>` },
-
-  presentations: { actions:[], html: () => PRESENTATIONS.map(p=>`<div class="card"><h3>${p.title}</h3><div class="meta">${p.meta}</div><p>${p.body}</p>
-    ${p.vids?`<div class="vids">${p.vids.map(v=>`<figure><video src="${ASSET+v[0]}" controls playsinline preload="metadata"></video><figcaption>${v[1]}</figcaption></figure>`).join('')}</div>`:''}
-    ${links([...(p.pdf?[[ASSET+p.pdf,'Slides (PDF)']]:[]), ...(p.gh?[[p.gh,'Code on GitHub']]:[])])}</div>`).join('') },
+    <div class="sec-h">Tools</div><p style="font-size:16px;line-height:1.7;color:#55575c">${PROFILE.skills.join(', ')}</p>` },
 
   shop: { theme:'shop', actions:[['GitHub','https://github.com/zwinship']], html: () =>
     `<div class="sec-h">Research and software</div>${[...RESEARCH.slice(0,1), SOFTWARE, ...RESEARCH.slice(1)].map(p=>shopRow(p, SHOP_ART[p.id]||'disc')).join('')}
      <div class="sec-h">Personal projects</div>${PERSONAL.map(p=>shopRow(p, SHOP_ART[p.id]||'disc')).join('')}` },
 
   forecast: { theme:'forecast', actions:[], html: () => `<div class="sec-h">Where I've been</div><div class="wx" id="wxCards">
-      ${[['New York, NY','NYU · MS Quantitative Economics'],['Waltham, MA','Bentley University'],['Gray, ME',"43°53'N 70°20'W · Home"]].map(([c,s],i)=>`<div class="card" data-wx="${i}"><div class="meta" style="margin:0 0 8px">${s}</div><div class="temp">--</div><div class="cond">Loading forecast…</div><h3 style="margin-top:10px">${c}</h3></div>`).join('')}
-    </div><p style="font-size:13px;color:var(--gray-text);margin-top:10px">Live conditions from Open-Meteo.</p>` },
+      ${[['New York, NY','NYU, MS in Quantitative Economics'],['Waltham, MA','Bentley University'],['Gray, ME','Home']].map(([c,s],i)=>`<div class="card" data-wx="${i}"><div class="meta" style="margin:0 0 8px">${s}</div><div class="temp">--</div><div class="cond">Loading</div><h3 style="margin-top:10px">${c}</h3></div>`).join('')}
+    </div><p style="font-size:13px;color:var(--gray-text);margin-top:10px">Current conditions from Open-Meteo.</p>` },
 
-  news: { theme:'news', actions:[], html: () => `<div class="sec-h">In the news: congestion pricing and EMS</div>
+  news: { theme:'news', actions:[], html: () => `<div class="sec-h">Coverage of the congestion pricing and EMS paper</div>
     <ul class="rows">${MEDIA.map(m=>`<li><div class="row-year">${m[1]}</div><div><h3><a href="${m[0]}" target="_blank" rel="noopener">${m[2]}</a></h3></div></li>`).join('')}</ul>
     <div class="sec-h">Unlikely Instruments, my blog</div>
-    <p>${BLOG_STATUS}. A blog about unusual ways to find and use data, especially proxy variables and sources nobody thought to look at.</p>
-    <ul class="rows">${BLOG.map(b=>`<li><div class="row-year">${b[2]}</div><div><h3>${b[0]}</h3><p class="tagline">${b[1]}</p></div></li>`).join('')}</ul>` },
+    <p style="font-size:16px;color:#55575c">${BLOG_STATUS}.</p>
+    <ul class="rows" style="margin-top:12px">${BLOG.map(b=>`<li><div class="row-year">${plain(b[2])}</div><div><h3>${b[0]}</h3><p class="tagline" style="margin-top:4px">${plain(b[1])}</p></div></li>`).join('')}</ul>` },
 
   links: { actions:[], html: () => `<ul class="rows">
-    ${[['GitHub','https://github.com/zwinship','Code for every project'],['LinkedIn','https://linkedin.com/in/zwinship','Professional profile'],['Email','mailto:'+EMAIL,EMAIL],['Résumé',RESUME,'PDF'],['rd2dnet','https://github.com/zwinship/rd2dnet','Boundary designs on street networks'],['Course site','https://falconeconsim.github.io/','Intermediate Microeconomics'],['OctaStats','https://octastats.github.io/index.html','UFC prediction model'],['Tale of the Tape','https://taleofthetape.github.io','UFC daily guessing game'],['Chesque','https://chesque.pages.dev/#home','Browser game'],['NBER paper','https://www.nber.org/papers/w35414','Working Paper No. 35414'],['Main site','../../','zwinship.github.io']].map(([t,h,s])=>`<li><div class="row-year">${t}</div><div><h3>${EXT(h,s)}</h3></div></li>`).join('')}
+    ${[['GitHub','https://github.com/zwinship','github.com/zwinship'],['LinkedIn','https://linkedin.com/in/zwinship','linkedin.com/in/zwinship'],['Email','mailto:'+EMAIL,EMAIL],['Résumé',RESUME,'Résumé (PDF)'],['rd2dnet','https://github.com/zwinship/rd2dnet','Boundary designs on street networks'],['Course site','https://falconeconsim.github.io/','Intermediate Microeconomics'],['OctaStats','https://octastats.github.io/index.html','UFC prediction model'],['Tale of the Tape','https://taleofthetape.github.io','UFC daily guessing game'],['Chesque','https://chesque.pages.dev/#home','Browser game'],['NBER paper','https://www.nber.org/papers/w35414','Working Paper No. 35414'],['Main site','../../','zwinship.github.io']].map(([t,h,s])=>`<li><div class="row-year">${t}</div><div><h3>${EXT(h,s)}</h3></div></li>`).join('')}
   </ul>` },
 
-  votes: { actions:[], html: () => `${card(RESEARCH[3])}
+  votes: { actions:[], html: () => `${card(byId('polls'))}
     <div class="card"><h3>Your guess</h3><p>Do polls predict elections, or do they move them?</p>
       <div class="poll-opts"><button class="wbtn" data-vote="0">They predict</button><button class="wbtn" data-vote="1">They move them</button></div>
       <p id="pollRes" style="margin-top:14px;display:none"></p></div>` },
@@ -582,22 +542,22 @@ const SCREENS = {
     ? `<div class="card" style="text-align:center"><h3>Résumé</h3><p>Open the PDF in your browser's viewer.</p><div class="links" style="justify-content:center">${EXT(RESUME,'Open résumé PDF')}${EXT(ASSET+'about_me/transcript.pdf','Transcript')}</div></div>`
     : `<div class="links" style="margin:0 0 14px">${EXT(ASSET+'about_me/transcript.pdf','Transcript')}</div><iframe class="pdf-frame" src="${RESUME}" title="Résumé"></iframe>` },
 
-  experience: { actions:[], html: () => `<ul class="rows">${EXPERIENCE.map(e=>`<li><div class="row-year">${e.when}</div><div><h3>${e.role}</h3><div class="meta">${e.org}</div><p>${e.body}</p>${links(e.links)}</div></li>`).join('')}</ul>` },
+  experience: { actions:[], html: () => `<ul class="rows">${EXPERIENCE.map(e=>`<li><div class="row-year">${e.when}</div><div><h3>${e.role}</h3><div class="meta" style="margin:2px 0 0;font-size:14px;color:var(--cyan-text);font-weight:500">${plain(e.org)}</div><p>${e.body}</p>${links(e.links)}</div></li>`).join('')}</ul>` },
 
   board: { theme:'board', actions:[['Reply','mailto:'+EMAIL]], html: () => { const d = new Date(); return `
     <div class="board-date"><span class="d">${d.getMonth()+1}/${d.getDate()}</span><span class="m">${d.toLocaleDateString('en-US',{weekday:'long'})}</span></div>
-    <div class="letter"><div class="from"><img src="${ASSET}images/zwinship.png" alt=""><b>From: Zach</b></div>
-      <p>Thanks for stopping by my Wii! I'm a quantitative economist (NYU MS '27, Bentley '26) working on causal inference, transportation and policy.</p>
-      <p>If you'd like to talk research, projects or opportunities, email is best: <b>${EMAIL}</b>.</p>
-      <p>You can also find me on LinkedIn and GitHub. Hope you have fun looking around!</p></div>
-    <div class="links">${EXT('https://linkedin.com/in/zwinship','LinkedIn')}${EXT('https://github.com/zwinship','GitHub')}${EXT(RESUME,'Résumé')}</div>`; } },
+    <div class="letter"><div class="from">${PHOTO()}<b>From: Zach</b></div>
+      <p>Thanks for visiting. ${PROFILE.lede}</p>
+      <p>If you want to talk about research or a project, email is the best way to reach me: <b>${EMAIL}</b>.</p>
+      <p>I'm also on LinkedIn and GitHub.</p></div>
+    <div class="links">${EXT('mailto:'+EMAIL,'Email')}${EXT('https://linkedin.com/in/zwinship','LinkedIn')}${EXT('https://github.com/zwinship','GitHub')}${EXT(RESUME,'Résumé')}</div>`; } },
 
   octa: { actions:[['Live Site','https://octastats.github.io/index.html']], html: () => card(byId('octa2')) + card(byId('octa1')) },
   tape: { actions:[['Play','https://taleofthetape.github.io']], html: () => card(byId('tott')) },
   chesque: { actions:[['Play','https://chesque.pages.dev/#home']], html: () => card(byId('chesque')) },
   micro: { actions:[['Course Site','https://falconeconsim.github.io/']], html: () => card(byId('micro')) },
   led: { actions:[['GitHub','https://github.com/zwinship/MBTA_Live_Art']], html: () => card(byId('mbta-led')) },
-  ts: { actions:[], html: () => card(byId('mbta-ts')) },
+  ts: { actions:[['Paper', byId('mbta-ts').links[0][0]]], html: () => card(byId('mbta-ts')) },
   llm: { actions:[], html: () => card(byId('llm')) },
 };
 
@@ -611,18 +571,17 @@ const CHANNELS = [
   { name:'About Me',      sub:'Mii Channel',             art:'mii',        screen:'about',         jingle:'C5 E5 G5 E5 F5 A5 G5 . E5 C5' },
   { name:'Résumé',        sub:'Résumé',                  art:'resume',     screen:'resume',        jingle:'G4 C5 E5 G5 . E5 G5' },
   { name:'Project Shop',  sub:'Shop Channel',            art:'shop',       screen:'shop',          jingle:'D5 F#5 A5 . B5 A5 F#5 . E5 D5 E5 F#5' },
-  { name:'Presentations', sub:'Photo Channel',           art:'photo',      screen:'presentations', jingle:'A4 C5 E5 A5 . G5 E5 C5 D5' },
   { name:'News & Blog',   sub:'News Channel',            art:'news',       screen:'news',          jingle:'C5 C5 G5 . F5 E5 D5 C5' },
   { name:'Experience',    sub:'Experience',              art:'experience', screen:'experience',    jingle:'D5 A4 D5 F#5 . E5 D5' },
   { name:'Links',         sub:'Internet Channel',        art:'internet',   screen:'links',         jingle:'E5 B5 . G#5 E5 F#5' },
   { name:'Forecast',      sub:'Forecast Channel',        art:'forecast',   screen:'forecast',      jingle:'F5 A5 C6 . A5 . G5 F5' },
   { name:'Election Polling', sub:'Everybody Votes Channel', art:'votes',   screen:'votes',         jingle:'C5 D5 E5 . E5 D5 C5 D5' },
+  { name:'MBTA Ridership', sub:'Research Paper',         art:'ts',         screen:'ts',            jingle:'C5 D5 F5 E5 G5 F5 A5' },
+  { name:'Micro Course',  sub:'Course Website',          art:'micro',      screen:'micro',         jingle:'C5 G4 A4 E4 F4 C4 F4 G4' },
   { name:'OctaStats',     sub:'UFC Model',               art:'octa',       screen:'octa',          jingle:'A3 A3 C4 . A3 E4 D4' },
   { name:'Tale of the Tape', sub:'UFC Daily Game',       art:'tape',       screen:'tape',          jingle:'G4 G4 . D5 . C5 B4 A4 G4' },
   { name:'Chesque',       sub:'Browser Game',            art:'chesque',    screen:'chesque',       jingle:'E4 G4 B4 . E5 . D5 B4' },
-  { name:'Micro Course',  sub:'Course Website',          art:'micro',      screen:'micro',         jingle:'C5 G4 A4 E4 F4 C4 F4 G4' },
-  { name:'MBTA LED Art',  sub:'Hardware Project',        art:'led',        screen:'led',           jingle:'E5 . E5 G5 . E5 D5' },
-  { name:'MBTA Ridership', sub:'Time Series Project',    art:'ts',         screen:'ts',            jingle:'C5 D5 F5 E5 G5 F5 A5' },
+  { name:'MBTA LED Map',  sub:'Hardware Project',        art:'led',        screen:'led',           jingle:'E5 . E5 G5 . E5 D5' },
   { name:'Agentic LLMs',  sub:'In progress',             art:'llm',        screen:'llm',           jingle:'B4 D5 F#5 A5 . F#5' },
 ];
 
@@ -667,7 +626,7 @@ function playJingle(str){
   let t = 0; const beat = .16;
   str.split(' ').forEach(n => { if (n !== '.'){ const f = NOTE(n); tone(f, .3, 'triangle', .045, t, 0, jingleGain); tone(f*2, .12, 'sine', .012, t, 0, jingleGain); } t += beat; });
 }
-/* Original ambient menu loop (not Nintendo's music): a soft Cmaj7–Am7–Dm7–G7
+/* Original ambient menu loop (not Nintendo's music): a soft Cmaj7, Am7, Dm7, G7
    arpeggio through a lowpass, scheduled a little ahead of the audio clock. */
 let musicOn = true, musicGain = null, musicT = null, musicNext = 0, musicStep = 0;
 try{ musicOn = localStorage.getItem('wiiMusic') !== 'off'; }catch(e){}
@@ -880,8 +839,8 @@ document.documentElement.addEventListener('mouseenter', () => { hand.style.opaci
 document.addEventListener('focusin', e => { if (!lastKey) return; const el = e.target.closest('[data-hot]'); if (el) setHot(el, true); });
 
 /* =====================================================================
-   STATE MACHINE: warning → menu → opening → preview → content
-                              ↖ closing ↙
+   STATE MACHINE: warning, menu, opening, preview, content; closing
+   returns from preview to menu.
    ===================================================================== */
 let state = 'warning', started = false, page = 0, current = -1, pvTimer = null;
 const menu = document.getElementById('menu'), warning = document.getElementById('warning');

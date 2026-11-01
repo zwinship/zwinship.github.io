@@ -235,7 +235,7 @@ APPS.wupdate = { title:'Zach 98 Update - Internet Explorer', icon:'update', w:64
 
 /* ---------------- Disk Defragmenter ---------------- */
 APPS.defrag = { title:'Defragmenting Drive C', icon:'defrag', w:520, h:430, minW:360, minH:300, render(w){
-  const KIND = [['#0000c0','Research'],['#00a0a0','Personal Projects'],['#c00000','Presentations'],['#c0c000','Experience'],['#ffffff','Free space']];
+  const KIND = [['#0000c0','Research'],['#00a0a0','Personal Projects'],['#c00000','Software'],['#c0c000','Experience'],['#ffffff','Free space']];
   const N = 32*14; let blocks, sorted, i, timer;
   const order = k => k === 4 ? 99 : k;
   w.body.innerHTML = `<div class="defrag-grid" data-g></div>

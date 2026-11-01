@@ -77,6 +77,29 @@ const RESEARCH = [
   ]
  },
  {
+  "id": "mbta-ts",
+  "title": "ARIMA Modeling of MBTA Ridership",
+  "year": "2025",
+  "meta": "Forecasting · Transportation Economics",
+  "body": "MBTA ridership modeled alongside weather and seasonal patterns to show where the T could adjust service. Built in R with reproducible code that pulls data from the source.",
+  "tags": [
+   "R",
+   "ARIMA",
+   "Forecasting",
+   "Econometrics"
+  ],
+  "links": [
+   [
+    "https://www.researchgate.net/publication/391840600_UNDERGRADUATE_ARIMA_Modeling_of_MBTA_Ridership_Reducing_Costs_and_Preserving_Rider_Experience_via_Supply-Side_Optimization",
+    "Paper"
+   ],
+   [
+    "https://github.com/zwinship/MBTA_TIME_SERIES",
+    "GitHub"
+   ]
+  ]
+ },
+ {
   "id": "polls",
   "title": "Election Polling: Indicator vs. Catalyst",
   "year": "2024",
@@ -263,29 +286,6 @@ const PERSONAL = [
   ]
  },
  {
-  "id": "mbta-ts",
-  "title": "MBTA Time Series Analysis",
-  "year": "2025",
-  "meta": "Forecasting · Transportation Economics",
-  "body": "MBTA ridership modeled alongside weather and seasonal patterns to show where the T could adjust service. Built in R with reproducible code that pulls data from the source.",
-  "tags": [
-   "R",
-   "ARIMA",
-   "Forecasting",
-   "Econometrics"
-  ],
-  "links": [
-   [
-    "https://www.researchgate.net/publication/391840600_UNDERGRADUATE_ARIMA_Modeling_of_MBTA_Ridership_Reducing_Costs_and_Preserving_Rider_Experience_via_Supply-Side_Optimization",
-    "Paper"
-   ],
-   [
-    "https://github.com/zwinship/MBTA_TIME_SERIES",
-    "GitHub"
-   ]
-  ]
- },
- {
   "id": "mbta-led",
   "title": "MBTA Live Tracker LED Art",
   "year": "Est. Jun 2026",
@@ -308,104 +308,6 @@ const PERSONAL = [
   "poster": "images/mbta_led_build.jpg"
  }
 ];
-const PRESENTATIONS = [
- {
-  "title": "Infrastructure Maintenance: Evidence from India",
-  "meta": "Bentley University · 2026",
-  "body": "Chaurey and Le's paper on the RSVY program, India's 2003 to 2007 maintenance initiative for 147 \"backward districts.\" With a regression discontinuity at the backwardness-index threshold, the paper finds maintenance spending (not new construction) raised village non-farm employment 14 to 16%, entirely through informal microenterprises.",
-  "tags": [
-   "Development Economics",
-   "Regression Discontinuity",
-   "Infrastructure Policy",
-   "India",
-   "Causal Inference"
-  ],
-  "pdf": "presentations/Infrastructure_Maintenance_Evidence_From_India_Presentation.pdf",
-  "vids": [
-   [
-    "videos/methodology/RDThisPaper.mp4",
-    "RD design: this paper"
-   ],
-   [
-    "videos/methodology/RDVariants.mp4",
-    "RD functional form variants"
-   ],
-   [
-    "videos/methodology/DiffInDisc.mp4",
-    "Difference-in-discontinuities"
-   ],
-   [
-    "videos/methodology/CompositeIndexCritique.mp4",
-    "Composite index critique"
-   ]
-  ]
- },
- {
-  "title": "Rural Roads and Local Economic Development",
-  "meta": "Bentley University · 2026",
-  "body": "Taught Asher and Novosad's (2019) paper to a class: the instrumental variable strategy, the spatial identification, and what it means for rural infrastructure policy.",
-  "tags": [
-   "Development Economics",
-   "Causal Inference",
-   "Teaching",
-   "IV Strategy"
-  ],
-  "pdf": "presentations/Rural_Roads_and_Local_Economic_Development_Presentation.pdf"
- },
- {
-  "title": "VAR and VECM Time Series Models",
-  "meta": "Bentley University · 2025",
-  "body": "Taught a class on vector autoregressions and vector error correction models: how they work and how to use them on economic data.",
-  "tags": [
-   "Econometrics",
-   "Time Series",
-   "Teaching"
-  ],
-  "pdf": "presentations/VAR_VECM_Presentation.pdf"
- },
- {
-  "title": "Visualizing Experimental Economics Theory",
-  "meta": "Bentley University · 2025",
-  "body": "An animated explainer of our experiment's theoretical predictions: the game's structure, the equilibrium intuition and the math, in a 3Blue1Brown-inspired style.",
-  "tags": [
-   "Game Theory",
-   "Python Animation",
-   "Educational Content",
-   "Mathematical Modeling"
-  ],
-  "vids": [
-   [
-    "videos/EffortModel.mp4",
-    "Effort model explainer"
-   ]
-  ],
-  "gh": "https://github.com/zwinship/visualizing-experimental-econ-theory"
- },
- {
-  "title": "Regulation with Limited Information",
-  "meta": "American Action Forum · 2025",
-  "body": "Regulatory reform when data is thin: ways to make policy decisions and analyze regulatory impacts when information is incomplete.",
-  "tags": [
-   "Policy Analysis",
-   "Regulatory Economics",
-   "Public Policy"
-  ],
-  "pdf": "presentations/Regulation_Limited_Info_Presentation.pdf"
- },
- {
-  "title": "Traffic, Transit, and the Toll: Causal Evidence from NYC's Congestion Pricing Policy",
-  "meta": "Bentley University · Undergraduate Research Day · 2025",
-  "body": "My capstone paper at Bentley Undergraduate Research Day: the difference-in-discontinuities strategy, the C2Smart and MTA data, and results for traffic, pedestrians, subway ridership and businesses at the 60th Street boundary.",
-  "tags": [
-   "Urban Economics",
-   "Transportation Policy",
-   "Causal Inference",
-   "Regression Discontinuity",
-   "NYC"
-  ],
-  "pdf": "presentations/NYC_CZ_Presentation.pdf"
- }
-];
 const EXPERIENCE = [
  {
   "role": "Research Assistant to Professor Anna Vitali",
@@ -423,7 +325,7 @@ const EXPERIENCE = [
   "role": "NYU Economics Teaching Fellowship",
   "org": "New York University",
   "when": "Summer 2026",
-  "body": "Teaching fellowship in the NYU Economics department over the summer 2026 session, supporting undergraduate economics instruction."
+  "body": "Summer teaching fellowship in the NYU economics department."
  },
  {
   "role": "Instructional Content Assistant",
@@ -440,12 +342,12 @@ const EXPERIENCE = [
  {
   "role": "Research Assistant",
   "org": "Bentley University",
-  "when": "May 2025 to Aug 2025",
+  "when": "May 2025 to Dec 2025",
   "body": "Compiled and analyzed data on 2025 ASSA conference education sessions, with a focus on geographic distribution and representation, for Professor Savannah Adkins's research on global trends and socioeconomic bias in economics publishing."
  },
  {
   "role": "Regulatory Data Intern",
-  "org": "American Action Forum · Washington, DC",
+  "org": "American Action Forum, Washington, DC",
   "when": "May 2025 to Aug 2025",
   "body": "Compiled and cleaned regulatory datasets in Python, produced statistical summaries, and reviewed literature on the economic impact of federal regulations. Attended congressional and agency hearings on regulatory policy.",
   "links": [
@@ -462,13 +364,13 @@ const BLOG_STATUS = "Every two months, first post planned for early 2027";
 const SKILLS = ["Python","R","Stata","SQL","LaTeX","Causal inference","Regression discontinuity","Spatial analysis","Forecasting and ARIMA","Machine learning","Web development","Raspberry Pi hardware"];
 const PROFILE = {
  "name": "Zach Winship",
- "title": "Quantitative Economist and Data Analyst",
- "lede": "I study cities and transport with causal inference: where a policy line falls on a street map, and what changes on either side of it.",
+ "title": "Economist",
+ "lede": "I'm a master's student in quantitative economics at NYU. I work on urban and transportation economics, mostly with regression discontinuity designs.",
  "now": "MS in Quantitative Economics at NYU, finishing May 2027.",
  "about": [
-  "I recently graduated from Bentley University with a BS in Quantitative Economics and a double minor in Mathematics and Data Technologies. I'm now pursuing the MS in Quantitative Economics at New York University, expected May 2027, where I'm a teaching assistant for Introductory Macroeconomics and a research assistant to Professor Anna Vitali.",
-  "My work sits at the intersection of data and policy. I'm drawn to questions where careful empirical methods can cut through noise and say something concrete about how the world works. I'm a co-author on an NBER working paper on how NYC's congestion pricing changed EMS response times, and I wrote rd2dnet, a package for boundary discontinuity designs on street networks.",
-  "Outside of coursework I spend a lot of time on personal projects. Most people have portfolios full of coursework; this one is made up of things I chose to spend my time on. I'm especially interested in transportation economics, spatial analytics, optimization, and Homo silicus: using language models as simulated economic agents to replicate classic experiments."
+  "I graduated from Bentley University in May 2026 with a BS in Quantitative Economics and minors in mathematics and data technologies. I'm now in NYU's MS in Quantitative Economics, finishing in May 2027. This year I'm a research assistant to Professor Anna Vitali and a teaching assistant for Introductory Macroeconomics.",
+  "My research so far is on transport and regulation in the US: congestion pricing in New York, the EPA's ozone standard, and ridership on Boston's subway. I also wrote rd2dnet, a package for boundary discontinuity designs on street networks.",
+  "Outside of that I build things: a UFC prediction model, a chess game, a daily guessing game, and an LED map of the T."
  ],
  "education": [
   {
@@ -499,5 +401,5 @@ const PROFILE = {
   "Raspberry Pi hardware"
  ]
 };
-const EMAIL = "zwinship@bentley.edu";
+const EMAIL = "zachtwinship@gmail.com";
 const byId = id => [...RESEARCH, SOFTWARE, ...PERSONAL].find(p => p.id === id);

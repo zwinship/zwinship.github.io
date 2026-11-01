@@ -1,374 +1,350 @@
-import { useEffect, useRef, useState } from 'react';
-import { AnimatePresence, LazyMotion, MotionConfig, domAnimation, m } from 'motion/react';
-import MapFigure from './MapFigure.jsx';
-import PlayDialog from './PlayDialog.jsx';
-import {
-  BLOG, EMAIL, EXPERIENCE, LINKS, MEDIA, MEDIA_FORTHCOMING, PERSONAL, PRESENTATIONS, PROFILE, RESEARCH, SOFTWARE,
-} from './content.js';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
+import { BLOG, EMAIL, EXPERIENCE, LINKS, MEDIA, PERSONAL, PROFILE, RESEARCH, SOFTWARE } from './content.js';
 
-const SECTIONS = [
-  ['research', 'Research'],
-  ['software', 'Software'],
-  ['projects', 'Projects'],
-  ['experience', 'Experience'],
-  ['talks', 'Talks'],
-  ['writing', 'Writing'],
-  ['about', 'About'],
+// ---------------------------------------------------------------------------
+// Content model. Both modes render the same items; only the styling changes.
+// ---------------------------------------------------------------------------
+
+const byId = (list, id) => list.find(x => x.id === id);
+const r = id => byId(RESEARCH, id);
+const p = id => byId(PERSONAL, id);
+
+const RESEARCH_ITEMS = [
+  { id: 'nber', title: r('nber').title, year: '2026',
+    sub: 'NBER Working Paper 35414, under review. With Yulia Chikish, Greg Colman, Dhaval Dave, Brad Humphreys and Zachary Santamaria.',
+    blurb: 'EMS travel times in Manhattan fell by 63 to 70 seconds after the toll started.',
+    body: [r('nber').body.replace(/^NBER Working Paper No\. 35414, under journal review\. /, '')], links: r('nber').links, press: true },
+  { id: 'cz', title: r('cz').title, year: '2026', sub: 'Working paper.',
+    blurb: 'Traffic, pedestrians, subway ridership and businesses on either side of the 60th Street boundary.',
+    body: [r('cz').body], links: r('cz').links },
+  { id: 'ozone', title: r('ozone').title, year: '2025', sub: 'Policy paper, American Action Forum.',
+    blurb: "What the EPA's ozone standard costs US manufacturers in revenue.",
+    body: [r('ozone').body], links: r('ozone').links },
+  { id: 'mbta-ts', title: r('mbta-ts').title, year: '2025', sub: 'Undergraduate paper.',
+    blurb: 'Forecasting ridership on the T from weather and season, and where service could change.',
+    body: [r('mbta-ts').body], links: r('mbta-ts').links },
+  { id: 'polls', title: r('polls').title, year: '2024', sub: 'Undergraduate paper.',
+    blurb: 'Do polls predict elections, or move them? A test on the 2024 presidential race.',
+    body: [r('polls').body], links: r('polls').links },
+  { id: 'llm', title: r('llm').title, year: 'In progress', sub: 'In progress.',
+    blurb: "Language models as simulated economic agents, using Expected Parrot's EDSL.",
+    body: [r('llm').body], links: r('llm').links },
 ];
+
+const SOFTWARE_ITEMS = [
+  { id: 'rd2dnet', title: SOFTWARE.name, year: '2026', sub: 'Python and R.',
+    blurb: 'Boundary discontinuity designs where distance runs along the street network. Version 1 is out; version 2 is coming soon.',
+    body: [...SOFTWARE.body, SOFTWARE.credit], links: SOFTWARE.links, install: SOFTWARE.platforms },
+];
+
+const EXPERIENCE_ITEMS = EXPERIENCE.map((e, i) => ({
+  id: `exp-${i}`, title: e.role, sub: `${e.org}, ${e.when}`, blurb: e.body, year: e.when.match(/\d{4}/)?.[0], links: e.links,
+}));
+
+const PROJECT_ITEMS = [
+  { id: 'chesque', title: 'Chesque', year: '2026', sub: 'Browser game.',
+    blurb: 'Chess where every piece is a hero. Online play, bots, and an eight-army mode.',
+    body: [p('chesque').body], links: p('chesque').links },
+  { id: 'octastats', title: 'OctaStats', year: '2025', sub: 'UFC prediction model.',
+    blurb: 'Fight predictions with a public record of every pick.',
+    body: [p('octa1').body, p('octa2').body], links: [...p('octa2').links, ['https://github.com/zwinship/UFC_Model', 'GitHub (version 1)']] },
+  { id: 'tott', title: 'Tale of the Tape', year: '2026', sub: 'Daily game.',
+    blurb: 'Guess the UFC fighter from a stat comparison. A new one every day.',
+    body: [p('tott').body], links: p('tott').links },
+  { id: 'mbta-led', title: 'MBTA live LED map', year: '2026', sub: 'Hardware. The frame is still being built.',
+    blurb: 'A Raspberry Pi that lights an LED for every train running on the T.',
+    body: [p('mbta-led').body], links: p('mbta-led').links, image: '/images/mbta_led_build.jpg' },
+  { id: 'micro', title: 'Intermediate Microeconomics course site', year: '2026', sub: 'With Naveen Sunder, Bentley University.',
+    blurb: 'Twelve interactive weeks of intermediate micro, piloted by Bentley students this year.',
+    body: [r('micro').body], links: r('micro').links },
+  { id: 'blog', title: BLOG.name, year: '2027', sub: 'Blog. First post planned for early 2027.',
+    blurb: BLOG.body,
+    body: [BLOG.body], posts: BLOG.posts },
+];
+
+const EDUCATION_ITEMS = PROFILE.education.map((e, i) => ({
+  id: `edu-${i}`, title: e.degree, sub: `${e.school}, ${e.when}`, blurb: e.note,
+}));
+
+// Line colours are the MBTA's.
+const LINES = [
+  { id: 'research', name: 'Research', color: '#da291c', items: RESEARCH_ITEMS },
+  { id: 'software', name: 'Software', color: '#ed8b00', items: SOFTWARE_ITEMS },
+  { id: 'experience', name: 'Experience', color: '#00843d', items: EXPERIENCE_ITEMS },
+  { id: 'projects', name: 'Projects', color: '#003da5', items: PROJECT_ITEMS },
+  { id: 'education', name: 'Education', color: '#7c878e', items: EDUCATION_ITEMS },
+];
+
+const PAGES = LINES.flatMap(line => line.items.filter(it => it.body).map((it, i, arr) => ({
+  ...it, line, prev: arr[i - 1], next: arr[i + 1],
+})));
+const pageById = id => PAGES.find(pg => pg.id === id);
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
 
 const isExternal = href => /^https?:/.test(href);
 function A({ href, children, ...rest }) {
   return <a href={href} {...(isExternal(href) ? { target: '_blank', rel: 'noopener' } : {})} {...rest}>{children}</a>;
 }
-function LinkList({ links }) {
-  if (!links || !links.length) return null;
-  return (
-    <ul className="links">
-      {links.map(([href, label]) => <li key={href + label}><A href={href}>{label}</A></li>)}
-    </ul>
-  );
+
+const vt = name => ({ style: { viewTransitionName: name } });
+const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// Run a DOM update inside a view transition when the browser has them.
+function transition(update) {
+  if (!document.startViewTransition || reduceMotion()) { update(); return; }
+  document.startViewTransition(update);
 }
 
-function Header({ onPlay }) {
-  const [open, setOpen] = useState(false);
-  const [current, setCurrent] = useState('');
-  useEffect(() => {
-    const io = new IntersectionObserver(entries => {
-      const vis = entries.filter(e => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
-      if (vis) setCurrent(vis.target.id);
-    }, { rootMargin: '-35% 0px -60% 0px' });
-    SECTIONS.forEach(([id]) => { const el = document.getElementById(id); if (el) io.observe(el); });
-    return () => io.disconnect();
-  }, []);
-  useEffect(() => {
-    if (!open) return;
-    const close = e => { if (e.key === 'Escape') setOpen(false); };
-    addEventListener('keydown', close);
-    return () => removeEventListener('keydown', close);
-  }, [open]);
-  return (
-    <header className="site-header">
-      <div className="wrap header-row">
-        <a className="wordmark" href="#top">Zach Winship</a>
-        <button className="menu-toggle" aria-expanded={open} aria-controls="site-nav" onClick={() => setOpen(o => !o)}>
-          {open ? 'Close' : 'Menu'}
-        </button>
-        <nav id="site-nav" className={open ? 'open' : ''} aria-label="Sections">
-          <ul>
-            {SECTIONS.map(([id, label]) => (
-              <li key={id}><a href={`#${id}`} aria-current={current === id ? 'true' : undefined} onClick={() => setOpen(false)}>{label}</a></li>
-            ))}
-            <li><a href={LINKS.resume}>Résumé</a></li>
-          </ul>
-          <button className="play-button" onClick={() => { setOpen(false); onPlay(); }}>Play</button>
-        </nav>
-      </div>
-    </header>
-  );
+function readMode() {
+  try { const m = localStorage.getItem('site-mode'); if (m === 'plain' || m === 'transit') return m; } catch { /* storage blocked */ }
+  return 'transit';
 }
 
-function Hero() {
-  return (
-    <section className="hero" aria-labelledby="name">
-      <MapFigure />
-      <div className="wrap hero-text">
-        <h1 id="name">{PROFILE.name}</h1>
-        <p className="lede">{PROFILE.lede}</p>
-        <p className="now">{PROFILE.now}</p>
-        <p className="hero-links">
-          <a href="#research">The NBER paper</a>
-          <a href="#software">rd2dnet</a>
-          <a href={LINKS.resume}>Résumé (PDF)</a>
-          <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
-        </p>
-      </div>
-    </section>
-  );
+function readRoute() {
+  const m = location.hash.match(/^#\/([\w-]+)$/);
+  return m && pageById(m[1]) ? m[1] : null;
 }
 
-function SectionHead({ id, title, note }) {
+// ---------------------------------------------------------------------------
+// Pieces
+// ---------------------------------------------------------------------------
+
+function ModeSwitch({ mode, onChange }) {
   return (
-    <div className="section-head">
-      <h2 id={`${id}-title`}>{title}</h2>
-      {note && <p>{note}</p>}
+    <div className="mode-switch" role="group" aria-label="Page style" {...vt('mode-switch')}>
+      {[['plain', 'Plain'], ['transit', 'Transit']].map(([m, label]) => (
+        <button key={m} type="button" aria-pressed={mode === m} onClick={() => mode !== m && onChange(m)}>{label}</button>
+      ))}
     </div>
   );
 }
 
-function Research() {
-  const [paper, ...rest] = RESEARCH;
-  const others = rest.filter(p => p.id !== 'micro');
+function Intro({ compact }) {
   return (
-    <section id="research" className="section" aria-labelledby="research-title">
-      <div className="wrap split">
-        <SectionHead id="research" title="Research" note="Causal inference on cities, transport and regulation." />
-        <div>
-          <article className="feature">
-            <p className="kicker">{paper.badge}, {paper.year}</p>
-            <h3>{paper.title}</h3>
-            <p className="byline">With {paper.coauthors}.</p>
-            <div className="finding">
-              <p className="finding-figure">63 to 70 seconds</p>
-              <p className="finding-text">shorter total EMS travel times after congestion pricing began, roughly 5 to 6%.</p>
-            </div>
-            <p>{paper.body}</p>
-            <LinkList links={paper.links} />
-            <h4>Coverage</h4>
-            <ul className="coverage">
-              {MEDIA.map(([href, outlet, headline]) => (
-                <li key={href}><A href={href}><span className="outlet">{outlet}</span> {headline}</A></li>
-              ))}
-              {MEDIA_FORTHCOMING.map(o => <li key={o}><span className="outlet">{o}</span> forthcoming</li>)}
-            </ul>
-          </article>
-          <ol className="paper-list">
-            {others.map(p => (
-              <li key={p.id}>
-                <span className="year">{p.soon ? 'In progress' : p.year}</span>
-                <div>
-                  <h3>{p.title}</h3>
-                  <p>{p.body}</p>
-                  <LinkList links={p.links} />
-                </div>
-              </li>
-            ))}
-          </ol>
-        </div>
+    <header className={`intro${compact ? ' compact' : ''}`}>
+      <a href="#" className="portrait-link" aria-label="Home" {...vt('portrait')}>
+        <img className="portrait" src="/images/zwinship.png" alt="Zach Winship" width="400" height="400" />
+      </a>
+      <div className="intro-text">
+        <h1 className="name" {...vt('name')}><a href="#">Zach Winship</a></h1>
+        <p className="role" {...vt('role')}>MS in Quantitative Economics<br className="plain-only" /><span className="transit-only">, </span>New York University</p>
+        <ul className="contact" {...vt('contact')}>
+          <li><a href={`mailto:${EMAIL}`}>{EMAIL}</a></li>
+          <li><A href={LINKS.resume}>CV</A></li>
+          <li><A href={LINKS.github}>GitHub</A></li>
+          <li><A href={LINKS.linkedin}>LinkedIn</A></li>
+        </ul>
       </div>
-    </section>
+      <nav className="side-nav" aria-label="Sections">
+        <ul>
+          {LINES.map(l => <li key={l.id}><a href={`#${l.id}`}>{l.name}</a></li>)}
+        </ul>
+      </nav>
+      <p className="others">
+        Other versions of this site: <a href="/play/wii/">Living room, 2006</a> and <a href="/play/win98/">Family computer, 1998</a>
+      </p>
+    </header>
   );
 }
 
-function Software() {
-  const s = SOFTWARE;
-  const [copied, setCopied] = useState(false);
-  const copy = async () => {
-    try { await navigator.clipboard.writeText(s.install); setCopied(true); setTimeout(() => setCopied(false), 1600); } catch { setCopied(false); }
-  };
+// Transit mode: a route diagram pinned to the top. The train marks how far down the page you are.
+function RouteBar({ current, progress }) {
   return (
-    <section id="software" className="section software" aria-labelledby="software-title">
-      <div className="wrap software-grid">
-        <div>
-          <p className="kicker">Software · version {s.version}</p>
-          <h2 id="software-title" className="software-name">{s.name}</h2>
-          <p className="software-summary">{s.summary}</p>
-          <p className="org">{s.status}</p>
-          {s.body.map(p => <p key={p.slice(0, 20)}>{p}</p>)}
-          <table className="platforms">
-            <caption className="sr-only">Install by platform</caption>
-            <tbody>
-              {s.platforms.map(([lang, cmd]) => (
-                <tr key={lang}><th scope="row">{lang}</th><td>{cmd.includes(' ') && !cmd.startsWith('draft') ? <code>{cmd}</code> : cmd}</td></tr>
-              ))}
-            </tbody>
-          </table>
-          <LinkList links={s.links} />
-          <p className="credit">{s.credit}</p>
-        </div>
-        <figure className="code-figure">
-          <div className="code-bar">
-            <code>{s.install}</code>
-            <button onClick={copy} aria-live="polite">{copied ? 'Copied' : 'Copy'}</button>
-          </div>
-          <pre><code>{s.example}</code></pre>
-          <figcaption>Quick start on the bundled mock Midtown data, from the package README.</figcaption>
-        </figure>
+    <nav className="route" aria-label="Sections" {...vt('route')}>
+      <div className="route-in">
+        <ol className="route-line">
+          {LINES.map((l, i) => (
+            <li key={l.id} style={{ '--c': l.color }} className={current === l.id ? 'here' : ''}>
+              <a href={`#${l.id}`} aria-current={current === l.id ? 'location' : undefined}>
+                <span className="dot" aria-hidden="true" />
+                <span className="label">{l.name}</span>
+              </a>
+              {i < LINES.length - 1 && <span className="seg" aria-hidden="true" />}
+            </li>
+          ))}
+        </ol>
+        <span className="route-name" aria-hidden="true">{(LINES.find(l => l.id === current) || LINES[0]).name}</span>
+        <span className="progress" aria-hidden="true" style={{ width: `${progress * 100}%`, background: (LINES.find(l => l.id === current) || LINES[0]).color }} />
       </div>
-    </section>
+    </nav>
   );
 }
 
-function ProjectRow({ p, open, onToggle }) {
-  const id = `project-${p.id}`;
+function Item({ it }) {
+  const title = it.body ? <a href={`#/${it.id}`}>{it.title}</a> : it.title;
   return (
-    <li className={open ? 'open' : ''}>
-      <h3>
-        <button aria-expanded={open} aria-controls={id} onClick={onToggle}>
-          <span className="year">{p.soon ? 'In progress' : p.year}</span>
-          <span className="title">{p.title}</span>
-          <span className="meta">{p.meta.split(' · ')[0]}</span>
-          <span className="sign" aria-hidden="true">{open ? '−' : '+'}</span>
-        </button>
-      </h3>
-      <AnimatePresence initial={false}>
-        {open && (
-          <m.div id={id} className="project-body" key="body"
-            initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.24, ease: [0.3, 0, 0.2, 1] }}>
-            <div className="project-inner">
-              <p>{p.body}</p>
-              {p.video && (
-                <video src={`/${p.video}`} poster={`/${p.poster}`} controls playsInline preload="none" width="640" height="360" />
-              )}
-              <p className="tags">{p.tags.join(', ')}</p>
-              <LinkList links={p.links} />
-            </div>
-          </m.div>
-        )}
-      </AnimatePresence>
+    <li className="stop" data-anchor={it.id} {...vt(`s-${it.id}`)}>
+      <h3>{title}</h3>
+      <p className="sub">{it.sub}</p>
+      <p className="blurb">{it.blurb}</p>
+      {it.links && !it.body && (
+        <p className="item-links">{it.links.map(([href, label]) => <A key={href} href={href}>{label}</A>)}</p>
+      )}
     </li>
   );
 }
 
-function Projects() {
-  const list = [RESEARCH.find(p => p.id === 'micro'), ...PERSONAL];
-  const [open, setOpen] = useState(() => new Set());
-  const toggle = id => setOpen(s => { const n = new Set(s); n.has(id) ? n.delete(id) : n.add(id); return n; });
+function Home() {
   return (
-    <section id="projects" className="section" aria-labelledby="projects-title">
-      <div className="wrap split">
-        <SectionHead id="projects" title="Projects" note="Things I built because I wanted them to exist. Open a row for details." />
-        <ul className="project-list">
-          {list.map(p => <ProjectRow key={p.id} p={p} open={open.has(p.id)} onToggle={() => toggle(p.id)} />)}
-        </ul>
+    <>
+      <div className="bio" data-anchor="bio" {...vt('bio')}>
+        {PROFILE.about.map(t => <p key={t.slice(0, 20)}>{t}</p>)}
       </div>
-    </section>
-  );
-}
-
-function Experience() {
-  return (
-    <section id="experience" className="section" aria-labelledby="experience-title">
-      <div className="wrap split">
-        <SectionHead id="experience" title="Experience" />
-        <ol className="timeline">
-          {EXPERIENCE.map(e => (
-            <li key={e.role + e.when}>
-              <p className="when">{e.when}</p>
-              <div>
-                <h3>{e.role}</h3>
-                <p className="org">{e.org}</p>
-                <p>{e.body}</p>
-                <LinkList links={e.links} />
-              </div>
-            </li>
-          ))}
-        </ol>
-      </div>
-    </section>
-  );
-}
-
-function Talks() {
-  return (
-    <section id="talks" className="section" aria-labelledby="talks-title">
-      <div className="wrap split">
-        <SectionHead id="talks" title="Talks and teaching" note="Slides are PDFs. The India talk came with four short methodology videos." />
-        <ol className="talk-list">
-          {PRESENTATIONS.map(t => (
-            <li key={t.title}>
-              <h3>{t.title}</h3>
-              <p className="org">{t.meta}</p>
-              <p>{t.body}</p>
-              {t.vids && (
-                <div className={t.vids.length > 1 ? 'video-row' : 'video-one'}>
-                  {t.vids.map(([src, label]) => (
-                    <figure key={src}>
-                      <video src={`/${src}`} controls playsInline preload="metadata" width="320" height="180" />
-                      <figcaption>{label}</figcaption>
-                    </figure>
-                  ))}
-                </div>
-              )}
-              <LinkList links={[...(t.pdf ? [[`/${t.pdf}`, 'Slides (PDF)']] : []), ...(t.gh ? [[t.gh, 'Code on GitHub']] : [])]} />
-            </li>
-          ))}
-        </ol>
-      </div>
-    </section>
-  );
-}
-
-function Writing() {
-  return (
-    <section id="writing" className="section" aria-labelledby="writing-title">
-      <div className="wrap split">
-        <SectionHead id="writing" title="Writing" />
-        <div className="blog">
-          <h3>{BLOG.name}</h3>
-          <p className="org">{BLOG.status}</p>
-          <p>{BLOG.body}</p>
-          <ol className="posts">
-            {BLOG.posts.map(([title, topics, when]) => (
-              <li key={title}><span className="post-title">{title}</span><span className="post-meta">{topics} · {when}</span></li>
-            ))}
+      {LINES.map(l => (
+        <section key={l.id} id={l.id} className="line" style={{ '--c': l.color }} data-anchor={l.id}>
+          <h2 {...vt(`h-${l.id}`)}>{l.name}</h2>
+          <ol className="stops">
+            {l.items.map(it => <Item key={it.id} it={it} />)}
           </ol>
-        </div>
-      </div>
-    </section>
+        </section>
+      ))}
+    </>
   );
 }
 
-function About() {
+function Page({ id }) {
+  const pg = pageById(id);
+  const { line } = pg;
   return (
-    <section id="about" className="section" aria-labelledby="about-title">
-      <div className="wrap split">
-        <SectionHead id="about" title="About" />
-        <div className="about">
-          <img src="/images/zwinship.png" alt="Zach Winship" width="220" height="212" loading="lazy" />
-          <div>
-            {PROFILE.about.map(p => <p key={p.slice(0, 24)}>{p}</p>)}
-            <h3>Education</h3>
-            <ul className="education">
-              {PROFILE.education.map(e => (
-                <li key={e.degree}><strong>{e.degree}</strong>, {e.school}. <span className="org">{e.when}.</span> {e.note}</li>
-              ))}
-            </ul>
-            <h3>Tools</h3>
-            <p>{PROFILE.skills.join(', ')}.</p>
-          </div>
-        </div>
+    <article className="page" style={{ '--c': line.color }}>
+      <p className="crumb"><a href={`#${line.id}`}>{line.name}</a></p>
+      <div className="sign" {...vt(`s-${pg.id}`)}>
+        <h2>{pg.title}</h2>
       </div>
-    </section>
+      <p className="sub">{pg.sub}</p>
+      {pg.image && <img className="page-img" src={pg.image} alt={`${pg.title}, partway through the build`} />}
+      {pg.body.map(t => <p key={t.slice(0, 24)}>{t}</p>)}
+      {pg.install && (
+        <dl className="install">
+          {pg.install.map(([k, v]) => <div key={k}><dt>{k}</dt><dd><code>{v}</code></dd></div>)}
+        </dl>
+      )}
+      {pg.posts && (
+        <>
+          <h3>Planned posts</h3>
+          <ul className="plain-list">{pg.posts.map(([t, , when]) => <li key={t}>{t} <span className="when">({when.replace('Planned · ', '')})</span></li>)}</ul>
+        </>
+      )}
+      {pg.links && pg.links.length > 0 && (
+        <p className="item-links">{pg.links.map(([href, label]) => <A key={href + label} href={href}>{label}</A>)}</p>
+      )}
+      {pg.press && (
+        <>
+          <h3>Coverage</h3>
+          <ul className="plain-list press">
+            {MEDIA.map(([href, outlet, headline]) => <li key={href}><A href={href}>{outlet}</A>: {headline}</li>)}
+          </ul>
+        </>
+      )}
+      <nav className="next-prev" aria-label={`More in ${line.name}`}>
+        {pg.prev ? <a className="prev" href={`#/${pg.prev.id}`}><span className="np-label">Previous</span>{pg.prev.title}</a> : <span />}
+        {pg.next ? <a className="next" href={`#/${pg.next.id}`}><span className="np-label">Next</span>{pg.next.title}</a> : <span />}
+      </nav>
+    </article>
   );
 }
 
-function Footer({ onPlay }) {
-  return (
-    <footer className="site-footer">
-      <div className="wrap footer-row">
-        <div>
-          <p className="footer-name">Zach Winship</p>
-          <p>New York, NY</p>
-        </div>
-        <ul className="footer-links">
-          <li><a href={`mailto:${EMAIL}`}>{EMAIL}</a></li>
-          <li><A href={LINKS.linkedin}>LinkedIn</A></li>
-          <li><A href={LINKS.github}>GitHub</A></li>
-          <li><a href={LINKS.resume}>Résumé (PDF)</a></li>
-        </ul>
-        <p className="footer-play">
-          This site also comes as a <button className="text-button" onClick={onPlay}>Wii Menu or a Windows 98 desktop</button>.
-        </p>
-      </div>
-    </footer>
-  );
-}
+// ---------------------------------------------------------------------------
+// App
+// ---------------------------------------------------------------------------
 
 export default function App() {
-  const [playOpen, setPlayOpen] = useState(false);
-  const opener = useRef(null);
-  const openPlay = () => { opener.current = document.activeElement; setPlayOpen(true); };
-  const closePlay = () => { setPlayOpen(false); opener.current?.focus?.(); };
+  const [mode, setMode] = useState(readMode);
+  const [route, setRoute] = useState(readRoute);
+  const [current, setCurrent] = useState(LINES[0].id);
+  const [progress, setProgress] = useState(0);
+  const homeScroll = useRef(0);
+  const routeRef = useRef(route);
+
+  useLayoutEffect(() => { document.documentElement.dataset.mode = mode; }, [mode]);
+
+  // Hash routing for the item pages, with a transition between list and page.
+  useEffect(() => {
+    const onHash = () => {
+      const next = readRoute();
+      const prev = routeRef.current;
+      if (next === prev) return;          // plain in-page anchors: let the browser scroll
+      const sectionHash = !next && location.hash.length > 1 ? location.hash.slice(1) : null;
+      if (!prev) homeScroll.current = scrollY;
+      routeRef.current = next;
+      transition(() => {
+        flushSync(() => setRoute(next));
+        if (next) scrollTo(0, 0);
+        else if (sectionHash) document.getElementById(sectionHash)?.scrollIntoView();
+        else scrollTo(0, homeScroll.current);
+      });
+    };
+    addEventListener('hashchange', onHash);
+    return () => removeEventListener('hashchange', onHash);
+  }, []);
+
+  useEffect(() => {
+    document.title = route ? `${pageById(route).title}, Zach Winship` : 'Zach Winship';
+  }, [route]);
+
+  // Which section is on screen, and how far down the page we are.
+  useEffect(() => {
+    if (route) return undefined;
+    let raf = 0;
+    const measure = () => {
+      raf = 0;
+      const max = document.documentElement.scrollHeight - innerHeight;
+      setProgress(max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0);
+      let cur = LINES[0].id;
+      for (const l of LINES) {
+        const el = document.getElementById(l.id);
+        if (el && el.getBoundingClientRect().top < innerHeight * 0.4) cur = l.id;
+      }
+      setCurrent(cur);
+    };
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(measure); };
+    measure();
+    addEventListener('scroll', onScroll, { passive: true });
+    addEventListener('resize', onScroll);
+    return () => { removeEventListener('scroll', onScroll); removeEventListener('resize', onScroll); cancelAnimationFrame(raf); };
+  }, [route, mode]);
+
+  // Switch styles, keeping whatever was at the top of the screen at the top afterwards.
+  const changeMode = next => {
+    let anchor = null; let offset = 0;
+    for (const el of document.querySelectorAll('[data-anchor]')) {
+      const top = el.getBoundingClientRect().top;
+      if (top > 40) { anchor = el.dataset.anchor; offset = top; break; }
+    }
+    try { localStorage.setItem('site-mode', next); } catch { /* storage blocked */ }
+    transition(() => {
+      flushSync(() => setMode(next));
+      document.documentElement.dataset.mode = next;
+      if (scrollY < 40 || !anchor) return;
+      const el = document.querySelector(`[data-anchor="${anchor}"]`);
+      if (el) scrollBy(0, el.getBoundingClientRect().top - offset);
+    });
+  };
+
   return (
-    <LazyMotion features={domAnimation} strict>
-    <MotionConfig reducedMotion="user">
+    <div className={`site ${mode}${route ? ' on-page' : ''}`}>
       <a className="skip" href="#main">Skip to content</a>
-      <Header onPlay={openPlay} />
-      <main id="main" tabIndex={-1}>
-        <span id="top" />
-        <Hero />
-        <Research />
-        <Software />
-        <Projects />
-        <Experience />
-        <Talks />
-        <Writing />
-        <About />
+      <ModeSwitch mode={mode} onChange={changeMode} />
+      <Intro compact={!!route} />
+      {mode === 'transit' && <RouteBar current={route ? pageById(route).line.id : current} progress={route ? 0 : progress} />}
+      <main id="main">
+        {route ? <Page id={route} /> : <Home />}
       </main>
-      <Footer onPlay={openPlay} />
-      <PlayDialog open={playOpen} onClose={closePlay} />
-    </MotionConfig>
-    </LazyMotion>
+      <footer className="foot">
+        <div className="foot-in">
+          <p className="foot-name">Zach Winship</p>
+          <p className="foot-links">
+            <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
+            <A href={LINKS.github}>GitHub</A>
+            <A href={LINKS.linkedin}>LinkedIn</A>
+          </p>
+          <p className="foot-others">Also here: <a href="/play/wii/">Living room, 2006</a> and <a href="/play/win98/">Family computer, 1998</a></p>
+        </div>
+      </footer>
+    </div>
   );
 }

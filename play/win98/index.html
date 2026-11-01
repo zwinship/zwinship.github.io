@@ -663,7 +663,7 @@ const FOLDERS = {
       { name:'3½ Floppy (A:)', icon:'floppy', type:'Résumé', blurb:'Résumé, Summer 2026 (PDF).', open:r=>openApp('resume',r) },
       { name:'Research (C:)', icon:'drive', type:'Local Disk', blurb:'Papers, working papers and research projects.', folder:'research' },
       { name:'Personal Projects (D:)', icon:'drive', type:'Local Disk', blurb:'Self-driven projects: ML models, games and hardware.', folder:'personal' },
-      { name:'Presentations (E:)', icon:'cd', type:'CD-ROM Disc', blurb:'Talks, teaching and explainer videos.', open:r=>openApp('media',r) },
+      { name:'Videos (E:)', icon:'cd', type:'CD-ROM Disc', blurb:'Build video of the MBTA LED map.', open:r=>openApp('media',r) },
       { name:'My Documents', icon:'docfolder', type:'File Folder', blurb:'About, experience, résumé.', folder:'mydocs' },
       { name:'Control Panel', icon:'control', type:'System Folder', blurb:'Change the desktop, view system properties.', folder:'control' },
     ]}),
@@ -828,7 +828,7 @@ const APPS = {
     wireMenubar(w, { pop, trans });
   }},
 
-  media: { title:'Presentations - Media Player', icon:'media', w:720, h:500, minW:420, minH:300, render(w){
+  media: { title:'Media Player', icon:'media', w:720, h:500, minW:420, minH:300, render(w){
     let cur = 0;
     w.body.innerHTML = menubar([['File',[['Open PDF','pdf'],'-',['Exit','close']]],['View',[]],['Play',[['Play/Pause','pp']]],['Favorites',[]],['Go',[]],['Help',[]]])
       + `<div class="mp" style="flex-direction:row;gap:4px">
@@ -842,12 +842,13 @@ const APPS = {
           <div class="mp-list" style="flex:0 0 190px" data-list></div>
         </div>
         <div class="mp-info" data-info></div>`;
+    const CLIPS = [{ ...byId('mbta-led'), vids:[['videos/MBTA_LED_Build.mp4','Build video']], gh:'https://github.com/zwinship/MBTA_Live_Art' }];
     const list = w.body.querySelector('[data-list]'), scr = w.body.querySelector('.mp-screen'), clip = w.body.querySelector('[data-clip]');
-    PRESENTATIONS.forEach((p,i)=>{ const d=document.createElement('div'); d.textContent=`${i+1}. ${p.title}`; d.onclick=()=>show(i); list.appendChild(d); });
+    CLIPS.forEach((p,i)=>{ const d=document.createElement('div'); d.textContent=`${i+1}. ${p.title}`; d.onclick=()=>show(i); list.appendChild(d); });
     function vid(){ return scr.querySelector('video'); }
-    function load(src){ scr.innerHTML = src ? `<video src="${src}" playsinline preload="metadata" controls></video>` : `<div class="vis">No video for this presentation.<br><br>▶ Open the PDF slides below.</div>`; }
+    function load(src){ scr.innerHTML = src ? `<video src="${src}" playsinline preload="metadata" controls></video>` : `<div class="vis">No video for this clip.</div>`; }
     function show(i){
-      cur = i; const p = PRESENTATIONS[i];
+      cur = i; const p = CLIPS[i];
       list.querySelectorAll('div').forEach((d,k)=>d.classList.toggle('sel',k===i));
       clip.innerHTML = (p.vids||[]).map((v,k)=>`<option value="${k}">${esc(v[1])}</option>`).join('') || '<option>(slides only)</option>';
       clip.disabled = !p.vids;
@@ -855,11 +856,11 @@ const APPS = {
       w.body.querySelector('[data-desc]').innerHTML = `<b>${esc(p.title)}</b><br><i>${esc(p.meta)}</i><br><br>${esc(p.body)}<br><br>${p.tags.map(esc).join(' · ')}`;
       w.body.querySelector('[data-btns]').innerHTML = `${p.pdf?`<button class="default" data-u="${ASSET+p.pdf}">Open PDF Slides</button>`:''}${p.gh?`<button data-u="${p.gh}">View on GitHub</button>`:''}`;
       w.body.querySelectorAll('[data-u]').forEach(b=>b.onclick=()=>ext(b.dataset.u));
-      w.body.querySelector('[data-info]').textContent = `Clip ${i+1} of ${PRESENTATIONS.length}  ·  ${p.title}`;
+      w.body.querySelector('[data-info]').textContent = `Clip ${i+1} of ${CLIPS.length}  ·  ${p.title}`;
     }
-    clip.onchange = () => { const p = PRESENTATIONS[cur]; if (p.vids) { load(ASSET+p.vids[+clip.value][0]); vid().play().catch(()=>{}); } };
+    clip.onchange = () => { const p = CLIPS[cur]; if (p.vids) { load(ASSET+p.vids[+clip.value][0]); vid().play().catch(()=>{}); } };
     w.body.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{ const v=vid(); if(!v) return; const c=b.dataset.c; if(c==='play') v.play(); if(c==='pause') v.pause(); if(c==='stop'){ v.pause(); v.currentTime=0; } });
-    wireMenubar(w, { pdf:()=>{ const p=PRESENTATIONS[cur]; if(p.pdf) ext(ASSET+p.pdf); }, pp:()=>{ const v=vid(); if(v) v.paused?v.play():v.pause(); } });
+    wireMenubar(w, { pdf:()=>{ const p=CLIPS[cur]; if(p.pdf) ext(ASSET+p.pdf); }, pp:()=>{ const v=vid(); if(v) v.paused?v.play():v.pause(); } });
     w.onClose = () => { const v=vid(); if(v) v.pause(); };
     show(0);
   }},
@@ -930,7 +931,7 @@ const APPS = {
     const OPTS = [
       ['user','About Zach','system','<h3>Hi, I\'m Zach.</h3><p>Quantitative economist: Bentley \'26, now in NYU\'s MS in Quantitative Economics (May 2027). I co-authored an NBER working paper on how NYC congestion pricing sped up ambulances.</p><p>Click to open <b>System Properties</b>.</p>'],
       ['drive','Discover My Projects','mycomputer','<h3>Discover my projects</h3><p>Most people have portfolios full of coursework. This one is made up entirely of fun, self-driven projects.</p><p>Open <b>My Computer</b> to browse the Research (C:) and Personal Projects (D:) drives.</p>'],
-      ['media','Watch Presentations','media','<h3>Presentations</h3><p>Talks, teaching and methodology explainer videos, in a Media Player.</p>'],
+      ['media','Watch the LED map build','media','<h3>Media Player</h3><p>A build video of the MBTA live LED map.</p>'],
       ['globe','Connect to the Internet','ie','<h3>Connect to the Internet</h3><p>Visit Zach\'s Home Page: links, media coverage, and the Unlikely Instruments blog.</p>'],
       ['floppy','Read My Résumé','resume','<h3>Résumé</h3><p>Open the Summer 2026 résumé (PDF).</p>'],
       ['mail','Register Now (Email Me)','mail','<h3>Register now</h3><p>Send Zach an email with Outlook Express.</p>'],
@@ -954,7 +955,7 @@ const APPS = {
       <div style="flex:1;display:flex;gap:4px;min-height:0;margin-top:3px">
         <ul class="tree-view" style="flex:0 0 170px;overflow:auto;margin:0">
           <li><details open><summary>Getting Started</summary><ul><li>Opening programs</li><li>Using windows</li><li>The Start menu</li></ul></details></li>
-          <li><details open><summary>Where is...</summary><ul><li>Research → C:</li><li>Projects → D:</li><li>Presentations → E:</li><li>Résumé → A:</li></ul></details></li>
+          <li><details open><summary>Where is...</summary><ul><li>Research → C:</li><li>Projects → D:</li><li>Videos → E:</li><li>Résumé → A:</li></ul></details></li>
           <li><details><summary>Tips &amp; Tricks</summary><ul><li>Run... commands</li><li>Minesweeper</li><li>Display settings</li></ul></details></li>
         </ul>
         <div class="panel-white" style="padding:10px 14px;line-height:1.5;font-size:12px">
@@ -1097,7 +1098,7 @@ function closeAll(){ [...wins.values()].forEach(w=>w.close()); }
 const RUN = {
   projects:()=>openApp('mycomputer'), research:()=>openApp('research'), personal:()=>openApp('personal'),
   resume:()=>openApp('resume'), about:()=>openApp('system'), notepad:()=>openApp('notepad'), wordpad:()=>openApp('wordpad'),
-  experience:()=>openApp('wordpad'), presentations:()=>openApp('media'), mplayer:()=>openApp('media'),
+  experience:()=>openApp('wordpad'), mplayer:()=>openApp('media'),
   iexplore:()=>openApp('ie'), blog:()=>openApp('blog'), mail:()=>openApp('mail'), winmine:()=>openApp('winmine'),
   command:()=>openApp('dos'), cmd:()=>openApp('dos'), control:()=>openApp('control'), help:()=>openApp('help'),
   wii:()=>location.href='../wii/', exit:()=>location.href=ASSET,
@@ -1163,7 +1164,7 @@ function browser(w, start){
         <td width="33%"><b><a data-go="research">Research</a></b><br><small>${RESEARCH.slice(0,3).map(p=>esc(shortName(p.title))).join(', ')}...</small></td>
         <td width="33%"><b><a data-app="personal">Personal Projects</a></b><br><small>${PERSONAL.map(p=>esc(shortName(p.title))).slice(0,3).join(', ')}...</small></td>
         <td width="33%"><b><a data-go="media">News &amp; Media</a></b><br><small>Fortune, Gothamist, ABC7...</small></td></tr><tr>
-        <td><b><a data-app="media">Presentations</a></b><br><small>Talks, teaching, explainer videos</small></td>
+        <td><b><a data-app="media">Videos</a></b><br><small>The LED map build</small></td>
         <td><b><a data-go="blog">Blogs</a></b><br><small>Unlikely Instruments</small></td>
         <td><b><a data-go="guestbook">Community</a></b><br><small>Guestbook, e-mail</small></td></tr></table>
       <p class="center"><small>Copyright &copy; 1998-2026 ZachSearch! Inc. All rights reserved.</small></p>` },
@@ -1361,7 +1362,7 @@ const DESKTOP = [
   ['recycle','Recycle Bin','recyclefull'],
   ['research','Research','folder'],
   ['personal','Personal Projects','folder'],
-  ['media','Presentations','media'],
+  ['media','Media Player','media'],
   ['notepad','About Me.txt','notepad'],
   ['wordpad','Experience.doc','doc'],
   ['resume','Résumé.pdf','pdf'],
@@ -1389,7 +1390,7 @@ const startBtn = document.getElementById('startBtn'), startMenu = document.getEl
 const SUBS = {
   programs: [['Accessories','folder',null,[['Notepad','notepad','notepad'],['WordPad','doc','wordpad'],['Media Player','media','media'],['Minesweeper','mine','winmine']]],['Internet Explorer','globe','ie'],['Outlook Express','mail','mail'],['MS-DOS Prompt','dos','dos'],['Windows Explorer','computer','mycomputer'],['Wii Menu','display','@wii']],
   favorites: [['GitHub','web','@https://github.com/zwinship'],['LinkedIn','web','@https://linkedin.com/in/zwinship'],['NBER Paper','web','@https://www.nber.org/papers/w35414'],['OctaStats','web','@https://octastats.github.io/index.html'],['Tale of the Tape','web','@https://taleofthetape.github.io'],['Micro Course Site','web','@https://falconeconsim.github.io/']],
-  documents: [['About Me.txt','notepad','notepad'],['Experience.doc','doc','wordpad'],['resume.pdf','pdf','resume'],['transcript.pdf','pdf','@'+ASSET+'about_me/transcript.pdf'],...PRESENTATIONS.filter(p=>p.pdf).map(p=>[p.pdf.split('/').pop().replace(/_Presentation\.pdf$/,'').replace(/_/g,' ')+'.pdf','presentation','@'+ASSET+p.pdf])],
+  documents: [['About Me.txt','notepad','notepad'],['Experience.doc','doc','wordpad'],['resume.pdf','pdf','resume'],['transcript.pdf','pdf','@'+ASSET+'about_me/transcript.pdf']],
   settings: [['Control Panel','control','control'],['Display','display','display'],['System Properties','computer','system'],['Taskbar & Start Menu...','settings','help']],
 };
 function buildSub(id, items){
@@ -1458,7 +1459,7 @@ function boot(){
   const lines = [
     'Zach BIOS v4.10, An Energy Star Ally','Copyright (C) 1998-2026, Zach Winship','',
     'Main Processor : Quantitative Economist @ NYU','Memory Testing : 65536K OK','',
-    'Detecting IDE Primary Master ... RESEARCH (C:)','Detecting IDE Primary Slave  ... PERSONAL PROJECTS (D:)','Detecting IDE Secondary Master ... PRESENTATIONS (E:)','Detecting Floppy Drive A: ... RESUME.PDF','',
+    'Detecting IDE Primary Master ... RESEARCH (C:)','Detecting IDE Primary Slave  ... PERSONAL PROJECTS (D:)','Detecting IDE Secondary Master ... VIDEOS (E:)','Detecting Floppy Drive A: ... RESUME.PDF','',
     'Loading NBER_WP_35414.SYS ... OK','','Starting Zach 98...'];
   el.innerHTML = `<div class="energy">ZACH<br>98</div>`;
   let i = 0, done = false;

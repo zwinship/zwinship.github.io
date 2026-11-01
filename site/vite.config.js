@@ -27,7 +27,6 @@ function playData() {
         `const RESEARCH = ${JSON.stringify(c.RESEARCH, null, 1)};`,
         `const SOFTWARE = ${JSON.stringify(software, null, 1)};`,
         `const PERSONAL = ${JSON.stringify(c.PERSONAL, null, 1)};`,
-        `const PRESENTATIONS = ${JSON.stringify(c.PRESENTATIONS, null, 1)};`,
         `const EXPERIENCE = ${JSON.stringify(c.EXPERIENCE, null, 1)};`,
         `const MEDIA = ${JSON.stringify(c.MEDIA)};`,
         `const BLOG = ${JSON.stringify(c.BLOG.posts)};`,
