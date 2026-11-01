@@ -190,7 +190,7 @@ video{width:100%;border-radius:12px;background:#000;margin-top:12px;display:bloc
 .shop-row .thumb{flex:0 0 150px;height:85px;border-radius:12px;overflow:hidden;position:relative;border:2px solid #d5d6da}
 .shop-row .thumb .bn{position:absolute;inset:0}
 .shop-row .price{margin-left:auto;flex:0 0 auto;font-weight:700;color:var(--cyan-text);font-size:14px;text-align:right}
-@media (max-width:640px){.shop-row{flex-direction:column}.shop-row .thumb{width:100%;flex-basis:auto;height:auto;aspect-ratio:16/9}.shop-row .price{margin-left:0;text-align:left}}
+@media (max-width:640px){.shop-row{flex-direction:column}.shop-row .thumb{width:min(100%,240px);flex-basis:auto;height:auto;aspect-ratio:16/9}.shop-row .price{margin-left:0;text-align:left}}
 .wx{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
 .wx .card{text-align:center;background:linear-gradient(#3fa9e6,#8dd0f5);border-color:#5bb6e8;color:#fff}
 .wx .card h3,.wx .card .meta{color:#fff}
