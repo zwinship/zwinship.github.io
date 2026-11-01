@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Template 4: Colour fields</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:inherit}a:hover{opacity:.8}
+.t4-hero{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:40px;align-items:end}
+.t4-split{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:56px}
+.t4-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:48px 56px}
+@media (max-width:820px){.t4-hero,.t4-split,.t4-list{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div style="font-family: 'Archivo', sans-serif; min-height: 100vh">
+
+<section style="background: #57068c; color: #ffffff; padding: 28px 32px 56px">
+<div style="max-width: 1320px; margin: 0 auto">
+<header style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; font-size: 17px; margin-bottom: 120px">
+<a href="#" style="font-weight: 700; text-decoration: none">Zach Winship</a>
+<nav aria-label="Main" style="display: flex; gap: 24px"><a href="#" style="text-decoration: none">Research</a><a href="#" style="text-decoration: none">Projects</a><a href="#" style="text-decoration: none">CV</a><a href="#" style="text-decoration: none">Contact</a></nav>
+</header>
+<div class="t4-hero">
+<div>
+<h1 style="margin: 0 0 32px; font-size: clamp(64px, 11.5vw, 184px); line-height: 0.86; letter-spacing: -0.03em; font-weight: 800; font-stretch: 112%">Zach<br>Winship</h1>
+<p style="margin: 0; font-size: 24px; line-height: 1.4; max-width: 640px">Quantitative economist at NYU. Cities, transport, causal inference, and things I build for fun.</p>
+</div>
+<img src="/images/zwinship.png" alt="Zach Winship" style="width: 100%; aspect-ratio: 3 / 4; object-fit: cover; display: block">
+</div>
+</div>
+</section>
+
+<section style="background: #ffffff; color: #000000; padding: 160px 32px">
+<div class="t4-split" style="max-width: 1320px; margin: 0 auto">
+<h2 style="margin: 0; font-size: 56px; line-height: 1; letter-spacing: -0.02em; font-weight: 800; font-stretch: 100%">Research</h2>
+<div style="font-size: 19px; line-height: 1.55">
+<h3 style="margin: 0 0 8px; font-size: 26px; font-weight: 700">Congestion pricing and EMS response times</h3>
+<p style="margin: 0 0 8px">NBER Working Paper 35414, with Chikish, Colman, Dave, Humphreys and Santamaria. EMS travel times in Manhattan fell by 63 to 70 seconds once the toll began.</p>
+<p style="margin: 0 0 48px"><a href="#" style="color: #57068c">Paper</a>&nbsp;&nbsp;&nbsp;<a href="#" style="color: #57068c">NBER Digest</a>&nbsp;&nbsp;&nbsp;<a href="#" style="color: #57068c">Fortune</a></p>
+<h3 style="margin: 0 0 8px; font-size: 26px; font-weight: 700">rd2dnet</h3>
+<p style="margin: 0 0 8px">Boundary discontinuity designs on street networks, for Python and R. Version 2 is coming soon.</p>
+<p style="margin: 0 0 48px"><a href="#" style="color: #57068c">GitHub</a>&nbsp;&nbsp;&nbsp;<a href="#" style="color: #57068c">PyPI</a></p>
+<h3 style="margin: 0 0 8px; font-size: 26px; font-weight: 700">Also</h3>
+<p style="margin: 0">Mobility and commercial effects of NYC congestion pricing; the EPA ozone standard and manufacturing revenue; whether polls predict elections or move them.</p>
+</div>
+</div>
+</section>
+
+<section style="background: #efe9f5; color: #1c0a29; padding: 160px 32px">
+<div style="max-width: 1320px; margin: 0 auto">
+<h2 style="margin: 0 0 64px; font-size: 56px; line-height: 1; letter-spacing: -0.02em; font-weight: 800">Projects</h2>
+<div class="t4-list">
+<div><h3 style="margin: 0 0 8px; font-size: 26px; font-weight: 700">OctaStats</h3><p style="margin: 0; font-size: 19px; line-height: 1.5">UFC fight predictions with a public record of every pick.</p></div>
+<div><h3 style="margin: 0 0 8px; font-size: 26px; font-weight: 700">Chesque</h3><p style="margin: 0; font-size: 19px; line-height: 1.5">Chess where every piece is a hero.</p></div>
+<div><h3 style="margin: 0 0 8px; font-size: 26px; font-weight: 700">Tale of the Tape</h3><p style="margin: 0; font-size: 19px; line-height: 1.5">A daily UFC guessing game.</p></div>
+<div><h3 style="margin: 0 0 8px; font-size: 26px; font-weight: 700">Intermediate micro course</h3><p style="margin: 0; font-size: 19px; line-height: 1.5">Twelve interactive weeks, with an assistant that answers students' questions.</p></div>
+<div><h3 style="margin: 0 0 8px; font-size: 26px; font-weight: 700">MBTA live LED map</h3><p style="margin: 0; font-size: 19px; line-height: 1.5">A Raspberry Pi that shows where every T train is.</p></div>
+<div><h3 style="margin: 0 0 8px; font-size: 26px; font-weight: 700">MBTA ridership forecast</h3><p style="margin: 0; font-size: 19px; line-height: 1.5">ARIMA models of T ridership against weather and season.</p></div>
+</div>
+</div>
+</section>
+
+<footer style="background: #1c0a29; color: #ffffff; padding: 120px 32px 56px">
+<div style="max-width: 1320px; margin: 0 auto">
+<p style="margin: 0 0 40px; font-size: clamp(26px, 6vw, 88px); line-height: 1; font-weight: 800; letter-spacing: -0.02em; font-stretch: 112%; overflow-wrap: anywhere"><a href="#" style="text-decoration: none">zwinship@bentley.edu</a></p>
+<div style="display: flex; flex-wrap: wrap; gap: 28px; font-size: 18px"><a href="#">LinkedIn</a><a href="#">GitHub</a><a href="#">CV (PDF)</a></div>
+</div>
+</footer>
+
+</div>
+</body>
+</html>
