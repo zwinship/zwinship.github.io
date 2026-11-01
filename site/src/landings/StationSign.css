@@ -1,0 +1,164 @@
+/* Landing option "sign": a station entrance. */
+
+.ss {
+  --ss-ink: #161616;
+  --ss-wall: #ffffff;
+  --ss-pad: clamp(16px, 4vw, 56px);
+  min-height: 100vh; min-height: 100dvh;
+  display: flex; flex-direction: column;
+  background: var(--ss-wall); color: var(--ss-ink);
+  overflow-x: hidden;
+}
+
+/* ---------- station name sign ---------- */
+
+.ss-band { background: var(--ss-ink); color: #fff; }
+.ss-band-in {
+  max-width: 1320px; margin: 0 auto;
+  padding: clamp(28px, 6.5vh, 72px) var(--ss-pad) clamp(24px, 5vh, 56px);
+}
+.ss-name {
+  margin: 0; font-weight: 800; letter-spacing: -0.035em; line-height: 0.92;
+  font-size: clamp(46px, 10.5vw, 150px);
+  animation: ss-light 0.9s steps(1, end) both;
+}
+.ss-sub {
+  margin: clamp(10px, 2vh, 20px) 0 0; font-weight: 500; color: #c9ccd0;
+  font-size: clamp(16px, 1.8vw, 24px); line-height: 1.3;
+  animation: ss-fade 0.5s 0.75s both;
+}
+/* A sign's lamps catching: two quick stutters, then steady. */
+@keyframes ss-light {
+  0% { opacity: 0; }
+  18% { opacity: 0.55; }
+  26% { opacity: 0.1; }
+  40% { opacity: 0.85; }
+  48% { opacity: 0.35; }
+  60% { opacity: 1; }
+}
+@keyframes ss-fade { from { opacity: 0; } to { opacity: 1; } }
+
+.ss-stripe { display: flex; height: 10px; transform-origin: 0 50%; animation: ss-grow 0.7s 0.2s cubic-bezier(0.65, 0, 0.35, 1) both; }
+.ss-stripe span { flex: 1; }
+@keyframes ss-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+/* ---------- line bullets ---------- */
+
+.ss-wall {
+  flex: 1 0 auto; width: 100%; max-width: 1320px; margin: 0 auto;
+  padding: clamp(24px, 5vh, 64px) var(--ss-pad) 0;
+  display: flex; flex-direction: column; justify-content: center;
+}
+.ss-lines ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; }
+.ss-lines li { animation: ss-settle 0.55s cubic-bezier(0.2, 0.9, 0.25, 1.15) both; animation-delay: calc(0.55s + var(--i) * 0.07s); }
+@keyframes ss-settle { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: none; } }
+
+.ss-line {
+  display: flex; flex-direction: column; align-items: center; gap: 14px;
+  padding: 6px 4px 10px; text-decoration: none; color: var(--ss-ink); border-radius: 8px;
+}
+.ss-line:hover { color: var(--ss-ink); }
+.ss-bullet {
+  width: clamp(76px, 9vw, 124px); aspect-ratio: 1; border-radius: 50%; background: var(--c);
+  transition: transform 0.25s cubic-bezier(0.3, 0.7, 0.3, 1);
+}
+.ss-line:hover .ss-bullet, .ss-line:focus-visible .ss-bullet { transform: translateY(-4px); }
+.ss-label {
+  font-weight: 800; font-size: clamp(18px, 1.7vw, 24px); letter-spacing: -0.01em; line-height: 1.1;
+  padding-bottom: 4px; border-bottom: 4px solid transparent; transition: border-color 0.2s;
+}
+.ss-line.is-on .ss-label { border-color: var(--c); }
+
+/* ---------- strip map of the active line ---------- */
+
+.ss-strip { margin: clamp(22px, 4.5vh, 48px) 0 0; min-height: clamp(120px, 16vh, 168px); border-top: 2px solid #e3e4e6; padding-top: clamp(18px, 3vh, 28px); animation: ss-fade 0.4s 1s both; }
+.ss-strip ol {
+  position: relative; list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); max-width: calc(var(--n) * 220px);
+}
+.ss-strip ol::before {
+  content: ''; position: absolute; top: 8px; height: 8px; border-radius: 4px; background: var(--c);
+  left: calc(50% / var(--n)); right: calc(50% / var(--n));
+  transform-origin: 0 50%; animation: ss-grow 0.45s cubic-bezier(0.65, 0, 0.35, 1) both;
+}
+.ss-strip ol:has(li:only-child)::before { left: calc(50% - 40px); right: calc(50% - 40px); }
+.ss-strip li { min-width: 0; animation: ss-fade 0.25s both; animation-delay: calc(0.12s + var(--i) * 0.05s); }
+.ss-strip a {
+  display: flex; flex-direction: column; align-items: center; gap: 10px; height: 100%;
+  padding: 0 8px 6px; text-align: center; text-decoration: none; color: var(--ss-ink); border-radius: 6px;
+}
+.ss-stop {
+  position: relative; z-index: 1; width: 24px; height: 24px; border-radius: 50%;
+  background: #fff; border: 5px solid var(--c); transition: transform 0.2s;
+}
+.ss-title { font-size: 15px; font-weight: 600; line-height: 1.3; }
+.ss-strip a:hover { color: var(--ss-ink); }
+.ss-strip a:hover .ss-stop, .ss-strip a:focus-visible .ss-stop { transform: scale(1.2); background: var(--ss-ink); }
+.ss-strip a:hover .ss-title { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+
+/* ---------- directional signs ---------- */
+
+.ss-foot {
+  width: 100%; max-width: 1320px; margin: 0 auto;
+  padding: clamp(18px, 3.5vh, 36px) var(--ss-pad) clamp(18px, 3.5vh, 32px);
+  display: flex; justify-content: space-between; align-items: flex-end; gap: 16px;
+  animation: ss-fade 0.4s 1.05s both;
+}
+.ss-fun { display: flex; flex-wrap: wrap; gap: 10px; }
+.ss-fun a {
+  display: inline-flex; align-items: center; min-height: 40px; padding: 0 14px;
+  border: 2px solid var(--ss-ink); border-radius: 4px; background: #fff;
+  font-size: 15px; font-weight: 700; text-decoration: none; color: var(--ss-ink);
+}
+.ss-fun a:hover { background: var(--ss-ink); color: #fff; }
+
+.ss-enter {
+  flex: none; display: inline-flex; align-items: center; gap: 28px;
+  min-height: 72px; padding: 0 22px 0 28px; border-radius: 6px;
+  background: var(--ss-ink); color: #fff; text-decoration: none;
+  font-weight: 800; font-size: 30px; letter-spacing: -0.01em;
+}
+.ss-enter:hover { color: #fff; }
+.ss-arrow { width: 36px; height: 36px; fill: currentColor; transition: transform 0.25s cubic-bezier(0.3, 0.7, 0.3, 1); }
+.ss-enter:hover .ss-arrow, .ss-enter:focus-visible .ss-arrow { transform: translateX(5px); }
+
+/* Tactile warning strip at the platform edge. */
+.ss-edge {
+  height: 22px; flex: none;
+  background-color: #f6c700;
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.16) 2.5px, transparent 3px);
+  background-size: 12px 12px; background-position: 3px 5px;
+}
+
+.ss a:focus-visible { outline: 3px solid #003da5; outline-offset: 3px; }
+
+/* ---------- narrow screens: a directory sign ---------- */
+
+@media (max-width: 760px) {
+  .ss-wall { padding-top: 20px; }
+  .ss-lines ul { grid-template-columns: 1fr; gap: 0; }
+  .ss-lines li + li { border-top: 2px solid #e3e4e6; }
+  .ss-line { flex-direction: row; gap: 16px; padding: 8px 4px; }
+  .ss-bullet { width: 46px; }
+  .ss-line:hover .ss-bullet, .ss-line:focus-visible .ss-bullet { transform: none; }
+  .ss-label { font-size: 22px; padding-bottom: 0; border-bottom: 0; }
+  .ss-strip { display: none; }
+  .ss-foot { flex-direction: column-reverse; align-items: stretch; gap: 12px; padding-top: 20px; }
+  .ss-enter { justify-content: space-between; min-height: 60px; font-size: 26px; }
+  .ss-arrow { width: 30px; height: 30px; }
+  .ss-fun a { flex: 1 1 0; justify-content: center; padding: 0 8px; font-size: 14px; white-space: nowrap; }
+  .ss-edge { height: 16px; }
+}
+@media (max-width: 760px) and (max-height: 700px) {
+  .ss-band-in { padding-top: 22px; padding-bottom: 18px; }
+  .ss-line { padding: 4px 4px; }
+  .ss-bullet { width: 38px; }
+  .ss-label { font-size: 20px; }
+  .ss-wall { padding-top: 14px; }
+  .ss-foot { padding-top: 14px; padding-bottom: 14px; gap: 10px; }
+  .ss-enter { min-height: 54px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ss *, .ss *::before { animation: none !important; transition: none !important; }
+}

@@ -140,85 +140,236 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 #hand svg{width:100%;height:100%;transition:transform .08s;filter:drop-shadow(1px 2px 1px rgba(0,0,0,.28))}
 #hand.press svg{transform:scale(.92)}
 
-/* ================= CHANNEL CONTENT ================= */
-#content{position:fixed;inset:0;z-index:70;display:none;flex-direction:column;cursor:auto}
-#content.open{display:flex;animation:fadeIn .3s ease}
+/* ================= CHANNEL CONTENT =================
+   Each channel is its own full-screen app, styled after that real channel. */
+#content{position:fixed;inset:0;z-index:70;display:none;cursor:auto;overflow:hidden;font-family:var(--font);color:var(--ink)}
+#content.open{display:block;animation:fadeIn .3s ease}
 #content.leaving{animation:fadeOut .2s ease forwards}
 @keyframes fadeOut{to{opacity:0}}
-.cc-head{flex:0 0 auto;display:flex;align-items:center;gap:16px;padding:16px clamp(16px,4vw,48px);padding-top:max(16px,env(safe-area-inset-top));background:#fff;border-bottom:2px solid #d9dadd}
-.cc-head .ico{width:92px;height:52px;border-radius:10px;overflow:hidden;border:2px solid var(--tile-border);flex:0 0 auto;position:relative;background:#fff}
-.cc-head .ico .bn{position:absolute;inset:0}
-.cc-head h1{font-size:clamp(22px,3vw,30px);font-weight:700;color:#55575c;line-height:1.15;outline:none}
-.cc-head p{font-size:14px;color:var(--gray-text);font-weight:500}
-.cc-body{flex:1;overflow-y:auto;padding:26px clamp(16px,4vw,48px) 40px;-webkit-overflow-scrolling:touch;user-select:text}
-.cc-inner{max-width:1000px;margin:0 auto}
-.cc-foot{flex:0 0 auto;display:flex;justify-content:center;align-items:center;gap:clamp(12px,4vw,48px);flex-wrap:wrap;padding:16px;padding-bottom:max(16px,env(safe-area-inset-bottom));border-top:3px solid var(--cyan);background:linear-gradient(#ededef,#dfe0e3)}
-.cc-foot .pill{width:min(260px,42vw);height:62px;font-size:24px}
-@media (max-height:500px){.cc-head{padding:8px 16px}.cc-head .ico{width:64px;height:36px}.cc-foot{padding:8px;flex-wrap:nowrap;gap:10px}.cc-foot .pill{height:44px;font-size:18px;width:auto;flex:1 1 0;max-width:220px;padding:0 14px}}
+#content [hidden]{display:none !important}
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;overflow:hidden}
+.scroll{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+.sel-text{user-select:text}
+/* the system's grey pill button, as used across the real channels */
+.wb{display:inline-flex;align-items:center;justify-content:center;min-width:clamp(130px,15vw,220px);height:clamp(46px,6.2vh,62px);padding:0 24px;border-radius:999px;background:linear-gradient(#fdfdfd,#e9e9eb);border:2px solid #c4c5c9;box-shadow:0 2px 3px rgba(0,0,0,.12);font-size:clamp(16px,2.2vh,22px);font-weight:500;color:#55575c;text-decoration:none;white-space:nowrap;outline:none;transition:border-color .1s,box-shadow .1s}
+.wb:hover,.wb:focus-visible{border-color:var(--cyan);box-shadow:0 0 0 1px var(--cyan),0 0 8px 2px rgba(52,190,237,.45)}
+.wbar{flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:clamp(10px,3vw,40px);padding:14px 16px;padding-bottom:max(14px,env(safe-area-inset-bottom))}
+.wbar.grey{background:linear-gradient(#ededef,#dcdde0);border-top:3px solid var(--cyan)}
+@media (max-width:600px){.wb{min-width:0;flex:1 1 0;max-width:200px;padding:0 10px;font-size:16px}.wbar{gap:10px}}
 
-.sec-h{font-size:19px;font-weight:700;color:#55575c;margin:30px 0 12px}
-.sec-h:first-child{margin-top:0}
-.card{background:#fff;border:2px solid #d5d6da;border-radius:12px;padding:22px 24px;margin-bottom:16px}
-.card h3{font-size:21px;font-weight:700;color:#45474c;line-height:1.3}
-.card .meta{font-size:14px;font-weight:500;color:var(--cyan-text);margin:4px 0 10px}
-.card p{font-size:16.5px;line-height:1.7;color:#55575c}
-.card p + p{margin-top:12px}
-.tagline{font-size:14px;font-weight:500;color:var(--gray-text);margin-top:12px}
-.rows{list-style:none;margin:0 0 16px;border-top:2px solid #d5d6da}
-.rows li{display:grid;grid-template-columns:150px minmax(0,1fr);gap:4px 20px;padding:16px 4px;border-bottom:1px solid #e1e2e5}
-.rows h3{font-size:18px;font-weight:700;color:#45474c;line-height:1.3}
-.rows h3 a{color:inherit}
-.rows p{font-size:15.5px;line-height:1.65;color:#55575c;margin-top:4px}
-.row-year{font-size:14px;font-weight:500;color:var(--gray-text);padding-top:2px}
-@media (max-width:640px){.rows li{grid-template-columns:1fr}}
-.code{font:14px/1.5 ui-monospace,Menlo,Consolas,monospace;background:#f4f5f7;border:1px solid #dcdde0;border-radius:8px;padding:10px 14px;margin:14px 0 4px;overflow-x:auto;user-select:all}
-.links{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
-.wbtn{display:inline-flex;align-items:center;padding:9px 22px;border-radius:999px;background:linear-gradient(#ffffff,#eeeff1);border:2px solid #c6c7cb;color:#4a4c50;font-weight:500;font-size:15px;text-decoration:none;transition:border-color .1s,box-shadow .1s}
-.wbtn:hover,.wbtn:focus-visible{border-color:var(--cyan);box-shadow:0 0 0 1px var(--cyan),0 0 6px rgba(52,190,237,.45);outline:none}
-.grid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px}
-.grid2 .card{margin:0}
-.badge{display:inline-block;font-size:12px;font-weight:700;padding:3px 10px;border-radius:6px;background:var(--cyan);color:#fff;margin:0 6px 8px 0}
-.badge.gray{background:#9a9ca1}
-.about-top{display:flex;gap:28px;align-items:center;flex-wrap:wrap}
-.about-top .zw{position:relative;flex:0 0 auto;width:160px;height:160px;border-radius:24px;border:2px solid #d5d6da}
-.about-top h2{font-size:32px;font-weight:700;color:#45474c}
-@media (max-width:640px){.about-top{flex-direction:column;text-align:center;gap:18px}.about-top .links{justify-content:center}
-  .cc-foot{flex-wrap:nowrap;gap:8px}.cc-foot .pill{flex:1 1 0;width:auto;min-width:0;max-width:200px;height:52px;font-size:18px;padding:0 8px}}
-.about-top .sub{color:var(--cyan-text);font-weight:500;margin-top:2px}
-video{width:100%;border-radius:12px;background:#000;margin-top:12px;display:block}
-.shop-row{display:flex;gap:18px;align-items:flex-start}
-.shop-row .thumb{flex:0 0 150px;height:85px;border-radius:12px;overflow:hidden;position:relative;border:2px solid #d5d6da}
-.shop-row .thumb .bn{position:absolute;inset:0}
-.shop-row .price{margin-left:auto;flex:0 0 auto;font-weight:700;color:var(--cyan-text);font-size:14px;text-align:right}
-@media (max-width:640px){.shop-row{flex-direction:column}.shop-row .thumb{width:min(100%,240px);flex-basis:auto;height:auto;aspect-ratio:16/9}.shop-row .price{margin-left:0;text-align:left}}
-.wx{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
-.wx .card{text-align:center;background:linear-gradient(#3fa9e6,#8dd0f5);border-color:#5bb6e8;color:#fff}
-.wx .card h3,.wx .card .meta{color:#fff}
-.wx .temp{font-size:72px;font-weight:700;color:#fff;line-height:1}
-.wx .cond{font-weight:500;color:#eaf7ff;margin-top:6px}
-.poll-opts{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px}
-.list-plain{list-style:none}
-.list-plain li{padding:10px 0;border-bottom:1px solid #e4e5e8;font-size:16px}
-.list-plain li:last-child{border:0}
-.list-plain a{color:var(--cyan-text);font-weight:500;text-decoration:none}
-.list-plain a:hover{text-decoration:underline}
-.pdf-frame{width:100%;height:70vh;border:2px solid #d5d6da;border-radius:16px;background:#fff}
-/* Message Board */
-.board-date{display:flex;align-items:baseline;gap:14px;margin-bottom:18px}
-.board-date .d{font-size:64px;font-weight:700;color:#45474c;line-height:1}
-.board-date .m{font-size:22px;font-weight:500;color:var(--gray-text)}
-.letter{background:#fffef6;border:2px solid #e3dfc4;border-radius:14px;padding:30px 34px;max-width:720px;background-image:repeating-linear-gradient(transparent 0 33px,#ece8cf 33px 34px);background-position:0 18px}
+/* --- Disc Channel: the paper's title screen --- */
+.ds{background:radial-gradient(ellipse at 50% 42%,#ffffff 0,#f1f3f6 55%,#dde2e8 100%);align-items:center;justify-content:center;text-align:center;padding:16px}
+.ds-disc{position:absolute;left:50%;top:44%;width:min(86vh,94vw);height:min(86vh,94vw);transform:translate(-50%,-50%);opacity:.5;pointer-events:none}
+.ds-disc>div{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 30deg,#e9edf2,#ffffff,#e3e8ee,#fafbfc,#e9edf2);box-shadow:inset 0 0 0 2px #d3d8df;animation:spin 40s linear infinite}
+.ds-disc>div::before{content:'';position:absolute;inset:36%;border-radius:50%;background:#f3f5f7;box-shadow:inset 0 0 0 2px #d3d8df}
+.ds-disc>div::after{content:'';position:absolute;inset:45.5%;border-radius:50%;background:#fff;box-shadow:inset 0 0 0 2px #d3d8df}
+.ds-logo{position:relative;max-width:1040px}
+.ds-kick{font-size:clamp(13px,2vh,19px);font-weight:700;color:#1f7fae;letter-spacing:.12em;text-transform:uppercase}
+.ds-logo h1{font-size:min(7.4vh,8.6vw,76px);font-weight:800;color:#3d3f44;line-height:1.08;margin:2vh 0 1.4vh;letter-spacing:-.01em}
+.ds-sub{font-size:min(3.2vh,5vw,30px);font-weight:500;color:#6e7075}
+.ds-press{position:relative;margin-top:8vh;font-size:clamp(18px,3vh,28px);font-weight:500;color:#3d3f44;display:inline-flex;gap:12px;align-items:center;padding:8px 20px;border-radius:999px;animation:blink 1.6s ease-in-out infinite;outline:none}
+.ds-press:focus-visible{box-shadow:0 0 0 2px var(--cyan)}
+@keyframes blink{50%{opacity:.3}}
+.ds-menu{position:relative;margin-top:6vh;display:flex;flex-direction:column;gap:clamp(10px,1.8vh,16px);align-items:center;animation:fadeIn .3s ease}
+.ds-menu .wb{width:min(380px,80vw);max-width:none;flex:none}
+.ds-credit{position:absolute;left:16px;right:16px;bottom:max(16px,env(safe-area-inset-bottom));font-size:clamp(12px,1.7vh,15px);color:#8a8c91}
+.dlg{position:absolute;inset:0;z-index:5;background:rgba(236,238,241,.82);display:flex;align-items:center;justify-content:center;padding:16px;animation:fadeIn .2s ease}
+.dlg-box{background:#fff;border:2px solid #c9cacd;border-radius:24px;box-shadow:0 8px 24px rgba(0,0,0,.12);max-width:780px;width:100%;max-height:100%;display:flex;flex-direction:column;overflow:hidden;text-align:left}
+.dlg-box .scroll{padding:clamp(18px,3.4vh,34px) clamp(18px,3vw,36px);font-size:clamp(16px,2.3vh,20px);line-height:1.7;color:#4a4c50}
+.dlg-box .wbar{border-top:2px solid #e3e4e7}
+
+/* --- Mii Channel: the plaza --- */
+.mp{background:linear-gradient(#ffffff 0,#f6f7f9 40%,#e4e8ec 100%)}
+.mp-floor{position:absolute;left:-60%;right:-60%;bottom:0;height:62%;background-image:linear-gradient(rgba(70,90,110,.06) 2px,transparent 2px),linear-gradient(90deg,rgba(70,90,110,.06) 2px,transparent 2px);background-size:90px 90px;transform:perspective(520px) rotateX(62deg);transform-origin:50% 100%;pointer-events:none}
+.mp-label{position:absolute;top:max(16px,env(safe-area-inset-top));left:clamp(16px,4vw,48px);font-size:clamp(17px,2.6vh,24px);font-weight:700;color:#a0a2a7;z-index:1}
+.mp-main{position:relative;flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;display:flex;align-items:center;justify-content:center;gap:clamp(24px,5vw,90px);padding:clamp(56px,9vh,90px) clamp(16px,4vw,60px) 16px}
+.mp-mii{position:relative;flex:0 0 auto;width:min(30vw,50vh);text-align:center;animation:miiIn .5s cubic-bezier(.3,1.4,.5,1) both}
+@keyframes miiIn{from{transform:translateY(24px);opacity:0}}
+.mp-mii img{position:relative;z-index:1;display:block;width:100%;height:auto}
+.mp-mii .shadow{position:absolute;left:4%;right:4%;bottom:-18px;height:36px;border-radius:50%;background:radial-gradient(closest-side,rgba(40,50,60,.22),transparent)}
+.mp-tag{display:inline-block;margin-bottom:12px;padding:6px 24px;border-radius:999px;background:#fff;border:3px solid var(--cyan);box-shadow:0 2px 4px rgba(0,0,0,.1);font-weight:700;color:#4a4c50;font-size:clamp(16px,2.4vh,22px)}
+.mp-card{position:relative;flex:0 1 560px;min-width:0;background:#fff;border:2px solid #cfd0d4;border-radius:22px;box-shadow:0 4px 14px rgba(0,0,0,.08);overflow:hidden;user-select:text}
+.mp-card .hd{background:linear-gradient(#62cdf2,#34beed);color:#fff;font-weight:700;padding:10px 22px;font-size:clamp(16px,2.3vh,20px)}
+.mp-card dl{display:grid;grid-template-columns:auto minmax(0,1fr)}
+.mp-card dt,.mp-card dd{padding:clamp(9px,1.5vh,13px) 0;border-bottom:1px solid #e6e7ea;font-size:clamp(14px,2vh,17px);line-height:1.4}
+.mp-card dt{padding-left:22px;padding-right:18px;color:#1f7fae;font-weight:700}
+.mp-card dd{padding-right:22px;color:#4a4c50}
+.mp-card p{padding:clamp(12px,2vh,18px) 22px;font-size:clamp(15px,2.1vh,18px);line-height:1.6;color:#55575c}
+.mp .wbar{position:relative}
+@media (max-width:760px){.mp-main{flex-direction:column;justify-content:flex-start}.mp-mii{width:min(56vw,30vh)}.mp-card{flex:none;width:100%}}
+
+/* --- Photo Channel --- */
+.ph{background-color:#eeeff1;background-image:repeating-linear-gradient(to bottom,#f3f3f5 0 2px,#ebebed 2px 4px)}
+.ph-top{flex:0 0 auto;display:flex;align-items:baseline;gap:16px;padding:max(14px,env(safe-area-inset-top)) clamp(16px,4vw,48px) 6px}
+.ph-top b{font-size:clamp(20px,3vh,28px);font-weight:700;color:#6e7075}
+.ph-top span{font-size:clamp(14px,2vh,17px);color:#8a8c91}
+.ph-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(14px,2.6vw,34px);padding:clamp(10px,2vh,20px) clamp(16px,5vw,90px) 24px;max-width:1240px;margin:0 auto}
+.ph-th{position:relative;aspect-ratio:4/3;background:#fff;padding:clamp(4px,.6vw,8px);border-radius:4px;box-shadow:0 2px 6px rgba(0,0,0,.18);outline:none;transition:transform .15s,box-shadow .15s}
+.ph-th:hover,.ph-th:focus-visible{transform:scale(1.04);box-shadow:0 0 0 3px var(--cyan),0 0 12px 3px rgba(52,190,237,.45)}
+.ph-th img{display:block;width:100%;height:100%;object-fit:cover}
+.ph-th .mv{position:absolute;right:10px;bottom:10px;padding:2px 10px;border-radius:4px;background:rgba(0,0,0,.65);color:#fff;font-size:12px;font-weight:700;letter-spacing:.04em}
+.ph-card{container-type:size;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff;padding:0 8%}
+.ph-card b{font-size:7.6cqw;font-weight:700;line-height:1.2}
+.ph-card span{margin-top:4cqh;font-size:4.6cqw;font-weight:500;opacity:.8}
+.ph-zw{width:100%;height:100%;background:linear-gradient(#e8f3fa,#c7dff0)}
+.ph-zw img{object-fit:contain;object-position:50% 100%}
+.ph-view{position:absolute;inset:0;z-index:4;background:#000;display:flex;flex-direction:column;animation:fadeIn .25s ease}
+.ph-stage{position:relative;flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;padding:clamp(10px,3vh,28px) clamp(56px,8vw,110px)}
+.ph-stage>img,.ph-stage>video{max-width:100%;max-height:100%;object-fit:contain;display:block}
+.ph-stage>.ph-zw{width:auto;height:100%;max-width:100%;aspect-ratio:1}
+.ph-stage>.ph-card{width:min(100%,calc((100vh - 280px)*4/3));height:auto;aspect-ratio:4/3}
+.ph-arr{position:absolute;top:50%;width:46px;height:82px;margin-top:-41px;outline:none}
+.ph-arr svg{width:100%;height:100%;filter:drop-shadow(0 2px 2px rgba(0,0,0,.4))}
+.ph-arr:hover svg,.ph-arr:focus-visible svg{transform:scale(1.1)}
+.ph-arr.l{left:clamp(6px,2vw,30px)}.ph-arr.l svg{transform:scaleX(-1)}.ph-arr.l:hover svg,.ph-arr.l:focus-visible svg{transform:scaleX(-1) scale(1.1)}
+.ph-arr.r{right:clamp(6px,2vw,30px)}
+.ph-cap{flex:0 0 auto;background:rgba(34,35,38,.96);color:#eee;padding:14px clamp(16px,4vw,48px);user-select:text}
+.ph-cap h2{font-size:clamp(17px,2.5vh,22px);font-weight:700}
+.ph-cap .m{font-size:14px;color:#9fd9f2;margin-top:2px}
+.ph-cap p{font-size:clamp(14px,1.9vh,16px);line-height:1.55;color:#c9c9cc;max-width:980px;margin-top:6px}
+.ph-cap a{color:#9fd9f2;font-weight:500;margin-right:18px;font-size:15px}
+.ph-view .wbar{background:#1a1b1d}
+.ph-view.show .ph-cap p{display:none}
+@media (max-width:640px){.ph-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ph-stage{padding:12px 12px 64px}.ph-arr{top:auto;bottom:6px;margin-top:0;width:34px;height:56px}}
+
+/* --- Wii Shop Channel --- */
+.sh{background:linear-gradient(#ffffff 0,#eaf7fd 100%)}
+.sh-head{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:clamp(54px,9vh,80px);padding:max(8px,env(safe-area-inset-top)) clamp(16px,4vw,48px) 8px;background:#fff;border-bottom:4px solid var(--cyan);box-shadow:0 2px 8px rgba(52,190,237,.18)}
+.sh-head b{color:#1f9fd0;font-size:clamp(20px,3.4vh,30px);font-weight:800;letter-spacing:-.01em}
+.sh-head span{color:#6aaecb;font-size:clamp(14px,2vh,18px);font-weight:700}
+.sh-body{flex:1 1 auto;min-height:0;display:flex;gap:clamp(16px,2.6vw,40px);padding:clamp(14px,3vh,30px) clamp(16px,4vw,48px)}
+.sh-list{flex:0 0 clamp(270px,30vw,400px);overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;gap:10px;padding:3px}
+.sh-item{display:flex;align-items:center;gap:14px;padding:8px;background:#fff;border:2px solid #c3e7f6;border-radius:14px;text-align:left;outline:none;transition:border-color .1s,box-shadow .1s}
+.sh-item:hover,.sh-item:focus-visible{border-color:var(--cyan);box-shadow:0 0 0 1px var(--cyan),0 0 8px 2px rgba(52,190,237,.35)}
+.sh-item.sel{border-color:var(--cyan);background:#e9f8fe}
+.sh-item .bnw{position:relative;flex:0 0 clamp(88px,8vw,112px);aspect-ratio:16/9;border-radius:8px;overflow:hidden;border:1px solid #d5d6da}
+.sh-item .bnw .bn{position:absolute;inset:0}
+.sh-item b{display:block;font-size:clamp(15px,2vh,17px);color:#3a3c40;line-height:1.25}
+.sh-item small{display:block;font-size:13px;color:#7c8a93;margin-top:2px}
+.sh-detail{flex:1 1 auto;min-width:0;overflow-y:auto;overflow-x:hidden;background:#fff;border:2px solid #c3e7f6;border-radius:22px;padding:clamp(16px,3vh,30px) clamp(16px,2.4vw,34px);user-select:text}
+.sh-top{display:flex;gap:clamp(16px,2.4vw,30px);align-items:flex-start}
+.sh-banner{position:relative;flex:0 0 min(46%,460px);aspect-ratio:16/9;border-radius:14px;overflow:hidden;border:2px solid #d5d6da}
+.sh-banner .bn{position:absolute;inset:0}
+.sh-detail h2{font-size:clamp(21px,3.2vh,30px);color:#3a3c40;line-height:1.2;margin-bottom:10px}
+.sh-info{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 16px;font-size:clamp(14px,1.9vh,16px)}
+.sh-info dt{color:#1f9fd0;font-weight:700}
+.sh-info dd{color:#4a4c50}
+.sh-detail p{margin-top:16px;line-height:1.65;font-size:clamp(15px,2vh,17px);color:#55575c;max-width:820px}
+.sh-detail p.note{font-size:14px;color:#7c7e83}
+.sh-code{margin-top:14px;font:15px/1.5 ui-monospace,Menlo,Consolas,monospace;background:#f2f9fc;border:1px solid #c3e7f6;border-radius:8px;padding:10px 14px;user-select:all;overflow-x:auto}
+.sh-dl{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}
+.sh-dl .wb{min-width:150px;flex:none}
+.sh-dl .wb.main{background:linear-gradient(#63d2f6,#28afe2);color:#fff;border-color:#1f9fd0;font-weight:700}
+.sh .wbar{background:#fff;border-top:2px solid #c3e7f6}
+#shBack{display:none}
+@media (max-width:760px){.sh-list{flex:1 1 auto}.sh-detail{display:none}.sh.detail-on .sh-list{display:none}.sh.detail-on .sh-detail{display:block}.sh.detail-on #shBack{display:inline-flex}.sh-top{flex-direction:column}.sh-banner{flex:none;width:100%}.sh-item.sel{background:#fff;border-color:#c3e7f6}}
+
+/* --- Forecast Channel --- */
+.fc{background:linear-gradient(#2a86d3 0,#55afe9 42%,#b6e0f7 100%);color:#fff}
+.fc-top{flex:0 0 auto;display:flex;align-items:center;gap:16px;padding:max(16px,env(safe-area-inset-top)) clamp(16px,4vw,48px) 0}
+.fc-city{background:linear-gradient(#ffffff,#e2eff8);color:#2a6fa8;font-weight:800;font-size:clamp(22px,4vh,38px);padding:4px 30px;border-radius:14px;box-shadow:0 3px 10px rgba(0,40,90,.25)}
+.fc-top span{font-size:clamp(15px,2.2vh,20px);font-weight:500;text-shadow:0 1px 3px rgba(0,40,90,.35)}
+.fc-main{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;display:flex;gap:clamp(14px,3vw,36px);padding:clamp(14px,3vh,32px) clamp(16px,4vw,48px)}
+.fc-panel{background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.6);border-radius:24px;padding:clamp(16px,3vh,30px) clamp(16px,2.4vw,32px);box-shadow:0 4px 16px rgba(0,40,90,.12)}
+.fc-now{flex:0 0 clamp(220px,26vw,340px);text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.fc-lbl{font-size:clamp(16px,2.4vh,22px);font-weight:700;text-shadow:0 1px 3px rgba(0,40,90,.3)}
+.fc-temp{font-size:clamp(64px,15vh,150px);font-weight:700;line-height:1.05;margin:1vh 0;text-shadow:0 3px 10px rgba(0,40,90,.3)}
+.fc-cond{font-size:clamp(17px,2.6vh,24px);font-weight:500}
+.fc-src{font-size:13px;opacity:.8;margin-top:2vh}
+.fc-paper{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;justify-content:center;user-select:text}
+.fc-paper h2{font-size:clamp(22px,3.8vh,36px);line-height:1.2;margin:1vh 0;text-shadow:0 2px 6px rgba(0,40,90,.25)}
+.fc-paper .m{font-size:clamp(14px,2vh,17px);font-weight:500;opacity:.9}
+.fc-paper p{font-size:clamp(15px,2.2vh,20px);line-height:1.6;margin-top:1.6vh;max-width:760px;text-shadow:0 1px 2px rgba(0,40,90,.25)}
+.fc-tick,.nw-tick{flex:0 0 auto;position:relative;height:40px;overflow:hidden;container-type:inline-size}
+.fc-tick{background:rgba(12,56,110,.55)}
+.fc-tick div,.nw-tick div{position:absolute;top:0;left:0;height:100%;display:flex;align-items:center;white-space:nowrap;font-size:16px;font-weight:500;color:#fff;animation:ticker 32s linear infinite}
+.fc .wbar{background:linear-gradient(#ffffff,#e1edf6)}
+@media (max-width:760px){.fc-main{flex-direction:column}.fc-now{flex:none}.fc-temp{font-size:72px}}
+
+/* --- News Channel --- */
+.nw{background:#f2f3f5}
+.nw-head{flex:0 0 auto;display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:max(14px,env(safe-area-inset-top)) clamp(16px,4vw,48px) 0;background:#fff}
+.nw-head b{font-size:clamp(22px,3.6vh,32px);color:#24507d;font-weight:800}
+.nw-head span{font-size:clamp(14px,2vh,17px);color:#7d8590;font-weight:500}
+.nw-tabs{flex:0 0 auto;display:flex;gap:6px;padding:12px clamp(16px,4vw,48px) 0;background:#fff;border-bottom:4px solid #24507d}
+.nw-tab{padding:9px 26px;border-radius:12px 12px 0 0;background:#e1e6ed;color:#56677c;font-weight:700;font-size:clamp(15px,2vh,17px);outline:none}
+.nw-tab:hover,.nw-tab:focus-visible{background:#cfe9f6;color:#24507d}
+.nw-tab.on{background:#24507d;color:#fff}
+.nw-list{list-style:none;max-width:1040px;margin:0 auto;padding:6px clamp(16px,4vw,48px) 20px}
+.nw-list li>*{display:block;width:100%;text-align:left;padding:clamp(12px,2vh,18px) 12px;border-bottom:1px solid #d7dbe1;border-left:4px solid transparent;outline:none}
+.nw-list button:hover,.nw-list button:focus-visible{background:#fff;border-left-color:var(--cyan)}
+.nw-list .src{font-size:13px;font-weight:700;color:#3a75ad;text-transform:uppercase;letter-spacing:.06em}
+.nw-list .hl{display:block;font-size:clamp(17px,2.6vh,23px);font-weight:700;color:#2f3237;margin-top:3px;line-height:1.3}
+.nw-note{max-width:1040px;margin:0 auto;padding:16px clamp(16px,4vw,48px) 0;font-size:15px;color:#6d747d}
+.nw-art{max-width:900px;margin:clamp(14px,3vh,34px) auto;padding:clamp(18px,3.6vh,40px) clamp(18px,3vw,44px);background:#fff;border:1px solid #d7dbe1;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,.06);user-select:text;animation:fadeIn .2s ease}
+.nw-art .src{font-size:14px;font-weight:700;color:#3a75ad;text-transform:uppercase;letter-spacing:.06em}
+.nw-art h2{font-size:clamp(24px,4.4vh,40px);line-height:1.2;color:#2f3237;margin:10px 0 18px}
+.nw-art p{font-size:clamp(15px,2.2vh,19px);line-height:1.65;color:#4f555c}
+.nw-art .wb{margin-top:24px;flex:none}
+.nw-wrap{margin:0 16px}
+.nw-tick{background:#24507d}
+.nw .wbar{background:linear-gradient(#ffffff,#e6e9ee)}
+
+/* --- Internet Channel --- */
+.in{background:#d6d7da}
+.in-addr{flex:0 0 auto;display:flex;align-items:center;gap:12px;padding:max(10px,env(safe-area-inset-top)) clamp(12px,3vw,32px) 10px;background:linear-gradient(#f6f6f7,#dadbde);border-bottom:1px solid #b4b5b9}
+.in-addr .fld{flex:1 1 auto;min-width:0;height:40px;border-radius:20px;background:#fff;border:2px solid #9cc6df;display:flex;align-items:center;padding:0 18px;font-size:16px;color:#3a3c40;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.in-addr .ld{flex:0 0 auto;font-size:14px;font-weight:700;color:#6e7075}
+.in-page{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;background:#fff;user-select:text}
+.pg{max-width:800px;margin:0 auto;padding:22px 20px 44px;font:16px/1.45 Arial,Helvetica,sans-serif;color:#000}
+.pg.big{font-size:20px}
+.pg h1{font-size:2em;margin:.2em 0 .3em}
+.pg h2{font-size:1.3em;margin:1.3em 0 .4em;border-bottom:1px solid #999;padding-bottom:2px}
+.pg h3{font-size:1em;margin:.9em 0 .1em}
+.pg p{margin:.35em 0}
+.pg ul{margin:.3em 0 .3em 1.4em}
+.pg a{color:#0000ee;text-decoration:underline}
+.pg .w{color:#555}
+.in-tools{flex:0 0 auto;display:flex;justify-content:center;gap:clamp(6px,1.6vw,18px);padding:10px 8px;padding-bottom:max(10px,env(safe-area-inset-bottom));background:linear-gradient(#ececee,#c9cacd);border-top:1px solid #a9aaae}
+.in-tb{flex:0 1 110px;min-width:0;height:clamp(48px,7vh,62px);border-radius:14px;background:linear-gradient(#ffffff,#e4e4e6);border:2px solid #b2b3b7;box-shadow:0 1px 2px rgba(0,0,0,.1);font-size:clamp(12px,1.8vh,15px);font-weight:700;color:#55575c;outline:none;transition:border-color .1s,box-shadow .1s}
+.in-tb:hover:not([disabled]),.in-tb:focus-visible{border-color:var(--cyan);box-shadow:0 0 0 1px var(--cyan),0 0 8px 2px rgba(52,190,237,.4)}
+.in-tb[disabled]{opacity:.42;cursor:default}
+.in-tb.wm{flex-basis:130px}
+.in-fav{position:absolute;right:clamp(10px,3vw,40px);bottom:calc(clamp(48px,7vh,62px) + 30px);z-index:3;width:min(380px,calc(100vw - 20px));background:#fff;border:2px solid #b2b3b7;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.2);overflow:hidden;animation:fadeIn .15s ease}
+.in-fav b{display:block;padding:10px 18px;background:#eceef1;font-size:15px;color:#55575c}
+.in-fav a{display:block;padding:11px 18px;border-top:1px solid #e3e4e7;color:#0000ee;font:16px Arial,Helvetica,sans-serif;outline:none}
+.in-fav a:hover,.in-fav a:focus-visible{background:#e9f8fe}
+
+/* --- Everybody Votes Channel --- */
+.ev{background:linear-gradient(#ffffff,#eaedf1)}
+.ev-head{flex:0 0 auto;padding:max(16px,env(safe-area-inset-top)) clamp(16px,4vw,48px) 0;font-size:clamp(17px,2.6vh,24px);font-weight:700;color:#a0a2a7}
+.ev-main{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(18px,4vh,40px);padding:16px clamp(16px,4vw,48px)}
+.ev-q{width:min(920px,100%);background:#fff;border:3px solid #cdd0d4;border-radius:26px;box-shadow:0 4px 14px rgba(0,0,0,.08);overflow:hidden;text-align:center}
+.ev-q .lbl{background:#eef0f3;padding:8px;font-size:clamp(13px,1.8vh,16px);color:#8a8c91;font-weight:700;letter-spacing:.06em}
+.ev-q h2{font-size:clamp(22px,4.2vh,38px);color:#3a3c40;line-height:1.3;padding:clamp(16px,3vh,28px) 22px}
+.ev-ans{display:flex;gap:clamp(14px,3vw,44px);width:min(920px,100%)}
+.ev-a{flex:1 1 0;min-height:clamp(96px,17vh,170px);border-radius:26px;color:#fff;font-size:clamp(20px,3.6vh,34px);font-weight:700;border:4px solid #fff;box-shadow:0 4px 10px rgba(0,0,0,.15);outline:none;transition:transform .12s,opacity .3s,box-shadow .1s;text-shadow:0 1px 3px rgba(0,0,0,.2)}
+.ev-a.r{background:linear-gradient(#f47d74,#d8463d)}
+.ev-a.b{background:linear-gradient(#62c8f2,#2a9dd5)}
+.ev-a:hover:not([disabled]),.ev-a:focus-visible{transform:scale(1.03);box-shadow:0 0 0 4px var(--cyan),0 4px 12px rgba(0,0,0,.18)}
+.ev-a[disabled]{cursor:default}
+.ev-a.dim{opacity:.35}
+.ev-res{width:min(920px,100%);background:#fff;border:2px solid #d5d6da;border-radius:22px;padding:clamp(16px,3vh,28px) clamp(18px,3vw,34px);user-select:text;animation:fadeIn .3s ease}
+.ev-res .lbl{font-size:14px;color:#8a8c91;font-weight:700;letter-spacing:.06em}
+.ev-res h3{font-size:clamp(19px,3vh,26px);color:#3a3c40;line-height:1.3;margin:6px 0 10px}
+.ev-res p{font-size:clamp(15px,2.1vh,18px);line-height:1.6;color:#55575c}
+.ev .wbar{background:linear-gradient(#ededef,#dcdde0)}
+@media (max-width:600px){.ev-ans{flex-direction:column}.ev-a{min-height:72px}}
+
+/* --- Wii Message Board --- */
+.mb{background:#f4f2e8}
+.mb-head{flex:0 0 auto;display:flex;align-items:baseline;gap:14px;padding:max(16px,env(safe-area-inset-top)) clamp(16px,4vw,48px) 12px;background:linear-gradient(#ffffff,#f4f2e8)}
+.mb-head .d{font-size:clamp(40px,8vh,64px);font-weight:700;color:#45474c;line-height:1}
+.mb-head .m{font-size:clamp(17px,2.6vh,22px);font-weight:500;color:var(--gray-text)}
+.mb .scroll{padding:8px clamp(16px,4vw,48px) 24px}
+.letter{max-width:760px;margin:0 auto;background:#fffef6;border:2px solid #e3dfc4;border-radius:14px;padding:clamp(18px,3vh,30px) clamp(18px,3vw,34px);background-image:repeating-linear-gradient(transparent 0 33px,#ece8cf 33px 34px);background-position:0 18px;box-shadow:0 3px 10px rgba(0,0,0,.06);user-select:text}
 .letter p{font-size:18px;line-height:34px;color:#4a4c50}
 .letter .from{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-.letter .from .zw{position:relative;flex:0 0 auto;width:52px;height:52px;border-radius:12px;border:2px solid #d5d6da}
+.letter .from .av{flex:0 0 auto;width:52px;height:52px;border-radius:12px;border:2px solid #d5d6da;background:linear-gradient(#e8f3fa,#c7dff0);overflow:hidden}
+.letter .from .av img{width:100%;height:100%;object-fit:cover;object-position:50% 10%}
 .letter .from b{font-size:18px}
-/* themed content headers */
-#content[data-theme="shop"] .cc-head{background:#34beed;border-bottom-color:#1f9fd0}
-#content[data-theme="shop"] .cc-head h1,#content[data-theme="shop"] .cc-head p{color:#fff}
-#content[data-theme="shop"] .cc-body{background:#f2fbff}
-#content[data-theme="forecast"] .cc-head{background:linear-gradient(#bfe6fa,#fff)}
-#content[data-theme="news"] .cc-head{background:linear-gradient(#e8eef6,#fff)}
-#content[data-theme="board"] .cc-head{background:linear-gradient(#fbf9ec,#fff)}
+.letter a{color:#1f7fae;font-weight:700}
+.mb .wbar{background:linear-gradient(#ededef,#dcdde0);border-top:3px solid var(--cyan)}
 
 /* ================= BANNERS =================
    Drawn in container units (cqw/cqh) so the same markup works on a tile,
@@ -229,6 +380,8 @@ video{width:100%;border-radius:12px;background:#000;margin-top:12px;display:bloc
 .bn .t{left:0;right:0;text-align:center;font-weight:700;white-space:nowrap}
 .bn .pv{display:none}
 #pvZoom .bn .pv{display:block}
+.bn .tl{inset:0}
+#pvZoom .bn .tl{display:none}
 #pvZoom .bn .tick{font-size:5cqh !important}
 #pvZoom .bn .tickbar,#pvZoom .bn .capbar{height:15% !important}
 #pvZoom .bn .cap{font-size:8cqh !important}
@@ -241,9 +394,6 @@ video{width:100%;border-radius:12px;background:#000;margin-top:12px;display:bloc
 .spin{animation:spin 8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes ticker{from{transform:translateX(100cqw)}to{transform:translateX(-100%)}}
-/* Zach's photo (transparent PNG): head-and-shoulders crop, face centered */
-.zw{background:linear-gradient(#e8f3fa,#cfe4f2);overflow:hidden}
-.zw::before{content:'';position:absolute;inset:0;background:url(../../images/zwinship.png) 43% 11%/150% auto no-repeat}
 /* light gloss over each tile, like the real menu's glassy channel frames */
 .ch:not(.empty) .bn::after{content:'';position:absolute;left:0;right:0;top:0;height:48%;background:linear-gradient(rgba(255,255,255,.28),rgba(255,255,255,0));pointer-events:none}
 
@@ -251,7 +401,7 @@ video{width:100%;border-radius:12px;background:#000;margin-top:12px;display:bloc
   .bn *,.spin,.ch.hot,.parrow.show svg,#mailBtn .env,.warn-press{animation:none !important}
   .warn-press{opacity:1}
   #track,#pvZoom,#pages,#bar,#barExt,#pvBottom,#fader,#bubble{transition-duration:.01s !important}
-  #sysmenu .sys-row,#content,#menu.boot{animation:none !important}
+  #sysmenu .sys-row,#content,#menu.boot,.ds-disc>div,.ds-press,.mp-mii,.fc-tick div,.nw-tick div{animation:none !important}
 }
 </style>
 </head>
@@ -318,11 +468,7 @@ video{width:100%;border-radius:12px;background:#000;margin-top:12px;display:bloc
 </div>
 
 <!-- ===== Channel content (full screen, unscaled) ===== -->
-<div id="content" class="scan" role="dialog" aria-modal="true" aria-labelledby="ccTitle">
-  <div class="cc-head"><div class="ico" id="ccIco"></div><div><h1 id="ccTitle" tabindex="-1"></h1><p id="ccSub"></p></div></div>
-  <div class="cc-body" id="ccBody"><div class="cc-inner" id="ccInner"></div></div>
-  <div class="cc-foot" id="ccFoot"></div>
-</div>
+<div id="content" class="scan" role="dialog" aria-modal="true" aria-label="Channel"></div>
 
 <div id="fader"></div>
 
@@ -339,242 +485,377 @@ video{width:100%;border-radius:12px;background:#000;margin-top:12px;display:bloc
 <script src="../shared/data.js"></script>
 <script>
 const ASSET = '../../';
-const EXT = (href, label) => `<a class="wbtn" href="${href}" ${href.startsWith('mailto:')?'':'target="_blank" rel="noopener"'}>${label}</a>`;
-{ const led = byId('mbta-led'); led.media = `<video src="${ASSET+led.video}" controls playsinline preload="none" poster="${ASSET+led.poster}"></video>`; }
+const HERE = './';
+const ZW_IMG = HERE + 'zw.webp', LED_IMG = HERE + 'led.webp';
+const RESUME = ASSET + 'about_me/resume.pdf';
+const LINKEDIN = 'https://linkedin.com/in/zwinship', GITHUB = 'https://github.com/zwinship';
+const coarse = matchMedia('(pointer:coarse)').matches;
 
 /* An upright, rounded "Wii" wordmark drawn as strokes (not the official logo file). */
 const WII_MARK = (col='#a5a6aa') => `<svg class="wii-mark" viewBox="0 0 100 44" aria-hidden="true"><g fill="none" stroke="${col}" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 10l9 28 9-22 9 22 9-28"/><path d="M62 20v18M84 20v18"/></g><circle cx="62" cy="9" r="4.6" fill="${col}"/><circle cx="84" cy="9" r="4.6" fill="${col}"/></svg>`;
 document.querySelector('.wii-mark-slot').outerHTML = WII_MARK();
 
 /* =====================================================================
-   BANNERS: built like real channel banners. A clean background in the
-   channel's own color, one wordmark, and at most one photo or one simple
-   mark. Lines marked `.pv` only show in the zoomed preview.
+   BANNERS: each tile copies the look of the real channel's tile: its own
+   name, its own colors, one moving element. `.pv` lines only show in the
+   zoomed preview, `.tl` lines only on the small tile.
    ===================================================================== */
-const PV = (txt, css) => `<div class="pv" style="${css};font-size:5.5cqh;font-weight:500;line-height:1.5">${txt}</div>`;
-// bg fills the whole banner; content sits in a centered 16:9 box so it
-// keeps its layout on wide (preview) and narrow (phone preview) shapes.
+const PV = (txt, css) => `<div class="pv" style="${css};font-size:5.6cqh;font-weight:500;line-height:1.45">${txt}</div>`;
 const BN = (bg, inner) => `${bg}<div class="safe">${inner}</div>`;
 const LIGHT = '<div style="inset:0;background:linear-gradient(#ffffff,#eceff3)"></div>';
+const LABEL = (txt, css) => `<div style="${css};font-weight:800;color:#8b8d92;letter-spacing:-.15cqh;line-height:1.05">${txt}</div>`;
+const nber = byId('nber');
 const B = {
 disc: () => BN(LIGHT, `
-  <div class="spin" style="left:8cqw;top:13cqh;width:74cqh;height:74cqh;border-radius:50%;background:conic-gradient(from 30deg,#e7ebf1,#fafbfd,#e3e8ef,#f7f8fb,#e7ebf1);box-shadow:inset 0 0 0 .5cqh #c3c7ce,0 1cqh 2cqh rgba(0,0,0,.08)">
-    <div style="inset:34%;border-radius:50%;background:#f3f4f6;box-shadow:inset 0 0 0 .5cqh #c3c7ce"></div>
-    <div style="inset:44%;border-radius:50%;background:#fff;box-shadow:inset 0 0 0 .5cqh #c3c7ce"></div>
+  <div class="spin" style="left:7cqw;top:13cqh;width:74cqh;height:74cqh;border-radius:50%;background:conic-gradient(from 30deg,#dfe4ec,#fbfcfd,#d8dee7,#f6f7fa,#dfe4ec);box-shadow:inset 0 0 0 .5cqh #b9bec7,0 1cqh 2cqh rgba(0,0,0,.08)">
+    <div style="inset:36%;border-radius:50%;background:#eef0f3;box-shadow:inset 0 0 0 .5cqh #b9bec7"></div>
+    <div style="inset:45%;border-radius:50%;background:#fff;box-shadow:inset 0 0 0 .4cqh #b9bec7"></div>
   </div>
-  <div style="left:54cqw;top:35cqh;font-size:13cqh;font-weight:800;color:#5f6166;letter-spacing:-.2cqh">Research</div>
-  ${PV(`${byId('nber').badge}<br>Congestion pricing and EMS response times`, 'left:54cqw;right:3cqw;top:56cqh;color:#1f7fae')}`),
-
-mii: () => BN('<div style="inset:0;background:linear-gradient(#ffffff,#edf1f4)"></div>', `
-  <div class="zw" style="right:6cqw;top:13cqh;width:74cqh;height:74cqh;border-radius:12cqh;box-shadow:inset 0 0 0 .5cqh rgba(0,0,0,.08)"></div>
-  <div style="left:7cqw;top:35cqh;font-size:13cqh;font-weight:800;color:#5f6166;letter-spacing:-.2cqh">About Me</div>
-  ${PV(`${PROFILE.name}<br>${PROFILE.now}`, 'left:7cqw;right:50cqw;top:56cqh;color:#1f7fae')}`),
-
-shop: () => BN('<div style="inset:0;background:linear-gradient(#ffffff,#e4f5fc)"></div>', `
-  <svg viewBox="0 0 40 40" style="left:50%;top:12cqh;width:36cqh;height:36cqh;margin-left:-18cqh"><path d="M13 14V11a7 7 0 0114 0v3" fill="none" stroke="#2aa6d8" stroke-width="3"/><rect x="5" y="13" width="30" height="23" rx="4" fill="#fff" stroke="#2aa6d8" stroke-width="3"/></svg>
-  <div class="t" style="top:54cqh;font-size:13cqh;font-weight:800;color:#1f8fc4">Project Shop</div>
-  ${PV('Research and personal projects', 'left:0;right:0;text-align:center;top:78cqh;color:#4b9cc4')}`),
-
-forecast: () => BN(`<div style="inset:0;background:linear-gradient(#3fa6e6,#a9dbf6 80%)"></div>
-  <div class="capbar" style="left:0;right:0;bottom:0;height:24%;background:linear-gradient(#ffffff,#eef6fb);display:flex;align-items:center;justify-content:center"><span class="cap" style="position:static;font-size:13cqh;font-weight:800;color:#2c8fc6">Forecast</span></div>`, `
-  <div style="left:8cqw;top:12cqh;font-size:10cqh;font-weight:700;color:#fff">New York</div>
-  <div class="wx-temp" style="left:8cqw;top:26cqh;font-size:30cqh;font-weight:700;color:#fff;line-height:1;display:none"></div>
-`),
-
-news: () => BN(`<div style="inset:0;background:linear-gradient(#ffffff,#edf1f6)"></div>
-  <div class="tickbar" style="left:0;right:0;bottom:0;height:24%;background:#2b5d8f;overflow:hidden">
-    <div class="tick" style="left:0;top:0;height:100%;display:flex;align-items:center;white-space:nowrap;font-size:9cqh;font-weight:500;color:#fff;animation:ticker 40s linear -8s infinite">${MEDIA.map(m=>`${m[1]}: ${m[2]}`).join('<span style="position:static;display:inline-block;width:12cqh"></span>')}</div>
-  </div>`, `
-  <div class="t" style="top:14cqh;font-size:20cqh;font-weight:800;color:#2b5d8f;letter-spacing:-.3cqh">News</div>
-  <div style="left:50%;top:42cqh;width:28cqh;height:1cqh;margin-left:-14cqh;border-radius:1cqh;background:#34beed"></div>
-  ${PV('Press coverage and the blog', 'left:0;right:0;text-align:center;top:50cqh;color:#2b5d8f')}`),
-
-internet: () => BN(LIGHT, `
-  <div class="t" style="top:16cqh;font-size:17cqh;font-weight:800;color:#5f6166">Links</div>
-  <div style="left:14cqw;right:14cqw;top:52cqh;height:20cqh;border-radius:10cqh;background:#fff;border:.7cqh solid #34beed;box-shadow:0 .6cqh 1.4cqh rgba(0,0,0,.08);display:flex;align-items:center;justify-content:center">
-    <span style="position:static;font-size:8cqh;font-weight:500;color:#5f6166">zwinship.github.io</span>
+  <div class="tl">${LABEL('Disc<br>Channel', 'left:56cqw;top:31cqh;font-size:14cqh')}</div>
+  <div class="pv" style="left:52cqw;right:4cqw;top:22cqh">
+    <div style="position:static;font-size:5cqh;font-weight:700;color:#1f7fae;letter-spacing:.3cqh">NBER WORKING PAPER NO. 35414</div>
+    <div style="position:static;margin-top:3cqh;font-size:9cqh;font-weight:800;color:#45474c;line-height:1.1">${nber.title.split(': ')[0]}</div>
+    <div style="position:static;margin-top:3cqh;font-size:5.6cqh;font-weight:500;color:#6e7075">${nber.title.split(': ')[1]}</div>
   </div>`),
 
-votes: () => BN('<div style="inset:0;background:linear-gradient(#fffbea,#fbefc4)"></div>', `
-  <div class="t" style="top:14cqh;font-size:13cqh;font-weight:800;color:#8a6a1f">Election Polling</div>
-  <div style="left:14cqw;width:33cqw;top:46cqh;height:18cqh;border-radius:9cqh;background:#36b3e3;color:#fff;font-size:7.5cqh;font-weight:700;display:flex;align-items:center;justify-content:center">Indicator</div>
-  <div style="right:14cqw;width:33cqw;top:46cqh;height:18cqh;border-radius:9cqh;background:#e7574f;color:#fff;font-size:7.5cqh;font-weight:700;display:flex;align-items:center;justify-content:center">Catalyst</div>
-  ${PV('2024 U.S. presidential election', 'left:0;right:0;text-align:center;top:76cqh;color:#8a6a1f')}`),
+mii: () => BN('<div style="inset:0;background:linear-gradient(#ffffff,#eef1f4)"></div>', `
+  <img src="${ZW_IMG}" alt="" style="right:6cqw;bottom:0;height:70cqh;width:auto">
+  ${LABEL('Mii<br>Channel', 'left:9cqw;top:24cqh;font-size:14cqh')}
+  ${PV(PROFILE.name, 'left:9cqw;top:60cqh;color:#1f7fae;font-weight:700')}`),
 
-resume: () => BN(LIGHT, `
-  <svg viewBox="0 0 30 40" style="left:14cqw;top:13cqh;width:55cqh;height:74cqh"><path d="M3 2h17l7 7v29H3z" fill="#fff" stroke="#9fa1a6" stroke-width="1.6"/><path d="M20 2v7h7" fill="#eceef1" stroke="#9fa1a6" stroke-width="1.6"/><rect x="7" y="9" width="9" height="3" rx="1" fill="#34beed"/><path d="M7 17h16M7 21h16M7 25h16M7 29h11" stroke="#c7c9cd" stroke-width="1.6"/></svg>
-  <div style="left:52cqw;top:35cqh;font-size:14cqh;font-weight:800;color:#5f6166;letter-spacing:-.2cqh">Résumé</div>
-  ${PV('PDF', 'left:52cqw;top:57cqh;color:#1f7fae')}`),
+photo: () => BN('<div style="inset:0;background:linear-gradient(#ffffff,#e9eaed)"></div>', `
+  <div style="left:6cqw;top:15cqh;width:50cqh;height:50cqh;padding:1.4cqh;background:#fff;box-shadow:0 .8cqh 1.6cqh rgba(0,0,0,.18);transform:rotate(-7deg)"><img src="${LED_IMG}" alt="" style="position:static;display:block;width:100%;height:100%;object-fit:cover"></div>
+  <div style="left:25cqw;top:34cqh;width:46cqh;height:46cqh;padding:1.4cqh;background:#fff;box-shadow:0 .8cqh 1.6cqh rgba(0,0,0,.18);transform:rotate(6deg)"><div style="position:static;width:100%;height:100%;background:linear-gradient(#e8f3fa,#c7dff0);overflow:hidden"><img src="${ZW_IMG}" alt="" style="position:static;display:block;width:100%;height:100%;object-fit:cover;object-position:50% 0"></div></div>
+  ${LABEL('Photo<br>Channel', 'left:60cqw;top:31cqh;font-size:13cqh')}
+  ${PV('SD Card', 'left:60cqw;top:64cqh;color:#1f7fae')}`),
 
-experience: () => BN(LIGHT, `
-  <div class="t" style="top:28cqh;font-size:15cqh;font-weight:800;color:#5f6166;letter-spacing:-.2cqh">Experience</div>
-  <div style="left:50%;top:53cqh;width:28cqh;height:1cqh;margin-left:-14cqh;border-radius:1cqh;background:#34beed"></div>
-  ${PV('New York University, Bentley University,<br>American Action Forum', 'left:0;right:0;text-align:center;top:62cqh;color:#1f7fae')}`),
+shop: () => BN('<div style="inset:0;background:linear-gradient(#ffffff,#def3fc)"></div>', `
+  <svg viewBox="0 0 40 40" style="left:50%;top:10cqh;width:36cqh;height:36cqh;margin-left:-18cqh"><path d="M13 14V11a7 7 0 0114 0v3" fill="none" stroke="#2aa6d8" stroke-width="3"/><rect x="5" y="13" width="30" height="23" rx="4" fill="#fff" stroke="#2aa6d8" stroke-width="3"/></svg>
+  <div class="t" style="top:52cqh;font-size:13cqh;font-weight:800;color:#1f9fd0;letter-spacing:-.2cqh">Wii Shop Channel</div>
+  ${PV('rd2dnet, Chesque, OctaStats and more', 'left:0;right:0;text-align:center;top:74cqh;color:#4b9cc4')}`),
 
-octa: () => BN('<div style="inset:0;background:linear-gradient(#26262a,#141416)"></div>', `
-  <div style="left:50%;top:12cqh;width:56cqh;height:56cqh;margin-left:-28cqh;clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%);background:#d63434">
-    <div style="inset:2.5cqh;clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%);background:#1b1b1e"></div>
-    <div style="left:0;right:0;top:15cqh;text-align:center;font-size:10cqh;font-weight:800;color:#fff">OCTA</div>
-    <div style="left:0;right:0;top:27cqh;text-align:center;font-size:10cqh;font-weight:800;color:#e04646">STATS</div>
+forecast: () => BN(`<div style="inset:0;background:linear-gradient(#2f93dc,#a9dbf6 82%)"></div>
+  <div class="capbar" style="left:0;right:0;bottom:0;height:26%;background:linear-gradient(#ffffff,#e9f3fa);display:flex;align-items:center;justify-content:center"><span class="cap" style="position:static;font-size:12cqh;font-weight:800;color:#2c8fc6;letter-spacing:-.2cqh">Forecast Channel</span></div>`, `
+  <div style="left:8cqw;top:9cqh;font-size:10cqh;font-weight:700;color:#fff;text-shadow:0 .4cqh 1cqh rgba(0,40,90,.3)">Boston</div>
+  <div class="wx-temp" style="left:8cqw;top:23cqh;font-size:28cqh;font-weight:700;color:#fff;line-height:1;display:none;text-shadow:0 .5cqh 1.4cqh rgba(0,40,90,.3)"></div>
+  ${PV('MBTA ridership,<br>ARIMA forecasts in R', 'right:7cqw;top:14cqh;text-align:right;color:#fff')}`),
+
+news: () => BN(`<div style="inset:0;background:linear-gradient(#ffffff,#e9edf3)"></div>
+  <div class="tickbar" style="left:0;right:0;bottom:0;height:24%;background:#24507d;overflow:hidden">
+    <div class="tick" style="left:0;top:0;height:100%;display:flex;align-items:center;white-space:nowrap;font-size:9cqh;font-weight:500;color:#fff;animation:ticker 40s linear -8s infinite">${MEDIA.map(m=>`${m[1]}: ${m[2]}`).join('<span style="position:static;display:inline-block;width:12cqh"></span>')}</div>
+  </div>`, `
+  <div class="t" style="top:20cqh;font-size:17cqh;font-weight:800;color:#24507d;letter-spacing:-.3cqh">News Channel</div>
+  ${PV('Coverage of the congestion pricing and EMS paper', 'left:0;right:0;text-align:center;top:52cqh;color:#3a75ad')}`),
+
+internet: () => BN(LIGHT, `
+  <div class="t" style="top:16cqh;font-size:14cqh;font-weight:800;color:#8b8d92;letter-spacing:-.2cqh">Internet Channel</div>
+  <div style="left:14cqw;right:14cqw;top:50cqh;height:19cqh;border-radius:10cqh;background:#fff;border:.7cqh solid #7fbfe4;box-shadow:0 .6cqh 1.4cqh rgba(0,0,0,.08);display:flex;align-items:center;justify-content:center">
+    <span style="position:static;font-size:8cqh;font-weight:500;color:#5f6166">zwinship.github.io</span>
   </div>
-  ${PV('UFC fight prediction model', 'left:0;right:0;text-align:center;bottom:8cqh;color:#bbb')}`),
+  ${PV('Résumé, links and contact', 'left:0;right:0;text-align:center;top:76cqh;color:#1f7fae')}`),
 
-tape: () => BN('<div style="inset:0;background:linear-gradient(90deg,#c43c3c 0 50%,#2f66b8 50%)"></div>', `
-  <div class="t" style="top:20cqh;font-size:14cqh;font-weight:800;color:#fff">Tale of the Tape</div>
-  <div style="left:50%;top:46cqh;width:26cqh;height:26cqh;margin-left:-13cqh;border-radius:50%;background:#fff;text-align:center;line-height:26cqh;font-size:11cqh;font-weight:800;color:#333">VS</div>
-  ${PV('UFC daily challenge', 'left:0;right:0;text-align:center;top:80cqh;color:#fff')}`),
+votes: () => BN('<div style="inset:0;background:linear-gradient(#ffffff,#eceef2)"></div>', `
+  <div class="t" style="top:13cqh;font-size:10.5cqh;font-weight:800;color:#8b8d92;letter-spacing:-.2cqh">Everybody Votes Channel</div>
+  <div style="left:13cqw;width:34cqw;top:40cqh;height:20cqh;border-radius:7cqh;background:linear-gradient(#62c8f2,#2a9dd5);border:.8cqh solid #fff;box-shadow:0 .5cqh 1.2cqh rgba(0,0,0,.15)"></div>
+  <div style="right:13cqw;width:34cqw;top:40cqh;height:20cqh;border-radius:7cqh;background:linear-gradient(#f47d74,#d8463d);border:.8cqh solid #fff;box-shadow:0 .5cqh 1.2cqh rgba(0,0,0,.15)"></div>
+  ${PV('Do election polls predict the result, or change it?', 'left:0;right:0;text-align:center;top:72cqh;color:#55575c')}`),
 
-micro: () => BN(LIGHT, `
-  <svg viewBox="0 0 100 60" preserveAspectRatio="none" style="left:8cqw;top:16cqh;width:68cqh;height:64cqh;overflow:visible">
-    <path d="M2 2V58H98" fill="none" stroke="#9a9ca1" stroke-width="1.4"/>
-    <path d="M10 8 Q50 30 92 52" fill="none" stroke="#e05050" stroke-width="2.6"/>
-    <path d="M10 52 Q50 30 92 8" fill="none" stroke="#2aa6d8" stroke-width="2.6"/>
-  </svg>
-  <div style="left:54cqw;top:28cqh;font-size:13cqh;font-weight:800;color:#5f6166;line-height:1.05">Micro<br>Course</div>
-  ${PV('Intermediate Microeconomics', 'left:54cqw;right:3cqw;top:62cqh;color:#1f7fae')}`),
-
-led: () => BN(`<img src="${ASSET}images/mbta_led_build.jpg" alt="" style="inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 42%">
-  <div class="capbar" style="left:0;right:0;bottom:0;height:24%;background:rgba(20,22,26,.82);display:flex;align-items:center;justify-content:center"><span class="cap" style="position:static;font-size:11cqh;font-weight:800;color:#fff">MBTA LED Map</span></div>`, ''),
-
-ts: () => BN(LIGHT, `
-  <div class="t" style="top:22cqh;font-size:14cqh;font-weight:800;color:#5f6166;letter-spacing:-.2cqh">MBTA Ridership</div>
-  <div style="left:50%;top:48cqh;width:60cqh;height:3cqh;margin-left:-30cqh;border-radius:1.5cqh;overflow:hidden;background:linear-gradient(90deg,#da291c 0 25%,#ed8b00 25% 50%,#00843d 50% 75%,#003da5 75%)"></div>
-  ${PV('ARIMA forecasting in R', 'left:0;right:0;text-align:center;top:60cqh;color:#1f7fae')}`),
-
+/* title banners for the Shop Channel's title pages */
 rd2dnet: () => BN(LIGHT, `
   <svg viewBox="0 0 100 60" style="left:5cqw;top:14cqh;width:84cqh;height:72cqh">
     <g stroke="#c3c5ca" stroke-width="1.1" fill="none"><path d="M5 10 L95 30 M5 25 L95 45 M5 40 L95 60 M18 0 L6 60 M42 0 L30 60 M66 0 L54 60 M90 0 L78 60"/></g>
     <path d="M0 30 L100 52" stroke="#34beed" stroke-width="2.6" fill="none"/>
   </svg>
-  <div style="left:58cqw;top:33cqh;font-size:14cqh;font-weight:800;color:#5f6166;letter-spacing:-.2cqh">rd2dnet</div>
-  ${PV('Boundary discontinuity designs<br>on street networks', 'left:58cqw;right:2cqw;top:56cqh;color:#1f7fae')}`),
-
+  <div style="left:58cqw;top:36cqh;font-size:15cqh;font-weight:800;color:#5f6166;letter-spacing:-.2cqh">rd2dnet</div>`),
 chesque: () => BN('<div style="inset:0;background:linear-gradient(#262c40,#171b28)"></div>', `
-  <div class="t" style="top:30cqh;font-size:20cqh;font-weight:800;color:#f1e9d8;letter-spacing:-.3cqh">Ches<span style="position:static;color:#f0a53a">que</span></div>
-  ${PV('Chess rules, but every piece is a hero', 'left:0;right:0;text-align:center;top:62cqh;color:#cfc6b3')}`),
-
-llm: () => BN('<div style="inset:0;background:linear-gradient(#ffffff,#efebfa)"></div>', `
-  <div class="t" style="top:30cqh;font-size:15cqh;font-weight:800;color:#6b55c4;letter-spacing:-.2cqh">Agentic LLMs</div>
-  ${PV('In progress', 'left:0;right:0;text-align:center;top:58cqh;color:#7c66cf')}`),
+  <div class="t" style="top:36cqh;font-size:22cqh;font-weight:800;color:#f1e9d8;letter-spacing:-.3cqh">Ches<span style="position:static;color:#f0a53a">que</span></div>`),
+octa: () => BN('<div style="inset:0;background:linear-gradient(#26262a,#141416)"></div>', `
+  <div style="left:50%;top:14cqh;width:72cqh;height:72cqh;margin-left:-36cqh;clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%);background:#d63434">
+    <div style="inset:3cqh;clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%);background:#1b1b1e"></div>
+    <div style="left:0;right:0;top:20cqh;text-align:center;font-size:13cqh;font-weight:800;color:#fff">OCTA</div>
+    <div style="left:0;right:0;top:36cqh;text-align:center;font-size:13cqh;font-weight:800;color:#e04646">STATS</div>
+  </div>`),
+tape: () => BN('<div style="inset:0;background:linear-gradient(90deg,#c43c3c 0 50%,#2f66b8 50%)"></div>', `
+  <div class="t" style="top:22cqh;font-size:15cqh;font-weight:800;color:#fff">Tale of the Tape</div>
+  <div style="left:50%;top:50cqh;width:28cqh;height:28cqh;margin-left:-14cqh;border-radius:50%;background:#fff;text-align:center;line-height:28cqh;font-size:12cqh;font-weight:800;color:#333">VS</div>`),
+micro: () => BN('<div style="inset:0;background:linear-gradient(#ffffff,#eef3f7)"></div>', `
+  <div class="t" style="top:24cqh;font-size:8cqh;font-weight:700;color:#1f7fae;letter-spacing:.6cqh">INTERMEDIATE</div>
+  <div class="t" style="top:36cqh;font-size:17cqh;font-weight:800;color:#45474c;letter-spacing:-.3cqh">Microeconomics</div>
+  <div style="left:50%;top:66cqh;width:30cqh;height:1.2cqh;margin-left:-15cqh;border-radius:1cqh;background:#34beed"></div>`),
 };
 
 /* =====================================================================
-   CONTENT SCREENS
+   CHANNEL SCREENS
    ===================================================================== */
-// Data strings use middle dots as separators; show them as plain commas.
 const plain = s => String(s || '').replace(/\s*·\s*/g, ', ');
-const links = ls => ls && ls.length ? `<div class="links">${ls.map(l=>EXT(l[0],l[1])).join('')}</div>` : '';
-const metaLine = p => plain(p.meta) + (p.year && !p.soon ? ', ' + p.year : '');
-const card = p => `<div class="card">
-  ${p.badge?`<span class="badge">${p.badge}</span>`:''}${p.soon?`<span class="badge gray">In progress</span>`:''}
-  <h3>${p.title}</h3>
-  <div class="meta">${metaLine(p)}</div>
-  <p>${p.body}</p>${p.media||''}${links(p.links)}
+const EXT = (href, label, cls='wb') => `<a class="${cls}" href="${href}" ${href.startsWith('mailto:')?'':'target="_blank" rel="noopener"'}>${label}</a>`;
+const BACK = (label='Wii Menu') => `<button class="wb" data-back>${label}</button>`;
+const $ = (sel, root=document) => root.querySelector(sel);
+const $$ = (sel, root=document) => [...root.querySelectorAll(sel)];
+const today = () => { const d = new Date(); return `${d.toLocaleDateString('en-US',{weekday:'long'})}, ${d.toLocaleDateString('en-US',{month:'long',day:'numeric'})}`; };
+// move focus through a list of elements with the arrow keys
+function arrowNav(e, els, cols=1){
+  const i = els.indexOf(document.activeElement); if (i < 0) return false;
+  const step = {ArrowRight:1, ArrowLeft:-1, ArrowDown:cols, ArrowUp:-cols}[e.key];
+  if (!step) return false;
+  const n = i + step; if (n < 0 || n >= els.length) return true;
+  els[n].focus(); SFX.hover(); return true;
+}
+
+/* --- Photo Channel items: real photos first, then title cards --- */
+const led = byId('mbta-led');
+const PHOTOS = [
+  { kind:'img', src:LED_IMG, title:led.title, meta:'2026, in progress', body:led.body, links:led.links },
+  { kind:'video', src:ASSET+led.video, poster:LED_IMG, title:'MBTA LED map build', meta:'Build video', body:'', links:led.links },
+  { kind:'zw', title:PROFILE.name, meta:PROFILE.now, body:PROFILE.lede, links:[[LINKEDIN,'LinkedIn'],[GITHUB,'GitHub']] },
+  ...[['cz','#2b5d8f'],['ozone','#3f7f58'],['llm','#5b4bb0']].map(([id,bg]) => { const p = byId(id);
+    return { kind:'card', bg, title:p.title, meta:plain(p.meta) + (p.soon ? ', in progress' : ', ' + p.year), body:p.body, links:p.links, year:p.soon ? 'In progress' : p.year }; }),
+];
+const photoHTML = (p, big) => p.kind==='card' ? `<div class="ph-card" style="background:${p.bg}"><b>${p.title}</b><span>${p.year}</span></div>`
+  : p.kind==='zw' ? `<div class="ph-zw"><img src="${ZW_IMG}" alt="Photo of ${PROFILE.name}" style="width:100%;height:100%;object-fit:contain;object-position:50% 100%"></div>`
+  : p.kind==='video' ? (big ? `<video src="${p.src}" poster="${p.poster}" controls playsinline preload="none"></video>` : `<img src="${p.poster}" alt="${p.title}" loading="lazy"><span class="mv">MOVIE</span>`)
+  : `<img src="${p.src}" alt="${p.title}"${big?'':' loading="lazy"'}>`;
+
+/* --- Shop titles --- */
+const SHOP = [
+  { p:SOFTWARE, name:'rd2dnet', art:'rd2dnet' },
+  { p:byId('chesque'), name:'Chesque', art:'chesque' },
+  { p:byId('octa2'), name:'OctaStats', art:'octa' },
+  { p:byId('tott'), name:'Tale of the Tape', art:'tape' },
+  { p:byId('micro'), name:'Intermediate Microeconomics', art:'micro' },
+];
+const shopDetail = i => { const {p, art} = SHOP[i], cat = plain(p.meta).split(', ');
+  return `<div class="sh-top"><div class="sh-banner"><div class="bn">${B[art]()}</div></div>
+    <div style="min-width:0"><h2>${p.title}</h2><dl class="sh-info">
+      <dt>Released</dt><dd>${p.year}</dd><dt>Category</dt><dd>${cat[0]}</dd><dt>Also</dt><dd>${cat.slice(1).join(', ')}</dd>
+      ${p.badge ? `<dt>Version</dt><dd>${p.badge}</dd>` : ''}</dl></div></div>
+    <p>${p.body}</p>
+    ${p === SOFTWARE ? `<pre class="sh-code">pip install rd2dnet</pre><p class="note">${p.status}</p><p class="note">${p.credit}</p>` : ''}
+    <div class="sh-dl">${p.links.map((l,k)=>EXT(l[0], l[1], k ? 'wb' : 'wb main')).join('')}</div>`; };
+
+/* --- News Channel --- */
+const newsList = tab => tab === 'blog'
+  ? `<p class="nw-note">${BLOG_STATUS}.</p><ul class="nw-list">${BLOG.map(b=>`<li><div><span class="src">${plain(b[2])}</span><span class="hl">${b[0]}</span><span style="font-size:14px;color:#7d8590">${plain(b[1])}</span></div></li>`).join('')}</ul>`
+  : `<ul class="nw-list">${MEDIA.map((m,i)=>`<li><button data-art="${i}"><span class="src">${m[1]}</span><span class="hl">${m[2]}</span></button></li>`).join('')}</ul>`;
+const newsArticle = i => { const m = MEDIA[i]; return `<div class="nw-wrap"><article class="nw-art"><div class="src">${m[1]}</div><h2>${m[2]}</h2>
+  <p>Coverage of the working paper "${nber.title}" (${nber.badge.replace('WP','Working Paper')}).</p>
+  <div style="display:flex;flex-wrap:wrap;gap:12px">${EXT(m[0], 'Read the Article')}<button class="wb" id="nwList">Back</button></div></article></div>`; };
+
+/* --- Internet Channel page: a plain HTML résumé --- */
+const resumePage = () => `<div class="pg" id="pg">
+  <h1>${PROFILE.name}</h1>
+  <p>${PROFILE.lede}</p>
+  <p><a href="mailto:${EMAIL}">${EMAIL}</a> | <a href="${GITHUB}" target="_blank" rel="noopener">GitHub</a> | <a href="${LINKEDIN}" target="_blank" rel="noopener">LinkedIn</a> | <a href="${RESUME}" target="_blank" rel="noopener">Résumé (PDF)</a></p>
+  <h2>Education</h2>
+  ${PROFILE.education.map(e=>`<h3>${e.degree}, ${e.school}</h3><p class="w">${e.when}</p><p>${e.note}</p>`).join('')}
+  <h2>Experience</h2>
+  ${EXPERIENCE.map(e=>`<h3>${e.role}</h3><p class="w">${e.org}, ${e.when}</p><p>${e.body}${e.links ? ' ' + e.links.map(l=>`<a href="${l[0]}" target="_blank" rel="noopener">${l[1]}</a>`).join(' ') : ''}</p>`).join('')}
+  <h2>Research</h2>
+  <ul>${RESEARCH.map(r=>`<li>${r.links.length ? `<a href="${r.links[0][0]}" target="_blank" rel="noopener">${r.title}</a>` : r.title} (${r.soon ? 'in progress' : r.year})</li>`).join('')}</ul>
+  <h2>Skills</h2>
+  <p>${PROFILE.skills.join(', ')}</p>
 </div>`;
-// Secondary items read as a list, not as a wall of identical cards.
-const rows = items => `<ul class="rows">${items.map(p=>`<li><div class="row-year">${p.soon?'In progress':p.year}</div><div>
-  <h3>${p.title}</h3>${p.body?`<p>${p.body}</p>`:''}${links(p.links)}</div></li>`).join('')}</ul>`;
-const shopRow = (p, art) => `<div class="card"><div class="shop-row">
-  <div class="thumb"><div class="bn">${B[art]()}</div></div>
-  <div style="flex:1;min-width:0"><h3>${p.title}</h3><div class="meta">${plain(p.meta)}</div><p>${p.body}</p>${links(p.links)}</div>
-  <div class="price">${p.soon?'In progress':p.year}</div>
-</div></div>`;
-const PHOTO = (cls='') => `<div class="zw ${cls}" role="img" aria-label="Photo of ${PROFILE.name}"></div>`;
-const coarse = matchMedia('(pointer:coarse)').matches;
-const RESUME = ASSET+'about_me/resume.pdf';
-const SHOP_ART = { nber:'disc', cz:'disc', ozone:'disc', polls:'votes', micro:'micro', llm:'llm', rd2dnet:'rd2dnet', octa2:'octa', octa1:'octa', tott:'tape', chesque:'chesque', 'mbta-ts':'ts', 'mbta-led':'led' };
+const FAVORITES = [[ASSET,'zwinship.github.io'],[RESUME,'Résumé (PDF)'],[ASSET+'about_me/transcript.pdf','Transcript (PDF)'],[GITHUB,'GitHub'],[LINKEDIN,'LinkedIn'],['mailto:'+EMAIL,EMAIL]];
 
 const SCREENS = {
-  research: { actions:[['NBER Paper','https://www.nber.org/papers/w35414']], html: () => `${card(byId('nber'))}
-    <div class="card"><h3>Coverage</h3><ul class="list-plain" style="margin-top:8px">
-      ${MEDIA.map(m=>`<li><a href="${m[0]}" target="_blank" rel="noopener">${m[1]}</a>: ${m[2]}</li>`).join('')}</ul></div>
-    <div class="sec-h">More research</div>${rows(RESEARCH.filter(p=>p.id!=='nber'))}` },
+  disc: { label:'Disc Channel', html: () => { const [t1, t2] = nber.title.split(': '); return `<div class="scr ds">
+      <div class="ds-disc" aria-hidden="true"><div></div></div>
+      <div class="ds-logo"><div class="ds-kick">${nber.badge.replace('WP','Working Paper')}</div><h1>${t1}</h1><div class="ds-sub">${t2}</div></div>
+      <button class="ds-press" id="dsPress" data-focus>Press <span class="a-btn">A</span></button>
+      <div class="ds-menu" id="dsMenu" hidden>
+        ${EXT(nber.links[0][0], 'Read the Paper')}
+        <button class="wb" id="dsAbs">Summary</button>
+        ${BACK()}
+      </div>
+      <div class="ds-credit">With ${nber.coauthors}</div>
+      <div class="dlg" id="dsDlg" hidden><div class="dlg-box" role="dialog" aria-label="Summary"><div class="scroll sel-text"><p>${nber.body}</p></div><div class="wbar"><button class="wb" id="dsOk">OK</button></div></div></div>
+    </div>`; },
+    init(r){
+      const press = $('#dsPress', r), menu = $('#dsMenu', r), dlg = $('#dsDlg', r);
+      press.onclick = () => { SFX.start(); press.hidden = true; menu.hidden = false; menu.firstElementChild.focus({preventScroll:true}); };
+      $('#dsAbs', r).onclick = () => { SFX.select(); dlg.hidden = false; $('#dsOk', r).focus(); };
+      $('#dsOk', r).onclick = () => { SFX.back(); dlg.hidden = true; $('#dsAbs', r).focus(); };
+      r.querySelector('.ds').addEventListener('click', e => { if (!press.hidden && !e.target.closest('button,a')) press.click(); });
+    },
+    key(e){ const r = content;
+      if (!$('#dsDlg', r).hidden) return false;
+      if ($('#dsMenu', r).hidden) return false;
+      return ['ArrowUp','ArrowDown'].includes(e.key) && arrowNav(e, $$('#dsMenu .wb', r));
+    },
+    back(){ const dlg = $('#dsDlg', content); if (!dlg.hidden){ $('#dsOk', content).click(); return true; } return false; },
+  },
 
-  rd2dnet: { actions:[['GitHub','https://github.com/zwinship/rd2dnet'],['PyPI','https://pypi.org/project/rd2dnet/']], html: () => `<div class="card">
-      <span class="badge">${SOFTWARE.badge}</span><h3>${SOFTWARE.title}</h3><div class="meta">${metaLine(SOFTWARE)}</div>
-      <p>${SOFTWARE.body}</p>
-      <p class="tagline">${SOFTWARE.status}</p>
-      <pre class="code">pip install rd2dnet</pre>
-      <pre class="code">remotes::install_github("zwinship/rd2dnet", subdir = "R-package")</pre>
-      <p class="tagline">${SOFTWARE.credit}</p>${links(SOFTWARE.links)}</div>` },
+  mii: { label:'Mii Channel', html: () => { const [ms, bs] = PROFILE.education; return `<div class="scr mp">
+      <div class="mp-floor" aria-hidden="true"></div>
+      <div class="mp-label">Mii Plaza</div>
+      <div class="mp-main">
+        <div class="mp-mii"><div class="mp-tag">${PROFILE.name.split(' ')[0]}</div><img src="${ZW_IMG}" alt="Photo of ${PROFILE.name}"><div class="shadow"></div></div>
+        <div class="mp-card"><div class="hd">Mii Profile</div><dl>
+          <dt>Name</dt><dd>${PROFILE.name}</dd>
+          <dt>Now</dt><dd>${ms.degree}, ${ms.school}, to May 2027</dd>
+          <dt>Before</dt><dd>${bs.degree}, ${bs.school}, 2026</dd>
+          <dt>Tools</dt><dd>${PROFILE.skills.slice(0,5).join(', ')}</dd></dl>
+          <p>${PROFILE.lede}</p></div>
+      </div>
+      <div class="wbar">${BACK()}${EXT(RESUME,'Résumé')}${EXT('mailto:'+EMAIL,'Email')}</div>
+    </div>`; },
+    key(e){ return ['ArrowLeft','ArrowRight'].includes(e.key) && arrowNav(e, $$('.wbar .wb', content)); } },
 
-  about: { actions:[['Email','mailto:'+EMAIL],['Résumé',RESUME]], html: () => `<div class="card"><div class="about-top">
-      ${PHOTO()}
-      <div><h2>${PROFILE.name}</h2><div class="sub">${PROFILE.now}</div>
-      <div class="links">${EXT('https://linkedin.com/in/zwinship','LinkedIn')}${EXT('https://github.com/zwinship','GitHub')}${EXT('mailto:'+EMAIL,EMAIL)}</div></div></div></div>
-    <div class="card">${PROFILE.about.map(p=>`<p>${p}</p>`).join('')}</div>
-    <div class="sec-h">Education</div>
-    ${rows(PROFILE.education.map(e=>({ year:e.when, title:`${e.degree}, ${e.school}`, body:e.note })))}
-    <div class="sec-h">Tools</div><p style="font-size:16px;line-height:1.7;color:#55575c">${PROFILE.skills.join(', ')}</p>` },
+  photo: { label:'Photo Channel', html: () => `<div class="scr ph">
+      <div class="ph-top"><b>SD Card</b><span>${PHOTOS.length} items</span></div>
+      <div class="scroll"><div class="ph-grid">${PHOTOS.map((p,i)=>`<button class="ph-th" data-ph="${i}" aria-label="${p.title}"${i?'':' data-focus'}>${photoHTML(p)}</button>`).join('')}</div></div>
+      <div class="wbar grey">${BACK()}<button class="wb" id="phShow">Slideshow</button></div>
+      <div class="ph-view" id="phView" hidden></div>
+    </div>`,
+    init(r){
+      const view = $('#phView', r); let cur = 0, timer = null;
+      const stop = () => { clearInterval(timer); timer = null; view.classList.remove('show'); };
+      const paint = (i, dir=0) => {
+        cur = (i + PHOTOS.length) % PHOTOS.length; const p = PHOTOS[cur];
+        view.innerHTML = `<div class="ph-stage">${photoHTML(p, true)}
+            <button class="ph-arr l" aria-label="Previous">${ARROW_SVG}</button><button class="ph-arr r" aria-label="Next">${ARROW_SVG}</button></div>
+          <div class="ph-cap"><h2>${p.title}</h2><div class="m">${p.meta}</div>${p.body ? `<p>${p.body}</p>` : ''}${p.links && p.links.length ? `<p>${p.links.map(l=>`<a href="${l[0]}" target="_blank" rel="noopener">${l[1]}</a>`).join('')}</p>` : ''}</div>
+          <div class="wbar"><button class="wb" id="phBack">Back</button></div>`;
+        $('.ph-arr.l', view).onclick = () => { stop(); SFX.page(-1); paint(cur-1, -1); };
+        $('.ph-arr.r', view).onclick = () => { stop(); SFX.page(1); paint(cur+1, 1); };
+        $('#phBack', view).onclick = () => SCREENS.photo.back();
+        if (dir && !reduced) $('.ph-stage', view).firstElementChild.animate([{opacity:0, transform:`translateX(${dir*40}px)`},{opacity:1, transform:'none'}],{duration:280,easing:'ease-out'});
+      };
+      const open = (i, show) => { view.hidden = false; paint(i); if (show){ view.classList.add('show'); timer = setInterval(() => paint(cur+1, 1), 4500); } $('#phBack', view).focus({preventScroll:true}); };
+      $$('[data-ph]', r).forEach(b => b.onclick = () => { SFX.select(); open(+b.dataset.ph); });
+      $('#phShow', r).onclick = () => { SFX.start(); open(0, true); };
+      this._close = () => { if (view.hidden) return false; stop(); view.querySelectorAll('video').forEach(v=>v.pause()); view.hidden = true; view.innerHTML = '';
+        const t = $(`[data-ph="${cur}"]`, r); if (t) t.focus({preventScroll:true}); return true; };
+      this._step = d => { stop(); SFX.page(d); paint(cur+d, d); };
+      this._open = () => !view.hidden;
+      this.leave = stop;
+    },
+    key(e){
+      if (this._open()){ if (e.key==='ArrowLeft'||e.key==='ArrowRight'){ if (e.target.tagName==='VIDEO') return false; this._step(e.key==='ArrowLeft'?-1:1); return true; } return false; }
+      return arrowNav(e, $$('[data-ph]', content), innerWidth <= 640 ? 2 : 3);
+    },
+    back(){ if (this._close()){ SFX.back(); return true; } return false; },
+  },
 
-  shop: { theme:'shop', actions:[['GitHub','https://github.com/zwinship']], html: () =>
-    `<div class="sec-h">Research and software</div>${[...RESEARCH.slice(0,1), SOFTWARE, ...RESEARCH.slice(1)].map(p=>shopRow(p, SHOP_ART[p.id]||'disc')).join('')}
-     <div class="sec-h">Personal projects</div>${PERSONAL.map(p=>shopRow(p, SHOP_ART[p.id]||'disc')).join('')}` },
+  shop: { label:'Wii Shop Channel', html: () => `<div class="scr sh" id="sh">
+      <div class="sh-head"><b>Wii Shop Channel</b><span>Software and Games</span></div>
+      <div class="sh-body">
+        <div class="sh-list">${SHOP.map((s,i)=>`<button class="sh-item${i?'':' sel'}" data-sh="${i}"${i?'':' data-focus'}><span class="bnw"><span class="bn">${B[s.art]()}</span></span><span><b>${s.name}</b><small>${s.p.year}</small></span></button>`).join('')}</div>
+        <div class="sh-detail" id="shDetail">${shopDetail(0)}</div>
+      </div>
+      <div class="wbar">${BACK()}<button class="wb" id="shBack">Back</button></div>
+    </div>`,
+    init(r){
+      const sh = $('#sh', r), det = $('#shDetail', r);
+      const pick = i => { $$('[data-sh]', r).forEach(b => b.classList.toggle('sel', +b.dataset.sh === i)); det.innerHTML = shopDetail(i); det.scrollTop = 0; };
+      $$('[data-sh]', r).forEach(b => { b.onclick = () => { SFX.select(); pick(+b.dataset.sh); if (innerWidth <= 760){ sh.classList.add('detail-on'); $('#shBack', r).focus({preventScroll:true}); } };
+        b.onfocus = () => { if (innerWidth > 760 && lastKey) pick(+b.dataset.sh); }; });
+      $('#shBack', r).onclick = () => SCREENS.shop.back();
+      this._sh = sh;
+    },
+    key(e){ return ['ArrowUp','ArrowDown'].includes(e.key) && arrowNav(e, $$('[data-sh]', content)); },
+    back(){ const sh = this._sh; if (sh && sh.classList.contains('detail-on')){ SFX.back(); sh.classList.remove('detail-on'); const s = $('.sh-item.sel', sh); if (s) s.focus({preventScroll:true}); return true; } return false; },
+  },
 
-  forecast: { theme:'forecast', actions:[], html: () => `<div class="sec-h">Where I've been</div><div class="wx" id="wxCards">
-      ${[['New York, NY','NYU, MS in Quantitative Economics'],['Waltham, MA','Bentley University'],['Gray, ME','Home']].map(([c,s],i)=>`<div class="card" data-wx="${i}"><div class="meta" style="margin:0 0 8px">${s}</div><div class="temp">--</div><div class="cond">Loading</div><h3 style="margin-top:10px">${c}</h3></div>`).join('')}
-    </div><p style="font-size:13px;color:var(--gray-text);margin-top:10px">Current conditions from Open-Meteo.</p>` },
+  forecast: { label:'Forecast Channel', html: () => { const p = byId('mbta-ts'); return `<div class="scr fc">
+      <div class="fc-top"><div class="fc-city">Boston</div><span>${today()}</span></div>
+      <div class="fc-main">
+        <div class="fc-panel fc-now"><div class="fc-lbl">Now</div><div class="fc-temp" id="fcTemp">--</div><div class="fc-cond" id="fcCond">Loading</div><div class="fc-src">Open-Meteo</div></div>
+        <div class="fc-panel fc-paper"><div class="m">Forecasting paper, ${p.year}</div><h2>${p.title}</h2><p>${p.body}</p></div>
+      </div>
+      <div class="fc-tick" aria-hidden="true"><div>Boston: current conditions from Open-Meteo<span style="display:inline-block;width:120px"></span>${p.title}, ${p.year}<span style="display:inline-block;width:120px"></span>Built in R</div></div>
+      <div class="wbar">${BACK()}${p.links.map(l=>EXT(l[0], l[1])).join('')}</div>
+    </div>`; },
+    init(r){ fetchWeather().then(d => { const t = $('#fcTemp', r), c = $('#fcCond', r); if (!t) return;
+      if (!d || !d[0] || !d[0].current){ c.textContent = 'Unavailable right now'; return; }
+      t.textContent = Math.round(d[0].current.temperature_2m) + '°F'; c.textContent = WX_CODES[d[0].current.weather_code] || ''; }); },
+    key(e){ return ['ArrowLeft','ArrowRight'].includes(e.key) && arrowNav(e, $$('.wbar .wb', content)); } },
 
-  news: { theme:'news', actions:[], html: () => `<div class="sec-h">Coverage of the congestion pricing and EMS paper</div>
-    <ul class="rows">${MEDIA.map(m=>`<li><div class="row-year">${m[1]}</div><div><h3><a href="${m[0]}" target="_blank" rel="noopener">${m[2]}</a></h3></div></li>`).join('')}</ul>
-    <div class="sec-h">Unlikely Instruments, my blog</div>
-    <p style="font-size:16px;color:#55575c">${BLOG_STATUS}.</p>
-    <ul class="rows" style="margin-top:12px">${BLOG.map(b=>`<li><div class="row-year">${plain(b[2])}</div><div><h3>${b[0]}</h3><p class="tagline" style="margin-top:4px">${plain(b[1])}</p></div></li>`).join('')}</ul>` },
+  news: { label:'News Channel', html: () => `<div class="scr nw">
+      <div class="nw-head"><b>News Channel</b><span>${today()}</span></div>
+      <div class="nw-tabs" role="tablist"><button class="nw-tab on" data-tab="press" role="tab" aria-selected="true">Coverage</button><button class="nw-tab" data-tab="blog" role="tab" aria-selected="false">Blog</button></div>
+      <div class="scroll sel-text" id="nwBody">${newsList('press')}</div>
+      <div class="nw-tick" aria-hidden="true"><div>${MEDIA.map(m=>`${m[1]}: ${m[2]}`).join('<span style="display:inline-block;width:90px"></span>')}</div></div>
+      <div class="wbar">${BACK()}</div>
+    </div>`,
+    init(r){
+      const body = $('#nwBody', r); let tab = 'press', last = 0;
+      const list = () => { body.innerHTML = newsList(tab); body.scrollTop = 0;
+        $$('[data-art]', body).forEach(b => b.onclick = () => { SFX.select(); last = +b.dataset.art; body.innerHTML = newsArticle(last); body.scrollTop = 0;
+          $('#nwList', body).onclick = () => SCREENS.news.back(); $('a', body).focus({preventScroll:true}); }); };
+      $$('[data-tab]', r).forEach(b => b.onclick = () => { if (tab === b.dataset.tab && !$('.nw-art', body)) return; SFX.page(); tab = b.dataset.tab;
+        $$('[data-tab]', r).forEach(x => { x.classList.toggle('on', x===b); x.setAttribute('aria-selected', x===b); }); list(); });
+      list();
+      this._back = () => { if (!$('.nw-art', body)) return false; list(); const t = $(`[data-art="${last}"]`, body); if (t) t.focus({preventScroll:true}); return true; };
+    },
+    key(e){ return ['ArrowUp','ArrowDown'].includes(e.key) && arrowNav(e, $$('[data-art]', content)); },
+    back(){ if (this._back()){ SFX.back(); return true; } return false; },
+  },
 
-  links: { actions:[], html: () => `<ul class="rows">
-    ${[['GitHub','https://github.com/zwinship','github.com/zwinship'],['LinkedIn','https://linkedin.com/in/zwinship','linkedin.com/in/zwinship'],['Email','mailto:'+EMAIL,EMAIL],['Résumé',RESUME,'Résumé (PDF)'],['rd2dnet','https://github.com/zwinship/rd2dnet','Boundary designs on street networks'],['Course site','https://falconeconsim.github.io/','Intermediate Microeconomics'],['OctaStats','https://octastats.github.io/index.html','UFC prediction model'],['Tale of the Tape','https://taleofthetape.github.io','UFC daily guessing game'],['Chesque','https://chesque.pages.dev/#home','Browser game'],['NBER paper','https://www.nber.org/papers/w35414','Working Paper No. 35414'],['Main site','../../','zwinship.github.io']].map(([t,h,s])=>`<li><div class="row-year">${t}</div><div><h3>${EXT(h,s)}</h3></div></li>`).join('')}
-  </ul>` },
+  internet: { label:'Internet Channel', html: () => `<div class="scr in">
+      <div class="in-addr"><div class="fld">http://zwinship.github.io/</div><span class="ld">Done</span></div>
+      <div class="in-page" id="inPage">${resumePage()}</div>
+      <div class="in-tools">
+        <button class="in-tb" disabled>Back</button><button class="in-tb" disabled>Forward</button>
+        <button class="in-tb" id="inTop">Top</button><button class="in-tb" id="inZoom" aria-pressed="false">Zoom</button>
+        <button class="in-tb" id="inFav" aria-expanded="false" data-focus>Favorites</button><button class="in-tb wm" data-back>Wii Menu</button>
+      </div>
+      <div class="in-fav" id="inFavBox" hidden><b>Favorites</b>${FAVORITES.map(f=>`<a href="${f[0]}" ${f[0].startsWith('mailto:')?'':'target="_blank" rel="noopener"'}>${f[1]}</a>`).join('')}</div>
+    </div>`,
+    init(r){
+      const page = $('#inPage', r), fav = $('#inFavBox', r), favBtn = $('#inFav', r);
+      $('#inTop', r).onclick = () => { SFX.press(); page.scrollTo({top:0, behavior: reduced ? 'auto' : 'smooth'}); };
+      $('#inZoom', r).onclick = e => { SFX.press(); const on = $('#pg', r).classList.toggle('big'); e.currentTarget.setAttribute('aria-pressed', on); };
+      favBtn.onclick = () => { SFX.select(); fav.hidden = !fav.hidden; favBtn.setAttribute('aria-expanded', !fav.hidden); if (!fav.hidden) $('a', fav).focus(); };
+      this._fav = () => { if (fav.hidden) return false; fav.hidden = true; favBtn.setAttribute('aria-expanded', false); favBtn.focus(); return true; };
+    },
+    key(e){ const fav = $('#inFavBox', content);
+      if (!fav.hidden) return ['ArrowUp','ArrowDown'].includes(e.key) && arrowNav(e, $$('a', fav));
+      return ['ArrowLeft','ArrowRight'].includes(e.key) && arrowNav(e, $$('.in-tb:not([disabled])', content)); },
+    back(){ if (this._fav()){ SFX.back(); return true; } return false; },
+  },
 
-  votes: { actions:[], html: () => `${card(byId('polls'))}
-    <div class="card"><h3>Your guess</h3><p>Do polls predict elections, or do they move them?</p>
-      <div class="poll-opts"><button class="wbtn" data-vote="0">They predict</button><button class="wbtn" data-vote="1">They move them</button></div>
-      <p id="pollRes" style="margin-top:14px;display:none"></p></div>` },
+  votes: { label:'Everybody Votes Channel', html: () => `<div class="scr ev">
+      <div class="ev-head">Everybody Votes Channel</div>
+      <div class="ev-main">
+        <div class="ev-q"><div class="lbl">QUESTION</div><h2>Do election polls predict the result, or change it?</h2></div>
+        <div class="ev-ans"><button class="ev-a b" data-v="0" data-focus>Predict it</button><button class="ev-a r" data-v="1">Change it</button></div>
+        <div class="ev-res" id="evRes" hidden></div>
+      </div>
+      <div class="wbar">${BACK()}</div>
+    </div>`,
+    init(r){ const p = byId('polls'), res = $('#evRes', r);
+      $$('[data-v]', r).forEach(b => b.onclick = () => { SFX.start();
+        $$('[data-v]', r).forEach(x => { x.disabled = true; x.classList.toggle('dim', x !== b); });
+        res.innerHTML = `<div class="lbl">RESULTS</div><h3>In the 2024 U.S. presidential election, polls worked as an indicator of the outcome, not a catalyst for it.</h3>
+          <p>${p.body}</p><div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:16px">${p.links.map(l=>EXT(l[0], l[1])).join('')}</div>`;
+        res.hidden = false; $('a', res).focus({preventScroll:true}); res.scrollIntoView({block:'nearest', behavior: reduced ? 'auto' : 'smooth'}); }); },
+    key(e){ return ['ArrowLeft','ArrowRight'].includes(e.key) && arrowNav(e, $$('[data-v]:not([disabled])', content)); } },
 
-  resume: { actions:[['Open PDF',RESUME]], html: () => coarse
-    ? `<div class="card" style="text-align:center"><h3>Résumé</h3><p>Open the PDF in your browser's viewer.</p><div class="links" style="justify-content:center">${EXT(RESUME,'Open résumé PDF')}${EXT(ASSET+'about_me/transcript.pdf','Transcript')}</div></div>`
-    : `<div class="links" style="margin:0 0 14px">${EXT(ASSET+'about_me/transcript.pdf','Transcript')}</div><iframe class="pdf-frame" src="${RESUME}" title="Résumé"></iframe>` },
-
-  experience: { actions:[], html: () => `<ul class="rows">${EXPERIENCE.map(e=>`<li><div class="row-year">${e.when}</div><div><h3>${e.role}</h3><div class="meta" style="margin:2px 0 0;font-size:14px;color:var(--cyan-text);font-weight:500">${plain(e.org)}</div><p>${e.body}</p>${links(e.links)}</div></li>`).join('')}</ul>` },
-
-  board: { theme:'board', actions:[['Reply','mailto:'+EMAIL]], html: () => { const d = new Date(); return `
-    <div class="board-date"><span class="d">${d.getMonth()+1}/${d.getDate()}</span><span class="m">${d.toLocaleDateString('en-US',{weekday:'long'})}</span></div>
-    <div class="letter"><div class="from">${PHOTO()}<b>From: Zach</b></div>
-      <p>Thanks for visiting. ${PROFILE.lede}</p>
-      <p>If you want to talk about research or a project, email is the best way to reach me: <b>${EMAIL}</b>.</p>
-      <p>I'm also on LinkedIn and GitHub.</p></div>
-    <div class="links">${EXT('mailto:'+EMAIL,'Email')}${EXT('https://linkedin.com/in/zwinship','LinkedIn')}${EXT('https://github.com/zwinship','GitHub')}${EXT(RESUME,'Résumé')}</div>`; } },
-
-  octa: { actions:[['Live Site','https://octastats.github.io/index.html']], html: () => card(byId('octa2')) + card(byId('octa1')) },
-  tape: { actions:[['Play','https://taleofthetape.github.io']], html: () => card(byId('tott')) },
-  chesque: { actions:[['Play','https://chesque.pages.dev/#home']], html: () => card(byId('chesque')) },
-  micro: { actions:[['Course Site','https://falconeconsim.github.io/']], html: () => card(byId('micro')) },
-  led: { actions:[['GitHub','https://github.com/zwinship/MBTA_Live_Art']], html: () => card(byId('mbta-led')) },
-  ts: { actions:[['Paper', byId('mbta-ts').links[0][0]]], html: () => card(byId('mbta-ts')) },
-  llm: { actions:[], html: () => card(byId('llm')) },
+  board: { label:'Wii Message Board', html: () => { const d = new Date(); return `<div class="scr mb">
+      <div class="mb-head"><span class="d">${d.getMonth()+1}/${d.getDate()}</span><span class="m">${d.toLocaleDateString('en-US',{weekday:'long'})}</span></div>
+      <div class="scroll"><div class="letter"><div class="from"><span class="av"><img src="${ZW_IMG}" alt=""></span><b>From: Zach</b></div>
+        <p>Thanks for visiting. ${PROFILE.lede}</p>
+        <p>Email is the best way to reach me: <a href="mailto:${EMAIL}">${EMAIL}</a>.</p>
+        <p>I'm also on <a href="${LINKEDIN}" target="_blank" rel="noopener">LinkedIn</a> and <a href="${GITHUB}" target="_blank" rel="noopener">GitHub</a>.</p></div></div>
+      <div class="wbar">${BACK()}${EXT('mailto:'+EMAIL,'Reply')}</div>
+    </div>`; },
+    key(e){ return ['ArrowLeft','ArrowRight'].includes(e.key) && arrowNav(e, $$('.wbar .wb', content)); } },
 };
 
 /* =====================================================================
-   CHANNEL REGISTRY
+   CHANNEL REGISTRY: only channels that shipped on the Wii.
    jingle: an original short motif played when the channel preview opens.
    ===================================================================== */
 const CHANNELS = [
-  { name:'Research',      sub:'Disc Channel',            art:'disc',       screen:'research',      jingle:'E5 G5 B5 . A5 G5 E5 . D5 E5' },
-  { name:'rd2dnet',       sub:'Software',                art:'rd2dnet',    screen:'rd2dnet',       jingle:'C5 G5 . E5 G5 C6 . B5 G5' },
-  { name:'About Me',      sub:'Mii Channel',             art:'mii',        screen:'about',         jingle:'C5 E5 G5 E5 F5 A5 G5 . E5 C5' },
-  { name:'Résumé',        sub:'Résumé',                  art:'resume',     screen:'resume',        jingle:'G4 C5 E5 G5 . E5 G5' },
-  { name:'Project Shop',  sub:'Shop Channel',            art:'shop',       screen:'shop',          jingle:'D5 F#5 A5 . B5 A5 F#5 . E5 D5 E5 F#5' },
-  { name:'News & Blog',   sub:'News Channel',            art:'news',       screen:'news',          jingle:'C5 C5 G5 . F5 E5 D5 C5' },
-  { name:'Experience',    sub:'Experience',              art:'experience', screen:'experience',    jingle:'D5 A4 D5 F#5 . E5 D5' },
-  { name:'Links',         sub:'Internet Channel',        art:'internet',   screen:'links',         jingle:'E5 B5 . G#5 E5 F#5' },
-  { name:'Forecast',      sub:'Forecast Channel',        art:'forecast',   screen:'forecast',      jingle:'F5 A5 C6 . A5 . G5 F5' },
-  { name:'Election Polling', sub:'Everybody Votes Channel', art:'votes',   screen:'votes',         jingle:'C5 D5 E5 . E5 D5 C5 D5' },
-  { name:'MBTA Ridership', sub:'Research Paper',         art:'ts',         screen:'ts',            jingle:'C5 D5 F5 E5 G5 F5 A5' },
-  { name:'Micro Course',  sub:'Course Website',          art:'micro',      screen:'micro',         jingle:'C5 G4 A4 E4 F4 C4 F4 G4' },
-  { name:'OctaStats',     sub:'UFC Model',               art:'octa',       screen:'octa',          jingle:'A3 A3 C4 . A3 E4 D4' },
-  { name:'Tale of the Tape', sub:'UFC Daily Game',       art:'tape',       screen:'tape',          jingle:'G4 G4 . D5 . C5 B4 A4 G4' },
-  { name:'Chesque',       sub:'Browser Game',            art:'chesque',    screen:'chesque',       jingle:'E4 G4 B4 . E5 . D5 B4' },
-  { name:'MBTA LED Map',  sub:'Hardware Project',        art:'led',        screen:'led',           jingle:'E5 . E5 G5 . E5 D5' },
-  { name:'Agentic LLMs',  sub:'In progress',             art:'llm',        screen:'llm',           jingle:'B4 D5 F#5 A5 . F#5' },
+  { name:'Disc Channel',            art:'disc',     screen:'disc',     jingle:'E5 G5 B5 . A5 G5 E5 . D5 E5' },
+  { name:'Mii Channel',             art:'mii',      screen:'mii',      jingle:'C5 E5 G5 E5 F5 A5 G5 . E5 C5' },
+  { name:'Photo Channel',           art:'photo',    screen:'photo',    jingle:'G4 C5 E5 G5 . E5 G5' },
+  { name:'Wii Shop Channel',        art:'shop',     screen:'shop',     jingle:'D5 F#5 A5 . B5 A5 F#5 . E5 D5 E5 F#5' },
+  { name:'Forecast Channel',        art:'forecast', screen:'forecast', jingle:'F5 A5 C6 . A5 . G5 F5' },
+  { name:'News Channel',            art:'news',     screen:'news',     jingle:'C5 C5 G5 . F5 E5 D5 C5' },
+  { name:'Internet Channel',        art:'internet', screen:'internet', jingle:'E5 B5 . G#5 E5 F#5' },
+  { name:'Everybody Votes Channel', art:'votes',    screen:'votes',    jingle:'C5 D5 E5 . E5 D5 C5 D5' },
 ];
 
 /* =====================================================================
@@ -687,7 +968,7 @@ function buildBar(){
   document.getElementById('clock').style.transform = L.mode==='portrait' ? 'scale(.85)' : '';
 }
 function buildGrid(){
-  PAGES = Math.ceil(CHANNELS.length / L.per);
+  PAGES = Math.max(2, Math.ceil(CHANNELS.length / L.per));   // the real menu always has more (empty) pages
   track.innerHTML = ''; tiles.length = 0;
   Object.assign(pagesEl.style, { width:L.W+'px', height:(L.barTop+60)+'px' });
   track.style.width = (PAGES*L.W)+'px';
@@ -933,25 +1214,18 @@ document.getElementById('pvR').onclick = () => current<CHANNELS.length-1 && open
 document.getElementById('pvStart').onclick = () => openContent(current);
 
 /* --- channel content --- */
-const content = document.getElementById('content'), ccFoot = document.getElementById('ccFoot');
-let contentFrom = 'preview';
-function showScreen(key, title, sub, art){
-  const sc = SCREENS[key];
-  document.getElementById('ccIco').innerHTML = art ? `<div class="bn">${B[art]()}</div>` : `<div class="bn"><div style="inset:0;background:#fffef6"></div><svg viewBox="0 0 96 64" style="left:25%;top:20%;width:50%;height:60%"><path d="M0 4v8l46.7 22.9c.8.4 1.8.4 2.6 0L96 12V4c0-2.2-1.8-4-4-4H4C1.8 0 0 1.8 0 4z" fill="#34beed"/><path d="M46.7 43.8 0 20.5V60c0 2.2 1.8 4 4 4h88c2.2 0 4-1.8 4-4V20.5L49.3 43.8c-.8.4-1.8.4-2.6 0z" fill="#34beed"/></svg></div>`;
-  document.getElementById('ccTitle').textContent = title;
-  document.getElementById('ccSub').textContent = sub;
-  document.getElementById('ccInner').innerHTML = sc.html();
-  ccFoot.innerHTML = `<button class="pill" id="ccBack" data-hot>Wii Menu</button>` +
-    (sc.actions||[]).map(([l,h])=>`<a class="pill" data-hot href="${h}" ${h.startsWith('mailto:')?'':'target="_blank" rel="noopener"'} style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none">${l}</a>`).join('');
-  document.getElementById('ccBack').onclick = closeContent;
-  content.dataset.theme = sc.theme || '';
-  document.getElementById('ccBody').scrollTop = 0;
+const content = document.getElementById('content');
+let contentFrom = 'preview', curScreen = null;
+function showScreen(key){
+  const sc = SCREENS[key]; curScreen = sc;
+  content.innerHTML = sc.html();
+  content.setAttribute('aria-label', sc.label);
+  content.querySelectorAll('[data-back]').forEach(b => b.onclick = closeContent);
   content.classList.remove('leaving'); content.classList.add('open');
   document.documentElement.classList.add('in-content');
   stage.inert = true;
-  setTimeout(()=>document.getElementById('ccTitle').focus({preventScroll:true}), 50);
-  if (key === 'forecast') loadWeather();
-  if (key === 'votes') wirePoll();
+  if (sc.init) sc.init(content);
+  setTimeout(() => { const f = content.querySelector('[data-focus]') || content.querySelector('button:not([disabled]),a'); if (f) f.focus({preventScroll:true}); }, 50);
 }
 const fader = document.getElementById('fader');
 function openContent(idx){
@@ -959,7 +1233,7 @@ function openContent(idx){
   const ch = CHANNELS[idx]; SFX.start(); stopJingle();
   state = 'entering'; contentFrom = 'preview';
   fader.classList.add('on');
-  setTimeout(() => { state = 'content'; showScreen(ch.screen, ch.name, ch.sub, ch.art); fader.classList.remove('on'); unscroll(); }, 260);
+  setTimeout(() => { state = 'content'; showScreen(ch.screen); fader.classList.remove('on'); unscroll(); }, 260);
 }
 // "Wii Menu" from inside a channel returns to the channel grid: fade to white,
 // then zoom the banner back down into its tile (rebuilt for the current layout).
@@ -969,7 +1243,8 @@ function closeContent(){
   content.querySelectorAll('video').forEach(v=>v.pause());
   fader.classList.add('on');
   setTimeout(() => {
-    content.classList.remove('open'); document.getElementById('ccInner').innerHTML = '';
+    if (curScreen && curScreen.leave) curScreen.leave(); curScreen = null;
+    content.classList.remove('open'); content.innerHTML = '';
     document.documentElement.classList.remove('in-content'); stage.inert = false;
     if (contentFrom === 'preview'){
       const ch = CHANNELS[current], p = Math.floor(current / L.per);
@@ -1005,7 +1280,7 @@ document.getElementById('sysData').onclick = () => window.open(RESUME,'_blank','
 document.getElementById('sysSettings').onclick = () => { location.href = ASSET; };
 document.getElementById('sdBtn').onclick = () => { if (state==='menu'){ SFX.select(); window.open(RESUME,'_blank','noopener'); } };
 document.getElementById('mailBtn').onclick = () => { if(state!=='menu') return; SFX.select(); contentFrom='menu'; bubble.classList.remove('on');
-  state='entering'; fader.classList.add('on'); setTimeout(() => { state='content'; showScreen('board','Wii Message Board','Contact Zach',null); fader.classList.remove('on'); }, 260); };
+  state='entering'; fader.classList.add('on'); setTimeout(() => { state='content'; showScreen('board'); fader.classList.remove('on'); }, 260); };
 
 /* --- keyboard: arrows move the highlight, Enter/A = select, Esc/Backspace/B = back --- */
 let kFocus = 0;
@@ -1038,7 +1313,8 @@ addEventListener('keydown', e => {
     else if (e.key==='ArrowLeft' && current>0) openPreview(current-1,-1);
     else if (e.key==='ArrowRight' && current<CHANNELS.length-1) openPreview(current+1,1);
   } else if (state === 'content'){
-    if (e.key==='Escape' || ((e.key==='Backspace' || e.key==='b' || e.key==='B') && !onControl)){ e.preventDefault(); closeContent(); }
+    if (curScreen && curScreen.key && curScreen.key(e)){ e.preventDefault(); return; }
+    if (e.key==='Escape' || ((e.key==='Backspace' || e.key==='b' || e.key==='B') && !onControl)){ e.preventDefault(); if (curScreen && curScreen.back && curScreen.back()) return; closeContent(); }
   } else if (state === 'sys'){
     if (back) return closeSys();
     const order = ['sysData','sysSettings','musicToggle','sysClose'].map(id=>document.getElementById(id));
@@ -1066,7 +1342,7 @@ addEventListener('touchend', e => {
    LIVE DATA: forecast + poll
    ===================================================================== */
 const WX_CODES = {0:'Clear',1:'Mostly Clear',2:'Partly Cloudy',3:'Cloudy',45:'Fog',48:'Fog',51:'Drizzle',53:'Drizzle',55:'Drizzle',61:'Rain',63:'Rain',65:'Heavy Rain',71:'Snow',73:'Snow',75:'Heavy Snow',80:'Showers',81:'Showers',82:'Showers',95:'Thunderstorms'};
-const CITIES = [[40.73,-73.99],[42.39,-71.22],[43.89,-70.33]];
+const CITIES = [[42.36,-71.06]];   // Boston
 let wxCache = null;
 function fetchWeather(){
   if (wxCache) return wxCache;
@@ -1079,29 +1355,11 @@ function paintBannerTemp(){
   fetchWeather().then(d=>{ if(!d || !d[0] || !d[0].current) return; const t = Math.round(d[0].current.temperature_2m)+'°';
     document.querySelectorAll('.wx-temp').forEach(el=>{ el.textContent=t; el.style.display='block'; }); });
 }
-function loadWeather(){
-  fetchWeather().then(d=>{
-    document.querySelectorAll('#wxCards [data-wx]').forEach((el,i)=>{
-      if(!d || !d[i] || !d[i].current){ el.querySelector('.temp').textContent='N/A'; el.querySelector('.cond').textContent='Forecast unavailable right now'; return; }
-      el.querySelector('.temp').textContent = Math.round(d[i].current.temperature_2m)+'°F';
-      el.querySelector('.cond').textContent = WX_CODES[d[i].current.weather_code] || 'Unknown';
-    });
-  });
-}
 new MutationObserver(paintBannerTemp).observe(pvZoom,{childList:true});
 // prefers-reduced-motion: CSS can't stop SMIL, so pause banner SVG animations directly
 function pauseSMIL(root){ if (reduced) root.querySelectorAll('svg').forEach(s => s.pauseAnimations && s.pauseAnimations()); }
 new MutationObserver(() => pauseSMIL(pvZoom)).observe(pvZoom,{childList:true});
 pauseSMIL(document);
-
-function wirePoll(){
-  document.querySelectorAll('[data-vote]').forEach(b=>b.onclick=()=>{
-    const v = +b.dataset.vote; SFX.select();
-    const r = document.getElementById('pollRes');
-    r.textContent = (v === 0 ? 'Same answer as the paper. ' : 'The paper found the opposite. ') + 'In the 2024 data, polls behaved as an indicator of the outcome, not a catalyst for it.';
-    r.style.display = 'block';
-  });
-}
 
 /* =====================================================================
    GO
