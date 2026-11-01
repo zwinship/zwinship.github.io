@@ -182,6 +182,8 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 .about-top{display:flex;gap:28px;align-items:center;flex-wrap:wrap}
 .about-top .zw{position:relative;flex:0 0 auto;width:160px;height:160px;border-radius:24px;border:2px solid #d5d6da}
 .about-top h2{font-size:32px;font-weight:700;color:#45474c}
+@media (max-width:640px){.about-top{flex-direction:column;text-align:center;gap:18px}.about-top .links{justify-content:center}
+  .cc-foot{flex-wrap:nowrap;gap:8px}.cc-foot .pill{flex:1 1 0;width:auto;min-width:0;max-width:200px;height:52px;font-size:18px;padding:0 8px}}
 .about-top .sub{color:var(--cyan-text);font-weight:500;margin-top:2px}
 video{width:100%;border-radius:12px;background:#000;margin-top:12px;display:block}
 .shop-row{display:flex;gap:18px;align-items:flex-start}
@@ -227,8 +229,12 @@ video{width:100%;border-radius:12px;background:#000;margin-top:12px;display:bloc
 .bn .t{left:0;right:0;text-align:center;font-weight:700;white-space:nowrap}
 .bn .pv{display:none}
 #pvZoom .bn .pv{display:block}
-#pvZoom .bn .tick{font-size:6cqh !important}
-#pvZoom .bn .tickbar{height:15cqh !important}
+#pvZoom .bn .tick{font-size:5cqh !important}
+#pvZoom .bn .tickbar,#pvZoom .bn .capbar{height:15% !important}
+#pvZoom .bn .cap{font-size:8cqh !important}
+.bn .safe{left:50%;top:50%;width:min(100cqw,177.78cqh);height:min(100cqh,56.25cqw);transform:translate(-50%,-50%);container-type:size}
+/* phone preview: keep text clear of the side arrows */
+.portrait #pvZoom .bn .safe{width:84cqw;height:47.25cqw}
 #fader{position:fixed;inset:0;z-index:75;background:#fff;opacity:0;pointer-events:none;transition:opacity .25s ease}
 #fader.on{opacity:1;pointer-events:auto}
 #musicToggle{width:300px;height:80px;font-size:28px}
@@ -346,124 +352,110 @@ document.querySelector('.wii-mark-slot').outerHTML = WII_MARK();
    mark. Lines marked `.pv` only show in the zoomed preview.
    ===================================================================== */
 const PV = (txt, css) => `<div class="pv" style="${css};font-size:5.5cqh;font-weight:500;line-height:1.5">${txt}</div>`;
+// bg fills the whole banner; content sits in a centered 16:9 box so it
+// keeps its layout on wide (preview) and narrow (phone preview) shapes.
+const BN = (bg, inner) => `${bg}<div class="safe">${inner}</div>`;
+const LIGHT = '<div style="inset:0;background:linear-gradient(#ffffff,#eceff3)"></div>';
 const B = {
-disc: () => `
-  <div style="inset:0;background:linear-gradient(#ffffff,#eceff3)"></div>
+disc: () => BN(LIGHT, `
   <div class="spin" style="left:8cqw;top:13cqh;width:74cqh;height:74cqh;border-radius:50%;background:conic-gradient(from 30deg,#e7ebf1,#fafbfd,#e3e8ef,#f7f8fb,#e7ebf1);box-shadow:inset 0 0 0 .5cqh #c3c7ce,0 1cqh 2cqh rgba(0,0,0,.08)">
     <div style="inset:34%;border-radius:50%;background:#f3f4f6;box-shadow:inset 0 0 0 .5cqh #c3c7ce"></div>
     <div style="inset:44%;border-radius:50%;background:#fff;box-shadow:inset 0 0 0 .5cqh #c3c7ce"></div>
   </div>
-  <div style="left:calc(8cqw + 86cqh);top:35cqh;font-size:13cqh;font-weight:800;color:#5f6166;letter-spacing:-.2cqh">Research</div>
-  ${PV(`${RESEARCH[0].badge}<br>Congestion pricing and EMS response times`, 'left:calc(8cqw + 86cqh);right:4cqw;top:56cqh;color:#1f7fae')}`,
+  <div style="left:54cqw;top:35cqh;font-size:13cqh;font-weight:800;color:#5f6166;letter-spacing:-.2cqh">Research</div>
+  ${PV(`${RESEARCH[0].badge}<br>Congestion pricing and EMS response times`, 'left:54cqw;right:3cqw;top:56cqh;color:#1f7fae')}`),
 
-mii: () => `
-  <div style="inset:0;background:linear-gradient(#ffffff,#edf1f4)"></div>
+mii: () => BN('<div style="inset:0;background:linear-gradient(#ffffff,#edf1f4)"></div>', `
   <div class="zw" style="right:6cqw;top:13cqh;width:74cqh;height:74cqh;border-radius:12cqh;box-shadow:inset 0 0 0 .5cqh rgba(0,0,0,.08)"></div>
   <div style="left:7cqw;top:35cqh;font-size:13cqh;font-weight:800;color:#5f6166;letter-spacing:-.2cqh">About Me</div>
-  ${PV(`${PROFILE.name}<br>${PROFILE.now}`, 'left:7cqw;right:calc(6cqw + 82cqh);top:56cqh;color:#1f7fae')}`,
+  ${PV(`${PROFILE.name}<br>${PROFILE.now}`, 'left:7cqw;right:50cqw;top:56cqh;color:#1f7fae')}`),
 
-shop: () => `
-  <div style="inset:0;background:linear-gradient(#ffffff,#e4f5fc)"></div>
+shop: () => BN('<div style="inset:0;background:linear-gradient(#ffffff,#e4f5fc)"></div>', `
   <svg viewBox="0 0 40 40" style="left:50%;top:12cqh;width:36cqh;height:36cqh;margin-left:-18cqh"><path d="M13 14V11a7 7 0 0114 0v3" fill="none" stroke="#2aa6d8" stroke-width="3"/><rect x="5" y="13" width="30" height="23" rx="4" fill="#fff" stroke="#2aa6d8" stroke-width="3"/></svg>
   <div class="t" style="top:54cqh;font-size:13cqh;font-weight:800;color:#1f8fc4">Project Shop</div>
-  ${PV('Research and personal projects', 'left:0;right:0;text-align:center;top:78cqh;color:#4b9cc4')}`,
+  ${PV('Research and personal projects', 'left:0;right:0;text-align:center;top:78cqh;color:#4b9cc4')}`),
 
-forecast: () => `
-  <div style="inset:0;background:linear-gradient(#3fa6e6,#a9dbf6 80%)"></div>
-  <div style="left:8cqw;top:16cqh;font-size:10cqh;font-weight:700;color:#fff">New York</div>
-  <div class="wx-temp" style="left:8cqw;top:31cqh;font-size:30cqh;font-weight:700;color:#fff;line-height:1;display:none"></div>
-  <div style="left:0;right:0;bottom:0;height:24cqh;background:linear-gradient(#ffffff,#eef6fb)"></div>
-  <div class="t" style="bottom:4cqh;font-size:13cqh;font-weight:800;color:#2c8fc6">Forecast</div>`,
+forecast: () => BN(`<div style="inset:0;background:linear-gradient(#3fa6e6,#a9dbf6 80%)"></div>
+  <div class="capbar" style="left:0;right:0;bottom:0;height:24%;background:linear-gradient(#ffffff,#eef6fb);display:flex;align-items:center;justify-content:center"><span class="cap" style="position:static;font-size:13cqh;font-weight:800;color:#2c8fc6">Forecast</span></div>`, `
+  <div style="left:8cqw;top:12cqh;font-size:10cqh;font-weight:700;color:#fff">New York</div>
+  <div class="wx-temp" style="left:8cqw;top:26cqh;font-size:30cqh;font-weight:700;color:#fff;line-height:1;display:none"></div>
+`),
 
-news: () => `
-  <div style="inset:0;background:linear-gradient(#ffffff,#edf1f6)"></div>
-  <div class="t" style="top:16cqh;font-size:20cqh;font-weight:800;color:#2b5d8f;letter-spacing:-.3cqh">News</div>
-  <div style="left:50%;top:44cqh;width:28cqh;height:1cqh;margin-left:-14cqh;border-radius:1cqh;background:#34beed"></div>
-  ${PV('Press coverage and the blog', 'left:0;right:0;text-align:center;top:50cqh;color:#2b5d8f')}
-  <div class="tickbar" style="left:0;right:0;bottom:0;height:24cqh;background:#2b5d8f;overflow:hidden">
+news: () => BN(`<div style="inset:0;background:linear-gradient(#ffffff,#edf1f6)"></div>
+  <div class="tickbar" style="left:0;right:0;bottom:0;height:24%;background:#2b5d8f;overflow:hidden">
     <div class="tick" style="left:0;top:0;height:100%;display:flex;align-items:center;white-space:nowrap;font-size:9cqh;font-weight:500;color:#fff;animation:ticker 40s linear -8s infinite">${MEDIA.map(m=>`${m[1]}: ${m[2]}`).join('<span style="position:static;display:inline-block;width:12cqh"></span>')}</div>
-  </div>`,
+  </div>`, `
+  <div class="t" style="top:14cqh;font-size:20cqh;font-weight:800;color:#2b5d8f;letter-spacing:-.3cqh">News</div>
+  <div style="left:50%;top:42cqh;width:28cqh;height:1cqh;margin-left:-14cqh;border-radius:1cqh;background:#34beed"></div>
+  ${PV('Press coverage and the blog', 'left:0;right:0;text-align:center;top:50cqh;color:#2b5d8f')}`),
 
-internet: () => `
-  <div style="inset:0;background:linear-gradient(#ffffff,#eceff3)"></div>
+internet: () => BN(LIGHT, `
   <div class="t" style="top:16cqh;font-size:17cqh;font-weight:800;color:#5f6166">Links</div>
-  <div style="left:14cqw;right:14cqw;top:52cqh;height:20cqh;border-radius:10cqh;background:#fff;border:.7cqh solid #34beed;box-shadow:0 .6cqh 1.4cqh rgba(0,0,0,.08)">
-    <div style="left:0;right:0;top:0;bottom:0;display:flex;align-items:center;justify-content:center;font-size:8cqh;font-weight:500;color:#5f6166">zwinship.github.io</div>
-  </div>`,
+  <div style="left:14cqw;right:14cqw;top:52cqh;height:20cqh;border-radius:10cqh;background:#fff;border:.7cqh solid #34beed;box-shadow:0 .6cqh 1.4cqh rgba(0,0,0,.08);display:flex;align-items:center;justify-content:center">
+    <span style="position:static;font-size:8cqh;font-weight:500;color:#5f6166">zwinship.github.io</span>
+  </div>`),
 
-votes: () => `
-  <div style="inset:0;background:linear-gradient(#fffbea,#fbefc4)"></div>
+votes: () => BN('<div style="inset:0;background:linear-gradient(#fffbea,#fbefc4)"></div>', `
   <div class="t" style="top:14cqh;font-size:13cqh;font-weight:800;color:#8a6a1f">Election Polling</div>
   <div style="left:14cqw;width:33cqw;top:46cqh;height:18cqh;border-radius:9cqh;background:#36b3e3;color:#fff;font-size:7.5cqh;font-weight:700;display:flex;align-items:center;justify-content:center">Indicator</div>
   <div style="right:14cqw;width:33cqw;top:46cqh;height:18cqh;border-radius:9cqh;background:#e7574f;color:#fff;font-size:7.5cqh;font-weight:700;display:flex;align-items:center;justify-content:center">Catalyst</div>
-  ${PV('2024 U.S. presidential election', 'left:0;right:0;text-align:center;top:76cqh;color:#8a6a1f')}`,
+  ${PV('2024 U.S. presidential election', 'left:0;right:0;text-align:center;top:76cqh;color:#8a6a1f')}`),
 
-resume: () => `
-  <div style="inset:0;background:linear-gradient(#ffffff,#eceff3)"></div>
-  <svg viewBox="0 0 30 40" style="left:12cqw;top:13cqh;width:55cqh;height:74cqh"><path d="M3 2h17l7 7v29H3z" fill="#fff" stroke="#9fa1a6" stroke-width="1.6"/><path d="M20 2v7h7" fill="#eceef1" stroke="#9fa1a6" stroke-width="1.6"/><rect x="7" y="9" width="9" height="3" rx="1" fill="#34beed"/><path d="M7 17h16M7 21h16M7 25h16M7 29h11" stroke="#c7c9cd" stroke-width="1.6"/></svg>
-  <div style="left:calc(12cqw + 66cqh);top:33cqh;font-size:15cqh;font-weight:800;color:#5f6166;letter-spacing:-.2cqh">Résumé</div>
-  ${PV('PDF', 'left:calc(12cqw + 66cqh);top:57cqh;color:#1f7fae')}`,
+resume: () => BN(LIGHT, `
+  <svg viewBox="0 0 30 40" style="left:14cqw;top:13cqh;width:55cqh;height:74cqh"><path d="M3 2h17l7 7v29H3z" fill="#fff" stroke="#9fa1a6" stroke-width="1.6"/><path d="M20 2v7h7" fill="#eceef1" stroke="#9fa1a6" stroke-width="1.6"/><rect x="7" y="9" width="9" height="3" rx="1" fill="#34beed"/><path d="M7 17h16M7 21h16M7 25h16M7 29h11" stroke="#c7c9cd" stroke-width="1.6"/></svg>
+  <div style="left:52cqw;top:35cqh;font-size:14cqh;font-weight:800;color:#5f6166;letter-spacing:-.2cqh">Résumé</div>
+  ${PV('PDF', 'left:52cqw;top:57cqh;color:#1f7fae')}`),
 
-experience: () => `
-  <div style="inset:0;background:linear-gradient(#ffffff,#eceff3)"></div>
+experience: () => BN(LIGHT, `
   <div class="t" style="top:28cqh;font-size:15cqh;font-weight:800;color:#5f6166;letter-spacing:-.2cqh">Experience</div>
   <div style="left:50%;top:53cqh;width:28cqh;height:1cqh;margin-left:-14cqh;border-radius:1cqh;background:#34beed"></div>
-  ${PV('New York University, Bentley University, American Action Forum', 'left:0;right:0;text-align:center;top:62cqh;color:#1f7fae')}`,
+  ${PV('New York University, Bentley University,<br>American Action Forum', 'left:0;right:0;text-align:center;top:62cqh;color:#1f7fae')}`),
 
-octa: () => `
-  <div style="inset:0;background:linear-gradient(#26262a,#141416)"></div>
+octa: () => BN('<div style="inset:0;background:linear-gradient(#26262a,#141416)"></div>', `
   <div style="left:50%;top:12cqh;width:56cqh;height:56cqh;margin-left:-28cqh;clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%);background:#d63434">
     <div style="inset:2.5cqh;clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%);background:#1b1b1e"></div>
     <div style="left:0;right:0;top:15cqh;text-align:center;font-size:10cqh;font-weight:800;color:#fff">OCTA</div>
     <div style="left:0;right:0;top:27cqh;text-align:center;font-size:10cqh;font-weight:800;color:#e04646">STATS</div>
   </div>
-  ${PV('UFC fight prediction model', 'left:0;right:0;text-align:center;bottom:8cqh;color:#bbb')}`,
+  ${PV('UFC fight prediction model', 'left:0;right:0;text-align:center;bottom:8cqh;color:#bbb')}`),
 
-tape: () => `
-  <div style="inset:0;background:linear-gradient(90deg,#c43c3c 0 50%,#2f66b8 50%)"></div>
+tape: () => BN('<div style="inset:0;background:linear-gradient(90deg,#c43c3c 0 50%,#2f66b8 50%)"></div>', `
   <div class="t" style="top:20cqh;font-size:14cqh;font-weight:800;color:#fff">Tale of the Tape</div>
   <div style="left:50%;top:46cqh;width:26cqh;height:26cqh;margin-left:-13cqh;border-radius:50%;background:#fff;text-align:center;line-height:26cqh;font-size:11cqh;font-weight:800;color:#333">VS</div>
-  ${PV('UFC daily challenge', 'left:0;right:0;text-align:center;top:80cqh;color:#fff')}`,
+  ${PV('UFC daily challenge', 'left:0;right:0;text-align:center;top:80cqh;color:#fff')}`),
 
-micro: () => `
-  <div style="inset:0;background:linear-gradient(#ffffff,#eceff3)"></div>
+micro: () => BN(LIGHT, `
   <svg viewBox="0 0 100 60" preserveAspectRatio="none" style="left:8cqw;top:16cqh;width:68cqh;height:64cqh;overflow:visible">
     <path d="M2 2V58H98" fill="none" stroke="#9a9ca1" stroke-width="1.4"/>
     <path d="M10 8 Q50 30 92 52" fill="none" stroke="#e05050" stroke-width="2.6"/>
     <path d="M10 52 Q50 30 92 8" fill="none" stroke="#2aa6d8" stroke-width="2.6"/>
   </svg>
-  <div style="left:calc(8cqw + 82cqh);top:28cqh;font-size:13cqh;font-weight:800;color:#5f6166;line-height:1.05">Micro<br>Course</div>
-  ${PV('Intermediate Microeconomics', 'left:calc(8cqw + 82cqh);right:4cqw;top:62cqh;color:#1f7fae')}`,
+  <div style="left:54cqw;top:28cqh;font-size:13cqh;font-weight:800;color:#5f6166;line-height:1.05">Micro<br>Course</div>
+  ${PV('Intermediate Microeconomics', 'left:54cqw;right:3cqw;top:62cqh;color:#1f7fae')}`),
 
-led: () => `
-  <img src="${ASSET}images/mbta_led_build.jpg" alt="" style="inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 42%">
-  <div style="left:0;right:0;bottom:0;height:24cqh;background:rgba(20,22,26,.82)"></div>
-  <div class="t" style="bottom:5cqh;font-size:11cqh;font-weight:800;color:#fff">MBTA LED Map</div>`,
+led: () => BN(`<img src="${ASSET}images/mbta_led_build.jpg" alt="" style="inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 42%">
+  <div class="capbar" style="left:0;right:0;bottom:0;height:24%;background:rgba(20,22,26,.82);display:flex;align-items:center;justify-content:center"><span class="cap" style="position:static;font-size:11cqh;font-weight:800;color:#fff">MBTA LED Map</span></div>`, ''),
 
-ts: () => `
-  <div style="inset:0;background:linear-gradient(#ffffff,#eceff3)"></div>
+ts: () => BN(LIGHT, `
   <div class="t" style="top:22cqh;font-size:14cqh;font-weight:800;color:#5f6166;letter-spacing:-.2cqh">MBTA Ridership</div>
   <div style="left:50%;top:48cqh;width:60cqh;height:3cqh;margin-left:-30cqh;border-radius:1.5cqh;overflow:hidden;background:linear-gradient(90deg,#da291c 0 25%,#ed8b00 25% 50%,#00843d 50% 75%,#003da5 75%)"></div>
-  ${PV('ARIMA forecasting in R', 'left:0;right:0;text-align:center;top:60cqh;color:#1f7fae')}`,
+  ${PV('ARIMA forecasting in R', 'left:0;right:0;text-align:center;top:60cqh;color:#1f7fae')}`),
 
-rd2dnet: () => `
-  <div style="inset:0;background:linear-gradient(#ffffff,#eceff3)"></div>
-  <svg viewBox="0 0 100 60" style="left:6cqw;top:14cqh;width:84cqh;height:72cqh">
+rd2dnet: () => BN(LIGHT, `
+  <svg viewBox="0 0 100 60" style="left:5cqw;top:14cqh;width:84cqh;height:72cqh">
     <g stroke="#c3c5ca" stroke-width="1.1" fill="none"><path d="M5 10 L95 30 M5 25 L95 45 M5 40 L95 60 M18 0 L6 60 M42 0 L30 60 M66 0 L54 60 M90 0 L78 60"/></g>
     <path d="M0 30 L100 52" stroke="#34beed" stroke-width="2.6" fill="none"/>
   </svg>
-  <div style="left:calc(6cqw + 96cqh);top:31cqh;font-size:16cqh;font-weight:800;color:#5f6166;letter-spacing:-.2cqh">rd2dnet</div>
-  ${PV('Boundary discontinuity designs<br>on street networks', 'left:calc(6cqw + 96cqh);right:4cqw;top:57cqh;color:#1f7fae')}`,
+  <div style="left:58cqw;top:33cqh;font-size:14cqh;font-weight:800;color:#5f6166;letter-spacing:-.2cqh">rd2dnet</div>
+  ${PV('Boundary discontinuity designs<br>on street networks', 'left:58cqw;right:2cqw;top:56cqh;color:#1f7fae')}`),
 
-chesque: () => `
-  <div style="inset:0;background:linear-gradient(#262c40,#171b28)"></div>
+chesque: () => BN('<div style="inset:0;background:linear-gradient(#262c40,#171b28)"></div>', `
   <div class="t" style="top:30cqh;font-size:20cqh;font-weight:800;color:#f1e9d8;letter-spacing:-.3cqh">Ches<span style="position:static;color:#f0a53a">que</span></div>
-  ${PV('Chess rules, but every piece is a hero', 'left:0;right:0;text-align:center;top:62cqh;color:#cfc6b3')}`,
+  ${PV('Chess rules, but every piece is a hero', 'left:0;right:0;text-align:center;top:62cqh;color:#cfc6b3')}`),
 
-llm: () => `
-  <div style="inset:0;background:linear-gradient(#ffffff,#efebfa)"></div>
+llm: () => BN('<div style="inset:0;background:linear-gradient(#ffffff,#efebfa)"></div>', `
   <div class="t" style="top:30cqh;font-size:15cqh;font-weight:800;color:#6b55c4;letter-spacing:-.2cqh">Agentic LLMs</div>
-  ${PV('In progress', 'left:0;right:0;text-align:center;top:58cqh;color:#7c66cf')}`,
+  ${PV('In progress', 'left:0;right:0;text-align:center;top:58cqh;color:#7c66cf')}`),
 };
 
 /* =====================================================================
