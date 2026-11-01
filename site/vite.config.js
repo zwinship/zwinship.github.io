@@ -18,7 +18,7 @@ function playData() {
       const software = {
         id: 'rd2dnet', title: 'rd2dnet: Boundary Discontinuity Designs on Street Networks', year: '2026', badge: `v${sw.version}`,
         meta: 'Software · Spatial Econometrics · Python and R',
-        body: sw.body.join(' '), credit: sw.credit,
+        body: sw.body.join(' '), credit: sw.credit, status: sw.status,
         tags: ['Python', 'R', 'Regression Discontinuity', 'Networks', 'Spatial'],
         links: sw.links,
       };

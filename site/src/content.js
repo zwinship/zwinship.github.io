@@ -62,6 +62,8 @@ export const RESEARCH = [
 ];
 
 export const MEDIA = [
+  ['https://www.nber.org/digest/202609/urban-congestion-pricing-and-response-times-emergency-medical-services', 'NBER Digest', 'Urban congestion pricing and response times of emergency medical services'],
+  ['https://www.promarket.org/2026/09/21/new-yorks-congestion-toll-helped-ambulances-move-faster/', 'ProMarket', "New York's congestion toll helped ambulances move faster"],
   ['https://fortune.com/2026/07/08/nyc-congestion-pricing-ambulance-trips-one-minute-economic-benefits/', 'Fortune', 'Congestion pricing shaves a minute off ambulance trips'],
   ['https://abc7ny.com/post/7-side-investigates-has-congestion-pricing-reduced-911-response-times/19476789/', 'ABC7', '7 On Your Side Investigates: 911 response times'],
   ['https://gothamist.com/news/every-second-counts-congestion-pricing-speeds-up-ambulances-in-manhattan-study-finds', 'Gothamist', 'Every second counts: congestion pricing speeds up ambulances'],
@@ -69,11 +71,12 @@ export const MEDIA = [
   ['https://cityobservatory.substack.com/p/the-week-observed-july-10-2026', 'City Observatory', 'The Week Observed, July 10 2026'],
   ['https://finance.yahoo.com/economy/policy/articles/even-shaving-one-minute-off-182426964.html', 'Yahoo Finance', 'Even shaving one minute off'],
 ];
-export const MEDIA_FORTHCOMING = ['NBER Digest', 'ProMarket, Chicago Booth Stigler Center'];
+export const MEDIA_FORTHCOMING = [];
 
 export const SOFTWARE = {
   name: 'rd2dnet',
-  version: '0.2.0',
+  version: '1',
+  status: 'Version 1 is out for Python (PyPI) and R. Version 2 is in development and due soon.',
   summary: 'Boundary discontinuity designs on street networks.',
   body: [
     'rd2dnet carries the boundary discontinuity framework of rd2d (Cattaneo, Titiunik and Yu) from Euclidean coordinates to network coordinates. Distance to the boundary is measured along streets, and you choose the metric: metres, travel time, a land-use contrast, a penalty for switching road class, or your own matrix.',
@@ -109,9 +112,9 @@ export const PERSONAL = [
     body: 'A daily guessing game: identify a mystery UFC fighter from stat comparisons. The other UFC daily games were bad, so I built my own. New fighter every day.',
     tags: ['Web Development', 'Data Collection', 'Sports Analytics'],
     links: [['https://taleofthetape.github.io', 'Play'], ['https://github.com/zwinship/taleofthetape', 'GitHub']] },
-  { id: 'chesque', title: 'Chesque', year: '2026', meta: 'Browser Game',
-    body: 'A browser game I built and host on Cloudflare Pages.',
-    tags: ['Web Development', 'Game'],
+  { id: 'chesque', title: 'Chesque', year: '2026', meta: 'Browser Game · Chess Variant',
+    body: 'Chess rules, but every piece is a hero in your army. Play people online (10 min + 5 s), bots, or a friend by link, or try Danse Macabre: eight armies, last one standing. There is a daily mate puzzle, lessons, and daily goals, all in pixel art.',
+    tags: ['Web Development', 'Game Design', 'Chess'],
     links: [['https://chesque.pages.dev/#home', 'Play']] },
   { id: 'mbta-ts', title: 'MBTA Time Series Analysis', year: '2025', meta: 'Forecasting · Transportation Economics',
     body: 'MBTA ridership modeled alongside weather and seasonal patterns to show where the T could adjust service. Built in R with reproducible code that pulls data from the source.',

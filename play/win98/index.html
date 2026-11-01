@@ -393,7 +393,7 @@ const ALL_PROJECTS = [
   {...SOFTWARE, group:'Research'},
   ...PERSONAL.map(p=>({...p, group:'Personal Projects'})),
 ];
-const PROJECT_ICON = t => /rd2dnet/.test(t) ? 'network' : /Chesque/.test(t) ? 'mine' : /UFC|Tale/.test(t) ? 'ufc' : /MBTA/.test(t) ? 'train' : /Course/.test(t) ? 'web' : /LLM/.test(t) ? 'robot' : /Polling/.test(t) ? 'vote' : 'chart';
+const PROJECT_ICON = t => /rd2dnet/.test(t) ? 'network' : /Chesque/.test(t) ? 'cards' : /UFC|Tale/.test(t) ? 'ufc' : /MBTA/.test(t) ? 'train' : /Course/.test(t) ? 'web' : /LLM/.test(t) ? 'robot' : /Polling/.test(t) ? 'vote' : 'chart';
 const shortName = t => ({
   'Congestion Pricing and EMS Response Time: Evidence From New York City':'NBER - Congestion Pricing & EMS',
   'NYC Congestion Pricing: Mobility and Commercial Effects':'NYC Congestion Pricing',

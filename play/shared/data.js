@@ -144,10 +144,11 @@ const SOFTWARE = {
  "id": "rd2dnet",
  "title": "rd2dnet: Boundary Discontinuity Designs on Street Networks",
  "year": "2026",
- "badge": "v0.2.0",
+ "badge": "v1",
  "meta": "Software · Spatial Econometrics · Python and R",
  "body": "rd2dnet carries the boundary discontinuity framework of rd2d (Cattaneo, Titiunik and Yu) from Euclidean coordinates to network coordinates. Distance to the boundary is measured along streets, and you choose the metric: metres, travel time, a land-use contrast, a penalty for switching road class, or your own matrix. Estimation, robust bias-corrected inference, uniform bands and the bandwidth selector follow rd2d; the density test follows rddensity. Cluster-robust errors default to CR2. It ships for Python and R with the same functions and the same numbers on the bundled data; a Stata port is in testing.",
  "credit": "Built on rd2d by Matias D. Cattaneo, Rocío Titiunik and Ruiqi Rae Yu. Independent project, not affiliated with or endorsed by the rd2d authors.",
+ "status": "Version 1 is out for Python (PyPI) and R. Version 2 is in development and due soon.",
  "tags": [
   "Python",
   "R",
@@ -247,11 +248,12 @@ const PERSONAL = [
   "id": "chesque",
   "title": "Chesque",
   "year": "2026",
-  "meta": "Browser Game",
-  "body": "A browser game I built and host on Cloudflare Pages.",
+  "meta": "Browser Game · Chess Variant",
+  "body": "Chess rules, but every piece is a hero in your army. Play people online (10 min + 5 s), bots, or a friend by link, or try Danse Macabre: eight armies, last one standing. There is a daily mate puzzle, lessons, and daily goals, all in pixel art.",
   "tags": [
    "Web Development",
-   "Game"
+   "Game Design",
+   "Chess"
   ],
   "links": [
    [
@@ -454,7 +456,7 @@ const EXPERIENCE = [
   ]
  }
 ];
-const MEDIA = [["https://fortune.com/2026/07/08/nyc-congestion-pricing-ambulance-trips-one-minute-economic-benefits/","Fortune","Congestion pricing shaves a minute off ambulance trips"],["https://abc7ny.com/post/7-side-investigates-has-congestion-pricing-reduced-911-response-times/19476789/","ABC7","7 On Your Side Investigates: 911 response times"],["https://gothamist.com/news/every-second-counts-congestion-pricing-speeds-up-ambulances-in-manhattan-study-finds","Gothamist","Every second counts: congestion pricing speeds up ambulances"],["https://nyc.streetsblog.org/2026/07/07/report-shows-yet-another-benefit-to-congestion-pricing-faster-emergency-response-times","Streetsblog NYC","Yet another benefit: faster emergency response"],["https://cityobservatory.substack.com/p/the-week-observed-july-10-2026","City Observatory","The Week Observed, July 10 2026"],["https://finance.yahoo.com/economy/policy/articles/even-shaving-one-minute-off-182426964.html","Yahoo Finance","Even shaving one minute off"]];
+const MEDIA = [["https://www.nber.org/digest/202609/urban-congestion-pricing-and-response-times-emergency-medical-services","NBER Digest","Urban congestion pricing and response times of emergency medical services"],["https://www.promarket.org/2026/09/21/new-yorks-congestion-toll-helped-ambulances-move-faster/","ProMarket","New York's congestion toll helped ambulances move faster"],["https://fortune.com/2026/07/08/nyc-congestion-pricing-ambulance-trips-one-minute-economic-benefits/","Fortune","Congestion pricing shaves a minute off ambulance trips"],["https://abc7ny.com/post/7-side-investigates-has-congestion-pricing-reduced-911-response-times/19476789/","ABC7","7 On Your Side Investigates: 911 response times"],["https://gothamist.com/news/every-second-counts-congestion-pricing-speeds-up-ambulances-in-manhattan-study-finds","Gothamist","Every second counts: congestion pricing speeds up ambulances"],["https://nyc.streetsblog.org/2026/07/07/report-shows-yet-another-benefit-to-congestion-pricing-faster-emergency-response-times","Streetsblog NYC","Yet another benefit: faster emergency response"],["https://cityobservatory.substack.com/p/the-week-observed-july-10-2026","City Observatory","The Week Observed, July 10 2026"],["https://finance.yahoo.com/economy/policy/articles/even-shaving-one-minute-off-182426964.html","Yahoo Finance","Even shaving one minute off"]];
 const BLOG = [["Strava as a Proxy for Urban Crime Perception","Proxy Variables · Urban Data","Planned · Jan 2027"],["What Your Neighbor's Windows Say About Their Schedule","Spillover Effects · Time-Lapse","Planned · Mar 2027"],["Detecting AI Use via Dash Frequency in Academic Writing","Econometrics · Science of Science","Unscheduled"]];
 const BLOG_STATUS = "Every two months, first post planned for early 2027";
 const SKILLS = ["Python","R","Stata","SQL","LaTeX","Causal inference","Regression discontinuity","Spatial analysis","Forecasting and ARIMA","Machine learning","Web development","Raspberry Pi hardware"];

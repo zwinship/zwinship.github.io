@@ -489,9 +489,11 @@ rd2dnet: () => `
   <div class="pv" style="left:56cqw;top:56cqh;font-size:5.5cqh;font-weight:500;color:#1f7fae;line-height:1.5">Boundary discontinuity designs<br>on street networks</div>`,
 
 chesque: () => `
-  <div style="inset:0;background:#fff"></div>
-  <div style="left:10cqw;top:18cqh;width:64cqh;height:64cqh;background:repeating-conic-gradient(#d9dadd 0 25%,#ffffff 0 50%) 0 0/16cqh 16cqh;border:.6cqh solid #b9bbc0"></div>
-  <div style="left:54cqw;top:36cqh;font-size:15cqh;font-weight:700;color:#7a7c81">Chesque</div>`,
+  <div style="inset:0;background:#1d2233"></div>
+  <div style="inset:0;background:repeating-linear-gradient(0deg,transparent 0 9cqh,rgba(255,255,255,.04) 9cqh 9.6cqh)"></div>
+  <div style="right:12cqw;top:16cqh;width:26cqh;height:26cqh;border-radius:50%;box-shadow:-5cqh 3cqh 0 0 #e9e4d6"></div>
+  <div style="left:8cqw;top:30cqh;font-size:17cqh;font-weight:800;color:#f1e9d8;letter-spacing:-.3cqh">Ches<span style="position:static;color:#f0a53a">que</span></div>
+  <div class="pv" style="left:8cqw;top:56cqh;font-size:5.5cqh;font-weight:500;color:#cfc6b3">Chess rules. Every piece is a hero.</div>`,
 
 llm: () => `
   <div style="inset:0;background:#fff"></div>
@@ -529,13 +531,13 @@ const SHOP_ART = { nber:'disc', cz:'disc', ozone:'disc', polls:'votes', micro:'m
 const SCREENS = {
   research: { actions:[['NBER Paper','https://www.nber.org/papers/w35414']], html: () => `${card(RESEARCH[0])}
     <div class="card"><h3>Coverage</h3><ul class="list-plain" style="margin-top:8px">
-      ${MEDIA.map(m=>`<li><a href="${m[0]}" target="_blank" rel="noopener">${m[1]}</a> · ${m[2]}</li>`).join('')}
-      <li>NBER Digest and ProMarket (Chicago Booth Stigler Center): forthcoming</li></ul></div>
+      ${MEDIA.map(m=>`<li><a href="${m[0]}" target="_blank" rel="noopener">${m[1]}</a> · ${m[2]}</li>`).join('')}</ul></div>
     <div class="sec-h">More research</div>${rows(RESEARCH.slice(1,4))}` },
 
   rd2dnet: { actions:[['GitHub','https://github.com/zwinship/rd2dnet'],['PyPI','https://pypi.org/project/rd2dnet/']], html: () => `<div class="card">
       <span class="badge">${SOFTWARE.badge}</span><h3>${SOFTWARE.title}</h3><div class="meta">${SOFTWARE.meta}</div>
       <p>${SOFTWARE.body}</p>
+      <p class="tagline">${SOFTWARE.status}</p>
       <pre class="code">pip install rd2dnet</pre>
       <p class="tagline">R: remotes::install_github("zwinship/rd2dnet", subdir = "R-package"). A Stata port is in testing.</p>
       <p class="tagline">${SOFTWARE.credit}</p>${links(SOFTWARE.links)}</div>` },

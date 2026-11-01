@@ -149,9 +149,10 @@ function Software() {
     <section id="software" className="section software" aria-labelledby="software-title">
       <div className="wrap software-grid">
         <div>
-          <p className="kicker">Software · v{s.version}</p>
+          <p className="kicker">Software · version {s.version}</p>
           <h2 id="software-title" className="software-name">{s.name}</h2>
           <p className="software-summary">{s.summary}</p>
+          <p className="org">{s.status}</p>
           {s.body.map(p => <p key={p.slice(0, 20)}>{p}</p>)}
           <table className="platforms">
             <caption className="sr-only">Install by platform</caption>
