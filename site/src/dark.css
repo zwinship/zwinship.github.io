@@ -1,0 +1,47 @@
+/* Dark theme preview. Only active with ?theme=dark (see index.html); light is the default. */
+:root[data-theme="dark"] {
+  --ink: #eceef0;
+  --ink-2: #a4a9af;
+  --rule: #2b2e33;
+  --bg: #111315;
+  color-scheme: dark;
+}
+:root[data-theme="dark"] a:hover { color: #7fb0ff; }
+:root[data-theme="dark"] :focus-visible { outline-color: #7fb0ff; }
+
+/* The two darkest line colours need lifting to read on a dark ground. */
+:root[data-theme="dark"] [style*="--c: #003da5"], :root[data-theme="dark"] [style*="--c:#003da5"] { --c: #3d7fe6 !important; }
+:root[data-theme="dark"] [style*="--c: #7c878e"], :root[data-theme="dark"] [style*="--c:#7c878e"] { --c: #9aa4ab !important; }
+
+:root[data-theme="dark"] .skip,
+:root[data-theme="dark"] .route,
+:root[data-theme="dark"] .route-line .dot,
+:root[data-theme="dark"] .line h2::before,
+:root[data-theme="dark"] .stop::before,
+:root[data-theme="dark"] .next-prev a::before,
+:root[data-theme="dark"] .intro-cover { background: var(--bg); }
+:root[data-theme="dark"] .route-line .marker { background: var(--ink); }
+:root[data-theme="dark"] .line .track { background: color-mix(in srgb, var(--c) 28%, var(--bg)); }
+:root[data-theme="dark"] .line h2::before { border-color: var(--ink); }
+:root[data-theme="dark"] .portrait { background: #24272b; }
+:root[data-theme="dark"] .page-img { background: #1b1d20; }
+
+:root[data-theme="dark"] .foot { background: #08090a; border-top: 1px solid var(--rule); }
+:root[data-theme="dark"] .foot-fun a { background: var(--ink); color: #111315; }
+
+:root[data-theme="dark"] .page .sign { background: #000; }
+
+/* Item view (station grows) and the old side panel */
+:root[data-theme="dark"] .s2-page,
+:root[data-theme="dark"] .s2-bar,
+:root[data-theme="dark"] .s2-close,
+:root[data-theme="dark"] .sheet,
+:root[data-theme="dark"] .sheet-bar,
+:root[data-theme="dark"] .sheet-close { background: var(--bg); color: var(--ink); }
+:root[data-theme="dark"] .s2-close:hover, :root[data-theme="dark"] .sheet-close:hover { background: var(--ink); color: var(--bg); }
+
+/* Intro cover */
+:root[data-theme="dark"] .i2-white { background: var(--bg); }
+
+/* Fun page */
+:root[data-theme="dark"] .fun-list img { border-color: var(--rule); }
