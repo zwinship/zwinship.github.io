@@ -1,6 +1,0 @@
-.i3-root { position: fixed; inset: 0; z-index: 100; overflow: hidden; pointer-events: none; contain: strict; }
-.i3-cover { position: absolute; inset: 0; background: #fff; }
-.i3-track { position: absolute; left: 0; top: 0; height: 4px; border-radius: 2px; background: #d9dbde; will-change: transform; }
-.i3-train { position: absolute; left: 0; top: 0; display: block; overflow: visible; transform-origin: 100% 50%; will-change: transform; }
-.i3-blur { position: absolute; left: 0; top: 0; width: 0; height: 0; transform-origin: 0 0; will-change: transform, opacity; opacity: 0; }
-.i3-blur span { position: absolute; right: 0; height: 2px; border-radius: 1px; background: linear-gradient(to left, var(--c), transparent); opacity: 0.55; }

@@ -1,12 +1,12 @@
 import { useEffect, useRef } from 'react';
 import { AnimatePresence, motion, useIsPresent } from 'motion/react';
-import { A } from './Main.jsx';
-import { pageById } from './data.js';
-import { reduceMotion } from './router.js';
+import { A } from '../Main.jsx';
+import { pageById } from '../data.js';
+import { reduceMotion } from '../router.js';
 
 const EASE = [0.32, 0.72, 0, 1];
 
-function Content({ pg }) {
+export function Content({ pg }) {
   return (
     <>
       <div className="sign">
