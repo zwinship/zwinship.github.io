@@ -120,8 +120,8 @@ export default function Sheet3({ id, dir, onClose, onGo }) {
     track(animate(sf, { opacity: [0, 1] }, { duration: 0.12 }));
     track(animate(sf, { clipPath: [inset(from, 4), inset(to, panelRadius(p))] }, { duration: OPEN, ease: EASE }));
     track(animate(fly.box, { x: [start.x, 0], y: [start.y, 0], scale: [start.scale, 1] }, { duration: OPEN, ease: EASE }));
-    track(animate(fly.a, { opacity: [1, 0] }, { duration: OPEN * 0.3, delay: OPEN * 0.3 }));
-    track(animate(fly.b, { opacity: [0, 1] }, { duration: OPEN * 0.3, delay: OPEN * 0.3 }));
+    track(animate(fly.a, { opacity: [1, 0] }, { duration: OPEN * 0.2, delay: OPEN * 0.24 }));
+    track(animate(fly.b, { opacity: [0, 1] }, { duration: OPEN * 0.26, delay: OPEN * 0.34 }));
     track(animate(sign, { opacity: [0, 1] }, { duration: OPEN * 0.4, delay: OPEN * 0.25 }));
     fades.forEach((el, i) => track(animate(el, { opacity: [0, 1], y: [14, 0] },
       { duration: 0.34, ease: EASE, delay: OPEN * 0.6 + Math.min(i, 6) * 0.035 })));
@@ -194,8 +194,8 @@ export default function Sheet3({ id, dir, onClose, onGo }) {
     if (fly) {
       const end = flyerOffset(fly, h3);
       animate(fly.box, end, { duration: CLOSE, ease: EASE, delay: 0.03 });
-      animate(fly.b, { opacity: 0 }, { duration: CLOSE * 0.3, delay: CLOSE * 0.2 });
-      animate(fly.a, { opacity: 1 }, { duration: CLOSE * 0.3, delay: CLOSE * 0.2 });
+      animate(fly.b, { opacity: 0 }, { duration: CLOSE * 0.2, delay: CLOSE * 0.12 });
+      animate(fly.a, { opacity: 1 }, { duration: CLOSE * 0.26, delay: CLOSE * 0.26 });
     }
     const t = setTimeout(finish, (CLOSE + 0.06) * 1000);
     return () => clearTimeout(t);

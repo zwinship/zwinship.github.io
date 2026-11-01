@@ -119,8 +119,12 @@ export default function Sheet6({ id, dir, onClose, onGo }) {
       const L = layout(stop, px.get(), py.get());
       run([[px, L.x], [py, L.y], [hx, L.hole.x], [hy, L.hole.y], [hw, L.hole.w], [hh, L.hole.h]], { duration: 0 });
     };
+    // Deep links: the page may still settle (late fonts, scroll placement) after the pane opens.
+    let alive = true;
+    document.fonts?.ready.then(() => { if (alive) onResize(); });
     addEventListener('resize', onResize);
-    return () => removeEventListener('resize', onResize);
+    addEventListener('scroll', onResize, { passive: true });
+    return () => { alive = false; removeEventListener('resize', onResize); removeEventListener('scroll', onResize); };
   }, [split, present]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Closing: slide the page back to exactly where it was.
