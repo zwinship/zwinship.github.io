@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Template 6: Violet column</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&amp;display=swap">
+<style>
+body{margin:0}
+.t6{display:flex;flex-wrap:wrap;min-height:100vh;font-family:'Source Serif 4',Georgia,serif;color:#16121a;background:#fff}
+.t6-side{flex:1 1 360px;max-width:440px;box-sizing:border-box;background:#57068c;color:#fff;padding:56px 48px}
+.t6-side-in{position:sticky;top:56px}
+.t6-side a{color:#fff}
+.t6-side a:hover{color:#e7d4f5}
+.t6-main{flex:999 1 560px;min-width:0;box-sizing:border-box;padding:72px 72px 96px}
+.t6-main a{color:#57068c}
+.t6-main a:hover{color:#2c0347}
+.t6 h1,.t6 h2,.t6 h3{font-family:'Bricolage Grotesque',sans-serif}
+.t6 h2{margin:0 0 28px;font-size:44px;line-height:1;letter-spacing:-0.025em;font-weight:800;color:#57068c}
+.t6-paper{margin:0 0 36px}
+.t6-paper h3{margin:0 0 6px;font-size:25px;line-height:1.2;font-weight:700;letter-spacing:-0.01em}
+.t6-paper p{margin:0 0 4px}
+.t6-proj{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 40px}
+.t6-proj h3{margin:0 0 4px;font-size:22px;font-weight:700}
+.t6-proj p{margin:0}
+@media (max-width:820px){.t6-side{max-width:none;padding:40px 24px}.t6-side-in{position:static}.t6-main{padding:48px 24px 72px}.t6-proj{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="t6">
+
+<aside class="t6-side">
+<div class="t6-side-in">
+<img src="/images/zwinship.png" alt="Zach Winship" style="width: 168px; height: 168px; object-fit: cover; display: block; border-radius: 50%; margin-bottom: 32px">
+<h1 style="margin: 0 0 20px; font-size: 64px; line-height: 0.92; letter-spacing: -0.04em; font-weight: 800">Zach<br>Winship</h1>
+<p style="margin: 0 0 32px; font-size: 20px; line-height: 1.5">MS in Quantitative Economics at NYU, finishing May 2027. Cities, transport, and the occasional game.</p>
+<p style="margin: 0 0 8px; font-size: 18px"><a href="#">zwinship@bentley.edu</a></p>
+<p style="margin: 0 0 8px; font-size: 18px"><a href="#">CV (PDF)</a></p>
+<p style="margin: 0 0 48px; font-size: 18px"><a href="#">GitHub</a> &nbsp; <a href="#">LinkedIn</a></p>
+<p style="margin: 0; font-size: 16px; line-height: 1.6">Want the fun version?<br><a href="/play/wii/">Living room, 2006</a> or <a href="/play/win98/">Family computer, 1998</a></p>
+</div>
+</aside>
+
+<main class="t6-main">
+<div style="max-width: 760px; font-size: 19px; line-height: 1.6">
+
+<p style="margin: 0 0 20px; font-family: 'Bricolage Grotesque', sans-serif; font-size: 34px; line-height: 1.25; letter-spacing: -0.015em; font-weight: 500">I study what changes on either side of a line on a map, like the edge of the Manhattan toll zone. Most of my work uses boundary and regression discontinuity designs.</p>
+<p style="margin: 0 0 96px">This year I'm a research assistant to Anna Vitali on two field projects in Uganda, and a teaching assistant for introductory macroeconomics. Before NYU I did a BS in quantitative economics at Bentley.</p>
+
+<section style="margin-bottom: 88px">
+<h2>Research</h2>
+<div class="t6-paper">
+<h3>Congestion Pricing and EMS Response Time: Evidence From New York City</h3>
+<p>with Yulia Chikish, Greg Colman, Dhaval Dave, Brad Humphreys and Zachary Santamaria</p>
+<p style="font-style: italic">NBER Working Paper 35414, 2026</p>
+<p>Ambulances got 63 to 70 seconds faster once the toll began. <a href="#">Paper</a>, <a href="#">NBER Digest</a>, <a href="#">ProMarket</a>, <a href="#">Fortune</a></p>
+</div>
+<div class="t6-paper">
+<h3>NYC Congestion Pricing: Mobility and Commercial Effects</h3>
+<p style="font-style: italic">Working paper, 2026</p>
+<p><a href="#">Paper</a></p>
+</div>
+<div class="t6-paper">
+<h3>The Real Price of Clean Air: EPA Ozone Regulation</h3>
+<p style="font-style: italic">American Action Forum, 2025</p>
+<p><a href="#">Post</a>, <a href="#">Map</a>, <a href="#">Code</a></p>
+</div>
+<div class="t6-paper" style="margin: 0">
+<h3>Election Polling: Indicator vs. Catalyst</h3>
+<p style="font-style: italic">Undergraduate paper, 2024</p>
+<p><a href="#">Paper</a>, <a href="#">Code</a></p>
+</div>
+</section>
+
+<section style="margin-bottom: 88px; background: #f3ecf8; padding: 40px 44px">
+<h2 style="margin-bottom: 16px">rd2dnet</h2>
+<p style="margin: 0 0 16px; font-size: 21px">A Python and R package for boundary discontinuity designs where distance runs along the street network, not as the crow flies. It extends rd2d by Cattaneo, Titiunik and Yu.</p>
+<p style="margin: 0 0 16px">Version 1 is out for Python and R. Version 2 is coming soon.</p>
+<p style="margin: 0"><a href="#">GitHub</a>, <a href="#">PyPI</a>, <a href="#">Tutorial</a></p>
+</section>
+
+<section style="margin-bottom: 88px">
+<h2>Teaching</h2>
+<p style="margin: 0 0 8px">Teaching assistant, Introductory Macroeconomics, NYU, fall 2026</p>
+<p style="margin: 0 0 8px">Interactive course site for Intermediate Microeconomics, Bentley, with Naveen Sunder. <a href="#">Visit</a></p>
+<p style="margin: 0">Guest lectures on VAR and VECM models, and on Asher and Novosad (2019)</p>
+</section>
+
+<section>
+<h2>Things I've built</h2>
+<div class="t6-proj">
+<div><h3><a href="#">Chesque</a></h3><p>Chess where every piece is a hero. Online play, bots, and an eight-army free-for-all.</p></div>
+<div><h3><a href="#">OctaStats</a></h3><p>A UFC fight model with a public record of every pick.</p></div>
+<div><h3><a href="#">Tale of the Tape</a></h3><p>A daily UFC guessing game.</p></div>
+<div><h3><a href="#">MBTA live LED map</a></h3><p>A Raspberry Pi that lights up where every T train is.</p></div>
+</div>
+</section>
+
+</div>
+</main>
+</div>
+</body>
+</html>

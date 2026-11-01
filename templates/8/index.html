@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Template 8: Project shelf</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,400;0,500;0,700;0,800;1,400&amp;family=Press+Start+2P&amp;family=Anton&amp;display=swap">
+<style>
+body{margin:0}
+.t8{font-family:'Hanken Grotesk',sans-serif;color:#141414;background:#fff;font-size:19px;line-height:1.6}
+.t8 a{color:#0a5bd3}
+.t8 a:hover{color:#063a87}
+.t8-wrap{max-width:1160px;margin:0 auto;padding:0 32px}
+.t8-intro{display:grid;grid-template-columns:240px minmax(0,1fr);gap:56px;align-items:start;padding:80px 0 96px}
+.t8 h2{margin:0 0 28px;font-size:40px;line-height:1;letter-spacing:-0.025em;font-weight:800}
+.t8-cols{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:72px;padding-bottom:112px}
+.t8-paper{margin:0 0 28px}
+.t8-paper h3{margin:0 0 4px;font-size:21px;line-height:1.3;font-weight:700}
+.t8-paper p{margin:0}
+.t8-shelf{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:20px}
+.t8-tile{display:flex;flex-direction:column;justify-content:space-between;min-height:260px;box-sizing:border-box;padding:28px;text-decoration:none;transition:transform .15s ease-out}
+.t8 a.t8-tile{color:inherit}
+.t8 a.t8-tile:hover{color:inherit;transform:translateY(-4px)}
+.t8-tile p{margin:0;font-size:17px;line-height:1.45}
+.w2{grid-column:span 2}.w3{grid-column:span 3}.w4{grid-column:span 4}
+@media (max-width:860px){.t8-wrap{padding:0 20px}.t8-intro,.t8-cols{grid-template-columns:minmax(0,1fr);gap:32px}.t8-intro{padding:48px 0 64px}.t8-intro img{width:160px}.t8-shelf{grid-template-columns:minmax(0,1fr)}.w2,.w3,.w4{grid-column:auto}.t8-tile{min-height:200px}}
+</style>
+</head>
+<body>
+<div class="t8">
+<div class="t8-wrap">
+
+<section class="t8-intro">
+<img src="/images/zwinship.png" alt="Zach Winship" style="width: 100%; aspect-ratio: 4 / 5; object-fit: cover; display: block">
+<div>
+<h1 style="margin: 0 0 20px; font-size: 56px; line-height: 1; letter-spacing: -0.035em; font-weight: 800">Zach Winship</h1>
+<p style="margin: 0 0 16px; font-size: 24px; line-height: 1.45; max-width: 720px">I'm a master's student in quantitative economics at NYU, finishing in May 2027. I study cities and transport with boundary and regression discontinuity designs.</p>
+<p style="margin: 0 0 24px; max-width: 720px">This year I'm a research assistant to Anna Vitali and a TA for intro macro. When I'm not doing that, I make things, and most of them are below.</p>
+<p style="margin: 0"><a href="#">zwinship@bentley.edu</a> &nbsp; <a href="#">CV</a> &nbsp; <a href="#">GitHub</a> &nbsp; <a href="#">LinkedIn</a></p>
+</div>
+</section>
+
+<section class="t8-cols">
+<div>
+<h2>Research</h2>
+<div class="t8-paper"><h3><a href="#">Congestion Pricing and EMS Response Time: Evidence From New York City</a></h3><p>NBER Working Paper 35414, 2026, with Chikish, Colman, Dave, Humphreys and Santamaria. Covered in the NBER Digest, ProMarket and Fortune.</p></div>
+<div class="t8-paper"><h3><a href="#">NYC Congestion Pricing: Mobility and Commercial Effects</a></h3><p>Working paper, 2026</p></div>
+<div class="t8-paper" style="margin: 0"><h3><a href="#">The Real Price of Clean Air: EPA Ozone Regulation</a></h3><p>American Action Forum, 2025</p></div>
+</div>
+<div>
+<h2>Teaching</h2>
+<p style="margin: 0 0 12px">TA, Introductory Macroeconomics, NYU, fall 2026</p>
+<p style="margin: 0 0 12px">Intermediate Microeconomics course site, Bentley, with Naveen Sunder. <a href="#">Visit</a></p>
+<p style="margin: 0">Guest lectures on VAR and VECM models</p>
+</div>
+</section>
+
+<section style="padding-bottom: 120px">
+<h2>The shelf</h2>
+<div class="t8-shelf">
+
+<a href="#" class="t8-tile w4" style="background: #f2f5f0; color: #141414">
+<svg viewBox="0 0 400 90" aria-hidden="true" style="width: 100%; max-width: 440px; display: block">
+<g stroke="#9aa59a" stroke-width="2" fill="none"><path d="M0 20 L400 14 M0 48 L400 44 M0 76 L400 74 M30 0 L40 90 M110 0 L104 90 M190 0 L200 90 M270 0 L262 90 M350 0 L358 90"/></g>
+<path d="M150 0 L240 90" stroke="#0a5bd3" stroke-width="5"/>
+<g fill="#0a5bd3"><circle cx="60" cy="47" r="5"/><circle cx="96" cy="20" r="5"/><circle cx="128" cy="74" r="5"/></g>
+<g fill="#d0452f"><circle cx="230" cy="18" r="5"/><circle cx="300" cy="46" r="5"/><circle cx="330" cy="75" r="5"/></g>
+</svg>
+<div>
+<p style="font-size: 30px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 6px">rd2dnet</p>
+<p>Boundary discontinuity designs measured along streets. Python and R. Version 2 is coming soon.</p>
+</div>
+</a>
+
+<a href="#" class="t8-tile w2" style="background: #1d2233; color: #efe6cf">
+<p style="font-family: 'Press Start 2P', monospace; font-size: 22px; line-height: 1.3">CHESQUE</p>
+<p>Chess where every piece is a hero. Play online, against bots, or in an eight-army free-for-all.</p>
+</a>
+
+<a href="#" class="t8-tile w3" style="background: #0e0e0e; color: #fff">
+<p style="font-family: 'Anton', sans-serif; font-size: 44px; line-height: 1; text-transform: uppercase; color: #e5312b">OctaStats</p>
+<p>A UFC fight model with a public record of every pick it has made.</p>
+</a>
+
+<a href="#" class="t8-tile w3" style="background: #c9a227; color: #141414">
+<p style="font-family: 'Anton', sans-serif; font-size: 44px; line-height: 1; text-transform: uppercase">Tale of the Tape</p>
+<p>A daily UFC guessing game with a new fighter every day.</p>
+</a>
+
+<a href="#" class="t8-tile w3" style="padding: 0; background: #000; color: #fff">
+<img src="/images/mbta_led_build.jpg" alt="The MBTA LED map, mid-build" style="width: 100%; height: 200px; object-fit: cover; display: block">
+<div style="padding: 20px 28px 28px">
+<p style="font-size: 26px; font-weight: 800; margin-bottom: 4px">MBTA live LED map</p>
+<p>A Raspberry Pi that lights up wherever a T train is.</p>
+</div>
+</a>
+
+<a href="#" class="t8-tile w3" style="background: #eef2fb; color: #141414">
+<p style="font-size: 26px; font-weight: 800; letter-spacing: -0.015em">Intermediate micro, online</p>
+<p>Twelve interactive weeks with draggable graphs and a course assistant that answers students' questions.</p>
+</a>
+
+<a href="/play/wii/" class="t8-tile w3" style="background: #f4f6f8; color: #2f3640; border-radius: 28px; min-height: 180px">
+<p style="font-size: 26px; font-weight: 700">Living room, 2006</p>
+<p>This whole site, as a game console menu.</p>
+</a>
+
+<a href="/play/win98/" class="t8-tile w3" style="background: #008080; color: #fff; min-height: 180px">
+<p style="font-size: 26px; font-weight: 700">Family computer, 1998</p>
+<p>This whole site, as a desktop. There is Solitaire.</p>
+</a>
+
+</div>
+</section>
+
+</div>
+<footer style="border-top: 1px solid #e3e3e3; padding: 40px 0 56px">
+<div class="t8-wrap" style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px">
+<p style="margin: 0; font-weight: 800">Zach Winship</p>
+<p style="margin: 0"><a href="#">zwinship@bentley.edu</a></p>
+</div>
+</footer>
+</div>
+</body>
+</html>
