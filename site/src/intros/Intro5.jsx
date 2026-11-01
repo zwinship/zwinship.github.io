@@ -23,16 +23,16 @@ const T = {
 T.landed = T.swing + T.swingLen;
 T.end = T.landed + 0.14;
 
-// Where each line ends up: the left end of its segment in the route bar
-// (Education has no segment, so it closes into its station).
 const snap = v => Math.round(v * devicePixelRatio) / devicePixelRatio;
 
+// Where each line ends up: the left end of its segment in the route bar
+// (Education has no segment, so it closes into its station).
 function measure() {
   const lis = document.querySelectorAll('.route-line > li');
   if (lis.length !== LINES.length) return null;
   const W = innerWidth, H = innerHeight;
   const phone = W <= 640;
-  const thick = phone ? 9 : 16;
+  const thick = phone ? 10 : 16;   // even, so the thinned bar sits on whole pixels
   const arms = LINES.map((l, i) => {
     const seg = lis[i].querySelector('.seg');
     if (seg) {
