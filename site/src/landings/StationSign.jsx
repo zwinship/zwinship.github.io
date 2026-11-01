@@ -10,7 +10,7 @@ export default function StationSign({ onGo }) {
   const [active, setActive] = useState(() => (narrow() ? null : LINES[0].id));
   const [intro, setIntro] = useState(true);
   const hoverTimer = useRef(0);
-  const pointer = useRef('mouse');
+  const pointer = useRef({ type: 'mouse', wasOn: false });
 
   useEffect(() => {
     const t = setTimeout(() => setIntro(false), 1400);
@@ -30,7 +30,9 @@ export default function StationSign({ onGo }) {
   const pick = (e, id) => {
     e.preventDefault();
     clearTimeout(hoverTimer.current);
-    if (pointer.current === 'touch' && active !== id) setActive(id);
+    const { type, wasOn } = pointer.current;
+    pointer.current = { type: 'mouse', wasOn: false };
+    if (type === 'touch' && !wasOn) setActive(id);
     else onGo(`#/${id}`);
   };
 
@@ -54,7 +56,7 @@ export default function StationSign({ onGo }) {
               return (
                 <li key={l.id} className={on ? 'is-on' : undefined} style={{ '--c': l.color, '--i': i }}>
                   <a href={`#/${l.id}`} className="ss-line" aria-expanded={on}
-                    onPointerDown={e => { pointer.current = e.pointerType; }}
+                    onPointerDown={e => { pointer.current = { type: e.pointerType, wasOn: on }; }}
                     onClick={e => pick(e, l.id)}
                     onMouseEnter={() => hoverIn(l.id)} onMouseLeave={hoverOut}
                     onFocus={() => setActive(l.id)}>

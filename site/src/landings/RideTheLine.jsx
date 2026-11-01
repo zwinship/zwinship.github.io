@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { SHORT } from './shortNames.js';
 import { AnimatePresence, motion, useMotionValue } from 'motion/react';
 import { LINES } from '../data.js';
 import './RideTheLine.css';
@@ -265,7 +266,7 @@ export default function RideTheLine({ onGo }) {
                 style={{ ...at(s.p), '--c': s.line.color, '--i': i }}
                 onClick={e => pick(e, i)}>
                 <span className="rl-dot" />
-                <span className="rl-name"><span>{s.item.title}</span></span>
+                <span className="rl-name"><span>{SHORT[s.item.id] || s.item.title}</span></span>
               </a>
             ))}
             {segs.map((s, i) => (

@@ -60,7 +60,7 @@
 .rl-h { --t: clamp(32px, min(4.2vw, 6.2vh), 84px); min-height: 100vh; min-height: 100dvh; overflow-x: clip; display: grid; grid-template-rows: auto minmax(0, 1fr); padding: 36px 48px 28px; }
 .rl-h .rl-body { align-self: center; padding-top: 16px; }
 .rl-h .rl-display { padding: 0 0 clamp(4px, 2vh, 24px); }
-.rl-h .rl-display-in { min-height: calc(19px + 14px + 3 * 1.04 * var(--t)); display: flex; align-items: flex-end; }
+.rl-h .rl-display-in { min-height: calc(19px + 14px + 3 * 1.04 * var(--t)); display: flex; align-items: flex-start; }
 .rl-h .rl-title { font-size: var(--t); max-width: min(100%, 24ch); }
 .rl-h .rl-strip { --ly: calc(var(--rise, 220px) + 34px); display: grid; grid-template-columns: minmax(0, 1fr) 250px; height: calc(var(--ly) + 52px); }
 .rl-h .rl-track { height: 100%; }
