@@ -30,7 +30,7 @@ function measure() {
   if (lis.length !== LINES.length) return null;
   const W = innerWidth, H = innerHeight;
   const phone = W <= 640;
-  const thick = phone ? 10 : 16;
+  const thick = phone ? 9 : 16;
   const arms = LINES.map((l, i) => {
     const seg = lis[i].querySelector('.seg');
     if (seg) {
@@ -40,13 +40,16 @@ function measure() {
     const r = lis[i].querySelector('.dot').getBoundingClientRect();
     return { color: l.color, x: r.left + r.width / 2, y: r.top + r.height / 2, len: 0, h: 6 };
   });
+  // While falling, the lines stand evenly spaced under the name; they slide to their pivots as they draw in.
+  const band = Math.min(W * 0.62, 880);
+  arms.forEach((a, i) => { a.x0 = W / 2 - band / 2 + (band * i) / (arms.length - 1); });
   // Stations along each line, kept clear of the name and of the stretch that becomes the segment.
   const gap = phone ? 74 : 104;
-  const band = phone ? 46 : 84;
+  const clear = phone ? 46 : 84;
   arms.forEach((a, i) => {
     a.stations = [];
     for (let y = 46 + ((i * 37) % gap); y < H - 24; y += gap) {
-      if (Math.abs(y - H / 2) < band) continue;
+      if (Math.abs(y - H / 2) < clear) continue;
       if (y > a.y - 30 && y < a.y + a.len + 30) continue;
       a.stations.push(y);
     }
@@ -81,6 +84,7 @@ function Arm({ a, i, t, H, thick }) {
   const top = useTransform(t, [T.draw, T.draw + T.drawLen], [0, pivot], { ease: DRAW_IN });
   const side = useTransform(t, [T.draw, T.draw + T.drawLen], [0, (thick - a.h) / 2], { ease: DRAW_IN });
   const out = useTransform(t, [T.draw, T.draw + 0.16], [1, 0]);
+  const x = useTransform(t, [T.draw, T.draw + T.drawLen], [a.x0 - a.x, 0], { ease: DRAW_IN });
   const barClip = useTransform([top, bot, side], ([tp, b, s]) =>
     `inset(${tp}px ${s}px ${b}px ${s}px round ${(thick - 2 * s) / 2}px)`);
   const stClip = useTransform([top, bot], ([tp, b]) => `inset(${tp}px -40px ${b}px -40px)`);
@@ -89,7 +93,7 @@ function Arm({ a, i, t, H, thick }) {
       className="i5-arm"
       style={{
         '--c': a.color, left: a.x - thick / 2, top: -EXT, width: thick, height: full,
-        transformOrigin: `${thick / 2}px ${a.y + EXT}px`, rotate,
+        transformOrigin: `${thick / 2}px ${a.y + EXT}px`, x, rotate,
       }}
     >
       <motion.span className="i5-bar" style={{ clipPath: barClip }} />
@@ -111,7 +115,7 @@ export default function Intro5({ onDone }) {
   const nameOpacity = useTransform(t, [T.nameIn, T.nameIn + T.nameInLen, T.nameOut, T.nameOut + T.nameOutLen],
     [0, 1, 1, 0], { ease: [cubicBezier(0, 0, 0.58, 1), linear, cubicBezier(0.42, 0, 1, 1)] });
   const nameY = useTransform(t, [T.nameIn, T.nameIn + T.nameInLen], [14, 0], { ease: cubicBezier(0.2, 0, 0.2, 1) });
-  const ground = useTransform(t, [T.swing + 0.32, T.landed + 0.08], [1, 0], { ease: FADE });
+  const ground = useTransform(t, [T.swing + 0.4, T.landed + 0.08], [1, 0], { ease: FADE });
   const cover = useTransform([t, skipFade], ([v, s]) => (v < T.landed ? 1 : Math.max(0, 1 - (v - T.landed) / (T.end - T.landed))) * s);
 
   useLayoutEffect(() => {
