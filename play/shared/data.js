@@ -50,7 +50,7 @@ const RESEARCH = [
   "title": "The Real Price of Clean Air: EPA Ozone Regulation",
   "year": "2025",
   "meta": "Regulatory Economics · Causal Inference · Policy",
-  "body": "Uses the EPA's 0.071 ppm ozone threshold in a regression discontinuity design to estimate the revenue impact on U.S. manufacturing firms: a $277M annual reduction that the EPA's own analysis leaves out.",
+  "body": "Uses the EPA's 0.071 ppm ozone threshold in a regression discontinuity design to estimate the revenue impact on U.S. manufacturing firms: an estimated $277M a year in lost revenue, which the EPA's own analysis does not count.",
   "tags": [
    "Python",
    "Econometrics",
@@ -149,7 +149,7 @@ const RESEARCH = [
  {
   "id": "llm",
   "title": "Agentic LLMs for Economic and Game Theory Analysis",
-  "year": "Est. Aug 2026",
+  "year": "2026",
   "soon": true,
   "meta": "Applied AI · Behavioral Economics · Game Theory",
   "body": "Using Expected Parrot's EDSL framework (John Horton, MIT Sloan) to run language models as simulated economic agents: historical counterfactual prediction, causal impact analysis and game-theoretic behavior. The question is whether Homo silicus replicates and extends classic economics experiments.",
@@ -169,7 +169,7 @@ const SOFTWARE = {
  "year": "2026",
  "badge": "v1",
  "meta": "Software · Spatial Econometrics · Python and R",
- "body": "rd2dnet carries the boundary discontinuity framework of rd2d (Cattaneo, Titiunik and Yu) from Euclidean coordinates to network coordinates. Distance to the boundary is measured along streets, and you choose the metric: metres, travel time, a land-use contrast, a penalty for switching road class, or your own matrix. Estimation, robust bias-corrected inference, uniform bands and the bandwidth selector follow rd2d; the density test follows rddensity. Cluster-robust errors default to CR2. It ships for Python and R with the same functions and the same numbers on the bundled data; a Stata port is in testing.",
+ "body": "rd2dnet extends rd2d (Cattaneo, Titiunik and Yu) so that distance to the boundary is measured along streets instead of in straight lines. You choose the metric: metres, travel time, a land-use contrast, a penalty for switching road class, or your own matrix. Estimation, robust bias-corrected inference, uniform bands and the bandwidth selector follow rd2d; the density test follows rddensity. Cluster-robust errors default to CR2. It ships for Python and R with the same functions and the same numbers on the bundled data; a Stata port is in testing.",
  "credit": "Built on rd2d by Matias D. Cattaneo, Rocío Titiunik and Ruiqi Rae Yu. Independent project, not affiliated with or endorsed by the rd2d authors.",
  "status": "Version 1 is out for Python (PyPI) and R. Version 2 is in development and due soon.",
  "tags": [
@@ -204,7 +204,7 @@ const PERSONAL = [
   "title": "OctaStats UFC Model V2",
   "year": "2026",
   "meta": "Machine Learning · Sports Analytics · Full Rebuild",
-  "body": "Rebuilt from the ground up for the model's first anniversary: a dynamic logit framework, an automated data pipeline, and proprietary data with no reliance on scraped third-party sources.",
+  "body": "Version 2, a full rebuild a year after launch: a dynamic logit model, an automated data pipeline, and its own data instead of scraped sources.",
   "tags": [
    "Python",
    "Machine Learning",
@@ -288,7 +288,7 @@ const PERSONAL = [
  {
   "id": "mbta-led",
   "title": "MBTA Live Tracker LED Art",
-  "year": "Est. Jun 2026",
+  "year": "2026",
   "soon": true,
   "meta": "Hardware · API Integration · Real-Time Data",
   "body": "A physical LED map on a Raspberry Pi that tracks MBTA trains in real time. The software and API work is done; the frame and LED mounting are still in progress.",
@@ -313,19 +313,13 @@ const EXPERIENCE = [
   "role": "Research Assistant to Professor Anna Vitali",
   "org": "New York University, Department of Economics",
   "when": "Sep 2026 to May 2027",
-  "body": "Research assistant on two development field projects in Uganda: one on firm networks and mobility in Kampala's markets, one on insurance within small firms. I build and maintain the Stata data pipelines: survey cleaning, high-frequency checks, preloads for later survey rounds, and the market listing analysis. Also my MSQE Research Practicum."
+  "body": "Research assistant on two development field projects in Uganda: one on firm networks and mobility in Kampala's markets, one on insurance within small firms. I build and maintain the Stata data pipelines: survey cleaning, high-frequency checks, preloads for later survey rounds, and the market listing analysis."
  },
  {
   "role": "Teaching Assistant, Introductory Macroeconomics",
   "org": "New York University",
   "when": "Aug 2026 to present",
   "body": "Weekly recitations on course material and problem sets, exam proctoring and grading, and grade entry."
- },
- {
-  "role": "NYU Economics Teaching Fellowship",
-  "org": "New York University",
-  "when": "Summer 2026",
-  "body": "Summer teaching fellowship in the NYU economics department."
  },
  {
   "role": "Instructional Content Assistant",
@@ -368,7 +362,7 @@ const PROFILE = {
  "lede": "I'm a master's student in quantitative economics at NYU. I work on urban and transportation economics, mostly with regression discontinuity designs.",
  "now": "MS in Quantitative Economics at NYU, finishing May 2027.",
  "about": [
-  "I graduated from Bentley University in May 2026 with a BS in Quantitative Economics and minors in mathematics and data technologies. I'm now in NYU's MS in Quantitative Economics, finishing in May 2027. This year I'm a research assistant to Professor Anna Vitali and a teaching assistant for Introductory Macroeconomics.",
+  "This year I'm a research assistant to Professor Anna Vitali and a teaching assistant for Introductory Macroeconomics. I finish the MS in May 2027. Before NYU I did a BS in Quantitative Economics at Bentley University, with minors in mathematics and data technologies.",
   "My research so far is on transport and regulation in the US: congestion pricing in New York, the EPA's ozone standard, and ridership on Boston's subway. I also wrote rd2dnet, a package for boundary discontinuity designs on street networks.",
   "Outside of that I build things: a UFC prediction model, a chess game, a daily guessing game, and an LED map of the T."
  ],

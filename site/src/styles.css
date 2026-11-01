@@ -158,11 +158,13 @@ a:hover { color: var(--link-hover); }
 .transit .line::before { content: ''; position: absolute; left: 17px; top: 6px; bottom: 0; width: 10px; background: var(--c); }
 .transit .line:last-child { padding-bottom: 8px; }
 .transit .line:last-child::before { bottom: auto; height: calc(100% - 26px); }
+.transit .line:last-child::after { content: ''; position: absolute; left: 6px; width: 32px; height: 10px; top: calc(100% - 26px); background: var(--c); border-radius: 2px; }
 .transit .line h2 { position: relative; margin: 0 0 28px; font-size: 40px; line-height: 1.05; font-weight: 900; letter-spacing: -0.02em; }
-.transit .line h2::before { content: ''; position: absolute; left: -72px; top: -2px; width: 44px; height: 44px; border-radius: 50%; background: var(--c); }
+.transit .line h2::before { content: ''; position: absolute; left: -72px; top: -2px; width: 44px; height: 44px; border-radius: 50%; background: #fff; border: 8px solid #161616; }
 .transit .stops { list-style: none; margin: 0; padding: 0; }
 .transit .stop { position: relative; margin: 0 0 30px; max-width: 760px; }
 .transit .stop::before { content: ''; position: absolute; left: -61px; top: 5px; width: 22px; height: 22px; border-radius: 50%; background: #fff; border: 5px solid var(--c); }
+.stop h3, .page .sign h2 { text-wrap: balance; }
 .transit .stop h3 { margin: 0 0 4px; font-size: 23px; line-height: 1.25; font-weight: 800; }
 .transit .stop .sub { margin: 0 0 2px; color: var(--ink-2); font-size: 17px; }
 .transit .stop .blurb { margin: 0; }
@@ -172,7 +174,7 @@ a:hover { color: var(--link-hover); }
 .transit .page .crumb { margin: 0 0 16px; font-weight: 700; font-size: 16px; }
 .transit .page .crumb a { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; }
 .transit .page .crumb a::before { content: ''; width: 16px; height: 16px; border-radius: 50%; background: var(--c); }
-.transit .page .sign { background: #161616; color: #fff; border-top: 12px solid var(--c); padding: 24px 28px 26px; margin-bottom: 20px; }
+.transit .page .sign { background: #161616; color: #fff; border-top: 8px solid var(--c); padding: 24px 32px 26px; margin-bottom: 20px; }
 .transit .page .sign h2 { margin: 0; font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.02em; font-weight: 800; }
 .transit .page .sub { margin: 0 0 24px; color: var(--ink-2); }
 .transit .page > p { margin: 0 0 18px; }
@@ -215,7 +217,12 @@ a:hover { color: var(--link-hover); }
   .route-in { padding: 10px 20px; }
   .route-in { display: flex; align-items: center; gap: 14px; }
   .route-line { flex: 1 1 auto; min-width: 0; }
-  .route-line .label, .route-line .here .label { display: none; }
+  .route-line .label, .route-line .here .label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .route-line a { min-width: 32px; min-height: 40px; justify-content: center; }
+  .route-line .seg { min-width: 6px; }
+  .plain main, .transit main { padding-bottom: 88px; }
+  .plain .others { display: none; }
+  .transit .intro.compact .role { display: none; }
   .route-name { display: block; flex: none; font-weight: 800; font-size: 16px; min-width: 88px; text-align: right; }
   .mode-switch { right: 12px; bottom: 12px; }
   .mode-switch button { font-size: 14px; padding: 8px 13px; min-height: 36px; }
@@ -224,14 +231,15 @@ a:hover { color: var(--link-hover); }
   .transit .line { padding-left: 52px; }
   .transit .line::before { left: 12px; width: 8px; }
   .transit .line h2 { font-size: 30px; }
-  .transit .line h2::before { left: -52px; width: 32px; height: 32px; top: 0; }
+  .transit .line h2::before { left: -52px; width: 32px; height: 32px; top: 0; border-width: 6px; }
+  .transit .line:last-child::after { left: 2px; width: 28px; height: 8px; }
   .transit .stop::before { left: -45px; width: 20px; height: 20px; border-width: 4px; }
   .transit .stop h3 { font-size: 20px; }
   .transit .page .sign { padding: 18px 20px 20px; }
   .transit .foot-in { padding: 48px 20px 96px; }
   .next-prev { grid-template-columns: 1fr; }
   .next-prev .next { text-align: left; }
-  .transit .next-prev .next::before { display: none; }
+  .transit .next-prev .next::before { top: auto; left: -34px; bottom: 6px; display: none; }
 }
 
 /* ---------- view transitions ---------- */

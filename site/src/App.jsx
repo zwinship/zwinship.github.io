@@ -10,17 +10,17 @@ const byId = (list, id) => list.find(x => x.id === id);
 const r = id => byId(RESEARCH, id);
 const p = id => byId(PERSONAL, id);
 
-const RESEARCH_ITEMS = [
+const RESEARCH_ITEMS_RAW = [
   { id: 'nber', title: r('nber').title, year: '2026',
     sub: 'NBER Working Paper 35414, under review. With Yulia Chikish, Greg Colman, Dhaval Dave, Brad Humphreys and Zachary Santamaria.',
     blurb: 'EMS travel times in Manhattan fell by 63 to 70 seconds after the toll started.',
     body: [r('nber').body.replace(/^NBER Working Paper No\. 35414, under journal review\. /, '')], links: r('nber').links, press: true },
   { id: 'cz', title: r('cz').title, year: '2026', sub: 'Working paper.',
     blurb: 'Traffic, pedestrians, subway ridership and businesses on either side of the 60th Street boundary.',
-    body: [r('cz').body], links: r('cz').links },
-  { id: 'ozone', title: r('ozone').title, year: '2025', sub: 'Policy paper, American Action Forum.',
+    body: [r('cz').body], links: r('cz').links.filter(([h]) => h !== 'https://github.com/zwinship') },
+  { id: 'ozone', title: r('ozone').title, year: '2025', sub: 'Blog post, American Action Forum internship.',
     blurb: "What the EPA's ozone standard costs US manufacturers in revenue.",
-    body: [r('ozone').body], links: r('ozone').links },
+    body: [r('ozone').body], links: r('ozone').links.filter(([, l]) => l !== 'eSLR blog post').map(([h, l]) => [h, l === 'Ozone blog post' ? 'Blog post' : l]) },
   { id: 'mbta-ts', title: r('mbta-ts').title, year: '2025', sub: 'Undergraduate paper.',
     blurb: 'Forecasting ridership on the T from weather and season, and where service could change.',
     body: [r('mbta-ts').body], links: r('mbta-ts').links },
@@ -32,9 +32,11 @@ const RESEARCH_ITEMS = [
     body: [r('llm').body], links: r('llm').links },
 ];
 
+const RESEARCH_ITEMS = RESEARCH_ITEMS_RAW.map(it => ({ ...it, paperLinks: true }));
+
 const SOFTWARE_ITEMS = [
-  { id: 'rd2dnet', title: SOFTWARE.name, year: '2026', sub: 'Python and R.',
-    blurb: 'Boundary discontinuity designs where distance runs along the street network. Version 1 is out; version 2 is coming soon.',
+  { id: 'rd2dnet', title: SOFTWARE.name, year: '2026', sub: 'Python and R. Version 2 in development.',
+    blurb: 'Boundary discontinuity designs where distance runs along the street network.',
     body: [...SOFTWARE.body, SOFTWARE.credit], links: SOFTWARE.links, install: SOFTWARE.platforms },
 ];
 
@@ -181,7 +183,7 @@ function Item({ it }) {
       <h3>{title}</h3>
       <p className="sub">{it.sub}</p>
       <p className="blurb">{it.blurb}</p>
-      {it.links && !it.body && (
+      {it.links && it.links.length > 0 && (!it.body || it.paperLinks) && (
         <p className="item-links">{it.links.map(([href, label]) => <A key={href} href={href}>{label}</A>)}</p>
       )}
     </li>
@@ -192,6 +194,7 @@ function Home() {
   return (
     <>
       <div className="bio" data-anchor="bio" {...vt('bio')}>
+        <p>{PROFILE.lede}</p>
         {PROFILE.about.map(t => <p key={t.slice(0, 20)}>{t}</p>)}
       </div>
       {LINES.map(l => (
@@ -240,10 +243,10 @@ function Page({ id }) {
           </ul>
         </>
       )}
-      <nav className="next-prev" aria-label={`More in ${line.name}`}>
+      {(pg.prev || pg.next) && <nav className="next-prev" aria-label={`More in ${line.name}`}>
         {pg.prev ? <a className="prev" href={`#/${pg.prev.id}`}><span className="np-label">Previous</span>{pg.prev.title}</a> : <span />}
         {pg.next ? <a className="next" href={`#/${pg.next.id}`}><span className="np-label">Next</span>{pg.next.title}</a> : <span />}
-      </nav>
+      </nav>}
     </article>
   );
 }
