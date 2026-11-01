@@ -236,6 +236,8 @@ textarea.notepad{flex:1;resize:none;border:0;width:100%;font:13px/1.35 "Courier 
 .wl-text{flex:1;padding:18px 20px;overflow:auto;font-size:12px;line-height:1.5;user-select:text}
 .wl-text h3{font:bold 18px Arial,sans-serif;margin:0 0 8px;color:#000080}
 @media (max-width:640px){.wl-opts{flex-basis:150px}}
+.wl-opts{overflow:auto}
+@media (max-height:500px){.wl-banner{padding:6px 14px;font-size:20px}.wl-opts{padding:4px 0;gap:0}.wl-opt{padding:2px 14px}.wl-opt .ico{width:20px;height:20px}.wl-text{padding:10px 14px}.wl-text h3{margin-bottom:4px}}
 
 /* misc */
 .err{display:flex;gap:14px;align-items:flex-start;padding:12px 8px 4px}
@@ -532,6 +534,11 @@ function openWin(key, opts, fromRect){
 
   if (isSmall() && !opts.dialog && !opts.noMax){ el.classList.add('max'); maxB && maxB.setAttribute('aria-label','Restore'); }
   if (opts.center || (isSmall() && opts.dialog)){ el.style.left = Math.max(4,(innerWidth-W)/2)+'px'; el.style.top = Math.max(4,(innerHeight-28-H)/3)+'px'; }
+  // Small screens: windows that can't maximize sit below the top row of desktop icons and run down to the taskbar.
+  if (opts.belowIcons && (isSmall() || innerHeight < 500) && desktop.clientHeight > 300){
+    el.style.top = '80px'; el.style.height = (desktop.clientHeight - 82)+'px';
+    if (isSmall()) el.style.left = Math.max(4,(innerWidth-W)/2)+'px';
+  }
   opts.render && opts.render(w);
   focusWin(w);
   zoomFrom(fromRect, w);
@@ -659,7 +666,7 @@ function explorer(w, cfg){
 
 const FOLDERS = {
   mycomputer: () => ({ title:'My Computer', path:'My Computer', icon:'computer',
-    desc:`<p>Zach Winship's portfolio, packaged as a 1998 PC.</p><p>Select an item to view its description.</p><p>Quantitative Economist · NYU MS '27 · Bentley '26</p>`,
+    desc:`<p>Zach Winship's portfolio, packaged as a 1998 PC.</p><p>Select an item to view its description.</p><p>MS in Quantitative Economics, NYU, 2027. BS, Bentley, 2026.</p>`,
     items:[
       { name:'3½ Floppy (A:)', icon:'floppy', type:'Résumé', blurb:'Résumé (PDF).', open:r=>openApp('resume',r) },
       { name:'Research (C:)', icon:'drive', type:'Local Disk', blurb:'Papers, working papers and research projects.', folder:'research' },
@@ -929,7 +936,7 @@ const APPS = {
     paint();
   }},
 
-  welcome: { title:'Welcome', icon:'update', w:620, h:400, noMax:true, render(w){
+  welcome: { title:'Welcome', icon:'update', w:620, h:400, noMax:true, belowIcons:true, render(w){
     const OPTS = [
       ['user','About Zach','system','<h3>Hi, I\'m Zach.</h3><p>Quantitative economist: Bentley \'26, now in NYU\'s MS in Quantitative Economics (May 2027), where I\'m a research assistant to Professor Anna Vitali and a teaching assistant for Introductory Macroeconomics. I co-authored an NBER working paper on how NYC congestion pricing sped up ambulances.</p><p>Click to open <b>System Properties</b>.</p>'],
       ['drive','Discover My Projects','mycomputer','<h3>Discover my projects</h3><p>Research papers and software, plus personal projects: games, models and hardware.</p><p>Open <b>My Computer</b> to browse the Research (C:) and Personal Projects (D:) drives.</p>'],
