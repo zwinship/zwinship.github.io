@@ -1,5 +1,5 @@
 /* =====================================================================
-   Zach 98 — extra programs: Paint, Solitaire, Calculator, ZIM messenger,
+   Zach 98 extra programs: Paint, Solitaire, Calculator, ZIM messenger,
    screensaver, blue screen, Close Program, Date/Time.
    Loaded after the main script; registers into APPS / RUN.
    ===================================================================== */
@@ -458,7 +458,7 @@ APPS.calc = { title:'Calculator', icon:'calc', w:270, h:290, noMax:true, noResiz
 }};
 
 /* =====================================================================
-   ZIM — Zach Instant Messenger (scripted auto-responses)
+   ZIM: Zach Instant Messenger (scripted auto-responses)
    ===================================================================== */
 function doorSound(open=true){
   try{ AC = AC || new (window.AudioContext||window.webkitAudioContext)();
@@ -484,7 +484,7 @@ const BOT = [
   [/\b(nyu|grad school|masters|ms|graduate)\b/, () => `I'm in NYU's MS in Quantitative Economics (May 2027) and TA intro macro`],
   [/\b(bentley|undergrad|college)\b/, () => `Bentley '26, BS Quantitative Economics, minors in math + data tech`],
   [/\b(skills?|python|stata|r|code|coding|languages?)\b/, () => `Python, R, Stata mostly. causal inference (RD, diff-in-disc), forecasting, ML, some web dev`],
-  [/\b(blog|unlikely|instruments?)\b/, () => { setTimeout(()=>openApp('blog'),900); return `Unlikely Instruments: a blog about weird proxy variables. launching Sept 2026`; }],
+  [/\b(blog|unlikely|instruments?)\b/, () => { setTimeout(()=>openApp('blog'),900); return `Unlikely Instruments: a blog about weird proxy variables. first post planned for early 2027`; }],
   [/\b(llms?|ai|agents?|silicus)\b/, () => `Homo silicus: using LLMs as simulated economic agents to replicate classic experiments. coming soon`],
   [/\bwii\b/, () => `there's a Wii version of this site too 👀 try Start > Run > wii`],
   [/\b(bye|gtg|ttyl|later|cya)\b/, () => `ttyl! :)`],
