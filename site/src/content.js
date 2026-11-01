@@ -153,7 +153,7 @@ export const PRESENTATIONS = [
 
 export const EXPERIENCE = [
   { role: 'Research Assistant to Professor Anna Vitali', org: 'New York University, Department of Economics', when: 'Sep 2026 to May 2027',
-    body: 'Data cleaning and analysis pipelines in Stata and Python for development economics field projects with small firms. Also my MSQE Research Practicum.' },
+    body: "Research assistant on two development field projects in Uganda: one on firm networks and mobility in Kampala's markets, one on insurance within small firms. I build and maintain the Stata data pipelines: survey cleaning, high-frequency checks, preloads for later survey rounds, and the market listing analysis. Also my MSQE Research Practicum." },
   { role: 'Teaching Assistant, Introductory Macroeconomics', org: 'New York University', when: 'Aug 2026 to present',
     body: 'Weekly recitations on course material and problem sets, exam proctoring and grading, and grade entry.' },
   { role: 'NYU Economics Teaching Fellowship', org: 'New York University', when: 'Summer 2026',
