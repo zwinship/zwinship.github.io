@@ -7,12 +7,13 @@ import { pathToFileURL } from 'node:url';
 // The play pages (Wii, Windows 98) are plain scripts, so they get the same content as globals.
 function playData() {
   let root = process.cwd();
+  let command = 'build';
   return {
     name: 'play-data',
-    configResolved(config) { root = config.root; },
+    configResolved(config) { root = config.root; command = config.command; },
     async buildStart() {
       // hashed bundles from earlier builds would otherwise pile up in the repo
-      rmSync(resolve(root, '../assets'), { recursive: true, force: true });
+      if (command === 'build') rmSync(resolve(root, '../assets'), { recursive: true, force: true });
       const c = await import(`${pathToFileURL(resolve(root, 'src/content.js')).href}?t=${Date.now()}`);
       const sw = c.SOFTWARE;
       const software = {

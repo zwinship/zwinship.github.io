@@ -12,7 +12,7 @@ export const LINKS = {
 export const PROFILE = {
   name: 'Zach Winship',
   title: 'Economist',
-  lede: "I'm a master's student in quantitative economics at NYU. I work on urban and transportation economics, mostly with regression discontinuity designs.",
+  lede: "I'm a master's student in quantitative economics at NYU, interested in urban and transportation economics.",
   now: 'MS in Quantitative Economics at NYU, finishing May 2027.',
   about: [
     "This year I'm a research assistant to Professor Anna Vitali and a teaching assistant for Introductory Macroeconomics. I finish the MS in May 2027. Before NYU I did a BS in Quantitative Economics at Bentley University, with minors in mathematics and data technologies.",
