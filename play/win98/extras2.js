@@ -203,7 +203,7 @@ APPS.regedit = { title:'Registry Editor', icon:'regedit', w:700, h:460, render(w
 
 /* ---------------- Zach 98 Update: news as "critical updates" ---------------- */
 const UPDATES = [
-  ['NBER Working Paper No. 35414', 'Congestion Pricing and EMS Response Time: Evidence From New York City. Under journal review.', '2026', ()=>openProject(ALL_PROJECTS[0])],
+  ['NBER Working Paper No. 35414', 'Congestion Pricing and Emergency Medical Service Response: Evidence from New York City. Under journal review.', '2026', ()=>openProject(ALL_PROJECTS[0])],
   ['Media Coverage Pack', 'Fortune, ABC7, Gothamist, Streetsblog NYC, City Observatory and Yahoo Finance covered the EMS paper.', 'July 2026', ()=>openApp('ie')],
   ['NYU MS Quantitative Economics', 'Installs graduate coursework. Expected completion May 2027.', 'Summer 2026', ()=>openApp('system')],
   ['Teaching Assistant Service Pack', 'Introductory Macroeconomics recitations, exams and grading at NYU.', 'Aug 2026', ()=>openApp('wordpad')],

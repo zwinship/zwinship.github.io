@@ -29,7 +29,7 @@ export const PROFILE = {
 
 // Shapes below are shared with the play pages (title, meta, body, tags, links: [[href, label]]).
 export const RESEARCH = [
-  { id: 'nber', title: 'Congestion Pricing and EMS Response Time: Evidence From New York City', year: '2026', badge: 'NBER WP No. 35414',
+  { id: 'nber', title: 'Congestion Pricing and Emergency Medical Service Response: Evidence from New York City', year: '2026', badge: 'NBER WP No. 35414',
     meta: 'Urban Economics · Health Policy · Causal Inference',
     coauthors: 'Yulia Chikish, Greg Colman, Dhaval Dave, Brad Humphreys and Zachary Santamaria',
     body: 'NBER Working Paper No. 35414, under journal review. Using a difference-in-discontinuities design at the 60th Street congestion relief zone boundary, we find congestion pricing reduced total EMS travel times by 63 to 70 seconds (roughly 5 to 6%), with vehicular traffic down 18 to 21% near the boundary and no evidence of displacement to adjacent areas.',

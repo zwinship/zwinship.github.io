@@ -2,7 +2,7 @@
 const RESEARCH = [
  {
   "id": "nber",
-  "title": "Congestion Pricing and EMS Response Time: Evidence From New York City",
+  "title": "Congestion Pricing and Emergency Medical Service Response: Evidence from New York City",
   "year": "2026",
   "badge": "NBER WP No. 35414",
   "meta": "Urban Economics · Health Policy · Causal Inference",
