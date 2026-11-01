@@ -187,7 +187,7 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 .rs-desk .ph-arr{top:50%}
 .rs-wrap{height:100%;display:flex;align-items:center;justify-content:center;min-width:0}
 .rs-sheet{position:relative;height:min(100%,calc((100vw - 240px) * 1.294));aspect-ratio:8.5/11;max-height:100%;background:#fff;box-shadow:0 1px 0 #ddd,0 10px 30px rgba(0,0,0,.35);container-type:inline-size;overflow:hidden;color:#1c1c1c;font-family:Georgia,'Times New Roman',serif;user-select:text}
-.rs-sheet .in{position:absolute;inset:0;overflow-y:auto;padding:9cqi 10cqi 7cqi;display:flex;flex-direction:column}
+.rs-sheet .rs-in{position:absolute;inset:0;overflow-y:auto;padding:9cqi 10cqi 7cqi;display:flex;flex-direction:column}
 .rs-sheet .venue{font-size:max(11px,2.3cqi);letter-spacing:.14em;text-transform:uppercase;text-align:center;color:#555}
 .rs-sheet h2{font-weight:700;font-size:max(17px,4.9cqi);line-height:1.2;text-align:center;margin:3.6cqi 0 0;text-wrap:balance}
 .rs-sheet .by{font-style:italic;font-size:max(12px,2.6cqi);text-align:center;margin-top:2.6cqi;color:#333;line-height:1.45;text-wrap:balance}
@@ -198,7 +198,7 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 .rs-sheet .avail a{color:#1a55a0}
 .rs-sheet .folio{text-align:center;font-size:max(11px,2.2cqi);color:#777;margin-top:4cqi}
 .rs .wbar{background:rgba(0,0,0,.18)}
-@media (max-width:700px){.rs-desk{align-items:stretch;padding:0 8px 64px}.rs-desk .ph-arr{top:auto;bottom:6px;margin-top:0;width:34px;height:56px}.rs-wrap{flex:1;align-items:stretch}.rs-sheet{height:auto;width:100%;aspect-ratio:auto}.rs-sheet .in{padding:26px 20px 22px}}
+@media (max-width:700px){.rs-desk{align-items:stretch;padding:0 8px 64px}.rs-desk .ph-arr{top:auto;bottom:6px;margin-top:0;width:34px;height:56px}.rs-wrap{flex:1;align-items:stretch}.rs-sheet{height:auto;width:100%;aspect-ratio:auto}.rs-sheet .rs-in{padding:26px 20px 22px}}
 
 /* --- Mii Channel: the plaza --- */
 .mp{background:linear-gradient(#ffffff 0,#f6f7f9 40%,#e4e8ec 100%)}
@@ -324,7 +324,7 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 .nw .wbar{background:linear-gradient(#ffffff,#e6e9ee)}
 
 /* --- Internet Channel (browser chrome after variant B) --- */
-.in{background:#d6d7da}
+.scr.in{background:#d6d7da}
 .in-addr{flex:0 0 auto;display:flex;align-items:center;padding:max(10px,env(safe-area-inset-top)) clamp(12px,3vw,32px) 10px;background:linear-gradient(#f6f6f7,#dadbde);border-bottom:1px solid #b4b5b9}
 .in-addr .fld{position:relative;flex:1 1 auto;min-width:0;height:42px;border-radius:21px;background:#fff;border:2px solid #b5b7bc;box-shadow:inset 0 2px 3px rgba(0,0,0,.08);overflow:hidden;display:flex;align-items:center;padding:0 18px}
 .in-addr .prog{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(#c9eefb,#9fdcf3)}
@@ -636,7 +636,7 @@ const photoHTML = (p, big) => p.kind==='zw' ? `<div class="ph-zw"><img src="${ZW
 
 /* --- Disc Channel: papers, one sheet at a time (after variant C's viewer) --- */
 const PAPERS = RESEARCH.filter(p => p.id !== 'micro');
-const paperSheet = (p, i) => `<div class="in">
+const paperSheet = (p, i) => `<div class="rs-in">
   <div class="venue">${p.badge ? p.badge.replace('WP No.','Working Paper No.') + ', ' : ''}${p.year}</div>
   <h2>${p.title}</h2>
   ${p.coauthors ? `<div class="by">With ${p.coauthors}</div>` : ''}
