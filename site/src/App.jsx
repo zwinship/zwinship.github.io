@@ -29,6 +29,7 @@ export default function App() {
   const closing = useRef(false);
   const mainScroll = useRef(null);
   const savedFocus = useRef(null);
+  const openedItem = useRef(null);
   const [dir, setDir] = useState(1);
   const [intro, setIntro] = useState(shouldPlayIntro);
   const endIntro = useCallback(() => setIntro(false), []);
@@ -46,17 +47,27 @@ export default function App() {
       fromMain.current = true;
       savedScroll.current = scrollY;
       savedFocus.current = document.activeElement;
+      openedItem.current = route.item;
       return;
     }
     if (route.item) return;                  // moving between items
     if (was.item) {                          // closing an item
       document.documentElement.classList.remove('sheet-open');
-      const f = savedFocus.current;
-      requestAnimationFrame(() => (f && document.contains(f) ? f : document.getElementById('main'))?.focus({ preventScroll: true }));
       closing.current = false;
       if (closeMode.current === 'replace' && route.section) scrollToSection(route.section, { instant: true });
       else if (savedScroll.current == null) scrollToSection(pageById(was.item).line.id, { instant: true });
       else scrollTo(0, savedScroll.current);
+      // Moved to another item with Next/Previous: come back to that item's station instead.
+      if (was.item !== openedItem.current) {
+        const stop = document.querySelector(`[data-anchor="${was.item}"]`);
+        if (stop) {
+          const r = stop.getBoundingClientRect();
+          if (r.top < 90 || r.bottom > innerHeight) scrollTo(0, scrollY + r.top - innerHeight / 3);
+          savedFocus.current = stop.querySelector('h3 a');
+        }
+      }
+      const f = savedFocus.current;
+      requestAnimationFrame(() => (f && document.contains(f) ? f : document.getElementById('main'))?.focus({ preventScroll: true }));
       closeMode.current = 'back';
       return;
     }

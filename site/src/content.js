@@ -22,7 +22,7 @@ export const PROFILE = {
   ],
   education: [
     { degree: 'MS in Quantitative Economics', school: 'New York University', when: 'Summer 2026 to May 2027', note: 'NYU Economics Teaching Fellowship, Summer 2026.' },
-    { degree: 'BS in Quantitative Economics', school: 'Bentley University', when: 'Graduated May 2026', note: 'Minors in Mathematics and Data Technologies. GPA 3.74, on the Dean\'s or President\'s List every semester. Coursework in econometrics, statistical analysis, data analytics, mathematical economics and public policy analysis.' },
+    { degree: 'BS in Quantitative Economics', school: 'Bentley University', when: 'May 2026', note: 'Minors in Mathematics and Data Technologies. GPA 3.74, on the Dean\'s or President\'s List every semester. Coursework in econometrics, statistical analysis, data analytics, mathematical economics and public policy analysis.' },
   ],
   skills: ['Python', 'R', 'Stata', 'SQL', 'LaTeX', 'Causal inference', 'Regression discontinuity', 'Spatial analysis', 'Forecasting and ARIMA', 'Machine learning', 'Web development', 'Raspberry Pi hardware'],
 };
@@ -37,12 +37,12 @@ export const RESEARCH = [
     links: [['https://www.nber.org/papers/w35414', 'NBER paper']] },
   { id: 'cz', title: "Traffic, Transit, and the Toll: Causal Evidence from NYC's Congestion Pricing", year: '2026',
     meta: 'Urban Economics · Causal Inference · Policy Research',
-    body: "My senior capstone at Bentley, advised by Dhaval Dave. A difference-in-discontinuities design at the 60th Street boundary, with distance measured along the road network, using C2Smart traffic camera data and MTA ridership. Near the boundary, passenger vehicles fell 20.6% and trucks 18.1%, while pedestrians rose 13.5% and bicycles 19.8%. Ridership at boundary subway stations fell 24.7%, which cuts against a simple shift from cars to transit. Presented at Bentley Undergraduate Research Day.",
+    body: "A difference-in-discontinuities design at the 60th Street boundary, with distance measured along the road network, using C2Smart traffic camera data and MTA ridership. Near the boundary, passenger vehicles fell 20.6% and trucks 18.1%, while pedestrians rose 13.5% and bicycles 19.8%. Ridership at boundary subway stations fell 24.7%, which cuts against a simple shift from cars to transit. Presented at Bentley Undergraduate Research Day.",
     tags: ['Python', 'Stata', 'Causal Inference', 'Spatial', 'DD-RD'],
     links: [['https://www.researchgate.net/publication/405220672', 'Paper'], ['https://github.com/zwinship', 'GitHub']] },
   { id: 'ozone', title: 'The Real Price of Clean Air: EPA Ozone Regulation', year: '2025',
     meta: 'Regulatory Economics · Causal Inference · Policy',
-    body: "Uses the EPA's 0.071 ppm ozone threshold in a regression discontinuity design to estimate the revenue impact on U.S. manufacturing firms: an estimated $277M a year in lost revenue, which the EPA's own analysis does not count.",
+    body: "Uses the EPA's 0.071 ppm ozone threshold in a regression discontinuity design to estimate the revenue impact on US manufacturing firms: an estimated $277M a year in lost revenue, which the EPA's own analysis does not count.",
     tags: ['Python', 'Econometrics', 'RDD', 'Policy'],
     links: [['https://policyinterns.com/2025/06/18/the-real-price-of-clean-air/', 'Ozone blog post'], ['https://policyinterns.com/2025/07/24/eslr-reform-without-precedent/', 'eSLR blog post'], ['https://zwinshippolicyintern.github.io/', 'Map'], ['https://github.com/zwinship/EPA_Ozone_Regulation_Blog', 'GitHub']] },
   { id: 'mbta-ts', title: 'ARIMA Modeling of MBTA Ridership', year: '2025', meta: 'Forecasting · Transportation Economics',
@@ -84,7 +84,7 @@ export const SOFTWARE = {
   status: 'Version 1 is out for Python (PyPI) and R. Version 2 is in development and due soon.',
   summary: 'Boundary discontinuity designs on street networks.',
   body: [
-    'rd2dnet extends rd2d (Cattaneo, Titiunik and Yu) so that distance to the boundary is measured along streets instead of in straight lines. You choose the metric: metres, travel time, a land-use contrast, a penalty for switching road class, or your own matrix.',
+    'rd2dnet extends rd2d (Cattaneo, Titiunik and Yu) so that distance to the boundary is measured along streets instead of in straight lines. You choose the metric: meters, travel time, a land-use contrast, a penalty for switching road class, or your own matrix.',
     'Estimation, robust bias-corrected inference, uniform bands and the bandwidth selector follow rd2d; the density test follows rddensity. Cluster-robust errors default to CR2. It ships for Python and R with the same functions and the same numbers on the bundled data; a Stata port is in testing.',
   ],
   credit: 'Built on rd2d by Matias D. Cattaneo, Rocío Titiunik and Ruiqi Rae Yu. Independent project, not affiliated with or endorsed by the rd2d authors.',
@@ -93,7 +93,7 @@ export const SOFTWARE = {
 from rd2dnet.datasets import load_mock_midtown
 
 city = load_mock_midtown()
-net = city.network("length")          # metres along streets
+net = city.network("length")          # meters along streets
 coords = rd2dnet.network_coordinates(
     net, city.boundary, city.obs[["x", "y"]], n_eval=21)
 
@@ -129,7 +129,7 @@ export const PERSONAL = [
 ];
 
 export const EXPERIENCE = [
-  { role: 'Research Assistant to Professor Anna Vitali', org: 'New York University, Department of Economics', when: 'Sep 2026 to May 2027',
+  { role: 'Research Assistant to Professor Anna Vitali', org: 'New York University, Department of Economics', when: 'Sep 2026 to present',
     body: "Research assistant on two development field projects in Uganda: one on firm networks and mobility in Kampala's markets, one on insurance within small firms. I build and maintain the Stata data pipelines: survey cleaning, high-frequency checks, preloads for later survey rounds, and the market listing analysis." },
   { role: 'Teaching Assistant, Introductory Macroeconomics', org: 'New York University', when: 'Aug 2026 to present',
     body: 'Lead two recitation sections, about 90 students in all, and proctor and grade exams.' },

@@ -17,7 +17,7 @@ export function Content({ pg }) {
       {pg.body.map(t => <p key={t.slice(0, 24)}>{t}</p>)}
       {pg.install && (
         <dl className="install">
-          {pg.install.map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{/^(pip|remotes|ssc|net) /.test(v) ? <code>{v}</code> : v}</dd></div>)}
+          {pg.install.map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{/^(pip |remotes::|ssc |net )/.test(v) ? <code>{v}</code> : v}</dd></div>)}
         </dl>
       )}
       {pg.posts && (

@@ -106,6 +106,7 @@ export default function Main({ restoreY }) {
       if (target) scrollToSection(target, { instant: true });
       else scrollTo(0, back ?? 0);
     };
+    if (back != null) requestAnimationFrame(() => document.querySelector('.foot-fun a')?.focus({ preventScroll: true }));
     place();
     // Fonts arriving late change heights above the target; place again unless the visitor has moved.
     if (target || back) {
