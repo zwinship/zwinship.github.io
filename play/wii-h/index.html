@@ -764,11 +764,12 @@ $('pvStart').onclick = () => openDialog();
 
 /* --- Start: the system asks before leaving for the internet --- */
 const dlg = $('dlg');
+let dlgAt = 0;   // ignore the same key press that opened the dialog
 dlg.inert = true;
 function openDialog(){
   if (state !== 'preview') return;
   const ch = CHANNELS[current];
-  SFX.ask(); state = 'dialog';
+  SFX.ask(); state = 'dialog'; dlgAt = performance.now();
   $('dlgQ').textContent = ch.ask || OPEN;
   $('dlgU').textContent = ch.show;
   dlg.classList.add('open'); dlg.inert = false; preview.inert = true;
@@ -781,9 +782,9 @@ function closeDialog(silent){
   dlg.classList.remove('open'); dlg.inert = true; preview.inert = false;
   if (state === 'dialog'){ state = 'preview'; if (lastKey) $('pvStart').focus({preventScroll:true}); }
 }
-$('dlgNo').onclick = () => closeDialog();
+$('dlgNo').onclick = () => { if (performance.now() - dlgAt >= 250) closeDialog(); };
 $('dlgYes').onclick = () => {
-  if (state !== 'dialog') return;
+  if (state !== 'dialog' || performance.now() - dlgAt < 250) return;
   const ch = CHANNELS[current]; SFX.start();
   if (ch.url.startsWith('mailto:')) location.href = ch.url;
   else window.open(ch.url, '_blank', 'noopener');
