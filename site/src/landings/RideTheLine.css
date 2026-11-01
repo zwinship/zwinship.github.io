@@ -23,7 +23,6 @@
 .rl-badge i { width: 18px; height: 18px; border-radius: 50%; background: var(--c); }
 .rl-title {
   font-weight: 900; letter-spacing: -0.03em; line-height: 1.04; text-decoration: none; text-wrap: balance;
-  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden;
   text-decoration-thickness: 4px; text-underline-offset: 6px; text-decoration-color: var(--c);
 }
 .rl-title:hover { text-decoration-line: underline; color: var(--ink); }
@@ -31,23 +30,24 @@
 /* ---------- the strip ---------- */
 
 .rl-strip { position: relative; }
-.rl-strip:focus { outline: none; }
-.rl-strip:focus-visible { outline: 3px solid #003da5; outline-offset: 6px; border-radius: 6px; }
 .rl-track { position: relative; }
 .rl-seg { position: absolute; background: var(--c); }
-.rl-stop { position: absolute; pointer-events: none; }
+.rl-stop { position: absolute; pointer-events: none; text-decoration: none; }
+.rl-stop:focus-visible { outline: none; }
+.rl-stop:focus-visible .rl-name > span { outline: 3px solid #003da5; outline-offset: 3px; border-radius: 3px; }
+.rl-stop:focus-visible .rl-dot { box-shadow: 0 0 0 3px #fff, 0 0 0 6px #003da5; }
 .rl-stop .rl-dot, .rl-stop .rl-name > span { pointer-events: auto; cursor: pointer; }
 .rl-dot { position: absolute; z-index: 1; width: 20px; height: 20px; border-radius: 50%; background: #fff; border: 4px solid var(--c); transition: transform 0.18s ease-out; }
 .rl-dot::after { content: ''; position: absolute; inset: -10px; border-radius: 50%; }
 .rl-name { position: absolute; display: block; white-space: nowrap; }
-.rl-name > span { display: block; overflow: hidden; text-overflow: ellipsis; font-size: 15px; font-weight: 500; line-height: 1.25; color: #4b4f55; transition: color 0.2s; }
+.rl-name > span { display: block; font-size: 15px; font-weight: 500; line-height: 1.25; color: #4b4f55; transition: color 0.2s; }
 .rl-stop:hover .rl-dot { transform: translate(-50%, -50%) scale(1.2) !important; }
 .rl-stop:hover .rl-name > span { color: var(--ink); text-decoration: underline; text-decoration-color: var(--c); text-decoration-thickness: 2px; text-underline-offset: 3px; }
 .rl-stop.is-sel .rl-name > span { color: var(--ink); font-weight: 800; }
 .rl-stop.is-sel:not(.is-here) .rl-dot { animation: rl-blink 0.9s steps(1, end) infinite; }
 @keyframes rl-blink { 50% { background: var(--c); } }
 
-.rl-line-name { position: absolute; font-size: 15px; font-weight: 800; line-height: 1.2; white-space: nowrap; text-decoration: none; }
+.rl-line-name { position: absolute; z-index: 2; border-radius: 3px; font-size: 15px; font-weight: 800; line-height: 1.2; white-space: nowrap; text-decoration: none; }
 .rl-line-name:hover { text-decoration: underline; text-decoration-color: var(--c); text-decoration-thickness: 2px; }
 
 /* The car: a dark capsule with a lit window, sitting on the track. */
@@ -57,18 +57,20 @@
 
 /* ---------- wide: one horizontal strip ---------- */
 
-.rl-h { height: 100vh; height: 100dvh; min-height: 560px; overflow: hidden; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; padding: 36px 48px 28px; }
-.rl-h .rl-display { align-self: end; padding: 24px 0 clamp(16px, 5vh, 56px); }
-.rl-h .rl-display-in { min-height: calc(19px + 14px + 3 * 1.04 * clamp(34px, 4.2vw, 84px)); display: flex; align-items: flex-end; }
-.rl-h .rl-title { font-size: clamp(34px, 4.2vw, 84px); max-width: min(100%, 24ch); -webkit-line-clamp: 3; }
-.rl-h .rl-strip { --ly: 200px; display: grid; grid-template-columns: minmax(0, 1fr) 250px; height: 252px; }
+.rl-h { --t: clamp(32px, min(4.2vw, 6.2vh), 84px); min-height: 100vh; min-height: 100dvh; overflow-x: clip; display: grid; grid-template-rows: auto minmax(0, 1fr); padding: 36px 48px 28px; }
+.rl-h .rl-body { align-self: center; padding-top: 16px; }
+.rl-h .rl-display { padding: 0 0 clamp(4px, 2vh, 24px); }
+.rl-h .rl-display-in { min-height: calc(19px + 14px + 3 * 1.04 * var(--t)); display: flex; align-items: flex-end; }
+.rl-h .rl-title { font-size: var(--t); max-width: min(100%, 24ch); }
+.rl-h .rl-strip { --ly: calc(var(--rise, 220px) + 34px); display: grid; grid-template-columns: minmax(0, 1fr) 250px; height: calc(var(--ly) + 52px); }
 .rl-h .rl-track { height: 100%; }
 .rl-h .rl-seg { left: calc(var(--p) * 100%); width: calc(var(--q) * 100% + 1px); top: calc(var(--ly) - 6px); height: 12px; transform-origin: 0 50%; animation: rl-draw-x calc(var(--q) * 0.8s) linear calc(0.1s + var(--p) * 0.8s) both; }
 .rl-h .rl-seg:first-child { border-radius: 6px 0 0 6px; }
 .rl-h .rl-stop { left: calc(var(--p) * 100%); top: 0; height: 100%; width: 0; animation: rl-fade 0.3s ease-out calc(0.2s + var(--p) * 0.8s) both; }
 .rl-h .rl-stop .rl-dot { left: 0; top: var(--ly); transform: translate(-50%, -50%); }
 .rl-h .rl-name { left: -2px; bottom: calc(100% - var(--ly) + 20px); transform-origin: 0 100%; transform: rotate(-45deg); }
-.rl-h .rl-name > span { max-width: 240px; }
+.rl-h .rl-name > span { white-space: nowrap; color: #5d6168; }
+.rl-h .rl-stop.is-sel .rl-name > span, .rl-h .rl-stop:hover .rl-name > span { color: var(--ink); }
 .rl-h .rl-line-name { left: calc(var(--p) * 100%); top: calc(var(--ly) + 22px); transform: translateX(-50%); animation: rl-fade 0.3s ease-out calc(0.3s + var(--p) * 0.8s) both; }
 .rl-h .rl-car { top: var(--ly); }
 .rl-h .rl-car span { left: -23px; top: -13px; width: 46px; height: 26px; }
@@ -89,13 +91,12 @@
 
 @media (max-width: 1180px) {
   .rl-h { padding: 28px 32px 22px; }
-  .rl-h .rl-strip { --ly: 162px; height: 212px; grid-template-columns: minmax(0, 1fr) 236px; }
-  .rl-h .rl-name > span { max-width: 190px; font-size: 14px; }
+  .rl-h .rl-strip { grid-template-columns: minmax(0, 1fr) 236px; }
+  .rl-h .rl-name > span { font-size: 13px; color: #868b92; }
   .rl-fun { font-size: 14px; }
 }
 @media (min-width: 1700px) {
-  .rl-h .rl-strip { --ly: 214px; height: 270px; }
-  .rl-h .rl-name > span { max-width: 260px; font-size: 16px; }
+  .rl-h .rl-name > span { font-size: 16px; }
 }
 
 /* ---------- narrow: the strip turns vertical ---------- */
@@ -109,17 +110,17 @@
 .rl-v .rl-now { gap: 12px; }
 .rl-v .rl-badge { font-size: 17px; }
 .rl-v .rl-badge i { width: 16px; height: 16px; }
-.rl-v .rl-title { font-size: clamp(22px, 6.6vw, 34px); line-height: 1.08; -webkit-line-clamp: 4; }
+.rl-v .rl-title { font-size: clamp(22px, 6.6vw, 34px); line-height: 1.08; }
 .rl-v .rl-strip { --lx: 22px; padding-top: 4px; }
-.rl-v .rl-track { --unit: clamp(26px, calc((100svh - 340px) / var(--n)), 36px); height: calc(var(--n) * var(--unit)); }
+.rl-v .rl-track { --unit: 44px; height: calc(var(--n) * var(--unit)); }
 .rl-v .rl-seg { top: calc(var(--p) * 100%); height: calc(var(--q) * 100% + 1px); left: calc(var(--lx) - 6px); width: 12px; transform-origin: 50% 0; animation: rl-draw-y calc(var(--q) * 0.8s) linear calc(0.1s + var(--p) * 0.8s) both; }
 .rl-v .rl-seg:first-child { border-radius: 6px 6px 0 0; }
 .rl-v .rl-stop, .rl-v .rl-fun-stop { top: calc(var(--p) * 100%); left: 0; right: 0; height: 0; }
 .rl-v .rl-stop { animation: rl-fade 0.3s ease-out calc(0.2s + var(--p) * 0.8s) both; }
 .rl-v .rl-dot { left: var(--lx); top: 0; transform: translate(-50%, -50%); }
 .rl-v .rl-name { left: calc(var(--lx) + 26px); right: 0; top: 0; transform: translateY(-50%); }
-.rl-v .rl-name > span { font-size: 16px; }
-.rl-v .rl-name > span { display: inline-block; max-width: 100%; vertical-align: top; }
+.rl-v .rl-name { white-space: normal; }
+.rl-v .rl-name > span { display: inline-block; max-width: 100%; vertical-align: top; font-size: 15px; line-height: 1.2; text-wrap: pretty; }
 .rl-v .rl-line-name { top: calc(var(--p) * 100%); left: calc(var(--lx) + 26px); transform: translateY(-50%); font-size: 13px; letter-spacing: 0.02em; color: #4b4f55; animation: rl-fade 0.35s ease-out 0.4s both; }
 .rl-v .rl-car { left: var(--lx); }
 .rl-v .rl-car span { left: -13px; top: -21px; width: 26px; height: 42px; }

@@ -1,23 +1,38 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { LINES } from '../data.js';
 import './StationSign.css';
 
-// Signage arrow in the style of station wayfinding: square shaft, open 90 degree head.
-function Arrow() {
-  return (
-    <svg className="ss-arrow" viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M1 10.1H16.4L9.8 3.5L12.5 0.8L23.7 12L12.5 23.2L9.8 20.5L16.4 13.9H1Z" />
-    </svg>
-  );
-}
-
 const hashFor = (line, it) => (it.body ? `#/${it.id}` : `#/${line.id}`);
+const narrow = () => matchMedia('(max-width: 760px)').matches;
 
 export default function StationSign({ onGo }) {
-  const [active, setActive] = useState(LINES[0].id);
+  // Wide screens open on the first line; phones start with every line folded.
+  const [active, setActive] = useState(() => (narrow() ? null : LINES[0].id));
   const [intro, setIntro] = useState(true);
-  useEffect(() => { const t = setTimeout(() => setIntro(false), 1400); return () => clearTimeout(t); }, []);
+  const hoverTimer = useRef(0);
+  const pointer = useRef('mouse');
+
+  useEffect(() => {
+    const t = setTimeout(() => setIntro(false), 1400);
+    return () => { clearTimeout(t); clearTimeout(hoverTimer.current); };
+  }, []);
+
   const go = (e, hash) => { e.preventDefault(); onGo(hash); };
+
+  // A short pause before switching lines, so a diagonal move toward the strip does not swap it.
+  const hoverIn = id => {
+    clearTimeout(hoverTimer.current);
+    hoverTimer.current = setTimeout(() => setActive(id), 160);
+  };
+  const hoverOut = () => clearTimeout(hoverTimer.current);
+
+  // Touch: the first tap opens a line's stops, a second tap enters the section.
+  const pick = (e, id) => {
+    e.preventDefault();
+    clearTimeout(hoverTimer.current);
+    if (pointer.current === 'touch' && active !== id) setActive(id);
+    else onGo(`#/${id}`);
+  };
 
   return (
     <div className={`ss${intro ? ' is-intro' : ''}`}>
@@ -37,19 +52,27 @@ export default function StationSign({ onGo }) {
             {LINES.map((l, i) => {
               const on = l.id === active;
               return (
-                <li key={l.id} style={{ '--c': l.color, '--i': i }}>
-                  <a href={`#/${l.id}`} className={`ss-line${on ? ' is-on' : ''}`}
-                    onClick={e => go(e, `#/${l.id}`)}
-                    onMouseEnter={() => setActive(l.id)} onFocus={() => setActive(l.id)}>
+                <li key={l.id} className={on ? 'is-on' : undefined} style={{ '--c': l.color, '--i': i }}>
+                  <a href={`#/${l.id}`} className="ss-line" aria-expanded={on}
+                    onPointerDown={e => { pointer.current = e.pointerType; }}
+                    onClick={e => pick(e, l.id)}
+                    onMouseEnter={() => hoverIn(l.id)} onMouseLeave={hoverOut}
+                    onFocus={() => setActive(l.id)}>
                     <span className="ss-bullet" aria-hidden="true" />
                     <span className="ss-label">{l.name}</span>
                   </a>
-                  {/* This line's stops sit in DOM order after its bullet, drawn in the shared strip below. */}
-                  <ol className={`ss-strip${on ? ' is-on' : ''}`} style={{ '--n': l.items.length }} aria-label={`${l.name} stops`}>
+                  {/* Stops follow their bullet in tab order; on wide screens they are drawn in the shared strip. */}
+                  <ol className="ss-strip" style={{ '--n': l.items.length }} aria-label={`${l.name} stops`}>
+                    <li className="ss-term">
+                      <a href={`#/${l.id}`} onClick={e => go(e, `#/${l.id}`)}>
+                        <span className="ss-mark" aria-hidden="true" />
+                        <span className="ss-title">{l.name}</span>
+                      </a>
+                    </li>
                     {l.items.map((it, j) => (
                       <li key={it.id} style={{ '--j': j }}>
                         <a href={hashFor(l, it)} onClick={e => go(e, hashFor(l, it))}>
-                          <span className="ss-stop" aria-hidden="true" />
+                          <span className="ss-mark" aria-hidden="true" />
                           <span className="ss-title">{it.title}</span>
                         </a>
                       </li>
@@ -67,12 +90,8 @@ export default function StationSign({ onGo }) {
           <a href="/play/wii/">Living room, 2006</a>
           <a href="/play/win98/">Family computer, 1998</a>
         </div>
-        <a href="#/" className="ss-enter" onClick={e => go(e, '#/')}>
-          <span>Enter</span>
-          <Arrow />
-        </a>
+        <a href="#/" className="ss-enter" onClick={e => go(e, '#/')}>Enter</a>
       </footer>
-      <div className="ss-edge" aria-hidden="true" />
     </div>
   );
 }

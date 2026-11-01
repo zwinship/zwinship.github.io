@@ -1,13 +1,28 @@
-/* Landing option "sign": a station entrance. */
+/* Landing option "sign": a station entrance.
+   Every animation runs "from" a hidden state into the element's normal style,
+   so with animations switched off everything is simply shown. */
 
 .ss {
   --ss-ink: #161616;
-  --ss-wall: #ffffff;
   --ss-pad: clamp(16px, 4vw, 56px);
+  --ss-ease: cubic-bezier(0.65, 0, 0.35, 1);
   min-height: 100vh; min-height: 100dvh;
   display: flex; flex-direction: column;
-  background: var(--ss-wall); color: var(--ss-ink);
+  background: #fff; color: var(--ss-ink);
   overflow-x: hidden;
+}
+
+@keyframes ss-fade { from { opacity: 0; } }
+@keyframes ss-grow { from { transform: scaleX(0); } }
+@keyframes ss-settle { from { opacity: 0; transform: translateY(-12px); } }
+/* A sign's lamps catching: two quick stutters, then steady. */
+@keyframes ss-light {
+  0% { opacity: 0; }
+  18% { opacity: 0.55; }
+  26% { opacity: 0.1; }
+  40% { opacity: 0.85; }
+  48% { opacity: 0.35; }
+  60% { opacity: 1; }
 }
 
 /* ---------- station name sign ---------- */
@@ -20,158 +35,157 @@
 .ss-name {
   margin: 0; font-weight: 800; letter-spacing: -0.035em; line-height: 0.92;
   font-size: clamp(46px, 10.5vw, 150px);
-  animation: ss-light 0.9s steps(1, end) both;
+  animation: ss-light 0.9s steps(1, end) backwards;
 }
 .ss-sub {
   margin: clamp(10px, 2vh, 20px) 0 0; font-weight: 500; color: #c9ccd0;
   font-size: clamp(16px, 1.8vw, 24px); line-height: 1.3;
-  animation: ss-fade 0.5s 0.75s both;
+  animation: ss-fade 0.5s 0.75s backwards;
 }
-/* A sign's lamps catching: two quick stutters, then steady. */
-@keyframes ss-light {
-  0% { opacity: 0; }
-  18% { opacity: 0.55; }
-  26% { opacity: 0.1; }
-  40% { opacity: 0.85; }
-  48% { opacity: 0.35; }
-  60% { opacity: 1; }
-}
-@keyframes ss-fade { from { opacity: 0; } to { opacity: 1; } }
-
-.ss-stripe { display: flex; height: 10px; transform-origin: 0 50%; animation: ss-grow 0.7s 0.2s cubic-bezier(0.65, 0, 0.35, 1) both; }
+.ss-stripe { display: flex; height: 10px; transform-origin: 0 50%; animation: ss-grow 0.7s 0.2s var(--ss-ease) backwards; }
 .ss-stripe span { flex: 1; }
-@keyframes ss-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 
-/* ---------- line bullets ---------- */
+/* ---------- directional sign with the line bullets ---------- */
 
 .ss-wall {
   flex: 1 0 auto; width: 100%; max-width: 1320px; margin: 0 auto;
-  padding: clamp(24px, 5vh, 64px) var(--ss-pad) 0;
+  padding: clamp(24px, 5vh, 56px) var(--ss-pad) 0;
   display: flex; flex-direction: column; justify-content: center;
 }
-.ss-lines ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; }
-.ss-line { animation: ss-settle 0.55s cubic-bezier(0.2, 0.9, 0.25, 1.15) both; animation-delay: calc(0.55s + var(--i) * 0.07s); }
-@keyframes ss-settle { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: none; } }
-
+.ss-lines { --strip: clamp(170px, 24vh, 220px); position: relative; padding-bottom: var(--strip); }
+.ss-lines > ul {
+  list-style: none; margin: 0; padding: 10px 12px;
+  display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px;
+  background: var(--ss-ink); border-radius: 6px;
+  box-shadow: inset 0 0 0 5px var(--ss-ink), inset 0 0 0 6.5px rgba(255, 255, 255, 0.35);
+  animation: ss-fade 0.4s 0.45s backwards;
+}
 .ss-line {
-  display: flex; flex-direction: column; align-items: center; gap: 14px;
-  padding: 6px 4px 10px; text-decoration: none; color: var(--ss-ink); border-radius: 8px;
+  display: flex; align-items: center; justify-content: center; gap: 14px;
+  min-height: 72px; padding: 8px 10px; border-radius: 4px;
+  color: #fff; text-decoration: none;
+  animation: ss-settle 0.5s cubic-bezier(0.2, 0.9, 0.25, 1.15) backwards; animation-delay: calc(0.6s + var(--i) * 0.07s);
 }
-.ss-line:hover { color: var(--ss-ink); }
+.ss-line:hover { color: #fff; }
 .ss-bullet {
-  width: clamp(76px, 9vw, 124px); aspect-ratio: 1; border-radius: 50%; background: var(--c);
-  transition: transform 0.25s cubic-bezier(0.3, 0.7, 0.3, 1);
+  flex: none; width: clamp(34px, 3.4vw, 46px); aspect-ratio: 1; border-radius: 50%; background: var(--c);
+  box-shadow: 0 0 0 2.5px #fff;
 }
-.ss-line:hover .ss-bullet, .ss-line:focus-visible .ss-bullet { transform: translateY(-4px); }
-.ss .ss-line:focus-visible { outline: none; }
-.ss-line:focus-visible .ss-bullet { outline: 3px solid var(--ss-ink); outline-offset: 5px; }
 .ss-label {
-  font-weight: 800; font-size: clamp(18px, 1.7vw, 24px); letter-spacing: -0.01em; line-height: 1.1;
-  padding-bottom: 4px; border-bottom: 4px solid transparent; transition: border-color 0.2s;
+  font-weight: 700; font-size: clamp(18px, 1.75vw, 25px); letter-spacing: -0.01em; line-height: 1.1;
+  padding: 4px 0; border-bottom: 4px solid transparent; transition: border-color 0.2s;
 }
-.ss-line.is-on .ss-label { border-color: var(--c); }
+.ss-lines > ul > li.is-on .ss-label { border-color: var(--c); }
+.ss .ss-line:focus-visible { outline: 3px solid #fff; outline-offset: -3px; }
 
-/* ---------- strip map of the active line ---------- */
+/* ---------- strip map of the chosen line ---------- */
 
-.ss-lines { --strip: clamp(150px, 21vh, 200px); position: relative; padding-bottom: var(--strip); }
-.ss-lines::after {
-  content: ''; position: absolute; left: 0; right: 0; bottom: calc(var(--strip) - clamp(22px, 4vh, 40px));
-  border-top: 2px solid #e3e4e6; animation: ss-fade 0.4s 0.9s both;
-}
 .ss-strip {
-  position: absolute; left: 0; right: 0; bottom: 0; height: calc(var(--strip) - clamp(22px, 4vh, 40px) - 2px);
-  padding: clamp(16px, 2.6vh, 26px) 0 0;
-  list-style: none; margin: 0;
-  display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); align-content: start;
+  position: absolute; left: 0; right: 0; bottom: 0;
+  height: calc(var(--strip) - clamp(26px, 4.5vh, 44px));
+  list-style: none; margin: 0; padding: 0;
+  display: flex; align-items: flex-start;
   visibility: hidden;
 }
-.ss-strip.is-on { visibility: visible; }
+.ss-lines > ul > li.is-on .ss-strip { visibility: visible; }
 .ss-strip::before {
-  content: ''; position: absolute; top: calc(clamp(16px, 2.6vh, 26px) + 8px); height: 8px; border-radius: 4px; background: var(--c);
-  left: calc(50% / var(--n)); right: calc(50% / var(--n));
-  transform-origin: 0 50%; transform: scaleX(0);
+  content: ''; position: absolute; top: 9px; left: 15px; right: 0; height: 12px; background: var(--c);
+  border-radius: 0 6px 6px 0; transform-origin: 0 50%;
 }
-.ss-strip:has(li:only-child)::before { left: calc(50% - 40px); right: calc(50% - 40px); }
-.ss-strip > li { min-width: 0; opacity: 0; animation: none; }
-.ss-strip.is-on::before { animation: ss-grow 0.45s cubic-bezier(0.65, 0, 0.35, 1) forwards; }
-.ss-strip.is-on > li { animation: ss-fade 0.25s forwards; animation-delay: calc(0.12s + var(--j) * 0.05s); }
-.ss.is-intro .ss-strip.is-on::before { animation-delay: 1s; }
-.ss.is-intro .ss-strip.is-on > li { animation-delay: calc(1.1s + var(--j) * 0.05s); }
+.ss-strip > li { position: relative; flex: 1 1 0; min-width: 0; }
+.ss-strip > li.ss-term { flex: 0 0 auto; width: clamp(120px, 12vw, 170px); }
 .ss-strip a {
-  display: flex; flex-direction: column; align-items: center; gap: 10px;
-  padding: 0 8px 6px; text-align: center; text-decoration: none; color: var(--ss-ink); border-radius: 6px;
+  display: flex; flex-direction: column; gap: 10px; padding: 0 14px 6px 0;
+  text-decoration: none; color: var(--ss-ink); border-radius: 4px;
 }
-.ss-stop {
-  position: relative; z-index: 1; width: 24px; height: 24px; border-radius: 50%;
-  background: #fff; border: 5px solid var(--c); transition: transform 0.2s, background-color 0.2s;
-}
-.ss-title { font-size: 15px; font-weight: 600; line-height: 1.3; }
 .ss-strip a:hover { color: var(--ss-ink); }
-.ss-strip a:hover .ss-stop, .ss-strip a:focus-visible .ss-stop { transform: scale(1.2); background: var(--ss-ink); }
+.ss-mark { position: relative; display: block; height: 30px; }
+.ss-mark::before {
+  content: ''; position: absolute; left: 0; top: 2px; width: 5px; height: 26px; border-radius: 1px;
+  background: var(--ss-ink); transition: transform 0.2s;
+}
+.ss-term .ss-mark::before { top: 0; width: 30px; height: 30px; border-radius: 50%; background: #fff; border: 6px solid var(--ss-ink); box-sizing: border-box; }
+.ss-title { font-size: 15px; font-weight: 600; line-height: 1.3; }
+.ss-term .ss-title { font-size: 19px; font-weight: 800; letter-spacing: -0.01em; }
+.ss-strip a:hover .ss-mark::before, .ss-strip a:focus-visible .ss-mark::before { transform: scaleY(1.3); }
+.ss-term a:hover .ss-mark::before, .ss-term a:focus-visible .ss-mark::before { transform: scale(1.12); }
 .ss-strip a:hover .ss-title { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
 
-/* ---------- directional signs ---------- */
+.ss-lines > ul > li.is-on .ss-strip::before { animation: ss-grow 0.5s var(--ss-ease) backwards; }
+.ss-lines > ul > li.is-on .ss-strip > li { animation: ss-fade 0.25s backwards; animation-delay: calc(0.15s + var(--j, -1) * 0.05s); }
+.ss.is-intro .ss-lines > ul > li.is-on .ss-strip::before { animation-delay: 1s; }
+.ss.is-intro .ss-lines > ul > li.is-on .ss-strip > li { animation-delay: calc(1.15s + var(--j, -1) * 0.05s); }
+
+/* ---------- entrance and secondary signs ---------- */
 
 .ss-foot {
   width: 100%; max-width: 1320px; margin: 0 auto;
-  padding: clamp(18px, 3.5vh, 36px) var(--ss-pad) clamp(18px, 3.5vh, 32px);
+  padding: clamp(16px, 3vh, 32px) var(--ss-pad) clamp(20px, 4vh, 40px);
   display: flex; justify-content: space-between; align-items: flex-end; gap: 16px;
-  animation: ss-fade 0.4s 1.05s both;
+  animation: ss-fade 0.4s 1.05s backwards;
 }
 .ss-fun { display: flex; flex-wrap: wrap; gap: 10px; }
-.ss-fun a {
-  display: inline-flex; align-items: center; min-height: 40px; padding: 0 14px;
-  border: 2px solid var(--ss-ink); border-radius: 4px; background: #fff;
-  font-size: 15px; font-weight: 700; text-decoration: none; color: var(--ss-ink);
+.ss-fun a, .ss-enter {
+  --bg: #4b4f55;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--bg); color: #fff; text-decoration: none; border-radius: 5px;
+  box-shadow: inset 0 0 0 4px var(--bg), inset 0 0 0 5.5px rgba(255, 255, 255, 0.5);
+  transition: background-color 0.2s;
 }
-.ss-fun a:hover { background: var(--ss-ink); color: #fff; }
-
+.ss-fun a { min-height: 44px; padding: 0 18px; font-size: 15px; font-weight: 700; }
+.ss-fun a:hover { --bg: #2c2f33; color: #fff; }
 .ss-enter {
-  flex: none; display: inline-flex; align-items: center; gap: 28px;
-  min-height: 72px; padding: 0 22px 0 28px; border-radius: 6px;
-  background: var(--ss-ink); color: #fff; text-decoration: none;
-  font-weight: 800; font-size: 30px; letter-spacing: -0.01em;
+  --bg: var(--ss-ink);
+  flex: none; min-height: 76px; min-width: 200px; padding: 0 40px;
+  font-weight: 800; font-size: 32px; letter-spacing: -0.01em;
 }
-.ss-enter:hover { color: #fff; }
-.ss-arrow { width: 36px; height: 36px; fill: currentColor; transition: transform 0.25s cubic-bezier(0.3, 0.7, 0.3, 1); }
-.ss-enter:hover .ss-arrow, .ss-enter:focus-visible .ss-arrow { transform: translateX(5px); }
-
-/* Tactile warning strip at the platform edge. */
-.ss-edge {
-  height: 22px; flex: none;
-  background-color: #f6c700;
-  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.16) 2.5px, transparent 3px);
-  background-size: 12px 12px; background-position: 3px 5px;
-}
+.ss-enter:hover { --bg: #003da5; color: #fff; }
 
 .ss a:focus-visible { outline: 3px solid #003da5; outline-offset: 3px; }
 
-/* ---------- narrow screens: a directory sign ---------- */
+/* ---------- phones: the directional sign becomes a directory ---------- */
 
 @media (max-width: 760px) {
-  .ss-wall { padding-top: 20px; }
-  .ss-lines ul { grid-template-columns: 1fr; gap: 0; }
-  .ss-lines > ul > li + li { border-top: 2px solid #e3e4e6; }
-  .ss-line { flex-direction: row; gap: 16px; padding: 8px 4px; }
-  .ss-bullet { width: 46px; }
-  .ss-line:hover .ss-bullet, .ss-line:focus-visible .ss-bullet { transform: none; }
-  .ss-label { font-size: 22px; padding-bottom: 0; border-bottom: 0; }
+  .ss-wall { padding-top: 18px; justify-content: flex-start; }
   .ss-lines { padding-bottom: 0; }
-  .ss-lines::after, .ss-strip { display: none; }
-  .ss-foot { flex-direction: column-reverse; align-items: stretch; gap: 12px; padding-top: 20px; }
-  .ss-enter { justify-content: space-between; min-height: 60px; font-size: 26px; }
-  .ss-arrow { width: 30px; height: 30px; }
-  .ss-fun a { flex: 1 1 0; justify-content: center; padding: 0 8px; font-size: 14px; white-space: nowrap; }
-  .ss-edge { height: 16px; }
+  .ss-lines > ul { grid-template-columns: 1fr; gap: 0; padding: 6px 14px; }
+  .ss-lines > ul > li + li { border-top: 1px solid #3a3d42; }
+  .ss-line { justify-content: flex-start; gap: 16px; min-height: 0; padding: 9px 0; }
+  .ss-bullet { width: 38px; }
+  .ss-label { font-size: 22px; border-bottom: 0; padding: 0; }
+
+  .ss-strip { position: relative; height: auto; display: none; flex-direction: column; padding: 2px 0 12px; visibility: visible; }
+  .ss-lines > ul > li.is-on .ss-strip { display: flex; }
+  .ss-strip::before { top: 0; bottom: 30px; left: 13px; right: auto; width: 12px; height: auto; border-radius: 0 0 6px 6px; transform-origin: 50% 0; }
+  .ss-lines > ul > li.is-on .ss-strip::before { animation-name: ss-drop; }
+  @keyframes ss-drop { from { transform: scaleY(0); } }
+  .ss-strip > li, .ss-strip > li.ss-term { flex: none; width: auto; }
+  .ss-strip > li.ss-term { order: 99; }
+  .ss-strip a { flex-direction: row; align-items: center; gap: 16px; padding: 7px 0; color: #fff; }
+  .ss-strip a:hover { color: #fff; }
+  .ss-mark { flex: none; width: 38px; height: 22px; }
+  .ss-mark::before { left: 7px; top: 8px; width: 24px; height: 5px; background: #fff; }
+  .ss-term .ss-mark::before { left: 5px; top: -3px; width: 28px; height: 28px; background: var(--ss-ink); border-color: #fff; }
+  .ss-title { font-size: 16px; font-weight: 500; }
+  .ss-term .ss-title { font-size: 17px; font-weight: 800; }
+  .ss-strip a:hover .ss-mark::before, .ss-strip a:focus-visible .ss-mark::before { transform: scaleX(1.2); }
+  .ss .ss-strip a:focus-visible { outline-color: #fff; }
+
+  .ss-foot { flex-direction: column-reverse; align-items: stretch; gap: 10px; padding-top: 16px; }
+  .ss-enter { min-height: 60px; font-size: 26px; }
+  .ss-fun a { flex: 1 1 0; padding: 0 10px; font-size: 14px; white-space: nowrap; }
 }
 @media (max-width: 760px) and (max-height: 700px) {
   .ss-band-in { padding-top: 22px; padding-bottom: 18px; }
-  .ss-line { padding: 4px 4px; }
-  .ss-bullet { width: 38px; }
-  .ss-label { font-size: 20px; }
   .ss-wall { padding-top: 14px; }
-  .ss-foot { padding-top: 14px; padding-bottom: 14px; gap: 10px; }
+  .ss-line { padding: 7px 0; }
+  .ss-bullet { width: 34px; }
+  .ss-label { font-size: 20px; }
+  .ss-foot { padding-top: 14px; padding-bottom: 14px; }
   .ss-enter { min-height: 54px; }
+}
+@media (max-width: 380px) {
+  .ss-fun { flex-direction: column; gap: 8px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

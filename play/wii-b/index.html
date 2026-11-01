@@ -163,6 +163,51 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 .letter .from .zw{position:relative;flex:0 0 auto;width:52px;height:52px;border-radius:12px;border:2px solid #d5d6da}
 .letter .from b{font-size:18px}
 
+/* ================= CHANNEL SCREENS ================= */
+#chan{position:fixed;inset:0;z-index:70;display:none;flex-direction:column;cursor:auto;overflow:hidden}
+#chan.open{display:flex;animation:fadeIn .3s ease}
+#chan.leaving{animation:fadeOut .2s ease forwards}
+.has-hand #chan,.has-hand #chan *{cursor:none !important}
+.has-hand.in-chan #hand{display:block}
+#chan .cc-foot{flex-wrap:nowrap}
+@media (max-width:640px){#chan .cc-foot{gap:8px;padding:10px}#chan .cc-foot .pill{flex:1 1 0;width:auto;min-width:0;height:52px;font-size:18px;padding:0 6px;white-space:nowrap}}
+/* News Channel */
+#chan[data-kind="news"]{background:linear-gradient(#e3ecf5,#fbfcfd 60%)}
+.nw-top{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px clamp(16px,4vw,48px);padding-top:max(14px,env(safe-area-inset-top));background:linear-gradient(#3a72a8,#24507d);color:#fff;box-shadow:0 2px 6px rgba(0,0,0,.18)}
+.nw-brand{font-size:clamp(20px,2.4vw,30px);font-weight:800;letter-spacing:-.3px}
+.nw-n{font-size:clamp(16px,1.8vw,22px);font-weight:500;opacity:.9}
+.nw-stage{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;gap:clamp(8px,3vw,40px);padding:20px clamp(8px,3vw,40px)}
+.nw-arr{flex:0 0 auto;width:46px;height:82px;outline:none}
+.nw-arr svg{width:100%;height:100%;filter:drop-shadow(0 2px 2px rgba(20,60,120,.25))}
+#nwL svg{transform:scaleX(-1)}
+.nw-arr.hot svg,.nw-arr:focus-visible svg{transform:scale(1.08)}
+#nwL.hot svg,#nwL:focus-visible svg{transform:scaleX(-1) scale(1.08)}
+.nw-card{flex:0 1 980px;min-width:0;max-height:100%;overflow:hidden;background:#fff;border:2px solid #c9d6e3;border-radius:22px;box-shadow:0 6px 18px rgba(30,70,120,.12);padding:clamp(22px,4vw,56px) clamp(20px,4vw,64px)}
+.nw-src{font-size:clamp(15px,1.6vw,22px);font-weight:700;color:#2b6aa3;margin-bottom:.6em}
+.nw-card h2{font-size:clamp(26px,3.6vw,54px);font-weight:800;line-height:1.18;color:#2f3135;letter-spacing:-.5px}
+.nw-about{margin-top:1.2em;font-size:clamp(13px,1.3vw,18px);font-weight:500;color:var(--gray-text);line-height:1.5}
+@media (max-width:640px){.nw-arr{width:30px;height:56px}.nw-stage{gap:6px;padding:14px 6px}}
+/* Photo Channel */
+#chan[data-kind="photo"]{background:#1f2023}
+.ph-view{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:16px}
+.ph-view img,.ph-view video{max-width:100%;max-height:100%;width:auto;height:auto;display:block;box-shadow:0 6px 20px rgba(0,0,0,.5);background:#000}
+.ph-view video{width:100%;height:100%;object-fit:contain;box-shadow:none}
+.ph-cap{flex:0 0 auto;padding:10px clamp(16px,4vw,48px) 14px;color:#d9dadd;font-size:clamp(14px,1.4vw,18px);line-height:1.5;text-align:center;max-width:1100px;margin:0 auto}
+.ph-cap b{color:#fff}
+/* rd2dnet and Chesque */
+.solo{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px clamp(18px,5vw,64px)}
+.solo p{max-width:760px;line-height:1.6}
+#chan[data-kind="rd2dnet"]{background:#17191e}
+.rd-mark{font:700 clamp(54px,9vw,128px)/1 'DejaVu Sans Mono',Menlo,Consolas,'Courier New',monospace;color:#f2f2f2;letter-spacing:-2px}
+.rd-sub{margin-top:18px;font-size:clamp(17px,1.9vw,26px);color:#c9cbd0;font-weight:500}
+.rd pre{margin:26px 0 18px;font:clamp(16px,1.8vw,24px) 'DejaVu Sans Mono',Menlo,Consolas,monospace;color:#86d18f;background:#0e0f12;border:1px solid #2c2f36;border-radius:10px;padding:12px 22px;user-select:all;white-space:pre-wrap}
+.rd-note{font-size:clamp(14px,1.4vw,18px);color:#a9acb3;margin-top:6px}
+.rd-note.dim{color:#70737b;font-size:clamp(12px,1.1vw,15px);margin-top:14px}
+#chan[data-kind="chesque"]{background:linear-gradient(#262c40,#171b28)}
+.cq-mark{font-size:clamp(64px,11vw,150px);font-weight:800;color:#f1e9d8;letter-spacing:-2px;line-height:1}
+.cq-mark span{color:#f0a53a}
+.cq p{margin-top:24px;font-size:clamp(17px,1.8vw,24px);color:#cfc6b3;font-weight:500}
+
 /* ================= INTERNET CHANNEL (browser) ================= */
 #browser{position:fixed;inset:0;z-index:70;display:none;flex-direction:column;background:#cfd0d4}
 #browser.open{display:flex;animation:brIn .35s cubic-bezier(.3,.9,.4,1)}
@@ -206,7 +251,8 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 #brFavBtn[aria-expanded="true"]::after{display:none}
 .addr{position:relative;flex:1 1 auto;min-width:0;height:48px;border-radius:24px;background:#fff;border:2px solid #b5b7bc;box-shadow:inset 0 2px 3px rgba(0,0,0,.08);overflow:hidden;display:flex;align-items:center;padding:0 20px}
 .addr .prog{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(#c9eefb,#9fdcf3)}
-.addr .url{position:relative;font:500 18px var(--font);color:#55575c;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.addr .url{position:relative;font:500 18px var(--font);color:#8a8c91;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.addr .url b{color:#45474c;font-weight:700;margin-right:14px}
 #browser .br-exit{flex:0 0 auto;width:190px;height:60px;font-size:24px}
 .br-gap{width:8px;flex:0 0 auto}
 #brFav{position:absolute;right:18px;bottom:calc(100% + 10px);width:320px;max-width:calc(100vw - 36px);background:#fff;border:2px solid #bfc1c6;border-radius:18px;box-shadow:0 6px 18px rgba(0,0,0,.18);padding:10px;display:none}
@@ -216,13 +262,14 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 #brFav button.hot,#brFav button:focus-visible{border-color:var(--cyan);outline:none;background:#f1fbff}
 #brFav button small{display:block;font-size:13px;color:var(--gray-text)}
 @media (max-width:760px){
-  .br-bar{flex-wrap:wrap;gap:8px;padding:8px 10px;padding-bottom:max(8px,env(safe-area-inset-bottom))}
-  .addr{order:-1;flex:1 1 100%;height:40px;padding:0 16px}
+  .br-bar{flex-wrap:wrap;gap:8px;padding:8px 12px;padding-bottom:max(10px,env(safe-area-inset-bottom))}
+  .addr{order:-2;flex:1 1 0;height:44px;padding:0 14px}
   .addr .url{font-size:15px}
   .bb{width:auto;flex:1 1 0;min-width:0;height:50px;border-radius:14px}
   .bb svg{width:30px;height:30px}
   .bb[data-tip]::after{display:none}
-  #browser .br-exit{flex:1.6 1 0;width:auto;min-width:0;height:50px;font-size:18px;padding:0 6px;white-space:nowrap}
+  #browser .br-exit{order:-1;flex:0 0 112px;width:112px;height:44px;font-size:17px;padding:0 6px;white-space:nowrap}
+  .bb{flex:1 1 0}
   .br-gap,#brReload{display:none}
   #brFav{right:10px}
 }
@@ -332,6 +379,9 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
   <div class="cc-foot" id="ccFoot"></div>
 </div>
 
+<!-- ===== Channel screens (News, Photo, rd2dnet, Chesque) ===== -->
+<div id="chan" role="dialog" aria-modal="true" aria-label="Channel"></div>
+
 <!-- ===== Internet Channel ===== -->
 <div id="browser" role="dialog" aria-modal="true" aria-label="Internet Channel">
   <div class="br-view" id="brView" tabindex="-1"><div class="br-page" id="brPage"></div></div>
@@ -373,8 +423,9 @@ const WII_MARK = (col='#a5a6aa') => `<svg class="wii-mark" viewBox="0 0 100 44" 
 document.querySelector('.wii-mark-slot').outerHTML = WII_MARK();
 
 /* =====================================================================
-   BANNERS: six channels, each with its own look. A photo, or one
-   typographic treatment. Lines marked `.pv` only show in the preview.
+   BANNERS: five channels. Real Wii channels (Internet, News, Photo) keep
+   their real names; rd2dnet and Chesque are his own, styled like
+   third-party channels. Lines marked `.pv` only show in the preview.
    ===================================================================== */
 const PV = (txt, css) => `<div class="pv" style="${css};font-size:5.5cqh;font-weight:500;line-height:1.5">${txt}</div>`;
 const BN = (bg, inner) => `${bg}<div class="safe">${inner}</div>`;
@@ -382,137 +433,100 @@ const SERIF = "Georgia,'Times New Roman',Times,serif";
 const MONO = "'DejaVu Sans Mono',Menlo,Consolas,'Courier New',monospace";
 const nber = byId('nber');
 const B = {
-paper: () => BN('<div style="inset:0;background:linear-gradient(#fbf8ef,#efe8d6)"></div>', `
-  <div class="t" style="top:15cqh;font:400 5.6cqh ${SERIF};letter-spacing:.5cqh;color:#6d6048">NBER WORKING PAPER SERIES</div>
-  <div style="left:50%;top:26cqh;width:40cqh;margin-left:-20cqh;height:.45cqh;background:#8d7d5c"></div>
-  <div class="t" style="top:33cqh;font:700 11.5cqh/1.12 ${SERIF};color:#29241c">Congestion Pricing and<br>EMS Response Time</div>
-  <div class="t" style="top:66cqh;font:italic 400 6.2cqh ${SERIF};color:#5c5140">Evidence From New York City</div>
-  ${PV(`Working Paper No. 35414, ${nber.year}`, `left:0;right:0;text-align:center;top:80cqh;color:#7a6b4f;font-family:${SERIF}`)}`),
+internet: () => BN('<div style="inset:0;background:linear-gradient(#ffffff 0%,#ffffff 55%,#dff3fb 100%)"></div>', `
+  <div class="t" style="top:22cqh;font-size:21cqh;font-weight:800;color:#5c5e63;letter-spacing:-.5cqh">Internet</div>
+  <div class="t" style="top:52cqh;font-size:10cqh;font-weight:700;color:#2a9fd6;letter-spacing:.6cqh">CHANNEL</div>
+  ${PV('Research, projects and more', 'left:0;right:0;text-align:center;top:74cqh;color:#6e7075')}`),
 
-mii: () => BN('<div style="inset:0;background:linear-gradient(#f4f9fc,#cfe5f3)"></div>', `
-  <img src="${ASSET}images/zwinship.png" alt="" style="left:6cqw;bottom:0;height:94cqh;width:auto">
-  <div style="left:52cqw;top:32cqh;font-size:12cqh;font-weight:800;color:#4f5156;line-height:1.05;white-space:nowrap">Zach<br>Winship</div>
-  ${PV('MS in Quantitative<br>Economics, NYU', 'left:52cqw;right:2cqw;top:64cqh;color:#1f7fae')}`),
+news: () => BN(`<div style="inset:0;background:linear-gradient(#ffffff,#e9eef5)"></div>
+  <div class="tickbar" style="left:0;right:0;bottom:0;height:24%;background:#2b5d8f;overflow:hidden">
+    <div class="tick" style="left:0;top:0;height:100%;display:flex;align-items:center;white-space:nowrap;font-size:9cqh;font-weight:500;color:#fff;animation:ticker 40s linear -8s infinite">${MEDIA.map(m=>`${m[1]}: ${m[2]}`).join('<span style="position:static;display:inline-block;width:12cqh"></span>')}</div>
+  </div>`, `
+  <div class="t" style="top:20cqh;font-size:19cqh;font-weight:800;color:#2b5d8f;letter-spacing:-.4cqh">News</div>
+  <div class="t" style="top:47cqh;font-size:9cqh;font-weight:700;color:#5c88b3;letter-spacing:.6cqh">CHANNEL</div>`),
 
-led: () => BN(`<img src="led_large.jpg" alt="" style="inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 38%">
-  <div class="capbar" style="left:0;right:0;bottom:0;height:24%;background:rgba(24,26,30,.84);display:flex;align-items:center;justify-content:center"><span class="cap" style="position:static;font-size:11cqh;font-weight:800;color:#fff">Projects</span></div>`, ''),
+photo: () => BN(`<img src="led_large.jpg" alt="" style="inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 38%">
+  <div class="capbar" style="left:0;right:0;bottom:0;height:24%;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center"><span class="cap" style="position:static;font-size:11cqh;font-weight:800;color:#5c5e63">Photo Channel</span></div>`, ''),
 
 rd2dnet: () => BN('<div style="inset:0;background:#17191e"></div>', `
   <div class="t" style="top:24cqh;font:700 21cqh ${MONO};color:#f2f2f2;letter-spacing:-.4cqh">rd2dnet</div>
   <div class="t" style="top:58cqh;font:400 7.4cqh ${MONO};color:#86d18f">$ pip install rd2dnet</div>
   ${PV('Python and R', `left:0;right:0;text-align:center;top:76cqh;color:#9a9da4;font-family:${MONO}`)}`),
 
-news: () => BN(`<div style="inset:0;background:linear-gradient(#ffffff,#edf1f6)"></div>
-  <div class="tickbar" style="left:0;right:0;bottom:0;height:24%;background:#2b5d8f;overflow:hidden">
-    <div class="tick" style="left:0;top:0;height:100%;display:flex;align-items:center;white-space:nowrap;font-size:9cqh;font-weight:500;color:#fff;animation:ticker 40s linear -8s infinite">${MEDIA.map(m=>`${m[1]}: ${m[2]}`).join('<span style="position:static;display:inline-block;width:12cqh"></span>')}</div>
-  </div>`, `
-  <div class="t" style="top:16cqh;font-size:20cqh;font-weight:800;color:#2b5d8f;letter-spacing:-.3cqh">News</div>
-  <div style="left:50%;top:44cqh;width:28cqh;height:1cqh;margin-left:-14cqh;border-radius:1cqh;background:#34beed"></div>
-  ${PV('Press coverage of the EMS paper', 'left:0;right:0;text-align:center;top:52cqh;color:#2b5d8f')}`),
-
-internet: () => BN(`<div style="inset:0;background:#fff"></div>
-  <div class="capbar" style="left:0;right:0;bottom:0;height:24%;background:linear-gradient(#f4f4f6,#d4d5d9);border-top:.4cqh solid #a7a9ae;display:flex;align-items:center;justify-content:center">
-    <span class="cap" style="position:static;font-size:7.5cqh;font-weight:500;color:#55575c;background:#fff;border:.5cqh solid #b5b7bc;border-radius:10cqh;padding:.8cqh 5cqh">zwinship.github.io</span></div>`, `
-  <div style="left:10cqw;top:8cqh;font:700 15cqh ${SERIF};color:#000;white-space:nowrap">Zach Winship</div>
-  <div style="left:10cqw;top:33cqh;font:400 10cqh ${SERIF};color:#0000ee;text-decoration:underline;white-space:nowrap">Research</div>
-  <div style="left:10cqw;top:47cqh;font:400 10cqh ${SERIF};color:#0000ee;text-decoration:underline;white-space:nowrap">Projects</div>`),
+chesque: () => BN('<div style="inset:0;background:linear-gradient(#262c40,#171b28)"></div>', `
+  <div class="t" style="top:30cqh;font-size:20cqh;font-weight:800;color:#f1e9d8;letter-spacing:-.3cqh">Ches<span style="position:static;color:#f0a53a">que</span></div>
+  ${PV('Chess rules, but every piece is a hero', 'left:0;right:0;text-align:center;top:62cqh;color:#cfc6b3')}`),
 };
 
 /* =====================================================================
-   WEB PAGES shown inside the Internet Channel. Plain HTML on purpose.
+   WEB PAGES shown inside the Internet Channel. Plain HTML, short pages.
    ===================================================================== */
 const plain = s => String(s || '').replace(/\s*·\s*/g, ', ');
 const A = (href, text) => `<a href="${href}"${href.startsWith('mailto:')?'':' target="_blank" rel="noopener"'}>${text}</a>`;
 const GO = (key, text) => `<a href="#${key}" data-go="${key}">${text}</a>`;
 const linkLine = ls => ls && ls.length ? `<p class="small">${ls.map(l=>A(l[0], l[1])).join(' | ')}</p>` : '';
-const CONTACT = `<p>Email: ${A('mailto:'+EMAIL, EMAIL)}<br>GitHub: ${A('https://github.com/zwinship','github.com/zwinship')}<br>LinkedIn: ${A('https://linkedin.com/in/zwinship','linkedin.com/in/zwinship')}</p>`;
+const CRUMB = t => `<p class="small">${GO('home','Zach Winship')} / ${t}</p>`;
+const NEXT = (key, text) => `<hr><p class="small">Next: ${GO(key, text)}</p>`;
 
 const WEB = {
-  home: { title:'Zach Winship', path:'', html: () => `
+  home: { title:'Zach Winship', html: () => `
     <h1>Zach Winship</h1>
     <img class="me" src="${ASSET}images/zwinship.png" alt="Photo of Zach Winship">
     <p>${PROFILE.lede}</p>
-    <p>${PROFILE.now}</p>
-    <h2>Pages</h2>
     <ul>
       <li>${GO('research','Research')}</li>
-      <li>${GO('software','rd2dnet')}, a package for boundary discontinuity designs on street networks</li>
+      <li>${GO('papers','Other papers')}</li>
       <li>${GO('projects','Projects')}</li>
-      <li>${GO('news','In the news')}</li>
       <li>${GO('about','About me')}</li>
+      <li>${GO('experience','Experience')}</li>
       <li>${A(RESUME,'R&eacute;sum&eacute;')} (PDF)</li>
     </ul>
-    <h2 class="clear">Contact</h2>
-    ${CONTACT}
-    <hr><p class="small">${A(ASSET,'The regular version of this site')}</p>` },
+    <p class="clear">Email: ${A('mailto:'+EMAIL, EMAIL)}<br>${A('https://github.com/zwinship','GitHub')} | ${A('https://linkedin.com/in/zwinship','LinkedIn')}</p>` },
 
-  research: { title:'Research', path:'research.html', html: () => {
-    const others = ['cz','ozone','mbta-ts','polls'].map(byId), llm = byId('llm');
-    return `
-    <p class="small">${GO('home','Zach Winship')} / Research</p>
-    <h1>Research</h1>
-    <h2>${nber.title}</h2>
+  research: { title:'Research', html: () => `
+    ${CRUMB('Research')}
+    <h1>${nber.title}</h1>
     <p class="muted">With ${nber.coauthors}. ${nber.year}.</p>
     <p>${nber.body}</p>
-    <p>${A(nber.links[0][0], 'Read the paper at NBER')}. Press coverage is on the ${GO('news','news page')}.</p>
-    <h2>Other papers</h2>
-    ${others.map(p => `<h3>${p.title} (${p.year})</h3><p>${p.body}</p>${linkLine(p.links)}`).join('')}
-    <h2>In progress</h2>
-    <h3>${llm.title}</h3><p>${llm.body}</p>
-    <hr><p class="small">Software: ${GO('software','rd2dnet')}. Teaching: the ${GO('projects','course website')} on the projects page.</p>`; } },
+    <p>${A(nber.links[0][0], 'Read the paper at NBER')}</p>
+    <p class="small muted">Press coverage is in the News Channel on the Wii Menu.</p>
+    ${NEXT('papers','Other papers')}` },
 
-  software: { title:'rd2dnet', path:'rd2dnet.html', html: () => `
-    <p class="small">${GO('home','Zach Winship')} / rd2dnet</p>
-    <h1>rd2dnet</h1>
-    <p><b>Boundary discontinuity designs on street networks.</b> Version 1, ${SOFTWARE.year}.</p>
-    <p>${SOFTWARE.body}</p>
-    <h2>Install</h2>
-    <p>Python:</p><pre>pip install rd2dnet</pre>
-    <p>R:</p><pre>remotes::install_github("zwinship/rd2dnet", subdir = "R-package")</pre>
-    <p>${SOFTWARE.status}</p>
-    <h2>Links</h2>
-    <ul>${SOFTWARE.links.map(l=>`<li>${A(l[0], l[1])}</li>`).join('')}</ul>
-    <hr><p class="small muted">${SOFTWARE.credit}</p>` },
+  papers: { title:'Other papers', html: () => `
+    ${CRUMB('Other papers')}
+    <h1>Other papers</h1>
+    ${['cz','ozone','mbta-ts','polls'].map(byId).map(p => `<h3>${p.title} (${p.year})</h3><p>${p.body}</p>${linkLine(p.links)}`).join('')}
+    <p class="small muted">In progress: ${byId('llm').title}.</p>
+    ${NEXT('projects','Projects')}` },
 
-  projects: { title:'Projects', path:'projects.html', html: () => {
-    const led = byId('mbta-led'), o1 = byId('octa1'), o2 = byId('octa2'), tt = byId('tott'), ch = byId('chesque'), mi = byId('micro');
+  projects: { title:'Projects', html: () => {
+    const o = byId('octa2'), o1 = byId('octa1'), tt = byId('tott'), mi = byId('micro');
     return `
-    <p class="small">${GO('home','Zach Winship')} / Projects</p>
+    ${CRUMB('Projects')}
     <h1>Projects</h1>
-    <p>${PROFILE.about[2].replace(/^Outside of that I build/, 'I also build')}</p>
-    <h2>${led.title}</h2>
-    <figure><img src="led_large.jpg" alt="The LED map of the MBTA in its wooden frame, with lit stations on each line" width="1400" height="1386">
-    <figcaption>The map so far. ${A(ASSET+led.video,'Video of the build')} (MP4).</figcaption></figure>
-    <p>${led.body}</p>${linkLine(led.links)}
-    <h2>OctaStats UFC model</h2>
-    <p>${o1.body}</p><p>${o2.body}</p>
-    <p class="small">${A(o2.links[0][0],'Live site')} | ${A(o2.links[1][0],'GitHub (version 2)')} | ${A(o1.links[1][0],'GitHub (version 1)')}</p>
-    <h2>${tt.title}</h2><p>${tt.body}</p>${linkLine(tt.links)}
-    <h2>${ch.title}</h2><p>${ch.body}</p>${linkLine(ch.links)}
-    <h2>${mi.title}</h2><p>${mi.body}</p>${linkLine(mi.links)}`; } },
+    <h3>OctaStats UFC model</h3><p>${o1.body}</p>
+    <p class="small">${A(o.links[0][0],'Live site')} | ${A(o.links[1][0],'GitHub')}</p>
+    <h3>${tt.title}</h3><p>${tt.body}</p>${linkLine(tt.links)}
+    <h3>Intermediate Microeconomics course website</h3><p>Built with Professor Naveen Sunder at Bentley. Students are piloting it this academic year.</p>${linkLine(mi.links)}
+    <p class="small muted">The LED map of the T is in the Photo Channel. Chesque and rd2dnet have their own channels.</p>
+    ${NEXT('about','About me')}`; } },
 
-  about: { title:'About me', path:'about.html', html: () => `
-    <p class="small">${GO('home','Zach Winship')} / About</p>
+  about: { title:'About me', html: () => `
+    ${CRUMB('About me')}
     <h1>About me</h1>
-    ${PROFILE.about.map(p=>`<p>${p}</p>`).join('')}
-    <h2>Education</h2>
-    ${PROFILE.education.map(e=>`<p><b>${e.degree}</b>, ${e.school}. ${e.when}.<br>${e.note}</p>`).join('')}
-    <h2>Experience</h2>
-    ${EXPERIENCE.map(e=>`<h3>${e.role}</h3><p class="muted">${e.org}. ${e.when}.</p><p>${e.body}</p>${linkLine(e.links)}`).join('')}
-    <h2>Tools</h2>
+    <p>${PROFILE.about[0]}</p>
+    <p>${PROFILE.about[1]}</p>
+    <h3>Education</h3>
+    ${PROFILE.education.map(e=>`<p>${e.degree}, ${e.school}. ${e.when}.</p>`).join('')}
+    <h3>Tools</h3>
     <p>${PROFILE.skills.join(', ')}.</p>
-    <h2>Contact</h2>
-    ${CONTACT}
-    <p>${A(RESUME,'R&eacute;sum&eacute;')} (PDF)</p>` },
+    ${NEXT('experience','Experience')}` },
 
-  news: { title:'In the news', path:'news.html', html: () => `
-    <p class="small">${GO('home','Zach Winship')} / News</p>
-    <h1>In the news</h1>
-    <p>Coverage of the congestion pricing and EMS response time paper (${GO('research', nber.badge)}):</p>
-    <ul>${MEDIA.map(m=>`<li>${A(m[0], m[2])}, <i>${m[1]}</i></li>`).join('')}</ul>
-    <h2>Blog</h2>
-    <p>${BLOG_STATUS}. Planned posts:</p>
-    <ul>${BLOG.map(b=>`<li>${b[0]} <span class="muted">(${plain(b[2])})</span></li>`).join('')}</ul>` },
+  experience: { title:'Experience', html: () => `
+    ${CRUMB('Experience')}
+    <h1>Experience</h1>
+    ${EXPERIENCE.map(e=>`<h3>${e.role}</h3><p class="muted small">${e.org}. ${e.when}.</p><p>${e.body}</p>`).join('')}
+    <hr><p class="small">${A(RESUME,'R&eacute;sum&eacute;')} (PDF) | ${GO('home','Start page')}</p>` },
 };
 
 /* =====================================================================
@@ -520,12 +534,11 @@ const WEB = {
    jingle: an original short motif played when the channel preview opens.
    ===================================================================== */
 const CHANNELS = [
-  { name:'Research',         art:'paper',    page:'research', jingle:'E5 G5 B5 . A5 G5 E5 . D5 E5' },
-  { name:'About Me',         art:'mii',      page:'about',    jingle:'C5 E5 G5 E5 F5 A5 G5 . E5 C5' },
-  { name:'Projects',         art:'led',      page:'projects', jingle:'E5 . E5 G5 . E5 D5' },
-  { name:'rd2dnet',          art:'rd2dnet',  page:'software', jingle:'C5 G5 . E5 G5 C6 . B5 G5' },
-  { name:'News Channel',     art:'news',     page:'news',     jingle:'C5 C5 G5 . F5 E5 D5 C5' },
-  { name:'Internet Channel', art:'internet', page:'home',     jingle:'E5 B5 . G#5 E5 F#5' },
+  { name:'Internet Channel', art:'internet', open:'browser', jingle:'E5 B5 . G#5 E5 F#5' },
+  { name:'News Channel',     art:'news',     open:'news',    jingle:'C5 C5 G5 . F5 E5 D5 C5' },
+  { name:'Photo Channel',    art:'photo',    open:'photo',   jingle:'E5 . E5 G5 . E5 D5' },
+  { name:'rd2dnet',          art:'rd2dnet',  open:'rd2dnet', jingle:'C5 G5 . E5 G5 C6 . B5 G5' },
+  { name:'Chesque',          art:'chesque',  open:'chesque', jingle:'E4 G4 B4 . E5 . D5 B4' },
 ];
 
 /* =====================================================================
@@ -889,7 +902,6 @@ const brBack = document.getElementById('brBack'), brFwd = document.getElementByI
 const content = document.getElementById('content'), ccFoot = document.getElementById('ccFoot');
 const fader = document.getElementById('fader');
 let contentFrom = 'preview', hist = [], hi = -1, loadT = null, zoomed = false, openPanel = null;
-const urlOf = key => 'http://zwinship.github.io/' + WEB[key].path;
 
 function render(key, focusView){
   brPage.innerHTML = WEB[key].html();
@@ -904,7 +916,7 @@ function navigate(key, push=true, instant=false){
   if (push){ hist = hist.slice(0, hi+1); hist.push(key); hi = hist.length-1; }
   closeFav();
   brPage.querySelectorAll('video').forEach(v=>v.pause());
-  brUrl.textContent = urlOf(key);
+  brUrl.innerHTML = `<b>${WEB[key].title}</b><span>zwinship.github.io</span>`;
   clearTimeout(loadT);
   brBack.disabled = hi <= 0; brFwd.disabled = hi >= hist.length-1;
   if (instant || reduced){ render(key, !instant); return; }
@@ -928,8 +940,8 @@ brZoom.onclick = () => {
   brPage.classList.toggle('zoomed', zoomed); brZoom.classList.toggle('on', zoomed); brZoom.setAttribute('aria-pressed', zoomed);
   brView.scrollTop = r * (brView.scrollHeight - brView.clientHeight);
 };
-const FAV = [['home','Zach Winship','Start page'],['research','Research',''],['software','rd2dnet',''],['projects','Projects',''],['about','About me',''],['news','In the news','']];
-brFav.innerHTML = `<h2>Favorites</h2>` + FAV.map(([k,t])=>`<button data-hot data-fav="${k}" role="menuitem">${t}<small>${urlOf(k).replace('http://','')}</small></button>`).join('');
+const FAV = Object.keys(WEB);
+brFav.innerHTML = `<h2>Favorites</h2>` + FAV.map(k=>`<button data-hot data-fav="${k}" role="menuitem">${k==='home'?'Start page':WEB[k].title}</button>`).join('');
 brFav.addEventListener('click', e => { const b = e.target.closest('[data-fav]'); if (b){ SFX.press(); const k = b.dataset.fav; closeFav(); if (k !== hist[hi]) navigate(k); } });
 function closeFav(){ brFav.classList.remove('open'); brFavBtn.setAttribute('aria-expanded','false'); }
 brFavBtn.onclick = () => {
@@ -967,25 +979,89 @@ function showBoard(){
   stage.inert = true;
   setTimeout(()=>document.getElementById('ccTitle').focus({preventScroll:true}), 50);
 }
+/* --- the other channels: each opens its own small screen --- */
+const chan = document.getElementById('chan');
+let nwI = 0;
+const FOOT = (...btns) => `<div class="cc-foot"><button class="pill" id="chBack" data-hot>Wii Menu</button>${btns.map(([l,h,id])=>
+  h ? `<a class="pill" data-hot href="${h}" target="_blank" rel="noopener">${l}</a>` : `<button class="pill" data-hot id="${id}">${l}</button>`).join('')}</div>`;
+const CHAN = {
+  news: () => `<div class="nw-top"><span class="nw-brand">News Channel</span><span class="nw-n" id="nwN"></span></div>
+    <div class="nw-stage">
+      <button class="nw-arr" id="nwL" data-hot aria-label="Previous headline">${ARROW_SVG}</button>
+      <article class="nw-card" id="nwCard" aria-live="polite"></article>
+      <button class="nw-arr" id="nwR" data-hot aria-label="Next headline">${ARROW_SVG}</button>
+    </div>
+    ${FOOT(['Read Story', null, 'nwRead'])}`,
+  photo: () => { const led = byId('mbta-led'); return `<div class="ph-view" id="phView">
+      <img src="led_large.jpg" alt="The LED map of the MBTA in its wooden frame, with lit stations on each line">
+    </div>
+    <div class="ph-cap"><b>${led.title}</b> ${led.body}</div>
+    ${FOOT(['Play Video', null, 'phPlay'], ['GitHub', led.links[0][0]])}`; },
+  rd2dnet: () => `<div class="solo rd">
+      <div class="rd-mark">rd2dnet</div>
+      <p class="rd-sub">Boundary discontinuity designs on street networks, for Python and R.</p>
+      <pre>$ pip install rd2dnet</pre>
+      <p class="rd-note">${SOFTWARE.status}</p>
+      <p class="rd-note dim">${SOFTWARE.credit}</p>
+    </div>
+    ${FOOT(['GitHub', SOFTWARE.links[0][0]], ['PyPI', SOFTWARE.links[1][0]])}`,
+  chesque: () => { const c = byId('chesque'); return `<div class="solo cq">
+      <div class="cq-mark">Ches<span>que</span></div>
+      <p>${c.body}</p>
+    </div>
+    ${FOOT(['Play', c.links[0][0]])}`; },
+};
+function paintNews(dir){
+  const m = MEDIA[nwI], card = document.getElementById('nwCard');
+  card.innerHTML = `<div class="nw-src">${m[1]}</div><h2>${m[2]}</h2>
+    <p class="nw-about">About: ${nber.title} (${nber.badge.replace('WP','Working Paper')})</p>`;
+  document.getElementById('nwN').textContent = `${nwI+1} / ${MEDIA.length}`;
+  if (dir && !reduced) card.animate([{opacity:0, transform:`translateX(${dir*40}px)`},{opacity:1, transform:'none'}],{duration:240,easing:'ease-out'});
+}
+function newsStep(d){ const n = nwI + d; if (n < 0 || n >= MEDIA.length) return; nwI = n; SFX.page(d); paintNews(d); }
+function openChan(kind){
+  chan.dataset.kind = kind; chan.innerHTML = CHAN[kind]();
+  document.getElementById('chBack').onclick = closeContent;
+  if (kind === 'news'){
+    nwI = 0; paintNews(0);
+    document.getElementById('nwL').onclick = () => newsStep(-1);
+    document.getElementById('nwR').onclick = () => newsStep(1);
+    document.getElementById('nwRead').onclick = () => { SFX.select(); window.open(MEDIA[nwI][0], '_blank', 'noopener'); };
+  }
+  if (kind === 'photo'){
+    const btn = document.getElementById('phPlay'), view = document.getElementById('phView'), led = byId('mbta-led');
+    btn.onclick = () => {
+      SFX.select();
+      const v = view.querySelector('video');
+      if (v){ v.pause(); view.innerHTML = `<img src="led_large.jpg" alt="The LED map of the MBTA in its wooden frame, with lit stations on each line">`; btn.textContent = 'Play Video'; }
+      else { view.innerHTML = `<video src="${ASSET+led.video}" controls autoplay playsinline poster="led_large.jpg"></video>`; btn.textContent = 'Photo'; }
+    };
+  }
+  openPanel = chan;
+  chan.classList.remove('leaving'); chan.classList.add('open');
+  document.documentElement.classList.add('in-chan');
+  stage.inert = true;
+  if (lastKey) setTimeout(() => { const f = chan.querySelector('#nwR,#phPlay,.cc-foot a'); if (f) f.focus({preventScroll:true}); }, 60);
+}
 function openContent(idx){
   if (state !== 'preview') return;
   const ch = CHANNELS[idx]; SFX.start(); stopJingle();
   state = 'entering'; contentFrom = 'preview';
   fader.classList.add('on');
-  setTimeout(() => { state = 'content'; openBrowser(ch.page); fader.classList.remove('on'); unscroll(); }, 260);
+  setTimeout(() => { state = 'content'; if (ch.open === 'browser') openBrowser('home'); else openChan(ch.open); fader.classList.remove('on'); unscroll(); }, 260);
 }
 // "Wii Menu" from inside a channel returns to the channel grid: fade to white,
 // then zoom the banner back down into its tile (rebuilt for the current layout).
 function closeContent(){
   if (state !== 'content') return;
   state = 'leaving'; SFX.back(); closeFav(); clearTimeout(loadT);
-  document.querySelectorAll('#browser video').forEach(v=>v.pause());
+  document.querySelectorAll('#browser video,#chan video').forEach(v=>v.pause());
   fader.classList.add('on');
   setTimeout(() => {
-    content.classList.remove('open'); browser.classList.remove('open');
-    document.getElementById('ccInner').innerHTML = ''; brPage.innerHTML = ''; openPanel = null;
+    content.classList.remove('open'); browser.classList.remove('open'); chan.classList.remove('open');
+    document.getElementById('ccInner').innerHTML = ''; brPage.innerHTML = ''; chan.innerHTML = ''; openPanel = null;
     document.title = 'Zach Winship: Wii Menu';
-    document.documentElement.classList.remove('in-content','in-browser'); stage.inert = false;
+    document.documentElement.classList.remove('in-content','in-browser','in-chan'); stage.inert = false;
     if (contentFrom === 'preview'){
       const ch = CHANNELS[current], p = Math.floor(current / L.per);
       if (p !== page) setPage(p, true, true);
@@ -1054,6 +1130,7 @@ addEventListener('keydown', e => {
     else if (e.key==='ArrowRight' && current<CHANNELS.length-1) openPreview(current+1,1);
   } else if (state === 'content'){
     const inBrowser = openPanel === browser;
+    if (openPanel === chan && chan.dataset.kind === 'news' && (e.key==='ArrowLeft' || e.key==='ArrowRight')){ e.preventDefault(); newsStep(e.key==='ArrowLeft' ? -1 : 1); return; }
     if (e.key==='Escape'){
       e.preventDefault();
       if (inBrowser && brFav.classList.contains('open')){ closeFav(); brFavBtn.focus({preventScroll:true}); }

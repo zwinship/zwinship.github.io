@@ -153,35 +153,76 @@ export default function RideTheLine({ onGo }) {
 
   const selRef = useRef(sel);
   selRef.current = sel;
+  const stopRefs = useRef([]);
+
+  // Arrow keys ride the line; focus follows the car when it is inside the strip.
+  const keyMove = (e, focus) => {
+    if (e.altKey || e.ctrlKey || e.metaKey) return false;
+    const k = e.key;
+    let n = null;
+    if (k === 'ArrowRight' || k === 'ArrowDown') n = selRef.current + 1;
+    else if (k === 'ArrowLeft' || k === 'ArrowUp') n = selRef.current - 1;
+    else if (k === 'Home') n = 0;
+    else if (k === 'End') n = stops.length - 1;
+    if (n === null) return false;
+    e.preventDefault();
+    n = Math.max(0, Math.min(stops.length - 1, n));
+    choose(n);
+    if (focus) stopRefs.current[n]?.focus({ preventScroll: true });
+    return true;
+  };
+  const onStripKey = e => {
+    if (e.target.closest('.rl-stop')) keyMove(e, true);
+  };
+
+  // With nothing focused, the page still answers to the arrows and Enter.
   useEffect(() => {
     const onKey = e => {
-      if (e.altKey || e.ctrlKey || e.metaKey) return;
-      const t = e.target;
-      const onControl = t instanceof Element && t.closest('a, button') && !t.closest('.rl-strip');
-      const k = e.key;
-      if (k === 'ArrowRight' || k === 'ArrowDown') { e.preventDefault(); choose(selRef.current + 1); }
-      else if (k === 'ArrowLeft' || k === 'ArrowUp') { e.preventDefault(); choose(selRef.current - 1); }
-      else if (k === 'Home') { e.preventDefault(); choose(0); }
-      else if (k === 'End') { e.preventDefault(); choose(stops.length - 1); }
-      else if (k === 'Enter' && !onControl) { e.preventDefault(); onGo(stops[selRef.current].hash); }
+      const a = document.activeElement;
+      if (a && a !== document.body && a !== document.documentElement) return;
+      if (keyMove(e, false)) return;
+      if (e.key === 'Enter' && !e.altKey && !e.ctrlKey && !e.metaKey) { e.preventDefault(); onGo(stops[selRef.current].hash); }
     };
     addEventListener('keydown', onKey);
     return () => removeEventListener('keydown', onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [choose, stops, onGo]);
 
   // Keep the chosen stop in view when the narrow strip is taller than the screen.
   useEffect(() => {
     if (!vertical) return;
-    const el = document.getElementById(`rl-stop-${sel}`);
+    const el = stopRefs.current[sel];
     const top = document.querySelector('.rl-display')?.getBoundingClientRect().bottom ?? 0;
     const y = el?.getBoundingClientRect().top;
     if (el && (y < top + 40 || y > innerHeight - 60)) el.scrollIntoView({ block: 'center', behavior: reduced() ? 'auto' : 'smooth' });
   }, [sel, vertical]);
 
-  const pick = i => {
+  // Room above the wide strip for the longest angled name, so none is cut short.
+  const stripRef = useRef(null);
+  const [rise, setRise] = useState(0);
+  useLayoutEffect(() => {
+    if (vertical) return;
+    const measure = () => {
+      const spans = stripRef.current?.querySelectorAll('.rl-stop .rl-name > span') ?? [];
+      let w = 0;
+      spans.forEach(sp => { w = Math.max(w, sp.offsetWidth); });
+      setRise(Math.ceil(w * Math.SQRT1_2));
+    };
+    measure();
+    document.fonts?.ready.then(measure);
+    addEventListener('resize', measure);
+    return () => removeEventListener('resize', measure);
+  }, [vertical]);
+
+  // A plain click drives the car; a second click on the same stop opens it.
+  // Modified clicks fall through to the browser.
+  const pick = (e, i) => {
+    if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    e.preventDefault();
     if (i === sel) onGo(stops[i].hash);
     else choose(i);
   };
+  const plain = e => e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey;
 
   const at = p => ({ '--p': p / total });
 
@@ -192,70 +233,74 @@ export default function RideTheLine({ onGo }) {
           <h1>Zach Winship</h1>
           <p>MS in Quantitative Economics, New York University</p>
         </div>
-        <a className="rl-enter" href="#/" onClick={e => go(e, '#/')}>Enter</a>
+        <a className="rl-enter" href="#/" onClick={e => { if (plain(e)) go(e, '#/'); }}>Enter</a>
       </header>
 
-      <div className="rl-display" style={{ '--c': cur.line.color }}>
-        <div className="rl-display-in">
-          <AnimatePresence mode="popLayout" initial={false}>
-            <motion.div key={sel} className="rl-now"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0, transition: { duration: still ? 0 : 0.3, delay: still ? 0 : 0.08, ease: [0.2, 0, 0.1, 1] } }}
-              exit={{ opacity: 0, y: -10, transition: { duration: still ? 0 : 0.12, ease: [0.4, 0, 1, 1] } }}>
-              <span className="rl-badge"><i />{cur.line.name}</span>
-              <a className="rl-title" href={cur.hash} onClick={e => go(e, cur.hash)}>{cur.item.title}</a>
-            </motion.div>
-          </AnimatePresence>
+      <div className="rl-body">
+        <div className="rl-display" style={{ '--c': cur.line.color }}>
+          <div className="rl-display-in">
+            <AnimatePresence mode="popLayout" initial={false}>
+              <motion.div key={sel} className="rl-now"
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0, transition: { duration: still ? 0 : 0.3, delay: still ? 0 : 0.08, ease: [0.2, 0, 0.1, 1] } }}
+                exit={{ opacity: 0, y: -10, transition: { duration: still ? 0 : 0.12, ease: [0.4, 0, 1, 1] } }}>
+                <span className="rl-badge"><i />{cur.line.name}</span>
+                <a className="rl-title" href={cur.hash} tabIndex={-1} onClick={e => { if (plain(e)) go(e, cur.hash); }}>{cur.item.title}</a>
+              </motion.div>
+            </AnimatePresence>
+          </div>
         </div>
-      </div>
 
-      <div className="rl-strip" role="listbox" tabIndex={0} aria-label="Stops"
-        aria-activedescendant={`rl-stop-${sel}`}>
-        <div className="rl-track" ref={trackRef} style={{ '--n': total }}>
-          {segs.map((s, i) => (
-            <div key={s.line.id} className="rl-seg" style={{ ...at(s.from), '--q': (s.to - s.from) / total, '--c': s.line.color, '--i': i }} />
-          ))}
-          {segs.map((s, i) => (
-            <a key={s.line.id} className="rl-line-name" href={`#/${s.line.id}`} tabIndex={-1}
-              style={{ ...at(s.label), '--c': s.line.color, '--i': i }}
-              onClick={e => go(e, `#/${s.line.id}`)}>{s.line.name}</a>
-          ))}
-          {stops.map((s, i) => (
-            <div key={s.item.id} id={`rl-stop-${i}`} role="option" aria-selected={i === sel}
-              className={`rl-stop${i === sel ? ' is-sel' : ''}${i === sel && !moving ? ' is-here' : ''}`}
-              style={{ ...at(s.p), '--c': s.line.color, '--i': i }}
-              onClick={() => pick(i)}>
-              <span className="rl-dot" />
-              <span className="rl-name"><span>{s.item.title}</span></span>
-            </div>
-          ))}
-          {vertical && (
-            <>
-              <div className="rl-dash" style={{ ...at(geo.end), '--q': (geo.fun[1] - geo.end) / total }} />
-              {FUN.map(([href, label], i) => (
-                <a key={href} className="rl-fun-stop" href={href} style={at(geo.fun[i])}>
-                  <span className="rl-dot" /><span className="rl-name"><span>{label}</span></span>
-                </a>
-              ))}
-            </>
-          )}
-          <motion.div className="rl-car" style={vertical ? { y: px } : { x: px }} aria-hidden="true">
-            <span />
-          </motion.div>
-        </div>
-        {!vertical && (
-          <div className="rl-branches">
-            <svg viewBox="0 0 60 120" preserveAspectRatio="none" aria-hidden="true">
-              <path d="M0 60 L16 60 L44 24 L60 24" />
-              <path d="M0 60 L16 60 L44 96 L60 96" />
-            </svg>
-            {FUN.map(([href, label], i) => (
-              <a key={href} className={`rl-fun rl-fun-${i}`} href={href}>
-                <span className="rl-dot" />{label}
+        <nav className="rl-strip" ref={stripRef} aria-label="Sections and stops" onKeyDown={onStripKey}
+          style={vertical ? undefined : { '--rise': `${rise}px` }}>
+          <div className="rl-track" ref={trackRef} style={{ '--n': total }}>
+            {segs.map((s, i) => (
+              <div key={s.line.id} className="rl-seg" style={{ ...at(s.from), '--q': (s.to - s.from) / total, '--c': s.line.color, '--i': i }} />
+            ))}
+            {stops.map((s, i) => (
+              <a key={s.item.id} id={`rl-stop-${i}`} href={s.hash}
+                ref={el => { stopRefs.current[i] = el; }}
+                tabIndex={i === sel ? 0 : -1} aria-current={i === sel ? 'step' : undefined}
+                className={`rl-stop${i === sel ? ' is-sel' : ''}${i === sel && !moving ? ' is-here' : ''}`}
+                style={{ ...at(s.p), '--c': s.line.color, '--i': i }}
+                onClick={e => pick(e, i)}>
+                <span className="rl-dot" />
+                <span className="rl-name"><span>{s.item.title}</span></span>
               </a>
             ))}
+            {segs.map((s, i) => (
+              <a key={s.line.id} className="rl-line-name" href={`#/${s.line.id}`}
+                style={{ ...at(s.label), '--c': s.line.color, '--i': i }}
+                onClick={e => { if (plain(e)) go(e, `#/${s.line.id}`); }}>{s.line.name}</a>
+            ))}
+            {vertical && (
+              <>
+                <div className="rl-dash" style={{ ...at(geo.end), '--q': (geo.fun[1] - geo.end) / total }} />
+                {FUN.map(([href, label], i) => (
+                  <a key={href} className="rl-fun-stop" href={href} style={at(geo.fun[i])}>
+                    <span className="rl-dot" /><span className="rl-name"><span>{label}</span></span>
+                  </a>
+                ))}
+              </>
+            )}
+            <motion.div className="rl-car" style={vertical ? { y: px } : { x: px }} aria-hidden="true">
+              <span />
+            </motion.div>
           </div>
-        )}
+          {!vertical && (
+            <div className="rl-branches">
+              <svg viewBox="0 0 60 120" preserveAspectRatio="none" aria-hidden="true">
+                <path d="M0 60 L16 60 L44 24 L60 24" />
+                <path d="M0 60 L16 60 L44 96 L60 96" />
+              </svg>
+              {FUN.map(([href, label], i) => (
+                <a key={href} className={`rl-fun rl-fun-${i}`} href={href}>
+                  <span className="rl-dot" />{label}
+                </a>
+              ))}
+            </div>
+          )}
+        </nav>
       </div>
     </div>
   );
