@@ -1,0 +1,6 @@
+.i2-root { position: fixed; inset: 0; z-index: 100; pointer-events: none; }
+.i2-white { position: absolute; inset: 0; background: #fff; }
+.i2-map { position: absolute; left: 0; top: 0; overflow: visible; }
+.i2-pop { transform-box: fill-box; transform-origin: center; }
+.i2-clone { position: absolute; opacity: 0; }
+.i2-hide { visibility: hidden; }
