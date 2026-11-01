@@ -34,6 +34,20 @@ export default function App() {
   const [intro, setIntro] = useState(shouldPlayIntro);
   const endIntro = useCallback(() => setIntro(false), []);
 
+  // A tap that starts during the intro only skips it; it must not also follow a link underneath.
+  useEffect(() => {
+    if (!intro) return undefined;
+    let swallow = false;
+    const down = () => { swallow = true; };
+    const click = e => { if (swallow) { swallow = false; e.preventDefault(); e.stopPropagation(); } };
+    addEventListener('pointerdown', down, true);
+    addEventListener('click', click, true);
+    return () => {
+      removeEventListener('pointerdown', down, true);
+      setTimeout(() => removeEventListener('click', click, true), 500);
+    };
+  }, [intro]);
+
   // Main scrolls itself into place when it mounts (see Main.jsx); this handles moves while it is shown.
   useLayoutEffect(() => {
     const was = prev.current;
