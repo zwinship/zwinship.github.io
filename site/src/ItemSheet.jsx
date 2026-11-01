@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence, motion, useIsPresent } from 'motion/react';
 import { A } from './Main.jsx';
 import { pageById } from './data.js';
 import { reduceMotion } from './router.js';
@@ -46,16 +46,19 @@ export default function ItemSheet({ id, dir, onClose, onGo }) {
   const pg = pageById(id);
   const scroller = useRef(null);
   const reduced = reduceMotion();
+  const present = useIsPresent();
 
   useEffect(() => {
+    if (!present) return undefined;
     const onKey = e => {
+      if (e.altKey || e.metaKey || e.ctrlKey) return;
       if (e.key === 'Escape') onClose();
       if (e.key === 'ArrowRight' && pg.next && !e.target.closest('input,textarea')) onGo(pg.next.id, 1);
       if (e.key === 'ArrowLeft' && pg.prev && !e.target.closest('input,textarea')) onGo(pg.prev.id, -1);
     };
     addEventListener('keydown', onKey);
     return () => removeEventListener('keydown', onKey);
-  }, [pg, onClose, onGo]);
+  }, [pg, onClose, onGo, present]);
 
   useEffect(() => {
     scroller.current?.scrollTo(0, 0);
@@ -65,7 +68,7 @@ export default function ItemSheet({ id, dir, onClose, onGo }) {
 
   const { line } = pg;
   return (
-    <motion.div className="sheet-wrap" initial={{ opacity: 1 }} exit={{ opacity: 1 }} transition={{ duration: reduced ? 0 : 0.5 }}>
+    <motion.div className={`sheet-wrap${present ? '' : ' leaving'}`} initial={{ opacity: 1 }} exit={{ opacity: 1 }} transition={{ duration: reduced ? 0 : 0.5 }}>
       <motion.div className="sheet-backdrop" onClick={onClose}
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduced ? 0 : 0.35 }} />
       <motion.div className="sheet" role="dialog" aria-modal="true" aria-labelledby={`sheet-title-${pg.id}`} ref={scroller}

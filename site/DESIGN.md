@@ -3,8 +3,8 @@
 The site is drawn like a transit map. Each section is a line in an MBTA colour (Red: research, Orange: software, Green: experience, Blue: projects, Silver: education) and each item is a station on it. Figtree throughout, white ground, near-black ink.
 
 Routes (hash based, see `src/router.js`):
-- no hash: the landing page (options live in `src/landings/`, picked by `DEFAULT_LANDING`; preview others with `?landing=<key>`)
-- `#/`: the main page
+- no hash or `#/`: the main page. A bare visit plays a short intro first (`src/Intro.jsx`): the route draws under the name, then glides into the route bar. Once per tab, skipped on any input or with reduced motion.
+- `#/fun`: the page leading to the Wii and Windows 98 versions (button at the bottom of the main page)
 - `#/<section>`: the main page, eased to that section
 - `#/<item>`: the item opens in a side panel over the main page, so closing it leaves you where you were
 
