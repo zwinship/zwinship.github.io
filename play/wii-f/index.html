@@ -203,7 +203,8 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 .gm-vid{position:absolute;inset:0;z-index:3;background:#000;display:flex;flex-direction:column;animation:fadeIn .2s ease}
 .gm-vid video{flex:1 1 auto;min-height:0;width:100%;object-fit:contain;display:block}
 .gm-vid .gm-opt{margin:14px auto max(14px,env(safe-area-inset-bottom));width:min(300px,80vw);height:clamp(50px,7vh,66px)}
-.portrait .gm-art .bn>svg.lg{top:9%;bottom:auto;height:56.25vw}
+.portrait .gm-art .bn>svg{left:-12vw;width:124vw;top:12%;bottom:auto;height:69.75vw}
+.portrait .gm-art .bn>svg.sc{-webkit-mask-image:linear-gradient(#000 78%,transparent);mask-image:linear-gradient(#000 78%,transparent)}
 
 @media (prefers-reduced-motion:reduce){
   .ch.hot,.parrow.show svg,#mailBtn .env,.gm-press,.gm-menu,.gm-box,.gm-vid{animation:none !important}
@@ -362,7 +363,7 @@ disctile: () => SCENE('linear-gradient(#ffffff,#f3f4f6 48%,#e1e3e7)', `
   <ellipse cx="80" cy="45" rx="3" ry="31" fill="#dfe1e5"/>
   <ellipse cx="80" cy="45" rx="1.5" ry="30" fill="#c6c9cf"/>
   <ellipse cx="79.3" cy="38" rx=".55" ry="19" fill="#fff" opacity=".95"/>
-  <path d="M-40 0h16l-30 90h-16z" fill="#fff" opacity=".6">${LOOP('0 0;240 0;240 0', '5s', '0s', '0;.4;1')}</path>`),
+  <path d="M-40 0h16l-30 90h-16z" fill="#fff" opacity=".45">${LOOP('0 0;0 0;240 0', '6s', '0s', '0;.7;1')}</path>`),
 
 /* the paper, as the game in the disc drive */
 nber: () => { const city = skyline(11, 70, '#14244a', '#ffd27a', 12, 40);
@@ -430,10 +431,10 @@ rd2dnet: () => { let blocks = '', dots = ''; const r = rng(3);
   TX(80, 32, 'rd2dnet', 92, '#1d3557', '#fbf8f0', 4.6)); },
 
 led: () => { const g = uid(); return SCENE('#1b1b1b', `
-  <defs><linearGradient id="${g}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity=".7"/><stop offset="1" stop-color="#000" stop-opacity="0"/></linearGradient></defs>
+  <defs><linearGradient id="${g}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity=".85"/><stop offset=".6" stop-color="#000" stop-opacity=".55"/><stop offset="1" stop-color="#000" stop-opacity="0"/></linearGradient></defs>
   <g transform="translate(80 47)"><g><image href="${LED_IMG}" x="-80" y="-79" width="160" height="158.4" preserveAspectRatio="xMidYMid slice"/>
     <animateTransform attributeName="transform" type="scale" values="1;1.1;1" dur="18s" repeatCount="indefinite"/></g></g>
-  <rect width="160" height="50" fill="url(#${g})"/>`,
+  <rect width="160" height="58" fill="url(#${g})"/>`,
   TX(80, 22, 'MBTA Live Tracker', 124, '#fff', '#111', 2.8) + TX(80, 35, 'LED Art', 40, '#ed8b00', '#111', 2)); },
 
 micro: () => { const p = uid(); const a = '88;97.1;88', b = '68;65.5;68', d = '4s';

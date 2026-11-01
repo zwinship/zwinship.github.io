@@ -142,7 +142,7 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 #pvZoom .bn .pv{display:block}
 #pvZoom .bn .tl{display:none}
 .bn .crowd{inset:0}
-#pvZoom .bn .crowd{transform:scale(.55);transform-origin:50% 100%}
+#pvZoom .bn .crowd{transform:scale(.8);transform-origin:50% 100%}
 .bn .safe{left:50%;top:50%;width:min(100cqw,177.78cqh);height:min(100cqh,56.25cqw);transform:translate(-50%,-50%);container-type:size}
 .bn .t{left:0;right:0;text-align:center;white-space:nowrap;font-weight:600;letter-spacing:-.02em}
 .bn img{display:block}
@@ -200,6 +200,7 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 .sh-head{flex:0 0 auto;display:flex;align-items:center;justify-content:center;height:clamp(64px,12vh,110px);padding-top:env(safe-area-inset-top);background:linear-gradient(#6fd3f6,#27aee6 60%,#1d9fd8);box-shadow:0 3px 0 #178ec6,0 6px 14px rgba(23,142,198,.25)}
 .sh-head b{color:#fff;font-size:clamp(26px,5.2vh,50px);font-weight:700;letter-spacing:-.01em;text-shadow:0 2px 2px rgba(0,70,120,.3)}
 .sh .big{border-color:#79cdee;color:#1a8fcc;background:linear-gradient(#ffffff,#e9f7fd);box-shadow:0 3px 6px rgba(31,159,208,.2)}
+.sh .bag{display:block;width:clamp(110px,22vh,220px);height:auto;margin-bottom:clamp(10px,3vh,30px)}
 .sh .wbar{background:linear-gradient(#e8f7fd,#cbecf9);border-top:3px solid #27aee6}
 
 /* Forecast Channel: deep blue sky */
@@ -234,7 +235,7 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 /* Internet Channel: the lowercase wordmark start page */
 .inet{background:linear-gradient(#ffffff 0,#ffffff 55%,#e2f5fc 85%,#c4ebf8 100%)}
 .inet .mark{position:relative;font-size:clamp(56px,min(14vh,17vw),150px);font-weight:700;color:#3cb4e4;letter-spacing:-.01em;line-height:1}
-.inet .mark::after{content:'internet';position:absolute;left:0;right:0;top:92%;transform:scaleY(-1);transform-origin:50% 0;color:#3cb4e4;opacity:.28;-webkit-mask-image:linear-gradient(to top,#000,transparent 70%);mask-image:linear-gradient(to top,#000,transparent 70%)}
+.inet .mark::after{content:'internet';position:absolute;left:0;right:0;top:70%;height:100%;transform:scaleY(-1);transform-origin:50% 50%;color:#3cb4e4;opacity:.28;-webkit-mask-image:linear-gradient(to top,#000,transparent 70%);mask-image:linear-gradient(to top,#000,transparent 70%)}
 .inet .btns{margin-top:clamp(40px,10vh,110px)}
 .inet .big{color:#1f8fcf}
 .inet .wbar{background:linear-gradient(#ececee,#dadbde);border-top:3px solid var(--cyan)}
@@ -455,7 +456,7 @@ const SCREENS = {
 
   shop: { label:'Wii Shop Channel', html: () => `<div class="scr sh">
       <div class="sh-head"><b>Wii Shop Channel</b></div>
-      <div class="cs"><div class="in">
+      <div class="cs"><div class="in">${BAG.replace(/style="[^"]*"/, 'class="bag"').replace(/id="bagF"/, 'id="bagF2"').replace('url(#bagF)', 'url(#bagF2)')}
       ${BTNS(2, 820, [BIG(SOFTWARE.links[0][0], 'rd2dnet'), BIG(link(byId('chesque'),'Play'), 'Chesque'), BIG(link(byId('octa2'),'Live site'), 'OctaStats'), BIG(link(byId('tott'),'Play'), 'Tale of the Tape')])}</div></div>${WBAR()}</div>` },
 
   forecast: { label:'Forecast Channel', html: () => `<div class="scr fc">
