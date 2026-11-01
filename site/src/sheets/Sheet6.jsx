@@ -76,12 +76,21 @@ export default function Sheet6({ id, dir, onClose, onGo }) {
   useEffect(() => {
     const page = document.getElementById('page');
     if (!page) return undefined;
+    // The route bar is sticky inside the page: hold it at the top while the page moves up or down.
+    const bar = page.querySelector('.route');
     const apply = () => {
       const x = px.get(), y = py.get();
       page.style.transform = x || y ? `translate3d(${x}px, ${y}px, 0)` : '';
+      const head = bar?.previousElementSibling;
+      const stuck = bar && scrollY >= (head ? head.offsetTop + head.offsetHeight : 0) - 1;
+      if (bar) bar.style.transform = y && stuck ? `translate3d(0, ${-y}px, 0)` : '';
     };
     const a = px.on('change', apply), b = py.on('change', apply);
-    return () => { a(); b(); anims.current.forEach(c => c.stop()); page.style.transform = ''; };
+    return () => {
+      a(); b(); anims.current.forEach(c => c.stop());
+      page.style.transform = '';
+      if (bar) bar.style.transform = '';
+    };
   }, [px, py]);
 
   const run = (targets, opts) => {

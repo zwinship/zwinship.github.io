@@ -111,7 +111,7 @@ export default function Sheet3({ id, dir, onClose, onGo }) {
 
     const fly = makeFlyer(h2, h3, wrap.current);
     flyer.current = fly;
-    h3.style.visibility = 'hidden';
+    h3.style.opacity = '0';
     const start = flyerOffset(fly, h3);
 
     const sf = surface.current;
@@ -127,7 +127,7 @@ export default function Sheet3({ id, dir, onClose, onGo }) {
       { duration: 0.34, ease: EASE, delay: OPEN * 0.6 + Math.min(i, 6) * 0.035 })));
     const done = setTimeout(() => {
       if (closing.current) return;
-      h3.style.visibility = '';
+      h3.style.opacity = '';
       h2.style.opacity = '';
       fly.box.remove();
       if (flyer.current === fly) flyer.current = null;
@@ -136,7 +136,7 @@ export default function Sheet3({ id, dir, onClose, onGo }) {
     return () => {
       clearTimeout(done);
       stopAll();
-      h3.style.visibility = '';
+      h3.style.opacity = '';
       fly.box.remove();
       if (flyer.current === fly) flyer.current = null;
     };
@@ -148,10 +148,10 @@ export default function Sheet3({ id, dir, onClose, onGo }) {
     if (present) return;
     closing.current = true;
     const p = panel.current;
-    document.querySelectorAll('#page .stop h3').forEach(h => { h.style.visibility = ''; });
+    document.querySelectorAll('#page .stop h3').forEach(h => { h.style.opacity = ''; });
     let hidden = null;
     const finish = () => {
-      if (hidden) hidden.style.visibility = '';
+      if (hidden) hidden.style.opacity = '';
       flyer.current?.box.remove();
       safeToRemove();
     };
@@ -162,7 +162,7 @@ export default function Sheet3({ id, dir, onClose, onGo }) {
     const bar = p.querySelector('.s3-bar').getBoundingClientRect();
     const h2r = h2?.getBoundingClientRect();
     if (!el) {
-      animate(backdrop.current, { opacity: 0 }, { duration: 0.26 });
+      animate([backdrop.current, surface.current], { opacity: 0 }, { duration: 0.26 });
       animate(p, { opacity: 0, scale: 0.96 }, { duration: 0.24, ease: EASE }).then(finish);
       flyer.current?.box.remove();
       return;
@@ -186,11 +186,12 @@ export default function Sheet3({ id, dir, onClose, onGo }) {
       flyer.current = fly;
     }
     if (h2) h2.style.opacity = '0';
-    if (fly) { hidden = h3; h3.style.visibility = 'hidden'; }
+    if (fly) { hidden = h3; h3.style.opacity = '0'; }
     animate([...p.children], { opacity: 0 }, { duration: 0.16 });
     animate(backdrop.current, { opacity: 0 }, { duration: CLOSE, delay: 0.04 });
     animate(sf, { clipPath: inset(to, 4) }, { duration: CLOSE, ease: EASE, delay: 0.03 });
-    animate(sf, { opacity: 0 }, { duration: 0.14, delay: CLOSE - 0.1 });
+    // Without the title to carry back, let the list entry show through as the surface lands.
+    animate(sf, { opacity: 0 }, fly ? { duration: 0.14, delay: CLOSE - 0.1 } : { duration: CLOSE * 0.7, delay: CLOSE * 0.3 });
     if (fly) {
       const end = flyerOffset(fly, h3);
       animate(fly.box, end, { duration: CLOSE, ease: EASE, delay: 0.03 });
