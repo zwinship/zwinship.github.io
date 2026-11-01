@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { animate, motion, useMotionValue, useTransform } from 'motion/react';
-import { LINES } from './data.js';
+import { LINES } from '../data.js';
 
 const EASE = [0.65, 0, 0.35, 1];
 

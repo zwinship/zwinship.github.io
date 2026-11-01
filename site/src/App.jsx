@@ -2,13 +2,16 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import { AnimatePresence, MotionConfig, motion } from 'motion/react';
 import Main from './Main.jsx';
 import ItemSheet from './ItemSheet.jsx';
-import Intro from './Intro.jsx';
+import { INTROS, DEFAULT_INTRO } from './intros/index.js';
 import FunPage from './FunPage.jsx';
 import { lineById, pageById } from './data.js';
 import { navigate, reduceMotion, scrollToSection, scrollToY, stopScroll, useRoute } from './router.js';
 
 // The intro plays on a bare visit to the home page, once per browser tab.
+const introParam = new URLSearchParams(location.search).get('intro');
+const Intro = INTROS[introParam] || INTROS[DEFAULT_INTRO];
 function shouldPlayIntro() {
+  if (introParam && INTROS[introParam]) return true;
   if (location.hash && location.hash !== '#' && location.hash !== '#/') return false;
   if (reduceMotion()) return false;
   try { if (sessionStorage.getItem('intro-seen')) return false; sessionStorage.setItem('intro-seen', '1'); } catch { /* storage blocked */ }
