@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LINES } from '../data.js';
 import './StationSign.css';
 
@@ -15,11 +15,12 @@ const hashFor = (line, it) => (it.body ? `#/${it.id}` : `#/${line.id}`);
 
 export default function StationSign({ onGo }) {
   const [active, setActive] = useState(LINES[0].id);
-  const line = LINES.find(l => l.id === active);
+  const [intro, setIntro] = useState(true);
+  useEffect(() => { const t = setTimeout(() => setIntro(false), 1400); return () => clearTimeout(t); }, []);
   const go = (e, hash) => { e.preventDefault(); onGo(hash); };
 
   return (
-    <div className="ss">
+    <div className={`ss${intro ? ' is-intro' : ''}`}>
       <header className="ss-band">
         <div className="ss-band-in">
           <h1 className="ss-name">Zach Winship</h1>
@@ -33,31 +34,32 @@ export default function StationSign({ onGo }) {
       <main className="ss-wall">
         <nav className="ss-lines" aria-label="Sections">
           <ul>
-            {LINES.map((l, i) => (
-              <li key={l.id} style={{ '--c': l.color, '--i': i }}>
-                <a href={`#/${l.id}`} className={`ss-line${l.id === active ? ' is-on' : ''}`}
-                  onClick={e => go(e, `#/${l.id}`)}
-                  onMouseEnter={() => setActive(l.id)} onFocus={() => setActive(l.id)}>
-                  <span className="ss-bullet" aria-hidden="true" />
-                  <span className="ss-label">{l.name}</span>
-                </a>
-              </li>
-            ))}
+            {LINES.map((l, i) => {
+              const on = l.id === active;
+              return (
+                <li key={l.id} style={{ '--c': l.color, '--i': i }}>
+                  <a href={`#/${l.id}`} className={`ss-line${on ? ' is-on' : ''}`}
+                    onClick={e => go(e, `#/${l.id}`)}
+                    onMouseEnter={() => setActive(l.id)} onFocus={() => setActive(l.id)}>
+                    <span className="ss-bullet" aria-hidden="true" />
+                    <span className="ss-label">{l.name}</span>
+                  </a>
+                  {/* This line's stops sit in DOM order after its bullet, drawn in the shared strip below. */}
+                  <ol className={`ss-strip${on ? ' is-on' : ''}`} style={{ '--n': l.items.length }} aria-label={`${l.name} stops`}>
+                    {l.items.map((it, j) => (
+                      <li key={it.id} style={{ '--j': j }}>
+                        <a href={hashFor(l, it)} onClick={e => go(e, hashFor(l, it))}>
+                          <span className="ss-stop" aria-hidden="true" />
+                          <span className="ss-title">{it.title}</span>
+                        </a>
+                      </li>
+                    ))}
+                  </ol>
+                </li>
+              );
+            })}
           </ul>
         </nav>
-
-        <section className="ss-strip" style={{ '--c': line.color }} aria-label={`${line.name} stops`}>
-          <ol key={line.id} style={{ '--n': line.items.length }}>
-            {line.items.map((it, i) => (
-              <li key={it.id} style={{ '--i': i }}>
-                <a href={hashFor(line, it)} onClick={e => go(e, hashFor(line, it))}>
-                  <span className="ss-stop" aria-hidden="true" />
-                  <span className="ss-title">{it.title}</span>
-                </a>
-              </li>
-            ))}
-          </ol>
-        </section>
       </main>
 
       <footer className="ss-foot">

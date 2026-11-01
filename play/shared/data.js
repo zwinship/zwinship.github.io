@@ -319,7 +319,7 @@ const EXPERIENCE = [
   "role": "Teaching Assistant, Introductory Macroeconomics",
   "org": "New York University",
   "when": "Aug 2026 to present",
-  "body": "Weekly recitations on course material and problem sets, exam proctoring and grading, and grade entry."
+  "body": "Weekly recitations on course material and problem sets, plus exam proctoring and grading."
  },
  {
   "role": "Instructional Content Assistant",
@@ -362,7 +362,7 @@ const PROFILE = {
  "lede": "I'm a master's student in quantitative economics at NYU, interested in urban and transportation economics.",
  "now": "MS in Quantitative Economics at NYU, finishing May 2027.",
  "about": [
-  "This year I'm a research assistant to Professor Anna Vitali and a teaching assistant for Introductory Macroeconomics. I finish the MS in May 2027. Before NYU I did a BS in Quantitative Economics at Bentley University, with minors in mathematics and data technologies.",
+  "This year I'm a research assistant to Professor Anna Vitali and a teaching assistant for Introductory Macroeconomics.",
   "My research so far is on transport and regulation in the US: congestion pricing in New York, the EPA's ozone standard, and ridership on Boston's subway. I also wrote rd2dnet, a package for boundary discontinuity designs on street networks.",
   "Outside of that I build things: a UFC prediction model, a chess game, a daily guessing game, and an LED map of the T."
  ],

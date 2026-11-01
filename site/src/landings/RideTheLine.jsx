@@ -124,15 +124,16 @@ export default function RideTheLine({ onGo }) {
   // Roll in from the left once the line has drawn.
   useEffect(() => {
     if (reduced()) { driveTo(stops[0].p); return; }
-    const t = setTimeout(() => driveTo(stops[0].p), 750);
+    const t = setTimeout(() => driveTo(stops[0].p), 850);
     return () => { clearTimeout(t); cancelAnimationFrame(car.current.raf); car.current.raf = 0; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Keep the car on its stop when the layout flips between wide and narrow.
-  const first = useRef(true);
+  const lastGeo = useRef(geo);
   useLayoutEffect(() => {
-    if (first.current) { first.current = false; return; }
+    if (lastGeo.current === geo) return;
+    lastGeo.current = geo;
     const c = car.current;
     cancelAnimationFrame(c.raf); c.raf = 0; c.v = 0;
     c.target = stops[sel].p;
@@ -147,6 +148,7 @@ export default function RideTheLine({ onGo }) {
   }, [stops, driveTo]);
 
   const cur = stops[sel];
+  const still = reduced();
   const go = (e, hash) => { e?.preventDefault(); onGo(hash); };
 
   const selRef = useRef(sel);
@@ -194,8 +196,9 @@ export default function RideTheLine({ onGo }) {
         <div className="rl-display-in">
           <AnimatePresence mode="popLayout" initial={false}>
             <motion.div key={sel} className="rl-now"
-              initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -14 }}
-              transition={{ duration: 0.28, ease: [0.3, 0, 0.2, 1] }}>
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0, transition: { duration: still ? 0 : 0.3, delay: still ? 0 : 0.08, ease: [0.2, 0, 0.1, 1] } }}
+              exit={{ opacity: 0, y: -10, transition: { duration: still ? 0 : 0.12, ease: [0.4, 0, 1, 1] } }}>
               <span className="rl-badge"><i />{cur.line.name}</span>
               <a className="rl-title" href={cur.hash} onClick={e => go(e, cur.hash)}>{cur.item.title}</a>
             </motion.div>

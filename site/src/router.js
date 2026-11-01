@@ -16,6 +16,8 @@ export function parse(hash = location.hash) {
   return { view: 'main' };
 }
 
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+
 const listeners = new Set();
 function emit() { const r = parse(); listeners.forEach(fn => fn(r)); }
 addEventListener('hashchange', emit);

@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { motion, useScroll, useSpring } from 'motion/react';
 import { EMAIL, LINKS, PROFILE } from './content.js';
 import { LINES } from './data.js';
-import { navigate, scrollToSection } from './router.js';
+import { navigate, parse, scrollToSection } from './router.js';
 
 const isExternal = href => /^https?:/.test(href);
 export function A({ href, children, ...rest }) {
@@ -96,6 +96,13 @@ export default function Main() {
   const [current, setCurrent] = useState(LINES[0].id);
   const { scrollYProgress } = useScroll();
 
+  // Arriving from the landing or a shared link: jump straight to the section.
+  useLayoutEffect(() => {
+    const r = parse();
+    if (r.section) scrollToSection(r.section, { instant: true });
+    else if (!r.item) scrollTo(0, 0);
+  }, []);
+
   useEffect(() => {
     let raf = 0;
     const measure = () => {
@@ -137,7 +144,7 @@ export default function Main() {
             <A href={LINKS.resume}>CV</A>
           </p>
           <p className="foot-others">
-            <a href="/" onClick={e => go(e, '')}>Back to the start</a>
+            <a href="/" onClick={e => go(e, '')}>Back to the map</a>
             <a href="/play/wii/">Living room, 2006</a>
             <a href="/play/win98/">Family computer, 1998</a>
           </p>

@@ -15,7 +15,7 @@ export const PROFILE = {
   lede: "I'm a master's student in quantitative economics at NYU, interested in urban and transportation economics.",
   now: 'MS in Quantitative Economics at NYU, finishing May 2027.',
   about: [
-    "This year I'm a research assistant to Professor Anna Vitali and a teaching assistant for Introductory Macroeconomics. I finish the MS in May 2027. Before NYU I did a BS in Quantitative Economics at Bentley University, with minors in mathematics and data technologies.",
+    "This year I'm a research assistant to Professor Anna Vitali and a teaching assistant for Introductory Macroeconomics.",
     "My research so far is on transport and regulation in the US: congestion pricing in New York, the EPA's ozone standard, and ridership on Boston's subway. I also wrote rd2dnet, a package for boundary discontinuity designs on street networks.",
     "Outside of that I build things: a UFC prediction model, a chess game, a daily guessing game, and an LED map of the T.",
   ],
@@ -131,7 +131,7 @@ export const EXPERIENCE = [
   { role: 'Research Assistant to Professor Anna Vitali', org: 'New York University, Department of Economics', when: 'Sep 2026 to May 2027',
     body: "Research assistant on two development field projects in Uganda: one on firm networks and mobility in Kampala's markets, one on insurance within small firms. I build and maintain the Stata data pipelines: survey cleaning, high-frequency checks, preloads for later survey rounds, and the market listing analysis." },
   { role: 'Teaching Assistant, Introductory Macroeconomics', org: 'New York University', when: 'Aug 2026 to present',
-    body: 'Weekly recitations on course material and problem sets, exam proctoring and grading, and grade entry.' },
+    body: 'Weekly recitations on course material and problem sets, plus exam proctoring and grading.' },
   { role: 'Instructional Content Assistant', org: 'Bentley University', when: 'Summer 2026',
     body: 'Built an interactive learning platform for Intermediate Microeconomics with Professor Sunder: visualizations, practice problems, flashcards and lecture content in one chapter-by-chapter system in HTML and JavaScript.',
     links: [['https://falconeconsim.github.io/', 'Course site']] },

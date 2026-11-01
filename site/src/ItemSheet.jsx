@@ -10,14 +10,14 @@ function Content({ pg }) {
   return (
     <>
       <div className="sign">
-        <h2 id="sheet-title" tabIndex={-1}>{pg.title}</h2>
+        <h2 id={`sheet-title-${pg.id}`} tabIndex={-1}>{pg.title}</h2>
       </div>
       <p className="sub">{pg.sub}</p>
       {pg.image && <img className="page-img" src={pg.image} alt={`${pg.title}, partway through the build`} />}
       {pg.body.map(t => <p key={t.slice(0, 24)}>{t}</p>)}
       {pg.install && (
         <dl className="install">
-          {pg.install.map(([k, v]) => <div key={k}><dt>{k}</dt><dd><code>{v}</code></dd></div>)}
+          {pg.install.map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{/^(pip|remotes|ssc|net) /.test(v) ? <code>{v}</code> : v}</dd></div>)}
         </dl>
       )}
       {pg.posts && (
@@ -59,7 +59,7 @@ export default function ItemSheet({ id, dir, onClose, onGo }) {
 
   useEffect(() => {
     scroller.current?.scrollTo(0, 0);
-    const t = setTimeout(() => document.getElementById('sheet-title')?.focus({ preventScroll: true }), 60);
+    const t = setTimeout(() => document.getElementById(`sheet-title-${id}`)?.focus({ preventScroll: true }), 60);
     return () => clearTimeout(t);
   }, [id]);
 
@@ -68,14 +68,14 @@ export default function ItemSheet({ id, dir, onClose, onGo }) {
     <motion.div className="sheet-wrap" initial={{ opacity: 1 }} exit={{ opacity: 1 }} transition={{ duration: reduced ? 0 : 0.5 }}>
       <motion.div className="sheet-backdrop" onClick={onClose}
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduced ? 0 : 0.35 }} />
-      <motion.div className="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title" ref={scroller}
+      <motion.div className="sheet" role="dialog" aria-modal="true" aria-labelledby={`sheet-title-${pg.id}`} ref={scroller}
         style={{ '--c': line.color }}
         initial={{ x: reduced ? 0 : '100%' }} animate={{ x: 0 }} exit={{ x: reduced ? 0 : '100%' }}
         transition={{ duration: reduced ? 0 : 0.5, ease: EASE }}>
         <div className="sheet-bar">
           <button type="button" className="sheet-close" onClick={onClose}>Close</button>
           <span className="sheet-line"><i aria-hidden="true" />{line.name}</span>
-          <span className="sheet-count">{pg.index + 1} of {pg.count}</span>
+          {pg.count > 1 && <span className="sheet-count">{pg.index + 1} of {pg.count}</span>}
         </div>
         <div className="sheet-body">
           <AnimatePresence mode="popLayout" initial={false} custom={dir}>
