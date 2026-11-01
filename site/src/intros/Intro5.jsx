@@ -25,6 +25,8 @@ T.end = T.landed + 0.14;
 
 // Where each line ends up: the left end of its segment in the route bar
 // (Education has no segment, so it closes into its station).
+const snap = v => Math.round(v * devicePixelRatio) / devicePixelRatio;
+
 function measure() {
   const lis = document.querySelectorAll('.route-line > li');
   if (lis.length !== LINES.length) return null;
@@ -34,8 +36,10 @@ function measure() {
   const arms = LINES.map((l, i) => {
     const seg = lis[i].querySelector('.seg');
     if (seg) {
+      // The page paints the segment on whole device pixels, so land on those.
       const r = seg.getBoundingClientRect();
-      return { color: l.color, x: r.left, y: r.top + r.height / 2, len: r.width, h: r.height };
+      const x = snap(r.left), top = snap(r.top), h = snap(r.bottom) - top;
+      return { color: l.color, x, y: top + h / 2, len: snap(r.right) - x, h };
     }
     const r = lis[i].querySelector('.dot').getBoundingClientRect();
     return { color: l.color, x: r.left + r.width / 2, y: r.top + r.height / 2, len: 0, h: 6 };
