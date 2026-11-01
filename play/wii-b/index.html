@@ -263,7 +263,7 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 #brFav button small{display:block;font-size:13px;color:var(--gray-text)}
 @media (max-width:760px){
   .br-bar{flex-wrap:wrap;gap:8px;padding:8px 12px;padding-bottom:max(10px,env(safe-area-inset-bottom))}
-  .addr{order:-2;flex:1 1 0;height:44px;padding:0 14px}
+  .addr{order:-2;flex:1 1 calc(100% - 124px);height:44px;padding:0 14px}
   .addr .url{font-size:15px}
   .bb{width:auto;flex:1 1 0;min-width:0;height:50px;border-radius:14px}
   .bb svg{width:30px;height:30px}
@@ -1016,6 +1016,8 @@ function paintNews(dir){
   card.innerHTML = `<div class="nw-src">${m[1]}</div><h2>${m[2]}</h2>
     <p class="nw-about">About: ${nber.title} (${nber.badge.replace('WP','Working Paper')})</p>`;
   document.getElementById('nwN').textContent = `${nwI+1} / ${MEDIA.length}`;
+  document.getElementById('nwL').style.visibility = nwI > 0 ? 'visible' : 'hidden';
+  document.getElementById('nwR').style.visibility = nwI < MEDIA.length-1 ? 'visible' : 'hidden';
   if (dir && !reduced) card.animate([{opacity:0, transform:`translateX(${dir*40}px)`},{opacity:1, transform:'none'}],{duration:240,easing:'ease-out'});
 }
 function newsStep(d){ const n = nwI + d; if (n < 0 || n >= MEDIA.length) return; nwI = n; SFX.page(d); paintNews(d); }

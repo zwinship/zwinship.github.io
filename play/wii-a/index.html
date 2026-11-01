@@ -255,8 +255,8 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 .sh-head{flex:0 0 auto;display:flex;align-items:center;min-height:clamp(58px,10vh,92px);padding:max(8px,env(safe-area-inset-top)) clamp(16px,4vw,56px) 8px;background:linear-gradient(#59c9f1,#2fb0e4);box-shadow:0 3px 0 #1f9fd0,0 6px 12px rgba(31,159,208,.25)}
 .sh-head b{color:#fff;font-size:clamp(22px,4vh,38px);font-weight:800;letter-spacing:-.01em;text-shadow:0 2px 3px rgba(0,60,100,.25)}
 .sh .scroll{display:flex}
-.sh-shelf{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(18px,3vh,34px) clamp(16px,2.6vw,40px);padding:clamp(20px,4vh,44px) clamp(16px,5vw,90px);max-width:1400px;width:100%;margin:auto}
-.sh-t{display:block;text-align:center;outline:none;border-radius:20px;padding:10px;transition:transform .15s}
+.sh-shelf{display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(18px,3vh,34px) clamp(16px,2.6vw,40px);padding:clamp(20px,4vh,44px) clamp(16px,5vw,90px);max-width:1400px;width:100%;margin:auto}
+.sh-t{display:block;flex:0 0 calc((100% - 2 * clamp(16px,2.6vw,40px)) / 3);text-align:center;outline:none;border-radius:20px;padding:10px;transition:transform .15s}
 .sh-tart{position:relative;display:block;aspect-ratio:16/9;border-radius:16px;overflow:hidden;border:4px solid #fff;box-shadow:0 0 0 2px #9fdcf3,0 4px 12px rgba(31,159,208,.22);transition:box-shadow .12s}
 .sh-tart .bn{position:absolute;inset:0}
 .sh-tn{display:block;margin-top:12px;font-size:clamp(16px,2.4vh,21px);font-weight:700;color:#1f8fc4}
@@ -275,8 +275,8 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 .sh-btn{min-width:clamp(120px,14vw,200px);height:clamp(48px,6.4vh,62px);padding:0 24px;border-radius:16px;background:linear-gradient(#ffffff,#e8f6fc);border:3px solid #6ccbef;color:#1f8fc4;font-size:clamp(17px,2.4vh,22px);font-weight:700;outline:none;transition:box-shadow .12s}
 .sh-btn:hover,.sh-btn:focus-visible{border-color:var(--cyan);box-shadow:0 0 0 2px var(--cyan),0 0 10px 3px rgba(52,190,237,.4)}
 .sh-btn[data-back]{margin-left:auto}
-@media (max-width:900px){.sh-shelf{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:700px){.sh-shelf{grid-template-columns:1fr;max-width:460px}.sh-page{flex-direction:column;align-items:stretch;text-align:center}.sh-art{flex:none;width:100%}.sh-txt p{margin-left:auto;margin-right:auto}.sh-buy{width:100%}.sh-btn{min-width:0;flex:1 1 0}}
+@media (max-width:900px){.sh-t{flex-basis:calc((100% - clamp(16px,2.6vw,40px)) / 2)}}
+@media (max-width:700px){.sh-shelf{max-width:460px}.sh-t{flex-basis:100%}.sh-page{flex-direction:column;align-items:stretch;text-align:center}.sh-art{flex:none;width:100%}.sh-txt p{margin-left:auto;margin-right:auto}.sh-buy{width:100%}.sh-btn{min-width:0;flex:1 1 0}}
 
 /* --- Forecast Channel --- */
 .fc{background:linear-gradient(#2a86d3 0,#55afe9 42%,#b6e0f7 100%);color:#fff}
@@ -297,7 +297,7 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 .fc-tick{background:rgba(12,56,110,.55)}
 .fc-tick div,.nw-tick div{position:absolute;top:0;left:0;height:100%;display:flex;align-items:center;white-space:nowrap;font-size:16px;font-weight:500;color:#fff;animation:ticker 32s linear infinite}
 .fc .wbar{background:linear-gradient(#ffffff,#e1edf6)}
-@media (max-width:600px){.fc-days{flex-wrap:wrap}.fc-day{flex:1 1 40%}.fc-title{border-radius:16px;margin-bottom:8px}.fc-days{border-radius:20px}}
+@media (max-width:600px){.fc-days{gap:8px;padding:10px}.fc-day{border-width:2px;border-radius:14px}.fc-day h3{font-size:13px;padding:6px 2px}.fc-day b{font-size:26px}.fc-title{border-radius:16px;margin-bottom:8px}.fc-days{border-radius:20px}}
 
 /* --- News Channel --- */
 .nw{background:#f2f3f5}
