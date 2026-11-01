@@ -625,7 +625,9 @@ tick(); setInterval(tick, 1000);
 const hand = $('hand');
 if (fine) document.documentElement.classList.add('has-hand');
 let mx = innerWidth/2, my = innerHeight/2, hx = mx, hy = my, roll = 0, lastMove = 0, lastKey = false;
-addEventListener('pointermove', e => { mx = e.clientX; my = e.clientY; lastMove = performance.now(); lastKey = false; });
+addEventListener('pointermove', e => { mx = e.clientX; my = e.clientY; lastMove = performance.now();
+  // first real move after keyboard use: pick up whatever is under the hand
+  if (lastKey){ lastKey = false; if (e.pointerType !== 'touch' && !['opening','closing'].includes(state)) pointAt(e.target); } });
 addEventListener('keydown', () => { lastKey = true; }, true);
 addEventListener('pointerdown', () => { lastKey = false; hand.classList.add('press'); if (hotEl && hotEl.classList.contains('ch')) hotEl.classList.add('press'); }, true);
 addEventListener('pointerup', () => { hand.classList.remove('press'); document.querySelectorAll('.ch.press').forEach(t=>t.classList.remove('press')); });
@@ -646,12 +648,16 @@ function setHot(el, silent){
   if (el){ el.classList.add('hot'); if (started && !silent) SFX.hover(); }
 }
 document.addEventListener('pointerover', e => {
-  if (e.pointerType === 'touch' || ['opening','closing'].includes(state)) return;
-  const el = e.target.closest('[data-hot]');
+  // things sliding under a resting pointer also fire pointerover; ignore those while the keyboard is driving
+  if (e.pointerType === 'touch' || lastKey || ['opening','closing'].includes(state)) return;
+  pointAt(e.target);
+});
+function pointAt(target){
+  const el = target.closest('[data-hot]');
   const next = el && !el.disabled && el.offsetParent !== null ? el : null;
   if (next !== hotEl && document.activeElement && document.activeElement !== document.body && document.activeElement.closest('#stage')) document.activeElement.blur();
   setHot(next);
-});
+}
 document.documentElement.addEventListener('mouseleave', () => { setHot(null); hand.style.opacity = 0; });
 document.documentElement.addEventListener('mouseenter', () => { hand.style.opacity = ''; });
 document.addEventListener('focusin', e => { if (!lastKey) return; const el = e.target.closest('[data-hot]'); if (el) setHot(el, true); });
