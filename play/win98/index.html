@@ -38,7 +38,7 @@ img,svg{image-rendering:pixelated}
 #icons{position:absolute;left:4px;top:4px;bottom:4px;display:grid;grid-auto-flow:column;grid-template-rows:repeat(auto-fill,76px);grid-auto-columns:76px;gap:0 2px}
 .dicon{width:76px;height:74px;display:flex;flex-direction:column;align-items:center;padding-top:4px;color:#fff;text-align:center;cursor:default;outline:none}
 .dicon .ico{width:32px;height:32px}
-.dicon .lbl{margin-top:4px;padding:1px 2px;line-height:13px;max-width:74px;word-wrap:break-word;border:1px dotted transparent}
+.dicon .lbl{margin-top:4px;padding:1px 2px;line-height:13px;max-width:74px;min-width:min-content;overflow-wrap:normal;word-break:normal;border:1px dotted transparent;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;line-clamp:3;overflow:hidden}
 .dicon.sel .ico{filter:url(#selTint)}
 .dicon.sel .lbl{background:var(--navy);border-color:#ffff80}
 .dicon .arrow{position:absolute}
@@ -236,6 +236,8 @@ textarea.notepad{flex:1;resize:none;border:0;width:100%;font:13px/1.35 "Courier 
 .wl-text{flex:1;padding:18px 20px;overflow:auto;font-size:12px;line-height:1.5;user-select:text}
 .wl-text h3{font:bold 18px Arial,sans-serif;margin:0 0 8px;color:#000080}
 @media (max-width:640px){.wl-opts{flex-basis:150px}}
+.wl-opts{overflow:auto}
+@media (max-height:500px){.wl-banner{padding:6px 14px;font-size:20px}.wl-opts{padding:4px 0;gap:0}.wl-opt{padding:2px 14px}.wl-opt .ico{width:20px;height:20px}.wl-text{padding:10px 14px}.wl-text h3{margin-bottom:4px}}
 
 /* misc */
 .err{display:flex;gap:14px;align-items:flex-start;padding:12px 8px 4px}
@@ -346,6 +348,7 @@ const ICON = {
   user:`<circle cx="16" cy="10" r="6" fill="#f0c090" stroke="#000"/><path d="M10 7c2-4 10-4 12 0-3-1-9-1-12 0z" fill="#6b3f1f" stroke="#000"/><path d="M5 29c0-8 5-12 11-12s11 4 11 12z" fill="#57068c" stroke="#000"/><path d="M14 17l2 4 2-4" fill="#fff" stroke="#000"/>`,
   zip:`<path d="M2 7h10l2 3h15v18H2z" fill="#c9a000" stroke="#000"/><path d="M2 12h27v16H2z" fill="#ffe36b" stroke="#000"/><path d="M15 12v16" stroke="#000" stroke-dasharray="2 1" stroke-width="2"/><rect x="13" y="18" width="5" height="4" fill="#c0c0c0" stroke="#000"/>`,
   xls:`${PAGE()}<rect x="10" y="11" width="13" height="15" fill="#fff" stroke="#080"/><path d="M10 15h13M10 19h13M10 23h13M15 11v15M19 11v15" stroke="#080"/>`,
+  package:`<path d="M4 12L1 8l12-5 3 4zM28 12l3-4-12-5-3 4z" fill="#ecd09a" stroke="#000"/><path d="M4 12l12-5 12 5-12 5z" fill="#5a3a14" stroke="#000"/><path d="M4 12l12 5v13L4 25z" fill="#d8a860" stroke="#000"/><path d="M16 17l12-5v13l-12 5z" fill="#a87434" stroke="#000"/><path d="M7 18l4 2 3-2M11 20v5M7 23l4 2" stroke="#000080" fill="none"/><rect x="6" y="17" width="2" height="2" fill="#c00"/><rect x="10" y="19" width="2" height="2" fill="#c00"/><rect x="13" y="17" width="2" height="2" fill="#c00"/><rect x="10" y="24" width="2" height="2" fill="#c00"/><path d="M19 20l6-2.5M19 23l6-2.5" stroke="#ecd09a"/>`,
   presentation:`<rect x="3" y="4" width="26" height="17" fill="#fff" stroke="#000"/><rect x="2" y="3" width="28" height="2" fill="#808080" stroke="#000"/><rect x="7" y="13" width="3" height="5" fill="#c00"/><rect x="12" y="10" width="3" height="8" fill="#00c"/><rect x="17" y="8" width="3" height="10" fill="#0a0"/><path d="M16 21v4M10 29l6-4 6 4" stroke="#000" fill="none"/>`,
   update:`<circle cx="16" cy="16" r="13" fill="#2a7fff" stroke="#000"/><path d="M9 16h14M16 9v14" stroke="#fff" stroke-width="3"/><circle cx="16" cy="16" r="5" fill="#ffd800" stroke="#000"/>`,
   programs:`<rect x="3" y="7" width="20" height="16" fill="#c0c0c0" stroke="#000"/><rect x="3" y="7" width="20" height="3" fill="#000080"/><rect x="9" y="13" width="20" height="16" fill="#c0c0c0" stroke="#000"/><rect x="9" y="13" width="20" height="3" fill="#000080"/><rect x="11" y="18" width="16" height="9" fill="#fff"/>`,
@@ -393,10 +396,11 @@ const ALL_PROJECTS = [
   {...SOFTWARE, group:'Research'},
   ...PERSONAL.map(p=>({...p, group:'Personal Projects'})),
 ];
-const PROJECT_ICON = t => /rd2dnet/.test(t) ? 'network' : /Chesque/.test(t) ? 'cards' : /UFC|Tale/.test(t) ? 'ufc' : /MBTA/.test(t) ? 'train' : /Course/.test(t) ? 'web' : /LLM/.test(t) ? 'robot' : /Polling/.test(t) ? 'vote' : 'chart';
+const PROJECT_ICON = t => /rd2dnet/.test(t) ? 'package' : /Chesque/.test(t) ? 'cards' : /UFC|Tale/.test(t) ? 'ufc' : /MBTA/.test(t) ? 'train' : /Course/.test(t) ? 'web' : /LLM/.test(t) ? 'robot' : /Polling/.test(t) ? 'vote' : 'chart';
 const shortName = t => ({
-  'Congestion Pricing and EMS Response Time: Evidence From New York City':'NBER - Congestion Pricing & EMS',
-  'NYC Congestion Pricing: Mobility and Commercial Effects':'NYC Congestion Pricing',
+  'Congestion Pricing and Emergency Medical Service Response: Evidence from New York City':'NBER - Congestion Pricing & EMS',
+  "Traffic, Transit, and the Toll: Causal Evidence from NYC's Congestion Pricing":'Traffic, Transit & the Toll',
+  'ARIMA Modeling of MBTA Ridership':'MBTA Ridership Forecast',
   'The Real Price of Clean Air: EPA Ozone Regulation':'EPA Ozone Regulation',
   'Election Polling: Indicator vs. Catalyst':'Election Polling',
   'Intermediate Microeconomics Course Website':'Micro Course Website',
@@ -404,7 +408,6 @@ const shortName = t => ({
   'OctaStats UFC Model V2':'OctaStats V2',
   'UFC Fight Outcome Prediction Model':'UFC Model V1',
   'Tale of the Tape: UFC Daily Challenge':'Tale of the Tape',
-  'MBTA Time Series Analysis':'MBTA Time Series',
   'MBTA Live Tracker LED Art':'MBTA LED Art',
   'rd2dnet: Boundary Discontinuity Designs on Street Networks':'rd2dnet',
 }[t] || t);
@@ -531,6 +534,11 @@ function openWin(key, opts, fromRect){
 
   if (isSmall() && !opts.dialog && !opts.noMax){ el.classList.add('max'); maxB && maxB.setAttribute('aria-label','Restore'); }
   if (opts.center || (isSmall() && opts.dialog)){ el.style.left = Math.max(4,(innerWidth-W)/2)+'px'; el.style.top = Math.max(4,(innerHeight-28-H)/3)+'px'; }
+  // Small screens: windows that can't maximize sit below the top row of desktop icons and run down to the taskbar.
+  if (opts.belowIcons && (isSmall() || innerHeight < 500) && desktop.clientHeight > 300){
+    el.style.top = '80px'; el.style.height = (desktop.clientHeight - 82)+'px';
+    if (isSmall()) el.style.left = Math.max(4,(innerWidth-W)/2)+'px';
+  }
   opts.render && opts.render(w);
   focusWin(w);
   zoomFrom(fromRect, w);
@@ -658,11 +666,11 @@ function explorer(w, cfg){
 
 const FOLDERS = {
   mycomputer: () => ({ title:'My Computer', path:'My Computer', icon:'computer',
-    desc:`<p>Zach Winship's portfolio, packaged as a 1998 PC.</p><p>Select an item to view its description.</p><p>Quantitative Economist · NYU MS '27 · Bentley '26</p>`,
+    desc:`<p>Zach Winship's portfolio, packaged as a 1998 PC.</p><p>Select an item to view its description.</p><p>MS in Quantitative Economics, NYU, 2027. BS, Bentley, 2026.</p>`,
     items:[
-      { name:'3½ Floppy (A:)', icon:'floppy', type:'Résumé', blurb:'Résumé, Summer 2026 (PDF).', open:r=>openApp('resume',r) },
+      { name:'3½ Floppy (A:)', icon:'floppy', type:'Résumé', blurb:'Résumé (PDF).', open:r=>openApp('resume',r) },
       { name:'Research (C:)', icon:'drive', type:'Local Disk', blurb:'Papers, working papers and research projects.', folder:'research' },
-      { name:'Personal Projects (D:)', icon:'drive', type:'Local Disk', blurb:'Self-driven projects: ML models, games and hardware.', folder:'personal' },
+      { name:'Personal Projects (D:)', icon:'drive', type:'Local Disk', blurb:'Personal projects: games, models and hardware.', folder:'personal' },
       { name:'Videos (E:)', icon:'cd', type:'CD-ROM Disc', blurb:'Build video of the MBTA LED map.', open:r=>openApp('media',r) },
       { name:'My Documents', icon:'docfolder', type:'File Folder', blurb:'About, experience, résumé.', folder:'mydocs' },
       { name:'Control Panel', icon:'control', type:'System Folder', blurb:'Change the desktop, view system properties.', folder:'control' },
@@ -671,7 +679,7 @@ const FOLDERS = {
     desc:`<p><b>${RESEARCH.length + 1} projects</b></p><p>Causal inference, urban economics and policy research, including an NBER working paper.</p>`,
     items: ALL_PROJECTS.filter(p=>p.group==='Research').map(p=>({ name:shortName(p.title), icon:PROJECT_ICON(p.title), type:p.meta.split(' · ')[0], date:p.year, blurb:p.title, open:r=>openProject(p,r) })) }),
   personal: () => ({ title:'Personal Projects (D:)', path:'D:\\Personal Projects', icon:'drive', parent:'mycomputer',
-    desc:`<p><b>${PERSONAL.length} projects</b></p><p>Most portfolios are full of coursework. These are fun, self-driven projects.</p>`,
+    desc:`<p><b>${PERSONAL.length} projects</b></p><p>Personal projects: games, models and hardware.</p>`,
     items: ALL_PROJECTS.filter(p=>p.group!=='Research').map(p=>({ name:shortName(p.title), icon:PROJECT_ICON(p.title), type:p.meta.split(' · ')[0], date:p.year, blurb:p.title, open:r=>openProject(p,r) })) }),
   mydocs: () => ({ title:'My Documents', path:'C:\\My Documents', icon:'docfolder', parent:'mycomputer',
     desc:`<p>Personal documents.</p>`,
@@ -694,7 +702,7 @@ const FOLDERS = {
   recycle: () => ({ title:'Recycle Bin', path:'Recycle Bin', icon:'recyclefull',
     desc:`<p>This folder contains files you have deleted from your computer.</p>`,
     items:[
-      { name:'coursework_portfolio.zip', icon:'zip', type:'Compressed Folder', blurb:'Deleted: this portfolio is self-driven projects only.', open:binErr },
+      { name:'coursework_portfolio.zip', icon:'zip', type:'Compressed Folder', blurb:'Deleted: the class assignments live on the transcript instead.', open:binErr },
       { name:'generic_resume_template.doc', icon:'doc', type:'WordPad Document', open:binErr },
       { name:'chart_with_default_colors.xls', icon:'xls', type:'Spreadsheet', open:binErr },
       { name:'p_hacking_notes.txt', icon:'notepad', type:'Text Document', blurb:'Never.', open:binErr },
@@ -729,14 +737,15 @@ const ABOUT_TXT = `ABOUT ME.TXT
 ============
 
 Zach Winship
-Quantitative Economist and Data Analyst
+MS in Quantitative Economics, New York University
 
 I recently graduated from Bentley University with a BS in
 Quantitative Economics and a double minor in Mathematics and
 Data Technologies. I'm now pursuing the MS in Quantitative
 Economics at New York University, with expected graduation in
-May 2027, where I also work as a teaching assistant for
-Introductory Macroeconomics.
+May 2027. This year I'm a research assistant to Professor Anna
+Vitali and a teaching assistant for Introductory
+Macroeconomics.
 
 My work sits at the intersection of data and policy. I'm drawn
 to questions where careful empirical methods can cut through
@@ -750,7 +759,7 @@ with work that's actually interesting to look at.
 Outside of coursework I spend a lot of time on personal
 projects. I'm especially interested in transportation
 economics, spatial analytics, optimization problems, and the
-emerging field of Homo silicus -- using large language models as
+emerging field of Homo silicus: using large language models as
 simulated economic agents to replicate and extend classic
 experiments in economics and game theory. I also write,
 bi-monthly, at Unlikely Instruments, a blog about unusual proxy
@@ -761,11 +770,11 @@ Feel free to look around. I had a lot of fun building these.
 EDUCATION
 ---------
 MS in Quantitative Economics
-  New York University -- Starting Summer 2026, expected May 2027
+  New York University. Summer 2026 to May 2027 (expected)
   NYU Economics Teaching Fellowship, Summer 2026.
 
 BS in Quantitative Economics
-  Bentley University -- Graduated May 2026
+  Bentley University. Graduated May 2026
   Double Minor in Mathematics and Data Technologies. GPA: 3.74.
 
 SKILLS
@@ -788,7 +797,7 @@ const APPS = {
   recycle:    { title:'Recycle Bin', icon:'recyclefull', w:580, h:360, render:w=>explorer(w, FOLDERS.recycle()) },
 
   notepad: { title:'About Me.txt - Notepad', icon:'notepad', w:560, h:440, render(w){
-    let wrap = false;
+    let wrap = isSmall();
     const stamp = () => new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}) + ' ' + new Date().toLocaleDateString('en-US');
     const draw = () => {
       const val = w.body.querySelector('textarea') ? w.body.querySelector('textarea').value : ABOUT_TXT;
@@ -812,7 +821,7 @@ const APPS = {
         <button class="b">B</button><button class="b" style="font-style:italic">I</button><button class="b" style="text-decoration:underline">U</button></div>
       <div class="ruler"></div>
       <div class="wp-page"><div class="wp-doc">
-        <h1>Zach Winship: Experience</h1><div class="when">Quantitative Economist and Data Analyst</div>
+        <h1>Zach Winship: Experience</h1><div class="when">MS in Quantitative Economics, New York University</div>
         ${EXPERIENCE.map(e=>`<h2>${esc(e.role)}</h2><div><b>${esc(e.org)}</b> &nbsp;·&nbsp; <span class="when">${esc(e.when)}</span></div><p style="margin:4px 0 0">${esc(e.body)}</p>${e.links?e.links.map(l=>`<p style="margin:2px 0"><a href="${l[0]}" target="_blank" rel="noopener">${esc(l[1])}</a></p>`).join(''):''}`).join('')}
       </div></div>
       <div class="status-bar"><p class="status-bar-field">For Help, press F1</p><p class="status-bar-field" style="flex:0 0 60px">NUM</p></div>`;
@@ -830,7 +839,7 @@ const APPS = {
 
   media: { title:'Media Player', icon:'media', w:720, h:500, minW:420, minH:300, render(w){
     let cur = 0;
-    w.body.innerHTML = menubar([['File',[['Open PDF','pdf'],'-',['Exit','close']]],['View',[]],['Play',[['Play/Pause','pp']]],['Favorites',[]],['Go',[]],['Help',[]]])
+    w.body.innerHTML = menubar([['File',[['Exit','close']]],['View',[]],['Play',[['Play/Pause','pp']]],['Favorites',[]],['Go',[]],['Help',[]]])
       + `<div class="mp" style="flex-direction:row;gap:4px">
           <div class="mp" style="flex:1">
             <div class="mp-screen"><div class="vis"></div></div>
@@ -850,17 +859,17 @@ const APPS = {
     function show(i){
       cur = i; const p = CLIPS[i];
       list.querySelectorAll('div').forEach((d,k)=>d.classList.toggle('sel',k===i));
-      clip.innerHTML = (p.vids||[]).map((v,k)=>`<option value="${k}">${esc(v[1])}</option>`).join('') || '<option>(slides only)</option>';
+      clip.innerHTML = (p.vids||[]).map((v,k)=>`<option value="${k}">${esc(v[1])}</option>`).join('');
       clip.disabled = !p.vids;
       load(p.vids ? ASSET+p.vids[0][0] : null);
       w.body.querySelector('[data-desc]').innerHTML = `<b>${esc(p.title)}</b><br><i>${esc(p.meta)}</i><br><br>${esc(p.body)}<br><br>${p.tags.map(esc).join(' · ')}`;
-      w.body.querySelector('[data-btns]').innerHTML = `${p.pdf?`<button class="default" data-u="${ASSET+p.pdf}">Open PDF Slides</button>`:''}${p.gh?`<button data-u="${p.gh}">View on GitHub</button>`:''}`;
+      w.body.querySelector('[data-btns]').innerHTML = `${p.gh?`<button class="default" data-u="${p.gh}">View on GitHub</button>`:''}`;
       w.body.querySelectorAll('[data-u]').forEach(b=>b.onclick=()=>ext(b.dataset.u));
       w.body.querySelector('[data-info]').textContent = `Clip ${i+1} of ${CLIPS.length}  ·  ${p.title}`;
     }
     clip.onchange = () => { const p = CLIPS[cur]; if (p.vids) { load(ASSET+p.vids[+clip.value][0]); vid().play().catch(()=>{}); } };
     w.body.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{ const v=vid(); if(!v) return; const c=b.dataset.c; if(c==='play') v.play(); if(c==='pause') v.pause(); if(c==='stop'){ v.pause(); v.currentTime=0; } });
-    wireMenubar(w, { pdf:()=>{ const p=CLIPS[cur]; if(p.pdf) ext(ASSET+p.pdf); }, pp:()=>{ const v=vid(); if(v) v.paused?v.play():v.pause(); } });
+    wireMenubar(w, { pp:()=>{ const v=vid(); if(v) v.paused?v.play():v.pause(); } });
     w.onClose = () => { const v=vid(); if(v) v.pause(); };
     show(0);
   }},
@@ -927,13 +936,13 @@ const APPS = {
     paint();
   }},
 
-  welcome: { title:'Welcome', icon:'update', w:620, h:400, noMax:true, render(w){
+  welcome: { title:'Welcome', icon:'update', w:620, h:400, noMax:true, belowIcons:true, render(w){
     const OPTS = [
-      ['user','About Zach','system','<h3>Hi, I\'m Zach.</h3><p>Quantitative economist: Bentley \'26, now in NYU\'s MS in Quantitative Economics (May 2027). I co-authored an NBER working paper on how NYC congestion pricing sped up ambulances.</p><p>Click to open <b>System Properties</b>.</p>'],
-      ['drive','Discover My Projects','mycomputer','<h3>Discover my projects</h3><p>Most people have portfolios full of coursework. This one is made up entirely of fun, self-driven projects.</p><p>Open <b>My Computer</b> to browse the Research (C:) and Personal Projects (D:) drives.</p>'],
+      ['user','About Zach','system','<h3>Hi, I\'m Zach.</h3><p>Quantitative economist: Bentley \'26, now in NYU\'s MS in Quantitative Economics (May 2027), where I\'m a research assistant to Professor Anna Vitali and a teaching assistant for Introductory Macroeconomics. I co-authored an NBER working paper on how NYC congestion pricing sped up ambulances.</p><p>Click to open <b>System Properties</b>.</p>'],
+      ['drive','Discover My Projects','mycomputer','<h3>Discover my projects</h3><p>Research papers and software, plus personal projects: games, models and hardware.</p><p>Open <b>My Computer</b> to browse the Research (C:) and Personal Projects (D:) drives.</p>'],
       ['media','Watch the LED map build','media','<h3>Media Player</h3><p>A build video of the MBTA live LED map.</p>'],
       ['globe','Connect to the Internet','ie','<h3>Connect to the Internet</h3><p>Visit Zach\'s Home Page: links, media coverage, and the Unlikely Instruments blog.</p>'],
-      ['floppy','Read My Résumé','resume','<h3>Résumé</h3><p>Open the Summer 2026 résumé (PDF).</p>'],
+      ['floppy','Read My Résumé','resume','<h3>Résumé</h3><p>Open my résumé (PDF).</p>'],
       ['mail','Register Now (Email Me)','mail','<h3>Register now</h3><p>Send Zach an email with Outlook Express.</p>'],
     ];
     w.body.innerHTML = `<div class="welcome"><div class="wl-banner">Welcome to <span>Zach 98</span></div><div class="wl-body">
@@ -1009,8 +1018,10 @@ const APPS = {
     w.body.innerHTML = `<div class="dos" tabindex="0"></div>`;
     const out = w.body.querySelector('.dos');
     const print = s => { out.insertAdjacentHTML('beforeend', s+'\n'); };
-    let line;
-    const prompt = () => { out.insertAdjacentHTML('beforeend', `<span>C:\\ZACH&gt;</span><input spellcheck="false" autocomplete="off">`); line = out.querySelector('input:last-of-type'); line.focus(); out.scrollTop = out.scrollHeight;
+    let line, cwd = ['ZACH'];
+    const cwdPath = () => 'C:\\' + cwd.join('\\');
+    const SUBDIRS = { '':['ZACH'], 'ZACH':['RESEARCH','PROJECTS'] };
+    const prompt = () => { out.insertAdjacentHTML('beforeend', `<span>${cwdPath()}&gt;</span><input spellcheck="false" autocomplete="off">`); line = out.querySelector('input:last-of-type'); line.focus(); out.scrollTop = out.scrollHeight;
       let hp = hist.length;
       line.onkeydown = e => {
         if (e.key==='ArrowUp' && hist.length){ e.preventDefault(); hp = Math.max(0, hp-1); line.value = hist[hp]; return; }
@@ -1020,15 +1031,30 @@ const APPS = {
     const exec = v => {
       const c = v.toLowerCase().split(/\s+/)[0];
       if (!c) {}
-      else if (c==='help') print('Commands: DIR, TYPE ABOUT.TXT, TREE, PROJECTS, RESUME, CONTACT, MEM, ECHO, VER, CLS, WIN, WII, EXIT');
-      else if (c==='dir') print(` Volume in drive C is ZACH98\n Directory of C:\\ZACH\n\nABOUT    TXT     2,048  05-01-26\nRESUME   PDF    84,417  06-01-26\nRESEARCH     &lt;DIR&gt;        07-07-26\nPROJECTS     &lt;DIR&gt;        08-15-26\nPRESENT      &lt;DIR&gt;        04-20-26\n        2 file(s)     86,465 bytes\n        3 dir(s)   NBER 35,414 MB free`);
+      else if (c==='help') print('Commands: DIR, CD, TYPE ABOUT.TXT, TREE, PROJECTS, RESUME, CONTACT, MEM, ECHO, VER, CLS, WIN, WII, EXIT');
+      else if (c==='dir'){ const here = cwd.join('\\'), head = ` Volume in drive C is ZACH98\n Directory of ${cwdPath()}\n\n`;
+        const dirLine = (n,d) => `${n.padEnd(13)}&lt;DIR&gt;        ${d}`;
+        if (here==='ZACH') print(head + `ABOUT    TXT     2,048  05-01-26\nRESUME   PDF    84,417  11-01-26\n${dirLine('RESEARCH','07-07-26')}\n${dirLine('PROJECTS','08-15-26')}\n        2 file(s)     86,465 bytes\n        2 dir(s)   NBER 35,414 MB free`);
+        else if (here==='') print(head + `${dirLine('ZACH','05-01-26')}\n        0 file(s)          0 bytes\n        1 dir(s)   NBER 35,414 MB free`);
+        else { const list = here==='ZACH\\RESEARCH' ? [...RESEARCH, SOFTWARE] : PERSONAL;
+          print(head + `${dirLine('.','07-07-26')}\n${dirLine('..','07-07-26')}\n${list.map(p=>esc(shortName(p.title).toUpperCase().padEnd(40))+'&lt;DIR&gt;  '+p.year).join('\n')}\n        0 file(s)          0 bytes\n        ${list.length+2} dir(s)   NBER 35,414 MB free`); } }
       else if (c==='type'){ const f = (v.split(/\s+/)[1]||'').toLowerCase();
         if (!f) print('Required parameter missing');
         else if (f.startsWith('about')) print(esc(ABOUT_TXT));
         else if (f.startsWith('resume')) print('This file is a PDF. Opening it in the PDF Viewer instead...'), openApp('resume');
         else print('File not found - ' + esc(f.toUpperCase())); }
-      else if (c==='tree') print(`Folder PATH listing for volume ZACH98\nC:.\n├───RESEARCH\n${RESEARCH.map(p=>'│   ├───'+esc(shortName(p.title)).toUpperCase()).join('\n')}\n├───PROJECTS\n${PERSONAL.map(p=>'│   ├───'+esc(shortName(p.title)).toUpperCase()).join('\n')}\n└───PRESENT`);
-      else if (c==='cd' || c==='cd..' || c==='chdir') print(v.split(/\s+/)[1] ? 'Invalid directory' : 'C:\\ZACH');
+      else if (c==='tree'){ const research = [...RESEARCH, SOFTWARE];
+        const kids = (list, pre) => list.map((p,i)=>pre+(i===list.length-1?'└───':'├───')+esc(shortName(p.title).toUpperCase())).join('\n');
+        print(`Folder PATH listing for volume ZACH98\nC:.\n├───RESEARCH\n${kids(research,'│   ')}\n└───PROJECTS\n${kids(PERSONAL,'    ')}`); }
+      else if (c==='cd' || c==='chdir' || /^(cd|chdir)[.\\]/.test(c)){
+        const arg = (v.replace(/^\s*(cd|chdir)/i,'').trim()).toUpperCase().replace(/^C:/,'');
+        if (!arg) print(cwdPath());
+        else if (arg==='\\') cwd = [];
+        else if (arg==='..' || arg==='..\\'){ if (cwd.length) cwd.pop(); }
+        else { const parts = arg.replace(/\\$/,'').split('\\'); let next = arg.startsWith('\\') ? [] : cwd.slice(), ok = true;
+          for (const part of parts.filter(Boolean)){ if (part==='..'){ next.pop(); continue; } if (part==='.') continue;
+            if ((SUBDIRS[next.join('\\')]||[]).includes(part)) next.push(part); else { ok = false; break; } }
+          if (ok) cwd = next; else print('Invalid directory'); } }
       else if (c==='echo') print(esc(v.slice(5)) || 'ECHO is on');
       else if (c==='mem') print(`\nMemory Type        Total  =   Used  +   Free\n----------------  -------   -------   -------\nConventional          640K      35K      605K\nEconometrics       65,536K   65,536K        0K\n\nLargest executable program size       605K (619,520 bytes)`);
       else if (c==='date' || c==='time') print('Current ' + c + ' is ' + (c==='date' ? new Date().toLocaleDateString('en-US',{weekday:'short',month:'2-digit',day:'2-digit',year:'numeric'}) : new Date().toLocaleTimeString('en-US')));
@@ -1036,7 +1062,8 @@ const APPS = {
       else if (c==='win') { print('Starting Zach 98...'); setTimeout(()=>{ if (w.el.classList.contains('max')) w.el.querySelector('[aria-label=Restore]')?.click(); }, 300); }
       else if (c==='deltree') print('Nice try.');
       else if (c==='format'){ print('WARNING: ALL DATA ON NON-REMOVABLE DISK\nDRIVE C: WILL BE LOST!\nProceed with Format (Y/N)? Y');
-        let pct = 0; const id = setInterval(()=>{ pct += 7; if (pct >= 100){ clearInterval(id); if (w.el.isConnected){ bsod(); print('\nFormat aborted. (Your portfolio is safe.)'); prompt(); } return; } out.lastChild && out.insertAdjacentHTML('beforeend', `\r${pct} percent completed.\n`); out.scrollTop = out.scrollHeight; }, 160); return; }
+        const prog = document.createElement('span'); out.appendChild(prog);
+        let pct = 0; const id = setInterval(()=>{ pct += 7; if (pct >= 100){ clearInterval(id); prog.textContent = '100 percent completed.'; if (w.el.isConnected){ bsod(); print('\n\nFormat aborted. (Your portfolio is safe.)'); prompt(); } return; } prog.textContent = `${pct} percent completed.`; out.scrollTop = out.scrollHeight; }, 160); return; }
       else if (c==='ver') print('\nZach 98 [Version 4.10.2026]\n');
       else if (c==='cls') out.innerHTML='';
       else if (c==='projects' || c==='dir/p') { print(ALL_PROJECTS.map(p=>`${p.year.padEnd(14)} ${p.title}`).join('\n')); }
@@ -1118,12 +1145,12 @@ function browser(w, start){
     home: { url:'http://www.zwinship.com/~zach/index.htm', title:"Zach's Home Page", html:() => `
       <div class="marq"><span>*** Welcome to Zach's Home Page! *** NBER Working Paper No. 35414 is out! *** Now a grad student at NYU *** Thanks for visiting! ***</span></div>
       <h1>Zach Winship's Home Page</h1>
-      <p class="center"><i>Quantitative Economist &amp; Data Analyst · NYU MS '27 · Bentley '26</i></p>
+      <p class="center"><i>MS in Quantitative Economics, New York University · Bentley '26</i></p>
       <p class="center"><span class="uc"><span>UNDER CONSTRUCTION</span></span></p>
       <hr>
       <table align="center" cellspacing="6"><tr>
         <td style="width:160px;text-align:center"><img src="${ASSET}images/zwinship.png" alt="Zach" width="140" height="140" style="object-fit:cover;border:3px ridge #c0c0c0"><br><small>This is me!</small></td>
-        <td style="max-width:420px">Hi! Welcome to my little corner of the Information Superhighway. I'm an economist who likes careful empirical methods and work that's actually fun to look at. Most portfolios are full of coursework; mine is made up entirely of self-driven projects.<br><br>
+        <td style="max-width:420px">Hi! Welcome to my little corner of the Information Superhighway. I'm an economist who likes careful empirical methods and work that's actually fun to look at. Here you'll find my research, plus personal projects: games, models and hardware.<br><br>
         <b>Cool stuff on this site:</b><ul><li><a data-go="research">My Research</a> <span class="new blink">NEW!</span></li><li><a data-go="media">In the News</a></li><li><a data-go="blog">Unlikely Instruments</a> (my blog)</li><li><a data-app="mycomputer">All my projects</a></li><li><a data-go="search">ZachSearch!</a> (search my stuff)</li><li><a data-go="guestbook">Sign my guestbook</a></li></ul></td>
       </tr></table>
       <hr>
@@ -1147,7 +1174,6 @@ function browser(w, start){
     media: { url:'http://www.zwinship.com/~zach/news.htm', title:'In the News', html:() => `
       <p><a data-go="home">&laquo; Back to Home</a></p><h1>In the News</h1><p class="center"><b>Congestion Pricing and EMS Response Time</b> (NBER WP No. 35414)</p><hr>
       <table align="center"><tr><th>Outlet</th><th>Story</th></tr>
-      <tr><td>NBER Digest</td><td>forthcoming, Sept. 2026</td></tr><tr><td>ProMarket, Chicago Booth Stigler Center</td><td>forthcoming</td></tr>
       ${MEDIA.map(m=>`<tr><td><b>${m[1]}</b></td><td><a data-href="${m[0]}">${esc(m[2])}</a></td></tr>`).join('')}</table>` },
     blog: { url:'http://www.unlikelyinstruments.com/', title:'Unlikely Instruments', html:() => `
       <p><a data-go="home">&laquo; Back to Zach's Home Page</a></p>
@@ -1441,7 +1467,12 @@ document.querySelectorAll('.quick [data-open]').forEach(b => b.onclick = () => {
   if (b.id==='showDesk'){ wins.forEach(w=>{ w.el.classList.add('min'); w.task.classList.remove('on'); }); active=null; return; }
   openApp(b.dataset.open, b.getBoundingClientRect());
 });
-addEventListener('keydown', e => { if (e.key==='Escape') closeStart(); if (e.key==='Meta' ) { e.preventDefault(); startBtn.click(); } });
+// Win/Cmd key opens Start on release, but only when pressed alone (so Cmd+C and friends don't pop it).
+let metaAlone = false;
+addEventListener('keydown', e => { if (e.key==='Escape') closeStart(); if (e.key==='Meta'){ if (!e.repeat) metaAlone = true; } else metaAlone = false; });
+addEventListener('pointerdown', () => { metaAlone = false; }, true);
+addEventListener('keyup', e => { if (e.key==='Meta'){ if (metaAlone){ e.preventDefault(); startBtn.click(); } metaAlone = false; } });
+addEventListener('blur', () => { metaAlone = false; });
 
 /* =====================================================================
    CLOCK, WALLPAPER, BOOT

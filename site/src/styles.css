@@ -14,9 +14,10 @@ html.sheet-open { overflow: hidden; }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 19px/1.55 var(--sans); }
 img { max-width: 100%; }
 a { color: var(--ink); text-underline-offset: 3px; text-decoration-thickness: 2px; }
-a:hover { color: #003da5; }
+@media (hover: hover) { a:hover { color: #003da5; } }
 :focus-visible { outline: 3px solid #003da5; outline-offset: 2px; }
 button { font: inherit; }
+a, button { -webkit-tap-highlight-color: transparent; }
 
 .skip { position: absolute; left: -9999px; top: 8px; z-index: 50; background: #fff; padding: 8px 12px; }
 .skip:focus { left: 8px; }
@@ -42,10 +43,10 @@ main:focus { outline: none; }
 .route-line { list-style: none; margin: 0; padding: 0; display: flex; align-items: center; }
 .route-line li { display: flex; align-items: center; flex: 1 1 0; min-width: 0; }
 .route-line li:last-child { flex: 0 0 auto; }
-.route-line a { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; text-decoration: none; color: var(--ink); font-weight: 700; font-size: 16px; white-space: nowrap; }
-.route-line a:hover .label { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; }
+.route-line a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; text-decoration: none; color: var(--ink); font-weight: 700; font-size: 16px; white-space: nowrap; }
+@media (hover: hover) { .route-line a:hover .label { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; } }
 .route-line .dot { position: relative; width: 20px; height: 20px; border-radius: 50%; border: 4px solid var(--c); background: #fff; flex: none; transition: transform 0.2s; }
-.route-line a:hover .dot { transform: scale(1.15); }
+@media (hover: hover) { .route-line a:hover .dot { transform: scale(1.15); } }
 .route-line .marker { position: absolute; inset: -4px; border-radius: 50%; background: #161616; border: 4px solid var(--c); box-sizing: border-box; }
 .route-line .seg { flex: 1 1 auto; height: 6px; margin: 0 10px; background: var(--c); border-radius: 3px; min-width: 12px; }
 .route-name { display: none; }
@@ -71,7 +72,7 @@ main { max-width: 1040px; margin: 0 auto; padding: 56px 32px 40px; scroll-margin
 .stop::before { content: ''; position: absolute; left: -61px; top: 5px; width: 22px; height: 22px; border-radius: 50%; background: #fff; border: 5px solid var(--c); transition: transform 0.2s ease-out; }
 .stop h3 { margin: 0 0 4px; font-size: 23px; line-height: 1.25; font-weight: 800; text-wrap: balance; }
 .stop h3 a { text-decoration-color: color-mix(in srgb, var(--c) 70%, transparent); }
-.stop h3 a:hover { color: var(--ink); text-decoration-color: var(--ink); }
+@media (hover: hover) { .stop h3 a:hover { color: var(--ink); text-decoration-color: var(--ink); } }
 .stop .sub { margin: 0 0 2px; color: var(--ink-2); font-size: 17px; }
 .stop .blurb { margin: 0; }
 .item-links { margin: 0; display: flex; flex-wrap: wrap; gap: 0 18px; }
@@ -82,10 +83,11 @@ main { max-width: 1040px; margin: 0 auto; padding: 56px 32px 40px; scroll-margin
 .foot-in { max-width: 1040px; margin: 0 auto; padding: 56px 32px 72px; display: grid; gap: 14px; }
 .foot p { margin: 0; }
 .foot a { color: #fff; }
-.foot a:hover { color: #ffc72c; }
+@media (hover: hover) { .foot a:hover { color: #ffc72c; } }
 .foot :focus-visible { outline-color: #fff; }
 .foot-name { font-size: 34px; font-weight: 900; letter-spacing: -0.02em; }
-.foot-links, .foot-others { display: flex; flex-wrap: wrap; gap: 4px 22px; }
+.foot-links, .foot-others { display: flex; flex-wrap: wrap; gap: 0 22px; }
+.foot-links a { display: inline-block; padding-block: 8px; }
 .foot-others { margin-top: 8px !important; }
 .foot-others a { color: #c9c9c9; }
 
@@ -106,7 +108,7 @@ main { max-width: 1040px; margin: 0 auto; padding: 56px 32px 40px; scroll-margin
   font-size: 16px; font-weight: 700;
 }
 .sheet-close { border: 2px solid var(--ink); background: #fff; color: var(--ink); border-radius: 999px; padding: 6px 18px; min-height: 44px; font-weight: 700; cursor: pointer; }
-.sheet-close:hover { background: var(--ink); color: #fff; }
+@media (hover: hover) { .sheet-close:hover { background: var(--ink); color: #fff; } }
 .sheet-line { display: inline-flex; align-items: center; gap: 10px; }
 .sheet-line i { width: 16px; height: 16px; border-radius: 50%; background: var(--c); }
 .sheet-count { margin-left: auto; color: var(--ink-2); font-weight: 500; }
@@ -118,7 +120,7 @@ main { max-width: 1040px; margin: 0 auto; padding: 56px 32px 40px; scroll-margin
 .page .sub { margin: 0 0 24px; color: var(--ink-2); }
 .page > p { margin: 0 0 18px; }
 .page h3 { margin: 40px 0 10px; font-size: 24px; font-weight: 800; }
-.page-img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: cover; margin: 0 0 24px; }
+.page-img { display: block; width: 100%; height: auto; max-height: 70vh; object-fit: contain; background: #f2f3f4; margin: 0 0 24px; }
 .install { margin: 8px 0 24px; }
 .install div { display: grid; grid-template-columns: 80px minmax(0, 1fr); gap: 12px; padding: 6px 0; }
 .install dt { font-weight: 700; }
@@ -131,9 +133,9 @@ main { max-width: 1040px; margin: 0 auto; padding: 56px 32px 40px; scroll-margin
 .next-prev { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 56px; padding-top: 34px; max-width: 720px; }
 .next-prev::before { content: ''; position: absolute; left: 0; right: 0; top: 8px; height: 8px; border-radius: 4px; background: var(--c); }
 .next-prev a { position: relative; display: block; text-decoration: none; color: var(--ink); line-height: 1.35; font-weight: 700; font-size: 18px; }
-.next-prev a:hover { color: #003da5; }
+@media (hover: hover) { .next-prev a:hover { color: #003da5; } }
 .next-prev a::before { content: ''; position: absolute; top: -34px; width: 24px; height: 24px; border-radius: 50%; background: #fff; border: 5px solid var(--c); transition: transform 0.2s; }
-.next-prev a:hover::before { transform: scale(1.15); }
+@media (hover: hover) { .next-prev a:hover::before { transform: scale(1.15); } }
 .next-prev .prev::before { left: -2px; }
 .next-prev .next { text-align: right; }
 .next-prev .next::before { right: -2px; }
@@ -150,7 +152,7 @@ main { max-width: 1040px; margin: 0 auto; padding: 56px 32px 40px; scroll-margin
 
 .foot-fun { margin-top: 18px !important; }
 .foot-fun a { display: inline-flex; align-items: center; min-height: 48px; padding: 0 24px; border-radius: 999px; background: #fff; color: #161616; font-weight: 800; text-decoration: none; }
-.foot-fun a:hover { background: #ffc72c; color: #161616; }
+@media (hover: hover) { .foot-fun a:hover { background: #ffc72c; color: #161616; } }
 .fun-head { max-width: 1040px; margin: 0 auto; padding: 28px 32px 0; font-weight: 900; font-size: 22px; letter-spacing: -0.02em; }
 .fun-head a { text-decoration: none; }
 .fun-main { max-width: 1040px; margin: 0 auto; padding: 48px 32px 80px; }
@@ -158,10 +160,11 @@ main { max-width: 1040px; margin: 0 auto; padding: 56px 32px 40px; scroll-margin
 .fun-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; }
 .fun-list a { display: block; text-decoration: none; color: var(--ink); }
 .fun-list img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 10px; border: 1px solid var(--rule); margin-bottom: 16px; transition: transform 0.25s ease-out; }
-.fun-list a:hover img { transform: scale(1.02); }
+@media (hover: hover) { .fun-list a:hover img { transform: scale(1.02); } }
 .fun-name { display: block; font-size: 26px; font-weight: 800; letter-spacing: -0.01em; }
 .fun-line { display: block; color: var(--ink-2); }
 .fun-back { margin: 48px 0 0; }
+.fun-back a, .fun-head a { display: inline-block; padding-block: 10px; }
 
 /* ---------- small screens ---------- */
 
@@ -170,7 +173,7 @@ main { max-width: 1040px; margin: 0 auto; padding: 56px 32px 40px; scroll-margin
   .portrait { grid-row: 1; width: 112px; margin-bottom: 20px; }
   .role { font-size: 21px; }
   .route-in { padding: 10px 20px; }
-  main { padding: 36px 20px 88px; }
+  main { padding: 36px 20px 40px; }
   .line { padding-left: 52px; }
   .line .track { left: 12px; width: 8px; }
   .line h2 { font-size: 30px; }

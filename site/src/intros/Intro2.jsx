@@ -217,7 +217,8 @@ export default function Intro2({ onDone }) {
         });
         clone.current.style.opacity = String(EASE_FLAT(prog(t, CLONE_AT, CLONE)));
         // The last line ends as a disc under the last dot; drop it once the dot covers it.
-        if (t > CLONE_AT + CLONE) paths.current[4].style.opacity = '0';
+        // Education has no segment in the bar: fade its line out while it folds, so it never smudges.
+        paths.current[4].style.opacity = String(1 - EASE_FLAT(prog(t, FLAT_AT + 0.25, 0.35)));
       }
       white.current.style.opacity = String(1 - prog(t, COVER_AT, COVER));
 

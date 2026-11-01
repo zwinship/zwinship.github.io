@@ -2,7 +2,7 @@
 const RESEARCH = [
  {
   "id": "nber",
-  "title": "Congestion Pricing and EMS Response Time: Evidence From New York City",
+  "title": "Congestion Pricing and Emergency Medical Service Response: Evidence from New York City",
   "year": "2026",
   "badge": "NBER WP No. 35414",
   "meta": "Urban Economics · Health Policy · Causal Inference",
@@ -26,7 +26,7 @@ const RESEARCH = [
   "title": "Traffic, Transit, and the Toll: Causal Evidence from NYC's Congestion Pricing",
   "year": "2026",
   "meta": "Urban Economics · Causal Inference · Policy Research",
-  "body": "My senior capstone at Bentley, advised by Dhaval Dave. A difference-in-discontinuities design at the 60th Street boundary, with distance measured along the road network, using C2Smart traffic camera data and MTA ridership. Near the boundary, passenger vehicles fell 20.6% and trucks 18.1%, while pedestrians rose 13.5% and bicycles 19.8%. Ridership at boundary subway stations fell 24.7%, which cuts against a simple shift from cars to transit. Presented at Bentley Undergraduate Research Day.",
+  "body": "A difference-in-discontinuities design at the 60th Street boundary, with distance measured along the road network, using C2Smart traffic camera data and MTA ridership. Near the boundary, passenger vehicles fell 20.6% and trucks 18.1%, while pedestrians rose 13.5% and bicycles 19.8%. Ridership at boundary subway stations fell 24.7%, which cuts against a simple shift from cars to transit. Presented at Bentley Undergraduate Research Day.",
   "tags": [
    "Python",
    "Stata",
@@ -50,7 +50,7 @@ const RESEARCH = [
   "title": "The Real Price of Clean Air: EPA Ozone Regulation",
   "year": "2025",
   "meta": "Regulatory Economics · Causal Inference · Policy",
-  "body": "Uses the EPA's 0.071 ppm ozone threshold in a regression discontinuity design to estimate the revenue impact on U.S. manufacturing firms: an estimated $277M a year in lost revenue, which the EPA's own analysis does not count.",
+  "body": "Uses the EPA's 0.071 ppm ozone threshold in a regression discontinuity design to estimate the revenue impact on US manufacturing firms: an estimated $277M a year in lost revenue, which the EPA's own analysis does not count.",
   "tags": [
    "Python",
    "Econometrics",
@@ -169,7 +169,7 @@ const SOFTWARE = {
  "year": "2026",
  "badge": "v1",
  "meta": "Software · Spatial Econometrics · Python and R",
- "body": "rd2dnet extends rd2d (Cattaneo, Titiunik and Yu) so that distance to the boundary is measured along streets instead of in straight lines. You choose the metric: metres, travel time, a land-use contrast, a penalty for switching road class, or your own matrix. Estimation, robust bias-corrected inference, uniform bands and the bandwidth selector follow rd2d; the density test follows rddensity. Cluster-robust errors default to CR2. It ships for Python and R with the same functions and the same numbers on the bundled data; a Stata port is in testing.",
+ "body": "rd2dnet extends rd2d (Cattaneo, Titiunik and Yu) so that distance to the boundary is measured along streets instead of in straight lines. You choose the metric: meters, travel time, a land-use contrast, a penalty for switching road class, or your own matrix. Estimation, robust bias-corrected inference, uniform bands and the bandwidth selector follow rd2d; the density test follows rddensity. Cluster-robust errors default to CR2. It ships for Python and R with the same functions and the same numbers on the bundled data; a Stata port is in testing.",
  "credit": "Built on rd2d by Matias D. Cattaneo, Rocío Titiunik and Ruiqi Rae Yu. Independent project, not affiliated with or endorsed by the rd2d authors.",
  "status": "Version 1 is out for Python (PyPI) and R. Version 2 is in development and due soon.",
  "tags": [
@@ -312,7 +312,7 @@ const EXPERIENCE = [
  {
   "role": "Research Assistant to Professor Anna Vitali",
   "org": "New York University, Department of Economics",
-  "when": "Sep 2026 to May 2027",
+  "when": "Sep 2026 to present",
   "body": "Research assistant on two development field projects in Uganda: one on firm networks and mobility in Kampala's markets, one on insurance within small firms. I build and maintain the Stata data pipelines: survey cleaning, high-frequency checks, preloads for later survey rounds, and the market listing analysis."
  },
  {
@@ -377,7 +377,7 @@ const PROFILE = {
   {
    "degree": "BS in Quantitative Economics",
    "school": "Bentley University",
-   "when": "Graduated May 2026",
+   "when": "May 2026",
    "note": "Minors in Mathematics and Data Technologies. GPA 3.74, on the Dean's or President's List every semester. Coursework in econometrics, statistical analysis, data analytics, mathematical economics and public policy analysis."
   }
  ],
