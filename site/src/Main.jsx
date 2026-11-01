@@ -143,10 +143,8 @@ export default function Main() {
             <A href={LINKS.linkedin}>LinkedIn</A>
             <A href={LINKS.resume}>CV</A>
           </p>
-          <p className="foot-others">
-            <a href="/" onClick={e => go(e, '')}>Back to the map</a>
-            <a href="/play/wii/">Living room, 2006</a>
-            <a href="/play/win98/">Family computer, 1998</a>
+          <p className="foot-fun">
+            <a href="#/fun" onClick={e => go(e, '#/fun')}>Fun versions</a>
           </p>
         </div>
       </footer>

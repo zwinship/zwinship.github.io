@@ -1,6 +1,6 @@
 // Hash routes:
-//   (no hash)       the landing page
-//   #/              the main page
+//   (no hash), #/   the main page (a short intro plays first on a bare visit)
+//   #/fun           the page that leads to the Wii and Windows 98 versions
 //   #/<section>     the main page, at that section
 //   #/<item>        the main page with that item open on top
 import { useEffect, useState } from 'react';
@@ -8,18 +8,27 @@ import { animate } from 'motion/react';
 import { lineById, pageById } from './data.js';
 
 export function parse(hash = location.hash) {
-  if (!hash || hash === '#') return { view: 'landing' };
+  if (!hash || hash === '#') return { view: 'main' };
   const m = hash.match(/^#\/([\w-]*)$/);
   const id = m ? m[1] : hash.slice(1);
   if (pageById(id)) return { view: 'main', item: id };
   if (lineById(id)) return { view: 'main', section: id };
+  if (id === 'fun') return { view: 'fun' };
   return { view: 'main' };
 }
 
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 
 const listeners = new Set();
-function emit() { const r = parse(); listeners.forEach(fn => fn(r)); }
+// hashchange and popstate can both fire for one navigation; only pass on real changes.
+let last = JSON.stringify(parse()) + location.hash;
+function emit() {
+  const r = parse();
+  const key = JSON.stringify(r) + location.hash;
+  if (key === last) return;
+  last = key;
+  listeners.forEach(fn => fn(r));
+}
 addEventListener('hashchange', emit);
 addEventListener('popstate', emit);
 
@@ -28,6 +37,7 @@ export function navigate(hash) {
     history.pushState(null, '', location.pathname + location.search);
     emit();
   } else if (location.hash === hash) {
+    last = '';
     emit();
   } else {
     location.hash = hash;

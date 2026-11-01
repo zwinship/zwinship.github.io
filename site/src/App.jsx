@@ -1,15 +1,19 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { AnimatePresence, MotionConfig, motion } from 'motion/react';
 import Main from './Main.jsx';
 import ItemSheet from './ItemSheet.jsx';
-import { LANDINGS, DEFAULT_LANDING } from './landings/index.js';
+import Intro from './Intro.jsx';
+import FunPage from './FunPage.jsx';
 import { lineById, pageById } from './data.js';
 import { navigate, reduceMotion, scrollToSection, scrollToY, useRoute } from './router.js';
 
-const landingKey = () => {
-  const q = new URLSearchParams(location.search).get('landing');
-  return q && LANDINGS[q] ? q : DEFAULT_LANDING;
-};
+// The intro plays on a bare visit to the home page, once per browser tab.
+function shouldPlayIntro() {
+  if (location.hash && location.hash !== '#' && location.hash !== '#/') return false;
+  if (reduceMotion()) return false;
+  try { if (sessionStorage.getItem('intro-seen')) return false; sessionStorage.setItem('intro-seen', '1'); } catch { /* storage blocked */ }
+  return true;
+}
 
 export default function App() {
   const route = useRoute();
@@ -19,7 +23,8 @@ export default function App() {
   const savedScroll = useRef(0);
   const savedFocus = useRef(null);
   const [dir, setDir] = useState(1);
-  const Landing = LANDINGS[landingKey()];
+  const [intro, setIntro] = useState(shouldPlayIntro);
+  const endIntro = useCallback(() => setIntro(false), []);
 
   // Main scrolls itself into place when it mounts (see Main.jsx); this handles moves while it is shown.
   useLayoutEffect(() => {
@@ -34,6 +39,7 @@ export default function App() {
     }
     if (route.item) return;                  // moving between items
     if (was.item) {                          // closing an item
+      document.documentElement.classList.remove('sheet-open');
       const f = savedFocus.current;
       requestAnimationFrame(() => (f && document.contains(f) ? f : document.getElementById('main'))?.focus({ preventScroll: true }));
       if (closeMode.current === 'replace' && route.section) scrollToSection(route.section, { instant: true });
@@ -47,7 +53,8 @@ export default function App() {
 
   useEffect(() => {
     document.title = route.item ? `${pageById(route.item).title}, Zach Winship`
-      : route.section ? `${lineById(route.section).name}, Zach Winship` : 'Zach Winship';
+      : route.section ? `${lineById(route.section).name}, Zach Winship`
+        : route.view === 'fun' ? 'Fun versions, Zach Winship' : 'Zach Winship';
   }, [route]);
 
   // Lock and silence the page behind an open item.
@@ -62,20 +69,17 @@ export default function App() {
     else { closeMode.current = 'replace'; location.replace(`#/${pageById(route.item).line.id}`); }
   };
   const goItem = (id, d) => { setDir(d); location.replace(`#/${id}`); };
+  const fade = { duration: reduceMotion() ? 0 : 0.25 };
 
   return (
     <MotionConfig reducedMotion="user">
       <AnimatePresence mode="wait" initial={false}>
-        {route.view === 'landing' ? (
-          <motion.div key="landing" className="landing-wrap"
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            transition={{ duration: reduceMotion() ? 0 : 0.22 }}>
-            <Landing onGo={navigate} />
+        {route.view === 'fun' ? (
+          <motion.div key="fun" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={fade}>
+            <FunPage />
           </motion.div>
         ) : (
-          <motion.div key="main" id="page"
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            transition={{ duration: reduceMotion() ? 0 : 0.3 }}>
+          <motion.div key="main" id="page" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={fade}>
             <Main />
           </motion.div>
         )}
@@ -85,6 +89,7 @@ export default function App() {
           <ItemSheet key="sheet" id={route.item} dir={dir} onClose={closeItem} onGo={goItem} />
         )}
       </AnimatePresence>
+      {intro && route.view === 'main' && <Intro onDone={endIntro} />}
     </MotionConfig>
   );
 }
