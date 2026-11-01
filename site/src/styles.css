@@ -54,6 +54,7 @@ a:hover { color: var(--link-hover); }
   align-items: start;
 }
 .plain .intro { grid-column: 1; grid-row: 1 / span 2; position: sticky; top: 48px; }
+@media (max-height: 880px) { .plain .intro { position: static; } }
 .plain main { grid-column: 2; min-width: 0; padding-bottom: 96px; }
 .plain .foot { grid-column: 1 / -1; }
 
@@ -137,7 +138,7 @@ a:hover { color: var(--link-hover); }
 .transit .intro.compact .contact { font-size: 16px; }
 
 .route { position: sticky; top: 0; z-index: 20; background: rgba(255, 255, 255, 0.96); border-bottom: 1px solid var(--rule); }
-.route-in { position: relative; max-width: 1040px; margin: 0 auto; padding: 14px 32px; }
+.route-in { max-width: 1040px; margin: 0 auto; padding: 14px 32px; }
 .route-line { list-style: none; margin: 0; padding: 0; display: flex; align-items: center; }
 .route-line li { display: flex; align-items: center; flex: 1 1 0; min-width: 0; }
 .route-line li:last-child { flex: 0 0 auto; }
@@ -192,6 +193,9 @@ a:hover { color: var(--link-hover); }
 .transit .foot p { margin: 0; }
 .transit .foot a { color: #fff; }
 .transit .foot a:hover { color: #ffc72c; }
+.transit .foot :focus-visible { outline-color: #fff; }
+main:focus { outline: none; }
+.transit main { scroll-margin-top: 72px; }
 .transit .foot-name { font-size: 34px; font-weight: 900; letter-spacing: -0.02em; }
 .transit .foot-links { display: flex; flex-wrap: wrap; gap: 4px 20px; }
 .transit .foot-others { color: #c9c9c9; }
@@ -215,17 +219,12 @@ a:hover { color: var(--link-hover); }
   .transit .intro.compact .contact { display: none; }
 
   .route-in { padding: 10px 20px; }
-  .route-in { display: flex; align-items: center; gap: 14px; }
-  .route-line { flex: 1 1 auto; min-width: 0; }
-  .route-line .label, .route-line .here .label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-  .route-line a { min-width: 32px; min-height: 40px; justify-content: center; }
-  .route-line .seg { min-width: 6px; }
   .plain main, .transit main { padding-bottom: 88px; }
   .plain .others { display: none; }
   .transit .intro.compact .role { display: none; }
   .route-name { display: block; flex: none; font-weight: 800; font-size: 16px; min-width: 88px; text-align: right; }
   .mode-switch { right: 12px; bottom: 12px; }
-  .mode-switch button { font-size: 14px; padding: 8px 13px; min-height: 36px; }
+  .mode-switch button { font-size: 14px; padding: 8px 13px; }
   .route-line .seg { margin: 0 6px; }
   .transit main { padding: 36px 20px 24px; }
   .transit .line { padding-left: 52px; }
@@ -241,6 +240,16 @@ a:hover { color: var(--link-hover); }
   .next-prev .next { text-align: left; }
   .transit .next-prev .next::before { top: auto; left: -34px; bottom: 6px; display: none; }
 }
+
+@media (max-width: 640px) {
+  .route-in { display: flex; align-items: center; gap: 14px; }
+  .route-line { flex: 1 1 auto; min-width: 0; }
+  .route-line .label, .route-line .here .label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .route-line a { min-width: 40px; min-height: 44px; justify-content: center; }
+  .route-line .seg { min-width: 4px; margin: 0 2px; }
+  .route-name { display: block; flex: none; font-weight: 800; font-size: 16px; min-width: 88px; text-align: right; }
+}
+@media (min-width: 641px) { .route-name { display: none !important; } }
 
 /* ---------- view transitions ---------- */
 

@@ -215,12 +215,12 @@ function Page({ id }) {
   return (
     <article className="page" style={{ '--c': line.color }}>
       <p className="crumb"><a href={`#${line.id}`}>{line.name}</a></p>
-      <div className="sign" {...vt(`s-${pg.id}`)}>
+      <div className="sign" data-anchor="page-sign" {...vt(`s-${pg.id}`)}>
         <h2>{pg.title}</h2>
       </div>
       <p className="sub">{pg.sub}</p>
       {pg.image && <img className="page-img" src={pg.image} alt={`${pg.title}, partway through the build`} />}
-      {pg.body.map(t => <p key={t.slice(0, 24)}>{t}</p>)}
+      {pg.body.map((t, i) => <p key={t.slice(0, 24)} data-anchor={`page-p${i}`}>{t}</p>)}
       {pg.install && (
         <dl className="install">
           {pg.install.map(([k, v]) => <div key={k}><dt>{k}</dt><dd><code>{v}</code></dd></div>)}
@@ -237,7 +237,7 @@ function Page({ id }) {
       )}
       {pg.press && (
         <>
-          <h3>Coverage</h3>
+          <h3 data-anchor="page-press">Coverage</h3>
           <ul className="plain-list press">
             {MEDIA.map(([href, outlet, headline]) => <li key={href}><A href={href}>{outlet}</A>: {headline}</li>)}
           </ul>
@@ -262,22 +262,32 @@ export default function App() {
   const [progress, setProgress] = useState(0);
   const homeScroll = useRef(0);
   const routeRef = useRef(route);
+  const homeHash = useRef('');
+
+  // A shared link to a section: the content renders after the browser tried to scroll, so do it now.
+  useEffect(() => {
+    if (routeRef.current || location.hash.length < 2) return;
+    const go = () => document.getElementById(location.hash.slice(1))?.scrollIntoView();
+    go();
+    document.fonts?.ready.then(go);
+  }, []);
 
   useLayoutEffect(() => { document.documentElement.dataset.mode = mode; }, [mode]);
 
   // Hash routing for the item pages, with a transition between list and page.
   useEffect(() => {
-    const onHash = () => {
+    const onHash = e => {
       const next = readRoute();
       const prev = routeRef.current;
       if (next === prev) return;          // plain in-page anchors: let the browser scroll
-      const sectionHash = !next && location.hash.length > 1 ? location.hash.slice(1) : null;
-      if (!prev) homeScroll.current = scrollY;
+      if (!prev) { homeScroll.current = scrollY; homeHash.current = new URL(e.oldURL).hash; }
+      const returning = !next && location.hash === homeHash.current;
+      const sectionHash = !next && !returning && location.hash.length > 1 ? location.hash.slice(1) : null;
       routeRef.current = next;
       transition(() => {
         flushSync(() => setRoute(next));
         if (next) scrollTo(0, 0);
-        else if (sectionHash) document.getElementById(sectionHash)?.scrollIntoView();
+        else if (sectionHash && document.getElementById(sectionHash)) document.getElementById(sectionHash).scrollIntoView();
         else scrollTo(0, homeScroll.current);
       });
     };
@@ -300,8 +310,9 @@ export default function App() {
       let cur = LINES[0].id;
       for (const l of LINES) {
         const el = document.getElementById(l.id);
-        if (el && el.getBoundingClientRect().top < innerHeight * 0.4) cur = l.id;
+        if (el && el.getBoundingClientRect().top < 140) cur = l.id;
       }
+      if (max > 0 && scrollY >= max - 2) cur = LINES[LINES.length - 1].id;
       setCurrent(cur);
     };
     const onScroll = () => { if (!raf) raf = requestAnimationFrame(measure); };
@@ -330,11 +341,11 @@ export default function App() {
 
   return (
     <div className={`site ${mode}${route ? ' on-page' : ''}`}>
-      <a className="skip" href="#main">Skip to content</a>
+      <a className="skip" href="#main" onClick={e => { e.preventDefault(); const m = document.getElementById('main'); m.scrollIntoView(); m.focus(); }}>Skip to content</a>
       <ModeSwitch mode={mode} onChange={changeMode} />
       <Intro compact={!!route} />
       {mode === 'transit' && <RouteBar current={route ? pageById(route).line.id : current} progress={route ? 0 : progress} />}
-      <main id="main">
+      <main id="main" tabIndex={-1}>
         {route ? <Page id={route} /> : <Home />}
       </main>
       <footer className="foot">
