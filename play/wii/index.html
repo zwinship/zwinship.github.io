@@ -74,8 +74,8 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 /* ================= BOTTOM BAR ================= */
 #bar{position:absolute;left:0;height:200px;transition:transform .45s cubic-bezier(.45,0,.2,1)}
 #bar svg.shape{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
-#clock{position:absolute;left:0;right:0;top:32px;display:flex;justify-content:center;height:62px}
-#date{position:absolute;left:0;right:0;top:142px;text-align:center;font-size:30px;font-weight:500;color:#7d7f84;letter-spacing:.5px}
+#clock{position:absolute;left:0;right:0;top:39px;display:flex;justify-content:center;height:62px}
+#date{position:absolute;left:0;right:0;top:142px;text-align:center;font-size:30px;font-weight:600;color:#6e7075;letter-spacing:.5px}
 .round-btn{position:absolute;top:65px;width:132px;height:132px;border-radius:50%;outline:none}
 .round-btn .face{position:absolute;inset:8px;border-radius:50%;background:linear-gradient(#f2f2f3,#d9d9db);border:4px solid var(--cyan);box-shadow:0 3px 4px rgba(0,0,0,.16);display:flex;align-items:center;justify-content:center;transition:box-shadow .12s}
 .round-btn.hot .face,.round-btn:focus-visible .face{box-shadow:0 0 0 3px rgba(52,190,237,.35),0 0 8px 2px rgba(52,190,237,.45),0 3px 4px rgba(0,0,0,.16)}
@@ -113,7 +113,7 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 @keyframes sysIn{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
 .sys-row{display:flex;gap:56px}
 .portrait .sys-row{flex-direction:column;gap:30px}
-.sysbtn{width:440px;height:200px;border-radius:24px;background:linear-gradient(#ffffff,#eeeff1);border:2px solid #c4c5c9;box-shadow:0 2px 4px rgba(0,0,0,.1);font-size:36px;font-weight:500;color:#55575c;transition:border-color .1s,box-shadow .1s;outline:none}
+.sysbtn{width:min(440px,40vw);height:200px;border-radius:24px;background:linear-gradient(#ffffff,#eeeff1);border:2px solid #c4c5c9;box-shadow:0 2px 4px rgba(0,0,0,.1);font-size:36px;font-weight:500;color:#55575c;transition:border-color .1s,box-shadow .1s;outline:none}
 .sysbtn.hot,.sysbtn:focus-visible{border-color:var(--cyan);box-shadow:0 0 0 1px var(--cyan),0 0 8px 2px rgba(52,190,237,.45)}
 
 /* ================= HAND CURSOR ================= */
@@ -242,6 +242,7 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 .wd .safe{left:50%;top:50%;width:min(100cqw,177.78cqh);height:min(100cqh,56.25cqw);transform:translate(-50%,-50%);container-type:size}
 .wd .t{left:0;right:0;text-align:center;white-space:nowrap;font-weight:600;letter-spacing:-.02em}
 .wd img{display:block}
+#hand.kbd{opacity:0;transition:opacity .2s}
 .disc3d{animation:discSpin 5s linear infinite}
 @keyframes discSpin{from{transform:perspective(60cqh) rotateY(0deg)}to{transform:perspective(60cqh) rotateY(360deg)}}
 .bob{animation:bob 3s ease-in-out infinite}
@@ -269,7 +270,7 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 .gm-opt:hover,.gm-opt:focus-visible{transform:scale(1.04);box-shadow:0 0 0 4px #fff,0 0 0 8px var(--acc,#34beed),0 6px 16px rgba(0,0,0,.3)}
 .gm-box{position:absolute;inset:0;z-index:3;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.5);animation:fadeIn .2s ease}
 .gm-card{width:min(780px,100%);background:#fff;border:5px solid var(--acc,#34beed);border-radius:30px;padding:clamp(22px,4.4vh,44px) clamp(20px,3.4vw,44px) clamp(18px,3.4vh,32px);text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.35);user-select:text}
-.gm-card p{font-size:clamp(18px,2.9vh,27px);line-height:1.45;font-weight:700;color:#3a3c41}
+.gm-card p{text-wrap:balance;font-size:clamp(18px,2.9vh,27px);line-height:1.45;font-weight:700;color:#3a3c41}
 .gm-card p+p{margin-top:1.2em;color:#6a6c72;font-weight:500}
 .gm-card .gm-opt{margin:clamp(20px,4vh,36px) auto 0;width:min(300px,100%);height:clamp(50px,7.4vh,70px)}
 .gm-vid{position:absolute;inset:0;z-index:3;background:#000;display:flex;flex-direction:column;animation:fadeIn .2s ease}
@@ -279,7 +280,7 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 .portrait .gm-art .bn>svg.lg{left:0;width:100vw;top:max(5%,env(safe-area-inset-top));bottom:auto;height:56.25vw}
 .portrait .gm-art .bn>svg.sc{left:-12vw;width:124vw;top:auto;bottom:calc(9vh + 3 * clamp(54px,8.6vh,84px) + 2 * clamp(10px,1.8vh,18px) + 16px);height:69.75vw;-webkit-mask-image:linear-gradient(transparent,#000 14%,#000 82%,transparent);mask-image:linear-gradient(transparent,#000 14%,#000 82%,transparent)}
 @media (prefers-reduced-motion:reduce){
-  .ch.hot,.parrow.show svg,#mailBtn .env,.gm-press,.gm-menu,.gm-box,.gm-vid{animation:none !important}
+  .ch.hot,.parrow.show svg,#mailBtn .env,.gm-press,.gm-menu,.gm-box,.gm-vid,.disc3d,.bob{animation:none !important}
   #track,#pvZoom,#pages,#bar,#barExt,#pvBottom,#fader,#bubble{transition-duration:.01s !important}
   #sysmenu .sys-row,#content,#menu.boot,.mp-mii{animation:none !important}
 }
@@ -855,7 +856,7 @@ function buildGrid(){
     }
     pg.appendChild(grid); track.appendChild(pg);
   }
-  const ax = Math.max(6, L.mx/2-23);
+  const ax = Math.max(L.mode==='portrait' ? 16 : 6, L.mx/2-23);
   document.getElementById('arrL').style.cssText = `left:${ax}px;top:${L.arrowY}px`;
   document.getElementById('arrR').style.cssText = `right:${ax}px;top:${L.arrowY}px`;
   ['pvL','pvR'].forEach(id => document.getElementById(id).style.top = (L.zoom.t + L.zoom.h/2 - 41)+'px');
@@ -910,7 +911,7 @@ function tick(){
   for (const c of hs){ svg += digitSVG(c, x); x += 38; }
   svg += `<g opacity="${colon?1:.12}"><rect x="${x+1}" y="20" width="6" height="6" rx="2" fill="${SEG_COL}"/><rect x="${x+1}" y="40" width="6" height="6" rx="2" fill="${SEG_COL}"/></g>`; x += 14;
   svg += digitSVG(ms[0], x); x += 38; svg += digitSVG(ms[1], x); x += 38;
-  svg += `<text x="${x+3}" y="17" font-family="M PLUS 1p,Arial" font-weight="500" font-size="13" fill="${SEG_COL}">${ampm}</text>`; x += 28;
+  svg += `<text x="${x+4}" y="60" font-family="M PLUS 1p,Arial" font-weight="600" font-size="16" fill="${SEG_COL}">${ampm}</text>`; x += 28;
   document.getElementById('clock').innerHTML = `<svg viewBox="0 0 ${x} 64" width="${x}" height="62">${svg}</svg>`;
   document.getElementById('date').textContent = `${now.toLocaleDateString('en-US',{weekday:'short'})} ${now.getMonth()+1}/${now.getDate()}`;
   colon = !colon;
@@ -925,9 +926,9 @@ const reduced = matchMedia('(prefers-reduced-motion:reduce)').matches;
 const hand = document.getElementById('hand');
 if (fine) document.documentElement.classList.add('has-hand');
 let mx = innerWidth/2, my = innerHeight/2, hx = mx, hy = my, roll = 0, lastMove = 0, lastKey = false;
-addEventListener('pointermove', e => { mx = e.clientX; my = e.clientY; lastMove = performance.now(); lastKey = false; });
+addEventListener('pointermove', e => { mx = e.clientX; my = e.clientY; lastMove = performance.now(); lastKey = false; hand.classList.remove('kbd'); });
 addEventListener('pointerdown', () => { lastKey = false; }, true);
-addEventListener('keydown', () => { lastKey = true; }, true);
+addEventListener('keydown', () => { lastKey = true; hand.classList.add('kbd'); }, true);
 addEventListener('pointerdown', () => hand.classList.add('press'));
 addEventListener('pointerup', () => hand.classList.remove('press'));
 (function loop(){
