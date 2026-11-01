@@ -250,6 +250,7 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 .rd-cmd code{font:inherit}
 .rd-cmd .lang{display:block;color:#6f7680;font-size:.85em}
 .rd-cmd .p{color:var(--cyan);user-select:none}
+.rd-cmd code{white-space:pre-wrap}
 .rd-cmd button{position:absolute;right:8px;top:8px;font-family:var(--font);font-size:12px;font-weight:500;color:#9aa1ab;padding:2px 8px;border-radius:5px;border:1px solid #333840;outline:none}
 .rd-cmd button:hover,.rd-cmd button:focus-visible{color:#fff;border-color:var(--cyan)}
 .rd-links a{display:block;color:#e9ecf0;text-decoration:none;padding:3px 0;overflow-wrap:anywhere}
@@ -653,7 +654,6 @@ const BACK = (cls='') => `<button class="wm ${cls}" data-back>Wii Menu</button>`
 const ARR = (d, label) => `<button class="warrow ${d<0?'prev':'next'}" data-nav="${d}" aria-label="${label}">${ARROW_SVG}</button>`;
 const PILL = (href, label, cls='') => `<a class="wm ${cls}" href="${href}" ${href.startsWith('mailto:')?'':'target="_blank" rel="noopener"'}>${label}</a>`;
 const PHOTO = (cls='') => `<div class="zw ${cls}" role="img" aria-label="Photo of ${PROFILE.name}"></div>`;
-const yearOf = s => (String(s).match(/\d{4}/) || [''])[0];
 function swapAnim(el, cls){ if (reduced || !el) return; el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); }
 
 /* --- Research: one paper per page, turned with the arrows --- */
@@ -796,7 +796,7 @@ const SCREENS = {
 
   experience: {
     html: () => `<div class="ex"><header class="ex-top"><h1 id="ccTitle" tabindex="-1">Experience</h1></header>
-      <nav class="ex-rail" aria-label="Positions">${JOBS.map((e,i)=>`<button style="left:${i/(JOBS.length-1)*100}%" aria-label="${e.role}, ${e.when}"><span class="dot"></span><span class="yr">${yearOf(e.when)}</span></button>`).join('')}</nav>
+      <nav class="ex-rail" aria-label="Positions">${JOBS.map((e,i)=>`<button style="left:${i/(JOBS.length-1)*100}%" aria-label="${e.role}, ${e.when}"><span class="dot"></span><span class="yr">${e.when.split(' to ')[0]}</span></button>`).join('')}</nav>
       <div class="ex-detail"><div class="ex-card" aria-live="polite"></div></div>
       <footer class="ex-bar">${BACK()}</footer></div>`,
     init: app => { exI = JOBS.length - 1; exPaint(false); app.querySelectorAll('.ex-rail button').forEach((b,i) => b.onclick = () => { if (i !== exI){ exI = i; SFX.hover(); exPaint(true); } }); },
