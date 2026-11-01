@@ -235,8 +235,8 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 
 /* ---------- rd2dnet: package terminal ---------- */
 .rd{background:#16181c;color:#d9dce1}
-.rd-scroll{flex:1;min-height:0;overflow-y:auto;padding:clamp(24px,5vh,64px) clamp(16px,5vw,80px) 24px;padding-top:max(clamp(24px,5vh,64px),env(safe-area-inset-top))}
-.rd-grid{max-width:1360px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:clamp(24px,5vw,80px)}
+.rd-scroll{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;padding:clamp(24px,5vh,64px) clamp(16px,5vw,80px) 24px;padding-top:max(clamp(24px,5vh,64px),env(safe-area-inset-top))}
+.rd-grid{width:100%;max-width:1360px;margin:auto;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:clamp(24px,5vw,80px)}
 .rd h1{font-family:var(--mono);font-weight:600;font-size:clamp(40px,6vw,92px);letter-spacing:-.03em;color:#fff;line-height:1}
 .rd h1 small{font-size:.32em;font-weight:400;color:#7fd3f2;letter-spacing:0;margin-left:.6em;vertical-align:.9em}
 .rd .sub{font-size:clamp(17px,1.6vw,22px);font-weight:500;color:#aeb4bd;margin-top:14px;line-height:1.35}
@@ -246,7 +246,8 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 .rd-term{font-family:var(--mono);font-size:clamp(13px,1vw,15px);line-height:1.7}
 .rd-term h2{font-family:var(--font);font-size:13px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#7c828b;margin:0 0 10px}
 .rd-term h2:not(:first-child){margin-top:34px}
-.rd-cmd{position:relative;background:#0c0d10;border:1px solid #2b2f36;border-radius:8px;padding:12px 14px;color:#e9ecf0;margin-bottom:12px;overflow-wrap:anywhere}
+.rd-cmd{position:relative;background:#0c0d10;border:1px solid #2b2f36;border-radius:8px;padding:12px 70px 12px 14px;color:#e9ecf0;margin-bottom:12px;overflow-wrap:break-word}
+.rd-cmd code{font:inherit}
 .rd-cmd .lang{display:block;color:#6f7680;font-size:.85em}
 .rd-cmd .p{color:var(--cyan);user-select:none}
 .rd-cmd button{position:absolute;right:8px;top:8px;font-family:var(--font);font-size:12px;font-weight:500;color:#9aa1ab;padding:2px 8px;border-radius:5px;border:1px solid #333840;outline:none}
@@ -273,7 +274,8 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 .zb .contact{margin-top:10px;font-size:17px;line-height:1.9}
 .zb .contact a{color:var(--cyan-text);font-weight:500;text-underline-offset:3px}
 .zb .contact a:hover,.zb .contact a:focus-visible{color:#0d5f87;outline:none;text-decoration-thickness:2px}
-.zb-back{position:fixed;right:clamp(16px,3vw,40px);bottom:max(18px,env(safe-area-inset-bottom))}
+.zb-back{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:flex-end;padding:40px clamp(16px,3vw,40px) max(18px,env(safe-area-inset-bottom));background:linear-gradient(rgba(255,255,255,0),rgba(255,255,255,.95) 55%);pointer-events:none}
+.zb-back .wm{pointer-events:auto}
 @media (max-width:760px),(max-aspect-ratio:1/1){
   .zb-photo{position:relative;display:block;width:100%;height:min(46vh,360px);aspect-ratio:auto;background-position:50% 100%;background-size:auto 108%}
   .zb-text{margin:0;padding:22px 20px 110px;max-width:none}
@@ -313,8 +315,8 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 .ex-rail button:hover .dot,.ex-rail button:focus-visible .dot{border-color:var(--cyan)}
 .ex-rail button[aria-current="true"] .dot{border-color:var(--cyan);background:var(--cyan);box-shadow:0 0 0 6px rgba(52,190,237,.2)}
 .ex-rail button[aria-current="true"] .yr{color:var(--cyan-text)}
-.ex-detail{flex:1;min-height:0;overflow-y:auto;padding:clamp(20px,5vh,60px) clamp(16px,5vw,80px) 24px}
-.ex-card{max-width:900px;margin:0 auto}
+.ex-detail{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;padding:clamp(20px,5vh,60px) clamp(16px,5vw,80px) 24px}
+.ex-card{width:100%;max-width:900px;margin:auto;padding-bottom:4vh}
 .ex-card.swap{animation:prSwap .3s ease}
 .ex-card .when{font-size:clamp(15px,1.3vw,18px);font-weight:700;color:var(--cyan-text);letter-spacing:.04em}
 .ex-card h2{font-size:clamp(28px,3.6vw,52px);font-weight:800;color:#2d2f33;line-height:1.12;margin-top:10px;text-wrap:balance}
@@ -348,7 +350,7 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 /* ---------- OctaStats: fight card ---------- */
 .oc{background:#0c0c0e radial-gradient(ellipse 80% 50% at 50% 0,rgba(200,30,30,.35),transparent 70%);color:#fff;overflow-y:auto;display:block}
 .oc-in{min-height:100%;display:flex;flex-direction:column;align-items:center;padding:clamp(20px,5vh,56px) 16px 0;padding-top:max(clamp(20px,5vh,56px),env(safe-area-inset-top))}
-.oc .kick{font-family:var(--fight);font-weight:500;letter-spacing:.3em;text-transform:uppercase;color:#c9c9cf;font-size:clamp(12px,1.1vw,16px);text-align:center}
+.oc .kick{margin-top:auto;font-family:var(--fight);font-weight:500;letter-spacing:.3em;text-transform:uppercase;color:#c9c9cf;font-size:clamp(12px,1.1vw,16px);text-align:center}
 .oc h1{font-family:var(--fight);font-weight:700;font-size:clamp(46px,7.5vw,120px);letter-spacing:.02em;text-transform:uppercase;line-height:1;margin-top:6px;text-align:center}
 .oc-card{width:min(1100px,100%);margin-top:clamp(18px,4vh,44px);display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:stretch}
 .oc-corner{padding:16px clamp(10px,2vw,28px);text-align:center}
@@ -367,19 +369,19 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 .oc-acts a{font-family:var(--fight);font-weight:500;letter-spacing:.14em;text-transform:uppercase;font-size:16px;color:#fff;text-decoration:none;padding:12px 22px;border:2px solid #fff;outline:none}
 .oc-acts a.main{background:#d42020;border-color:#d42020}
 .oc-acts a:hover,.oc-acts a:focus-visible{background:#fff;color:#111;border-color:#fff}
-.oc-bar{margin-top:auto;width:100%;display:flex;justify-content:flex-start;padding:28px clamp(0px,2vw,24px) 0}
+.oc-bar{margin-top:max(28px,calc(50vh - 400px));width:100%;display:flex;justify-content:flex-start;padding:28px clamp(0px,2vw,24px) 0}
 .oc-bar{padding-bottom:max(18px,env(safe-area-inset-bottom))}
 
 /* ---------- Tale of the Tape ---------- */
 .tt{background:linear-gradient(100deg,#b61f24 0 50%,#1f4fa6 50%);color:#fff}
-.tt-in{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px 20px}
-.tt .date{font-family:var(--fight);font-weight:500;letter-spacing:.3em;text-transform:uppercase;font-size:clamp(12px,1.1vw,16px);opacity:.85}
+.tt-in{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;align-items:center;text-align:center;padding:24px 20px}
+.tt .date{margin-top:auto;font-family:var(--fight);font-weight:500;letter-spacing:.3em;text-transform:uppercase;font-size:clamp(12px,1.1vw,16px);opacity:.85}
 .tt h1{font-family:var(--fight);font-weight:700;text-transform:uppercase;font-size:clamp(54px,10vw,170px);line-height:.92;letter-spacing:.01em;margin-top:14px;text-shadow:0 4px 0 rgba(0,0,0,.18)}
 .tt .sub{font-family:var(--fight);font-weight:500;letter-spacing:.24em;text-transform:uppercase;font-size:clamp(14px,1.5vw,22px);margin-top:18px}
 .tt p{max-width:640px;font-size:clamp(15px,1.3vw,19px);line-height:1.6;margin-top:22px;color:#f3f3f6}
 .tt .play{margin-top:30px;display:inline-flex;align-items:center;height:62px;padding:0 40px;border-radius:999px;background:#fff;color:#1b1b1f;font-family:var(--fight);font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:20px;text-decoration:none;box-shadow:0 4px 0 rgba(0,0,0,.25);outline:none}
 .tt .play:hover,.tt .play:focus-visible{box-shadow:0 0 0 4px rgba(255,255,255,.45),0 4px 0 rgba(0,0,0,.25)}
-.tt .code{margin-top:16px;font-size:15px;color:#fff;opacity:.85}
+.tt .code{margin-bottom:auto;margin-top:16px;font-size:15px;color:#fff;opacity:.85}
 .tt-bar{flex:0 0 auto;display:flex;padding:14px clamp(16px,3vw,40px)}
 
 /* ---------- Chesque: board ---------- */
@@ -406,8 +408,8 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 
 /* ---------- Intermediate Micro: graph paper ---------- */
 .mc{background-color:#fcfdfe;background-image:linear-gradient(#d9e8f3 1px,transparent 1px),linear-gradient(90deg,#d9e8f3 1px,transparent 1px),linear-gradient(#eef4f9 1px,transparent 1px),linear-gradient(90deg,#eef4f9 1px,transparent 1px);background-size:120px 120px,120px 120px,24px 24px,24px 24px;color:#22324a}
-.mc-in{flex:1;min-height:0;overflow-y:auto;padding:clamp(28px,7vh,90px) clamp(16px,6vw,110px) 24px;padding-top:max(clamp(28px,7vh,90px),env(safe-area-inset-top))}
-.mc-grid{max-width:1300px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(28px,6vw,100px)}
+.mc-in{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;padding:clamp(28px,7vh,90px) clamp(16px,6vw,110px) 24px;padding-top:max(clamp(28px,7vh,90px),env(safe-area-inset-top))}
+.mc-grid{width:100%;max-width:1300px;margin:auto;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(28px,6vw,100px)}
 .mc .kick{font-size:14px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#4a7fb1}
 .mc h1{font-size:clamp(38px,4.6vw,72px);font-weight:800;line-height:1.05;margin-top:10px;color:#1b2b44}
 .mc .lede{font-size:clamp(16px,1.35vw,20px);line-height:1.65;margin-top:22px;color:#33445e}
@@ -423,8 +425,8 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 
 /* ---------- Unlikely Instruments: blog ---------- */
 .ui{background:#1c3327;color:#efe8d6}
-.ui-in{flex:1;min-height:0;overflow-y:auto;padding:clamp(28px,8vh,100px) clamp(16px,7vw,130px) 24px;padding-top:max(clamp(28px,8vh,100px),env(safe-area-inset-top))}
-.ui-grid{max-width:1300px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:clamp(28px,7vw,120px)}
+.ui-in{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;padding:clamp(28px,8vh,100px) clamp(16px,7vw,130px) 24px;padding-top:max(clamp(28px,8vh,100px),env(safe-area-inset-top))}
+.ui-grid{width:100%;max-width:1300px;margin:auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:clamp(28px,7vw,120px)}
 .ui h1{font-family:var(--serif);font-style:italic;font-weight:600;font-size:clamp(44px,5.6vw,92px);line-height:1;letter-spacing:-.01em}
 .ui .desc{font-family:var(--serif);font-size:clamp(17px,1.5vw,22px);line-height:1.6;margin-top:24px;color:#d9d2bf}
 .ui .stat{margin-top:22px;font-size:15px;font-weight:500;color:#a9c3a6;letter-spacing:.02em}
@@ -480,7 +482,7 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 .zw{background:linear-gradient(#e8f3fa,#cfe4f2);overflow:hidden}
 .zw::before{content:'';position:absolute;inset:0;background:url(../../images/zwinship.png) 43% 11%/150% auto no-repeat}
 /* light gloss over each tile, like the real menu's glassy channel frames */
-.ch:not(.empty) .bn::after{content:'';position:absolute;left:0;right:0;top:0;height:48%;background:linear-gradient(rgba(255,255,255,.28),rgba(255,255,255,0));pointer-events:none}
+.ch:not(.empty) .bn::after{content:'';position:absolute;left:0;right:0;top:0;height:48%;background:linear-gradient(rgba(255,255,255,.14),rgba(255,255,255,0));pointer-events:none}
 
 @media (prefers-reduced-motion:reduce){
   .bn *,.spin,.ch.hot,.parrow.show svg,#mailBtn .env,.warn-press{animation:none !important}
@@ -617,7 +619,7 @@ experience: () => BN('<div style="inset:0;background:#f7f7f5"></div>', `
   <div style="left:8cqw;top:51cqh;font-size:11.5cqh;font-weight:800;color:#d0d1d4;white-space:nowrap">Regulatory Data Intern</div>
   <div style="left:8cqw;top:75cqh;font-size:5.6cqh;font-weight:700;color:#1f7fae">New York University</div>`),
 
-led: () => `<img src="${ASSET}images/mbta_led_build.jpg" alt="" class="kb" style="inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 40%">`,
+led: () => `<img src="${ASSET}images/mbta_led_build.jpg" alt="" class="kb" style="inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 22%">`,
 
 octa: () => BN('<div style="inset:0;background:#0c0c0e radial-gradient(ellipse 70% 60% at 50% 0,rgba(200,30,30,.5),transparent 70%)"></div>', `
   <div class="t" style="top:20cqh;font:700 21cqh/1 var(--fight);letter-spacing:.4cqh;color:#fff">OCTASTATS</div>

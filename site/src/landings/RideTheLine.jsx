@@ -172,7 +172,10 @@ export default function RideTheLine({ onGo }) {
   // Keep the chosen stop in view when the narrow strip is taller than the screen.
   useEffect(() => {
     if (!vertical) return;
-    document.getElementById(`rl-stop-${sel}`)?.scrollIntoView({ block: 'nearest', behavior: reduced() ? 'auto' : 'smooth' });
+    const el = document.getElementById(`rl-stop-${sel}`);
+    const top = document.querySelector('.rl-display')?.getBoundingClientRect().bottom ?? 0;
+    const y = el?.getBoundingClientRect().top;
+    if (el && (y < top + 40 || y > innerHeight - 60)) el.scrollIntoView({ block: 'center', behavior: reduced() ? 'auto' : 'smooth' });
   }, [sel, vertical]);
 
   const pick = i => {
