@@ -9,7 +9,7 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: 84px; }
 html.sheet-open { overflow: hidden; }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 19px/1.55 var(--sans); }
 img { max-width: 100%; }
@@ -37,7 +37,7 @@ main:focus { outline: none; }
 
 /* ---------- route bar ---------- */
 
-.route { position: sticky; top: 0; z-index: 20; background: rgba(255, 255, 255, 0.96); border-bottom: 1px solid var(--rule); }
+.route { position: sticky; top: 0; z-index: 20; background: #fff; border-bottom: 1px solid var(--rule); }
 .route-in { max-width: 1040px; margin: 0 auto; padding: 14px 32px; }
 .route-line { list-style: none; margin: 0; padding: 0; display: flex; align-items: center; }
 .route-line li { display: flex; align-items: center; flex: 1 1 0; min-width: 0; }
@@ -92,6 +92,7 @@ main { max-width: 1040px; margin: 0 auto; padding: 56px 32px 40px; scroll-margin
 /* ---------- item panel ---------- */
 
 .sheet-wrap { position: fixed; inset: 0; z-index: 60; }
+.sheet-wrap.leaving { pointer-events: none; }
 .sheet-backdrop { position: absolute; inset: 0; background: rgba(16, 17, 19, 0.42); }
 .sheet {
   position: absolute; top: 0; right: 0; bottom: 0; width: min(860px, 100%);
@@ -101,7 +102,7 @@ main { max-width: 1040px; margin: 0 auto; padding: 56px 32px 40px; scroll-margin
 }
 .sheet-bar {
   position: sticky; top: 0; z-index: 2; display: flex; align-items: center; gap: 18px;
-  padding: 12px 40px; background: rgba(255, 255, 255, 0.97); border-bottom: 1px solid var(--rule);
+  padding: 12px 40px; background: #fff; border-bottom: 1px solid var(--rule);
   font-size: 16px; font-weight: 700;
 }
 .sheet-close { border: 2px solid var(--ink); background: #fff; color: var(--ink); border-radius: 999px; padding: 6px 18px; min-height: 44px; font-weight: 700; cursor: pointer; }
@@ -174,7 +175,7 @@ main { max-width: 1040px; margin: 0 auto; padding: 56px 32px 40px; scroll-margin
   .line .track { left: 12px; width: 8px; }
   .line h2 { font-size: 30px; }
   .line h2::before { left: -52px; width: 32px; height: 32px; top: 0; border-width: 6px; }
-  .line:last-child::after { left: 2px; width: 28px; height: 8px; }
+  .line:last-child::after { left: 2px; width: 28px; height: 8px; bottom: 18px; }
   .stop::before { left: -46px; width: 20px; height: 20px; border-width: 4px; }
   .stop h3 { font-size: 20px; }
   .bio p:first-child { font-size: 21px; }
@@ -188,12 +189,14 @@ main { max-width: 1040px; margin: 0 auto; padding: 56px 32px 40px; scroll-margin
   .next-prev { grid-template-columns: 1fr; }
   .next-prev .next { text-align: left; }
   .next-prev .next::before { display: none; }
+  .next-prev > span:empty { display: none; }
 }
 @media (max-width: 640px) {
   .route-in { display: flex; align-items: center; gap: 14px; }
   .route-line { flex: 1 1 auto; min-width: 0; }
   .route-line .label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-  .route-line a { min-width: 40px; min-height: 44px; justify-content: center; }
+  .route-line a, .intro-stop { min-width: 40px; min-height: 44px; justify-content: center; }
+  .intro-stop .label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .route-line .seg { min-width: 10px; margin: 0 2px; }
   .route-name { display: block; flex: none; font-weight: 800; font-size: 16px; min-width: 88px; text-align: right; }
 }

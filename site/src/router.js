@@ -54,6 +54,7 @@ export const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)')
 
 // Eased scroll that the visitor can interrupt with the wheel, touch or keys.
 let current = null;
+export function stopScroll() { current?.stop(); current = null; }
 export function scrollToY(y, { instant = false } = {}) {
   current?.stop();
   const max = document.documentElement.scrollHeight - innerHeight;
@@ -63,8 +64,8 @@ export function scrollToY(y, { instant = false } = {}) {
   const dist = Math.abs(target - from);
   const duration = Math.min(1.1, 0.45 + dist / 4000);
   const stop = () => { current?.stop(); cleanup(); };
-  const cleanup = () => ['wheel', 'touchstart', 'keydown'].forEach(e => removeEventListener(e, stop));
-  ['wheel', 'touchstart', 'keydown'].forEach(e => addEventListener(e, stop, { passive: true }));
+  const cleanup = () => ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(e => removeEventListener(e, stop));
+  ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(e => addEventListener(e, stop, { passive: true }));
   current = animate(from, target, {
     duration, ease: [0.65, 0, 0.25, 1],
     onUpdate: v => scrollTo(0, v),

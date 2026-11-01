@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Zach Winship: Wii Menu</title>
+<link rel="icon" href="../../images/logo.png">
+<!--
+  Layout reference: the bottom-bar silhouette, button geometry and page
+  arrow are adapted from tobieche110/wii-portfolio (MIT License,
+  Copyright (c) 2024 Tobias Echenique). Everything else is original.
+  A fan homage to the Nintendo Wii Menu; not affiliated with Nintendo.
+-->
+<style>
+@font-face{font-family:'Figtree';src:url('../../assets/figtree-latin-wght-normal-D_ZTVpCC.woff2') format('woff2');font-weight:300 900;font-display:swap}
+:root{
+  --cyan:#34beed;
+  --cyan-text:#1f7fae;
+  --gray-text:#6e7075;
+  --ink:#4a4c50;
+  --tile-border:#bdbec2;
+  --font:'Arial Rounded MT Bold','Nunito','Varela Round','Figtree','Helvetica Neue',Arial,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;font-family:var(--font);color:var(--ink);-webkit-font-smoothing:antialiased;user-select:none;-webkit-tap-highlight-color:transparent}
+button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer}
+.has-hand #root, .has-hand #root *{cursor:none !important}
+
+/* Wii Menu background: near-white with faint horizontal lines */
+.scan{background-color:#fafafa;background-image:repeating-linear-gradient(to bottom,#fafafa 0 2px,#f0f0f0 2px 4px)}
+
+/* ================= STAGE ================= */
+#root{position:fixed;inset:0;overflow:clip}
+#stage{position:absolute;left:0;top:0;transform-origin:0 0;overflow:clip}
+#barExt{position:absolute;left:0;right:0;bottom:0;pointer-events:none;transition:transform .45s cubic-bezier(.45,0,.2,1);background:linear-gradient(#e6e7ea,#d8d9dd);border-top:3px solid var(--cyan);display:none}
+
+/* ================= HEALTH & SAFETY ================= */
+#warning{position:absolute;inset:0;z-index:80;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#fff;transition:opacity .6s ease;cursor:pointer}
+#warning.gone{opacity:0;pointer-events:none}
+.warn-title{display:flex;align-items:center;gap:18px;font-size:44px;font-weight:700;color:#222;letter-spacing:.5px;text-align:center}
+.warn-title svg{width:56px;height:56px;flex:0 0 auto}
+.warn-rule{width:min(880px,88%);height:3px;background:#222;margin:22px 0 34px}
+.warn-body{width:min(880px,88%);font-size:30px;line-height:1.55;font-weight:500;color:#222}
+.warn-body b{font-weight:700}
+.warn-body .url{display:block;margin-top:26px}
+.warn-press{margin-top:80px;font-size:30px;font-weight:500;color:#222;display:flex;align-items:center;gap:12px;opacity:0;animation:pressIn .6s ease 1.6s forwards}
+.a-btn{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:50%;background:#222;color:#fff;font-size:24px;font-weight:700}
+@keyframes pressIn{to{opacity:1}}
+.portrait .warn-title{font-size:40px;flex-direction:column;gap:10px}
+.portrait .warn-body{font-size:34px}
+
+/* ================= MENU ================= */
+#menu{position:absolute;inset:0;visibility:hidden}
+#menu.boot{animation:fadeIn .8s ease both}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+#pages{position:absolute;left:0;top:0;overflow:clip;transition:transform .5s cubic-bezier(.45,0,.2,1),opacity .45s ease}
+#track{position:absolute;left:0;top:0;height:100%;display:flex;transition:transform .55s cubic-bezier(.45,0,.2,1)}
+.page{position:relative;height:100%}
+.grid{position:absolute;display:grid}
+
+/* --- channel tile --- */
+.ch{position:relative;border-radius:18px;background:#fff;border:2px solid var(--tile-border);padding:0;transition:border-color .1s,box-shadow .1s;outline:none}
+.ch .bn{position:absolute;inset:4px;border-radius:13px;overflow:hidden}
+.ch.hot,.ch:focus-visible{border-color:var(--cyan);box-shadow:0 0 0 1px var(--cyan),0 0 7px 2px rgba(52,190,237,.45);z-index:3}
+.ch.empty{background:#ececee;border-color:#d2d3d6;cursor:default}
+.ch.empty .bn{display:flex;align-items:center;justify-content:center;background:repeating-linear-gradient(to bottom,#efeff1 0 2px,#e6e6e9 2px 4px)}
+.wii-mark{display:block;width:34%;max-width:96px}
+/* 4:3 tiles: show the 16:9 banner letterboxed, like the real menu did */
+.grid.narrow .ch .bn{top:50%;bottom:auto;aspect-ratio:16/9;transform:translateY(-50%);border-radius:8px}
+.grid.narrow .ch.empty .bn{inset:4px;transform:none;aspect-ratio:auto}
+
+/* hover label */
+#bubble{position:absolute;z-index:40;pointer-events:none;padding:6px 28px;border-radius:999px;background:#fff;border:2px solid #b9babd;box-shadow:0 2px 4px rgba(0,0,0,.12);font-size:22px;font-weight:500;color:#4a4c50;white-space:nowrap;opacity:0;transform:translate(-50%,4px) scale(.92);transition:opacity .12s,transform .16s cubic-bezier(.3,1.6,.5,1)}
+#bubble.on{opacity:1;transform:translate(-50%,0) scale(1);transition-delay:.18s}
+
+/* page arrows */
+.parrow{position:absolute;width:46px;height:82px;z-index:5;opacity:0;pointer-events:none;transition:opacity .25s}
+.parrow svg{width:100%;height:100%;filter:drop-shadow(0 2px 2px rgba(20,60,120,.25))}
+.parrow.show{opacity:1;pointer-events:auto}
+.parrow.show svg{animation:arrowPulse 1.6s ease-in-out infinite}
+.parrow.hot svg{animation:none;transform:scale(1.08)}
+#arrL svg{transform:scaleX(-1)}
+#arrL.show svg{animation:arrowPulseL 1.6s ease-in-out infinite}
+#arrL.hot svg{animation:none;transform:scaleX(-1) scale(1.08)}
+@keyframes arrowPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+@keyframes arrowPulseL{0%,100%{transform:scaleX(-1) scale(1)}50%{transform:scaleX(-1) scale(1.07)}}
+
+/* ================= BOTTOM BAR ================= */
+#bar{position:absolute;left:0;height:200px;transition:transform .45s cubic-bezier(.45,0,.2,1)}
+#bar svg.shape{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+#clock{position:absolute;left:0;right:0;top:18px;display:flex;justify-content:center;height:62px}
+#date{position:absolute;left:0;right:0;top:118px;text-align:center;font-size:34px;font-weight:700;color:#8d8f93;letter-spacing:.5px}
+.round-btn{position:absolute;top:65px;width:132px;height:132px;border-radius:50%;outline:none}
+.round-btn .face{position:absolute;inset:8px;border-radius:50%;background:linear-gradient(#f2f2f3,#d9d9db);border:4px solid var(--cyan);box-shadow:0 3px 4px rgba(0,0,0,.16);display:flex;align-items:center;justify-content:center;transition:box-shadow .12s}
+.round-btn.hot .face,.round-btn:focus-visible .face{box-shadow:0 0 0 3px rgba(52,190,237,.35),0 0 8px 2px rgba(52,190,237,.45),0 3px 4px rgba(0,0,0,.16)}
+#wiiBtn{left:58px}
+#mailBtn{right:58px}
+#wiiBtn .wii-mark{width:70px;max-width:none}
+#mailBtn .env{fill:#a1a0a4;animation:mailGlow 2.4s ease-in-out infinite}
+@keyframes mailGlow{0%,100%{fill:#a1a0a4}50%{fill:#34beed}}
+#sdBtn{position:absolute;top:100px;width:50px;height:60px;border-radius:8px;outline:none;padding:2px}
+#sdBtn svg{width:100%;height:100%}
+#sdBtn.hot svg path:first-child,#sdBtn:focus-visible svg path:first-child{stroke:var(--cyan);stroke-width:3}
+
+/* ================= CHANNEL PREVIEW ================= */
+#preview{position:absolute;inset:0;z-index:50;pointer-events:none}
+#preview.open{pointer-events:auto}
+#preview.closing{pointer-events:none}
+#pvZoom{position:absolute;overflow:hidden;background:#fff;transition:left .5s cubic-bezier(.45,0,.2,1),top .5s cubic-bezier(.45,0,.2,1),width .5s cubic-bezier(.45,0,.2,1),height .5s cubic-bezier(.45,0,.2,1),border-radius .5s}
+#pvZoom .bn{position:absolute;inset:0}
+#pvBottom{position:absolute;left:0;right:0;bottom:0;height:148px;display:flex;align-items:center;justify-content:center;gap:9%;transform:translateY(100%);transition:transform .35s cubic-bezier(.45,0,.2,1)}
+#preview.shown #pvBottom{transform:none}
+.pill{position:relative;width:400px;height:88px;border-radius:999px;background:linear-gradient(#fdfdfd,#e9e9eb);border:2px solid #c4c5c9;box-shadow:0 2px 3px rgba(0,0,0,.12);font-size:36px;font-weight:500;color:#55575c;transition:border-color .1s,box-shadow .1s;outline:none}
+.pill:disabled{opacity:.45;cursor:default}
+.pill.hot:not(:disabled),.pill:focus-visible{border-color:var(--cyan);box-shadow:0 0 0 1px var(--cyan),0 0 8px 2px rgba(52,190,237,.45)}
+.portrait .pill{width:300px;height:84px;font-size:32px}
+.pvarrow{position:absolute;width:46px;height:82px;opacity:0;transition:opacity .25s;outline:none}
+#preview.shown .pvarrow{opacity:1}
+.pvarrow svg{width:100%;height:100%;filter:drop-shadow(0 2px 2px rgba(20,60,120,.25))}
+.pvarrow.hot svg{transform:scale(1.08)}
+#pvL svg{transform:scaleX(-1)}
+#pvL.hot svg{transform:scaleX(-1) scale(1.08)}
+
+/* ================= WII BUTTON SCREEN ================= */
+#sysmenu{position:absolute;left:0;right:0;top:0;bottom:200px;z-index:55;display:none;flex-direction:column;align-items:center;justify-content:center;gap:36px}
+#sysmenu.open{display:flex;animation:fadeIn .25s ease}
+#sysmenu.open .sys-row{animation:sysIn .3s cubic-bezier(.45,0,.2,1)}
+@keyframes sysIn{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
+.sys-row{display:flex;gap:56px}
+.portrait .sys-row{flex-direction:column;gap:30px}
+.sysbtn{width:440px;height:200px;border-radius:24px;background:linear-gradient(#ffffff,#eeeff1);border:2px solid #c4c5c9;box-shadow:0 2px 4px rgba(0,0,0,.1);font-size:36px;font-weight:500;color:#55575c;transition:border-color .1s,box-shadow .1s;outline:none}
+.sysbtn.hot,.sysbtn:focus-visible{border-color:var(--cyan);box-shadow:0 0 0 1px var(--cyan),0 0 8px 2px rgba(52,190,237,.45)}
+
+/* ================= HAND CURSOR ================= */
+#hand{position:fixed;left:0;top:0;z-index:9999;pointer-events:none;width:58px;height:70px;margin:-6px 0 0 -18px;display:none;transform-origin:18px 6px;will-change:transform}
+.has-hand #hand{display:block}
+.has-hand.in-content #hand{display:none}
+#hand svg{width:100%;height:100%;transition:transform .08s;filter:drop-shadow(1px 2px 1px rgba(0,0,0,.28))}
+#hand.press svg{transform:scale(.92)}
+
+/* ================= CHANNEL CONTENT =================
+   Each channel is its own full-screen app, styled after that real channel. */
+#content{position:fixed;inset:0;z-index:70;display:none;cursor:auto;overflow:hidden;font-family:var(--font);color:var(--ink)}
+#content.open{display:block;animation:fadeIn .3s ease}
+#content.leaving{animation:fadeOut .2s ease forwards}
+@keyframes fadeOut{to{opacity:0}}
+#content [hidden]{display:none !important}
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;overflow:hidden}
+.scroll{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+.sel-text{user-select:text}
+/* the system's grey pill button, as used across the real channels */
+.wb{display:inline-flex;align-items:center;justify-content:center;min-width:clamp(130px,15vw,220px);height:clamp(46px,6.2vh,62px);padding:0 24px;border-radius:999px;background:linear-gradient(#fdfdfd,#e9e9eb);border:2px solid #c4c5c9;box-shadow:0 2px 3px rgba(0,0,0,.12);font-size:clamp(16px,2.2vh,22px);font-weight:500;color:#55575c;text-decoration:none;white-space:nowrap;outline:none;transition:border-color .1s,box-shadow .1s}
+.wb:hover,.wb:focus-visible{border-color:var(--cyan);box-shadow:0 0 0 1px var(--cyan),0 0 8px 2px rgba(52,190,237,.45)}
+.wbar{flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:clamp(10px,3vw,40px);padding:14px 16px;padding-bottom:max(14px,env(safe-area-inset-bottom))}
+.wbar.grey{background:linear-gradient(#ededef,#dcdde0);border-top:3px solid var(--cyan)}
+@media (max-width:600px){.wb{min-width:0;flex:1 1 0;max-width:200px;padding:0 10px;font-size:16px}.wbar{gap:10px}}
+
+/* --- Mii Channel: the plaza --- */
+.mp{background:linear-gradient(#ffffff 0,#f6f7f9 40%,#e4e8ec 100%)}
+.mp-floor{position:absolute;left:-60%;right:-60%;bottom:0;height:70%;background-image:linear-gradient(rgba(70,90,110,.1) 2px,transparent 2px),linear-gradient(90deg,rgba(70,90,110,.1) 2px,transparent 2px);background-size:110px 110px;transform:perspective(700px) rotateX(55deg);transform-origin:50% 100%;pointer-events:none}
+.mp-main{position:relative;flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;display:flex;align-items:flex-end;justify-content:center;gap:clamp(10px,2vw,30px);padding:clamp(40px,7vh,80px) clamp(16px,4vw,60px) 0}
+.mp-mii{position:relative;flex:0 0 auto;width:min(40vw,62vh);margin-bottom:-2px;animation:miiIn .5s cubic-bezier(.3,1.4,.5,1) both}
+@keyframes miiIn{from{transform:translateY(24px);opacity:0}}
+.mp-mii img{display:block;width:100%;height:auto}
+/* the speech balloon a selected Mii gets */
+.mp-say{position:relative;align-self:center;flex:0 1 520px;min-width:0;margin-bottom:8vh;background:#fff;border:3px solid #c9cbcf;border-radius:34px;box-shadow:0 4px 12px rgba(0,0,0,.08);padding:clamp(18px,3.4vh,32px) clamp(20px,2.6vw,36px);user-select:text;animation:fadeIn .4s ease .25s both}
+.mp-say::before{content:'';position:absolute;left:-17px;top:46%;width:28px;height:28px;background:#fff;border-left:3px solid #c9cbcf;border-bottom:3px solid #c9cbcf;transform:rotate(45deg);border-radius:0 0 0 6px}
+.mp-say h2{font-size:clamp(24px,4.4vh,40px);font-weight:800;color:#3f4146;line-height:1.1}
+.mp-say p{font-size:clamp(16px,2.4vh,21px);line-height:1.55;color:#55575c;margin-top:1.4vh}
+.mp-say .now{font-size:clamp(14px,2vh,17px);color:#1f7fae;font-weight:500}
+.mp .wbar{position:relative;z-index:2}
+@media (max-width:760px){.mp-main{flex-direction:column;align-items:center;justify-content:flex-start;padding-bottom:16px}.mp-mii{width:min(56vw,30vh);margin-bottom:0;-webkit-mask-image:linear-gradient(#000 80%,transparent);mask-image:linear-gradient(#000 80%,transparent)}.mp-say{flex:none;width:100%;margin:14px 0 0;align-self:stretch}.mp-say::before{left:50%;top:-17px;margin-left:-14px;transform:rotate(135deg)}}
+
+/* side arrows used inside channels */
+.ph-arr{position:absolute;z-index:2;top:50%;width:46px;height:82px;margin-top:-41px;outline:none}
+.ph-arr svg{width:100%;height:100%;filter:drop-shadow(0 2px 2px rgba(0,0,0,.4))}
+.ph-arr:hover svg,.ph-arr:focus-visible svg{transform:scale(1.1)}
+.ph-arr.l{left:clamp(6px,2vw,30px)}.ph-arr.l svg{transform:scaleX(-1)}.ph-arr.l:hover svg,.ph-arr.l:focus-visible svg{transform:scaleX(-1) scale(1.1)}
+.ph-arr.r{right:clamp(6px,2vw,30px)}
+/* --- Photo Channel: prints pinned to a cork board, then the full-screen viewer --- */
+.ph{background:#2b1d12}
+.ph-board{position:relative;flex:1 1 auto;min-height:0;background:url(img/cork.webp) 0 0/320px 320px;box-shadow:inset 0 0 90px rgba(50,24,6,.55),inset 0 0 18px rgba(50,24,6,.4)}
+.ph-grid{position:absolute;inset:clamp(18px,4vh,44px) clamp(70px,9vw,140px);display:grid;gap:clamp(10px,2.4vh,26px) clamp(12px,2vw,30px)}
+.ph-cell{position:relative;container-type:size;display:flex;align-items:center;justify-content:center;min-width:0;min-height:0}
+.ph-print{position:relative;width:min(92cqw,108cqh);background:#fbfaf6;padding:min(3.4cqw,4cqh);box-shadow:0 2px 3px rgba(0,0,0,.3),0 6px 14px rgba(40,18,4,.35);transform:rotate(var(--r,0deg));transition:transform .14s,box-shadow .14s;outline:none;cursor:pointer}
+.ph-print img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;background:#ddd}
+.ph-print .pin{position:absolute;left:50%;top:max(-7px,-2.4cqh);width:max(14px,5cqh);height:max(14px,5cqh);margin-left:max(-7px,-2.5cqh);border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff 0 8%,var(--pin) 30%,rgba(0,0,0,.35) 100%),var(--pin);box-shadow:1px 3px 3px rgba(0,0,0,.4)}
+.ph-print .mv{position:absolute;right:9%;bottom:12%;width:max(26px,13cqh);height:max(26px,13cqh);border-radius:50%;background:rgba(0,0,0,.5);border:2px solid rgba(255,255,255,.85)}
+.ph-print .mv::after{content:'';position:absolute;left:38%;top:27%;border-style:solid;border-width:.6em 0 .6em 1em;border-color:transparent transparent transparent #fff;font-size:max(8px,3.6cqh)}
+.ph-print:hover,.ph-print:focus-visible{transform:rotate(0deg) scale(1.06);z-index:2;box-shadow:0 0 0 3px var(--cyan),0 0 14px 4px rgba(52,190,237,.6),0 8px 18px rgba(40,18,4,.45)}
+.ph-board .ph-arr{top:50%}
+.ph-bar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px clamp(16px,4vw,48px);padding-bottom:max(14px,env(safe-area-inset-bottom));background:linear-gradient(#ededef,#dcdde0);border-top:3px solid var(--cyan)}
+.ph-pg{font-size:clamp(18px,2.6vh,24px);font-weight:700;color:#8a8c91;font-variant-numeric:tabular-nums}
+/* full-screen viewer */
+.ph-view{position:absolute;inset:0;z-index:4;background:#000;animation:fadeIn .25s ease;overflow:hidden}
+.ph-stage{position:absolute;inset:0 0 var(--tb,96px) 0;display:flex;align-items:center;justify-content:center;overflow:hidden;transition:bottom .3s}
+.ph-stage .media{display:block;flex:none;transition:transform .35s cubic-bezier(.45,0,.2,1),opacity .5s ease;max-width:none}
+.ph-stage.zoomed .media{cursor:zoom-out}
+.ph-view .ph-arr{top:calc(50% - var(--tb,96px)/2)}
+.ph-tools{position:absolute;left:0;right:0;bottom:0;height:var(--tb,96px);display:flex;align-items:center;justify-content:center;gap:clamp(8px,1.6vw,22px);padding:0 16px max(0px,env(safe-area-inset-bottom));background:linear-gradient(#f4f4f6,#d4d5d9);border-top:3px solid var(--cyan);transition:transform .3s cubic-bezier(.45,0,.2,1)}
+.ph-tools .sp{flex:0 1 30px}
+.ph-tools .wb{flex:0 0 auto;max-width:none}
+.ph-view.slides{cursor:none}
+.ph-view.slides .ph-stage{bottom:0}
+.ph-view.slides .ph-tools{transform:translateY(105%)}
+.ph-view.slides .ph-arr{opacity:0;pointer-events:none}
+.ph-view.slides .media{animation:kb 5s ease-out both}
+@keyframes kb{from{transform:scale(1)}to{transform:scale(1.06)}}
+@media (max-width:640px){.ph-grid{inset:16px 44px}.ph-board .ph-arr{width:32px;height:58px;margin-top:-29px}.ph-board .ph-arr.l{left:4px}.ph-board .ph-arr.r{right:4px}.ph-tools{gap:6px;padding:0 8px}.ph-tools .sp{display:none}.ph-tools .bb{width:46px;height:48px;border-radius:12px}.ph-tools .bb svg{width:26px;height:26px}.ph-tools .wb{min-width:0;padding:0 12px;font-size:15px;height:48px}.ph-tools .lk2{display:none}}
+/* --- Internet Channel (browser chrome after variant B) --- */
+.scr.in{background:#d6d7da}
+.in-addr{flex:0 0 auto;display:flex;align-items:center;padding:max(10px,env(safe-area-inset-top)) clamp(12px,3vw,32px) 10px;background:linear-gradient(#f6f6f7,#dadbde);border-bottom:1px solid #b4b5b9}
+.in-addr .fld{position:relative;flex:1 1 auto;min-width:0;height:42px;border-radius:21px;background:#fff;border:2px solid #b5b7bc;box-shadow:inset 0 2px 3px rgba(0,0,0,.08);overflow:hidden;display:flex;align-items:center;padding:0 18px}
+.in-addr .prog{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(#c9eefb,#9fdcf3)}
+.in-addr .fld span{position:relative;font-size:17px;font-weight:500;color:#55575c;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.in-page{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;background:#fff;user-select:text;outline:none}
+.pg{--fs:clamp(17px,calc(.6vw + 10px),21px);max-width:40em;margin:0 auto;padding:28px 22px 50px;font:var(--fs)/1.55 Georgia,'Times New Roman',Times,serif;color:#000;transition:opacity .15s}
+.pg.big{font-size:calc(var(--fs) * 1.3)}
+.pg h1{font-size:2em;line-height:1.15;margin:0 0 .5em}
+.pg h2{font-size:1.3em;line-height:1.25;margin:1.6em 0 .4em}
+.pg h3{font-size:1.05em;line-height:1.3;margin:1.3em 0 .2em}
+.pg p{margin:0 0 .85em}
+.pg ul{margin:0 0 1em 1.3em}
+.pg li{margin:.3em 0}
+.pg a{color:#0000ee;text-decoration:underline}
+.pg a:visited{color:#551a8b}
+.pg hr{border:0;border-top:1px solid #999;margin:1.8em 0}
+.pg .small{font-size:.85em}
+.pg .muted{color:#555}
+@media (max-width:520px){.pg{--fs:16px;padding:20px 16px 44px}}
+.in-tools{position:relative;flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:10px;padding:10px 16px;padding-bottom:max(10px,env(safe-area-inset-bottom));background:linear-gradient(#f4f4f6,#d4d5d9);border-top:1px solid #a7a9ae;box-shadow:0 -2px 8px rgba(0,0,0,.12)}
+.in-tools .sp{flex:0 1 40px}
+.bb{flex:0 0 auto;width:68px;height:58px;border-radius:16px;background:linear-gradient(#ffffff,#e4e5e8);border:2px solid #bfc1c6;box-shadow:0 2px 2px rgba(0,0,0,.1);display:flex;align-items:center;justify-content:center;outline:none;transition:border-color .1s,box-shadow .1s}
+.bb svg{width:34px;height:34px;fill:none;stroke:#2c8fd0;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}
+.bb:hover:not(:disabled),.bb:focus-visible{border-color:var(--cyan);box-shadow:0 0 0 1px var(--cyan),0 0 8px 2px rgba(52,190,237,.45)}
+.bb:disabled{opacity:.4;cursor:default}
+.bb.on{background:linear-gradient(#dff4fc,#bfe7f7)}
+.in-exit{margin-left:auto;flex:none}
+.in-fav{position:absolute;right:clamp(10px,3vw,40px);bottom:94px;z-index:3;width:min(340px,calc(100vw - 20px));background:#fff;border:2px solid #bfc1c6;border-radius:18px;box-shadow:0 6px 18px rgba(0,0,0,.2);padding:10px;animation:fadeIn .15s ease}
+.in-fav b{display:block;padding:4px 10px 8px;font-size:15px;color:var(--gray-text)}
+.in-fav button{display:block;width:100%;text-align:left;padding:10px 12px;border-radius:10px;font-size:18px;font-weight:500;color:#4a4c50;border:2px solid transparent;outline:none}
+.in-fav button small{display:block;font-size:13px;color:#8a8c91}
+.in-fav button:hover,.in-fav button:focus-visible{border-color:var(--cyan);background:#effaff}
+@media (max-width:600px){.in-tools{gap:5px;padding:8px}.in-tools .sp{display:none}.bb{width:44px;height:48px;border-radius:12px}.bb svg{width:26px;height:26px}.bb[data-wide]{display:none}.in-exit{min-width:0;height:48px;padding:0 12px;font-size:15px}.in-fav{bottom:76px}}
+
+/* --- Wii Message Board --- */
+.mb{background:#f4f2e8}
+.mb-head{flex:0 0 auto;display:flex;align-items:baseline;gap:14px;padding:max(16px,env(safe-area-inset-top)) clamp(16px,4vw,48px) 12px;background:linear-gradient(#ffffff,#f4f2e8)}
+.mb-head .d{font-size:clamp(40px,8vh,64px);font-weight:700;color:#45474c;line-height:1}
+.mb-head .m{font-size:clamp(17px,2.6vh,22px);font-weight:500;color:var(--gray-text)}
+.mb .scroll{padding:8px clamp(16px,4vw,48px) 24px}
+.letter{max-width:760px;margin:0 auto;background:#fffef6;border:2px solid #e3dfc4;border-radius:14px;padding:clamp(18px,3vh,30px) clamp(18px,3vw,34px);background-image:repeating-linear-gradient(transparent 0 33px,#ece8cf 33px 34px);background-position:0 18px;box-shadow:0 3px 10px rgba(0,0,0,.06);user-select:text}
+.letter p{font-size:18px;line-height:34px;color:#4a4c50}
+.letter .from{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.letter .from .av{flex:0 0 auto;width:52px;height:52px;border-radius:12px;border:2px solid #d5d6da;background:linear-gradient(#e8f3fa,#c7dff0);overflow:hidden}
+.letter .from .av img{width:100%;height:100%;object-fit:cover;object-position:50% 10%}
+.letter .from b{font-size:18px}
+.letter a{color:#1f7fae;font-weight:700}
+.mb .wbar{background:linear-gradient(#ededef,#dcdde0);border-top:3px solid var(--cyan)}
+
+/* ================= BANNERS =================
+   Drawn in container units (cqw/cqh) so the same markup works on a tile,
+   in the zoomed preview and in the content header. `.pv` elements only
+   show when the banner is large (preview). */
+.bn{container-type:size;font-family:var(--font)}
+.bn *{position:absolute}
+.bn .t{left:0;right:0;text-align:center;font-weight:700;white-space:nowrap}
+.bn .pv{display:none}
+#pvZoom .bn .pv{display:block}
+.bn .tl{inset:0}
+#pvZoom .bn .tl{display:none}
+#pvZoom .bn .tick{font-size:5cqh !important}
+#pvZoom .bn .tickbar,#pvZoom .bn .capbar{height:15% !important}
+#pvZoom .bn .cap{font-size:8cqh !important}
+.bn .safe{left:50%;top:50%;width:min(100cqw,177.78cqh);height:min(100cqh,56.25cqw);transform:translate(-50%,-50%);container-type:size}
+/* phone preview: keep text clear of the side arrows */
+.portrait #pvZoom .bn .safe{width:84cqw;height:47.25cqw}
+#fader{position:fixed;inset:0;z-index:75;background:#fff;opacity:0;pointer-events:none;transition:opacity .25s ease}
+#fader.on{opacity:1;pointer-events:auto}
+#musicToggle{width:300px;height:80px;font-size:28px}
+.spin{animation:spin 8s linear infinite}
+.disc3d{animation:discTurn 6s linear infinite}
+@keyframes discTurn{to{transform:rotateY(360deg)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes ticker{from{transform:translateX(100cqw)}to{transform:translateX(-100%)}}
+/* light gloss over each tile, like the real menu's glassy channel frames */
+.ch:not(.empty) .bn::after{content:'';position:absolute;left:0;right:0;top:0;height:48%;background:linear-gradient(rgba(255,255,255,.28),rgba(255,255,255,0));pointer-events:none}
+
+@media (prefers-reduced-motion:reduce){
+  .bn *,.disc3d,.spin,.ch.hot,.parrow.show svg,#mailBtn .env,.warn-press{animation:none !important}
+  .warn-press{opacity:1}
+  #track,#pvZoom,#pages,#bar,#barExt,#pvBottom,#fader,#bubble{transition-duration:.01s !important}
+  #sysmenu .sys-row,#content,#menu.boot,.ds-disc>div,.ds-press,.mp-mii,.fc-tick div,.nw-tick div{animation:none !important}
+}
+</style>
+</head>
+<body class="scan">
+
+<div id="root" class="scan">
+<div id="barExt"></div>
+<div id="stage" class="scan">
+
+  <!-- ===== Health & Safety ===== -->
+  <div id="warning" role="button" tabindex="0" aria-label="Press A to continue">
+    <div class="warn-title">
+      <svg viewBox="0 0 60 60" aria-hidden="true"><path d="M30 4 57 54H3Z" fill="#222"/><path d="M27.5 20h5l-1 20h-3zM27.5 44h5v5h-5z" fill="#fff"/></svg>
+      <span>WARNING-HEALTH AND SAFETY</span>
+    </div>
+    <div class="warn-rule"></div>
+    <div class="warn-body">
+      BEFORE BROWSING, READ ZACH'S <b>RÉSUMÉ</b> FOR IMPORTANT INFORMATION ABOUT HIS RESEARCH, PROJECTS AND EXPERIENCE.
+      <span class="url">Also online at zwinship.github.io</span>
+    </div>
+    <div class="warn-press">Press <span class="a-btn">A</span> to continue.</div>
+  </div>
+
+  <!-- ===== Wii Menu ===== -->
+  <div id="menu">
+    <div id="pages"><div id="track"></div></div>
+    <button class="parrow" id="arrL" aria-label="Previous page" data-hot></button>
+    <button class="parrow" id="arrR" aria-label="Next page" data-hot></button>
+
+    <div id="bar">
+      <svg class="shape" preserveAspectRatio="none" aria-hidden="true"></svg>
+      <div id="clock" aria-hidden="true"></div>
+      <div id="date"></div>
+      <button class="round-btn" id="wiiBtn" aria-label="Wii Menu options" data-hot><span class="face"><span class="wii-mark-slot"></span></span></button>
+      <button id="sdBtn" aria-label="SD Card: résumé" data-hot><svg viewBox="0 0 46 56" aria-hidden="true"><path d="M4 2h26l14 14v36a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" fill="#7fcdf1" stroke="#3a9fd4" stroke-width="2"/><g fill="#d9f1fc"><rect x="8" y="6" width="4" height="9" rx="1"/><rect x="14" y="6" width="4" height="9" rx="1"/><rect x="20" y="6" width="4" height="9" rx="1"/><rect x="26" y="6" width="4" height="9" rx="1"/></g><text x="23" y="42" text-anchor="middle" font-family="Arial Rounded MT Bold,Figtree,Arial" font-weight="700" font-style="italic" font-size="14" fill="#ffffff">SD</text></svg></button>
+      <button class="round-btn" id="mailBtn" aria-label="Wii Message Board: contact Zach" data-hot>
+        <span class="face"><svg width="58" height="40" viewBox="0 0 96 64" style="position:relative"><path class="env" d="M0 4v8l46.7 22.9c.8.4 1.8.4 2.6 0L96 12V4c0-2.2-1.8-4-4-4H4C1.8 0 0 1.8 0 4z"/><path class="env" d="M46.7 43.8 0 20.5V60c0 2.2 1.8 4 4 4h88c2.2 0 4-1.8 4-4V20.5L49.3 43.8c-.8.4-1.8.4-2.6 0z"/></svg></span>
+      </button>
+    </div>
+
+    <div id="bubble" aria-hidden="true"></div>
+
+    <!-- ===== Channel preview ===== -->
+    <div id="preview" role="dialog" aria-modal="true" aria-label="Channel preview">
+      <div id="pvZoom"></div>
+      <button class="pvarrow" id="pvL" aria-label="Previous channel" data-hot></button>
+      <button class="pvarrow" id="pvR" aria-label="Next channel" data-hot></button>
+      <div id="pvBottom" class="scan">
+        <button class="pill" id="pvMenu" data-hot>Wii Menu</button>
+        <button class="pill" id="pvStart" data-hot>Start</button>
+      </div>
+    </div>
+
+    <!-- ===== Wii button screen ===== -->
+    <div id="sysmenu" class="scan" role="dialog" aria-modal="true" aria-label="Wii Menu options">
+      <div class="sys-row">
+        <button class="sysbtn" id="sysData" data-hot>Résumé</button>
+        <button class="sysbtn" id="sysSettings" data-hot>Main Site</button>
+      </div>
+      <div class="sys-row" style="gap:40px"><button class="pill" id="musicToggle" data-hot>Music: On</button><button class="pill" id="sysClose" data-hot style="width:300px;height:80px;font-size:32px">Wii Menu</button></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ===== Channel content (full screen, unscaled) ===== -->
+<div id="content" class="scan" role="dialog" aria-modal="true" aria-label="Channel"></div>
+
+<div id="fader"></div>
+
+<!-- ===== P1 hand pointer ===== -->
+<div id="hand" aria-hidden="true">
+  <svg viewBox="0 0 58 70">
+    <defs><linearGradient id="handG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#d4f0fc"/></linearGradient></defs>
+    <path d="M14 30V9.5a5 5 0 0 1 10 0V26l.2-1.2a4.6 4.6 0 0 1 9 .2V28a4.6 4.6 0 0 1 9 0v3a4.4 4.4 0 0 1 8.6 1V46c0 11-8 20-20 20h-3C18 66 12 60 8.5 53L3.3 42.5a4.6 4.6 0 0 1 7.6-5L14 41z" fill="url(#handG)" stroke="#2b6fa8" stroke-width="2.6" stroke-linejoin="round"/>
+    <path d="M24 26v10M33.2 28v8M42.2 31v6" stroke="#2b6fa8" stroke-width="2" stroke-linecap="round" opacity=".5"/>
+    <text x="31" y="56" text-anchor="middle" font-family="Arial Rounded MT Bold,Figtree,Arial" font-weight="700" font-size="15" fill="#2b6fa8">1</text>
+  </svg>
+</div>
+
+<script src="../shared/data.js"></script>
+<script>
+const ASSET = '../../';
+const HERE = './';
+const ZW_IMG = HERE + 'img/zw.webp';
+const RESUME = ASSET + 'about_me/resume.pdf';
+const LINKEDIN = 'https://linkedin.com/in/zwinship', GITHUB = 'https://github.com/zwinship';
+const coarse = matchMedia('(pointer:coarse)').matches;
+
+/* An upright, rounded "Wii" wordmark drawn as strokes (not the official logo file). */
+const WII_MARK = (col='#a5a6aa') => `<svg class="wii-mark" viewBox="0 0 100 44" aria-hidden="true"><g fill="none" stroke="${col}" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 10l9 28 9-22 9 22 9-28"/><path d="M62 20v18M84 20v18"/></g><circle cx="62" cy="9" r="4.6" fill="${col}"/><circle cx="84" cy="9" r="4.6" fill="${col}"/></svg>`;
+document.querySelector('.wii-mark-slot').outerHTML = WII_MARK();
+
+/* =====================================================================
+   BANNERS: pictures first, like the real tiles. Photo, Mii and Internet
+   banners are prerendered images (img/*_banner.webp); the Disc Channel
+   tile is drawn here so its disc can turn.
+   ===================================================================== */
+const BN = (bg, inner) => `${bg}<div class="safe">${inner}</div>`;
+const IMGB = f => `<img src="${HERE}img/${f}" alt="" style="inset:0;width:100%;height:100%;object-fit:cover">`;
+const B = {
+disc: () => BN('<div style="inset:0;background:linear-gradient(#ffffff 0,#f6f6f7 45%,#e6e7e9 100%)"></div><div style="left:0;right:0;bottom:0;height:34%;background:linear-gradient(rgba(255,255,255,0),rgba(255,255,255,.7))"></div>', `
+  <div style="left:50%;top:14cqh;width:70cqh;height:70cqh;margin-left:-35cqh;perspective:160cqh">
+    <div class="disc3d" style="inset:0;border-radius:50%;background:conic-gradient(from 20deg,#e4e6ea,#fbfbfc,#d9dce1,#f4f5f7,#e4e6ea);box-shadow:inset 0 0 0 .6cqh #c3c6cc">
+      <div style="inset:42%;border-radius:50%;background:#f3f4f6;box-shadow:inset 0 0 0 .5cqh #c3c6cc"></div>
+    </div>
+  </div>
+  <div class="pv" style="left:0;right:0;bottom:6cqh;text-align:center;font-size:6.4cqh;font-weight:700;color:#8b8d92">Please insert a disc.</div>`),
+mii: () => IMGB('mii_banner.webp'),
+photo: () => IMGB('photo_banner.webp'),
+internet: () => IMGB('internet_banner.webp'),
+};
+
+/* =====================================================================
+   CHANNEL SCREENS
+   ===================================================================== */
+const plain = s => String(s || '').replace(/\s*·\s*/g, ', ');
+const EXT = (href, label, cls='wb') => `<a class="${cls}" href="${href}" ${href.startsWith('mailto:')?'':'target="_blank" rel="noopener"'}>${label}</a>`;
+const BACK = (label='Wii Menu') => `<button class="wb" data-back>${label}</button>`;
+const $ = (sel, root=document) => root.querySelector(sel);
+const $$ = (sel, root=document) => [...root.querySelectorAll(sel)];
+const today = () => { const d = new Date(); return `${d.toLocaleDateString('en-US',{weekday:'long'})}, ${d.toLocaleDateString('en-US',{month:'long',day:'numeric'})}`; };
+// move focus through a list of elements with the arrow keys
+function arrowNav(e, els, cols=1){
+  const i = els.indexOf(document.activeElement); if (i < 0) return false;
+  const step = {ArrowRight:1, ArrowLeft:-1, ArrowDown:cols, ArrowUp:-cols}[e.key];
+  if (!step) return false;
+  const n = i + step; if (n < 0 || n >= els.length) return true;
+  els[n].focus(); SFX.hover(); return true;
+}
+
+/* --- Photo Channel: real photos of the LED map, the build video, his
+   portrait, and photographed title pages and cards for everything else --- */
+const led = byId('mbta-led');
+const P = (img, id, extra={}) => { const p = id ? byId(id) : null;
+  return Object.assign({ kind:'img', img, title: p ? p.title : '', links: p ? p.links : [] }, extra); };
+const PHOTOS = [
+  P('led.webp', 'mbta-led'),
+  P('c_nber.webp', 'nber'),
+  P('zw_photo.webp', null, { title:PROFILE.name, links:[[LINKEDIN,'LinkedIn'],[GITHUB,'GitHub']] }),
+  P('c_rd2dnet.webp', 'rd2dnet'),
+  P('led_movie.webp', 'mbta-led', { kind:'video', src:ASSET + led.video }),
+  P('c_cz.webp', 'cz'),
+  P('c_chesque.webp', 'chesque'),
+  P('c_ozone.webp', 'ozone'),
+  P('led_downtown.webp', 'mbta-led'),
+  P('c_octa2.webp', 'octa2'),
+  P('c_mbta.webp', 'mbta-ts'),
+  P('c_tott.webp', 'tott'),
+  P('c_polls.webp', 'polls'),
+  P('c_micro.webp', 'micro'),
+  P('led_green.webp', 'mbta-led'),
+  P('c_llm.webp', 'llm'),
+  P('c_octa1.webp', 'octa1'),
+  P('led_red.webp', 'mbta-led'),
+];
+const PIN_COLS = ['#d23c35','#2e7fd0','#e8b021','#3aa45a','#d23c35','#e8b021','#2e7fd0'];
+// a fixed, hand-pinned look: each print gets its own small tilt
+const TILT = i => (((i * 37) % 9) - 4) * .8;
+const ICON = {
+  back:'<path d="M23 9 12 20l11 11"/>', fwd:'<path d="m17 9 11 11-11 11"/>',
+  reload:'<path d="M30 20a10 10 0 1 1-3-7.1"/><path d="M28 7v6.5h-6.5"/>',
+  home:'<path d="M8 19 20 9l12 10"/><path d="M11 17v14h7v-8h4v8h7V17"/>',
+  fav:'<path d="M20 7.5l3.8 7.8 8.5 1.2-6.2 6 1.5 8.5L20 27l-7.6 4 1.5-8.5-6.2-6 8.5-1.2z"/>',
+  zoom:'<circle cx="17.5" cy="17.5" r="9"/><path d="m24.5 24.5 8 8M17.5 13.5v8M13.5 17.5h8"/>',
+  rotate:'<path d="M11 21a9 9 0 1 0 3-6.7"/><path d="M10 8v7h7"/>',
+  play:'<path d="M14 10v20l16-10z"/>',
+};
+const BB = (id, ic, label, extra='') => `<button class="bb" id="${id}" aria-label="${label}" title="${label}" ${extra}><svg viewBox="0 0 40 40" aria-hidden="true">${ICON[ic]}</svg></button>`;
+/* --- Internet Channel: plain pages with real history (after variant B's browser) --- */
+const A = (href, text) => `<a href="${href}"${href.startsWith('mailto:')?'':' target="_blank" rel="noopener"'}>${text}</a>`;
+const GO = (key, text) => `<a href="#${key}" data-go="${key}">${text}</a>`;
+const linkLine = ls => ls && ls.length ? `<p class="small">${ls.map(l=>A(l[0], l[1])).join(' | ')}</p>` : '';
+const WEB = {
+  home: { path:'', html: () => `
+    <h1>${PROFILE.name}</h1>
+    <p>${PROFILE.lede}</p>
+    <p>${PROFILE.now}</p>
+    <ul><li>${GO('resume','R&eacute;sum&eacute;')}</li><li>${GO('research','Research and projects')}</li><li>${A(RESUME,'R&eacute;sum&eacute; (PDF)')}</li></ul>
+    <h2>Contact</h2>
+    <p>Email: ${A('mailto:'+EMAIL, EMAIL)}<br>GitHub: ${A(GITHUB,'github.com/zwinship')}<br>LinkedIn: ${A(LINKEDIN,'linkedin.com/in/zwinship')}</p>
+    <hr><p class="small">${A(ASSET,'zwinship.github.io')}</p>` },
+  resume: { path:'resume.html', html: () => `
+    <p class="small">${GO('home', PROFILE.name)} / R&eacute;sum&eacute;</p>
+    <h1>R&eacute;sum&eacute;</h1>
+    <p>${A(RESUME,'PDF version')} | ${A(ASSET+'about_me/transcript.pdf','Transcript (PDF)')}</p>
+    <h2>Education</h2>
+    ${PROFILE.education.map(e=>`<p><b>${e.degree}</b>, ${e.school}. ${e.when}.<br>${e.note}</p>`).join('')}
+    <h2>Experience</h2>
+    ${EXPERIENCE.map(e=>`<h3>${e.role}</h3><p class="muted">${e.org}. ${e.when}.</p><p>${e.body}</p>${linkLine(e.links)}`).join('')}
+    <h2>Skills</h2>
+    <p>${PROFILE.skills.join(', ')}.</p>` },
+  research: { path:'research.html', html: () => `
+    <p class="small">${GO('home', PROFILE.name)} / Research</p>
+    <h1>Research</h1>
+    ${RESEARCH.map(p=>`<h3>${p.title} (${p.year})</h3><p>${p.body}</p>${linkLine(p.links)}`).join('')}
+    <h2>Software</h2>
+    <h3>${SOFTWARE.title}</h3><p>${SOFTWARE.body}</p>${linkLine(SOFTWARE.links)}
+    <h2>Projects</h2>
+    ${PERSONAL.map(p=>`<h3>${p.title} (${p.year})</h3><p>${p.body}</p>${linkLine(p.links)}`).join('')}` },
+};
+const FAV = [['home', PROFILE.name],['resume','R&eacute;sum&eacute;'],['research','Research']];
+const urlOf = key => 'http://zwinship.github.io/' + WEB[key].path;
+
+const SCREENS = {
+  mii: { label:'Mii Channel', html: () => `<div class="scr mp">
+      <div class="mp-floor" aria-hidden="true"></div>
+      <div class="mp-main">
+        <div class="mp-mii"><img src="${ZW_IMG}" alt="Photo of ${PROFILE.name}"></div>
+        <div class="mp-say"><h2>${PROFILE.name}</h2><p>${PROFILE.lede}</p></div>
+      </div>
+      <div class="wbar grey">${BACK()}</div>
+    </div>` },
+
+  photo: { label:'Photo Channel', html: () => `<div class="scr ph">
+      <div class="ph-board">
+        <div class="ph-grid" id="phGrid"></div>
+        <button class="ph-arr l" id="phPrev" aria-label="Previous page">${ARROW_SVG}</button>
+        <button class="ph-arr r" id="phNext" aria-label="Next page">${ARROW_SVG}</button>
+      </div>
+      <div class="ph-bar">${BACK()}<span class="ph-pg" id="phPg"></span><button class="wb" id="phShow">Slideshow</button></div>
+      <div class="ph-view" id="phView" hidden>
+        <div class="ph-stage" id="phStage"></div>
+        <button class="ph-arr l" id="pvPrev" aria-label="Previous photo">${ARROW_SVG}</button>
+        <button class="ph-arr r" id="pvNext" aria-label="Next photo">${ARROW_SVG}</button>
+        <div class="ph-tools" id="phTools"></div>
+      </div>
+    </div>`,
+    init(r){
+      const grid = $('#phGrid', r), view = $('#phView', r), stage = $('#phStage', r), tools = $('#phTools', r);
+      let pg = 0, per = 12, cols = 4, cur = 0, timer = null, rot = 0, zoom = false;
+      const shape = () => { const port = innerWidth / innerHeight < .9;
+        cols = port ? 2 : (innerWidth < 900 ? 3 : 4); const rows = innerWidth / innerHeight < .6 ? 4 : 3; per = cols * rows;
+        grid.style.gridTemplateColumns = `repeat(${cols},minmax(0,1fr))`; grid.style.gridTemplateRows = `repeat(${rows},minmax(0,1fr))`; };
+      const pages = () => Math.ceil(PHOTOS.length / per);
+      const board = (focusIdx) => {
+        shape(); pg = Math.min(pg, pages()-1);
+        const items = PHOTOS.slice(pg*per, pg*per+per);
+        grid.innerHTML = items.map((p, k) => { const i = pg*per + k;
+          return `<div class="ph-cell"><button class="ph-print" data-ph="${i}" style="--r:${TILT(i)}deg" aria-label="${p.title}">
+            <span class="pin" style="--pin:${PIN_COLS[i % PIN_COLS.length]}"></span>
+            <img src="${HERE}img/t/${p.img}" alt="">
+            ${p.kind==='video' ? '<span class="mv" aria-hidden="true"></span>' : ''}</button></div>`; }).join('');
+        $('#phPg', r).textContent = pages() > 1 ? `${pg+1} / ${pages()}` : '';
+        $('#phPrev', r).style.visibility = pg ? '' : 'hidden';
+        $('#phNext', r).style.visibility = pg < pages()-1 ? '' : 'hidden';
+        $$('[data-ph]', grid).forEach(b => b.onclick = () => { SFX.select(); open(+b.dataset.ph); });
+        if (focusIdx != null){ const t = $(`[data-ph="${focusIdx}"]`, grid); if (t) t.focus({preventScroll:true}); }
+      };
+      const flip = d => { const n = pg + d; if (n < 0 || n >= pages()) return false; pg = n; SFX.page(d); board(lastKey ? pg*per : null);
+        if (!reduced) grid.animate([{opacity:0, transform:`translateX(${d*50}px)`},{opacity:1, transform:'none'}],{duration:280,easing:'ease-out'}); return true; };
+      $('#phPrev', r).onclick = () => flip(-1);
+      $('#phNext', r).onclick = () => flip(1);
+
+      /* viewer */
+      const fitMedia = () => { const m = $('.media', stage); if (!m) return;
+        const nw = m.naturalWidth || m.videoWidth || 4, nh = m.naturalHeight || m.videoHeight || 3;
+        const sw = stage.clientWidth, sh = stage.clientHeight, side = rot % 180 !== 0;
+        const k = Math.min(sw / (side ? nh : nw), sh / (side ? nw : nh));
+        m.style.width = nw*k + 'px'; m.style.height = nh*k + 'px';
+        m.style.transform = `rotate(${rot}deg) scale(${zoom ? 2 : 1})`; };
+      const toolsHTML = p => `${BB('phRot','rotate','Rotate')}${BB('phZoom','zoom','Zoom','aria-pressed="false"')}${BB('phPlay','play','Slideshow')}
+        <span class="sp"></span>${p.links.slice(0,2).map((l,k)=>`<a class="wb${k?' lk2':''}" href="${l[0]}" target="_blank" rel="noopener">${l[1]}</a>`).join('')}
+        <span class="sp"></span><button class="wb" id="phBack">Back</button>`;
+      const paint = (i, dir=0) => {
+        cur = (i + PHOTOS.length) % PHOTOS.length; const p = PHOTOS[cur]; rot = 0; zoom = false; stage.classList.remove('zoomed');
+        stage.innerHTML = p.kind === 'video'
+          ? `<video class="media" src="${p.src}" poster="${HERE}img/${p.img}" ${reduced ? 'controls' : 'autoplay muted loop'} playsinline preload="auto" aria-label="${p.title}, video"></video>`
+          : `<img class="media" src="${HERE}img/${p.img}" alt="${p.title}">`;
+        const m = $('.media', stage);
+        m.addEventListener(p.kind==='video' ? 'loadedmetadata' : 'load', fitMedia); fitMedia();
+        if (p.kind==='video' && !reduced) m.play().catch(()=>{});
+        m.onclick = () => { if (!view.classList.contains('slides')) { zoom = !zoom; stage.classList.toggle('zoomed', zoom); fitMedia(); } };
+        m.onmousemove = e => { if (!zoom) return; const b = stage.getBoundingClientRect(); m.style.transformOrigin = `${(e.clientX-b.left)/b.width*100}% ${(e.clientY-b.top)/b.height*100}%`; };
+        tools.innerHTML = toolsHTML(p);
+        $('#phBack', tools).onclick = () => SCREENS.photo.back();
+        $('#phRot', tools).onclick = () => { SFX.press(); rot = (rot + 90) % 360; fitMedia(); };
+        $('#phZoom', tools).onclick = e => { SFX.select(); zoom = !zoom; stage.classList.toggle('zoomed', zoom); e.currentTarget.classList.toggle('on', zoom); e.currentTarget.setAttribute('aria-pressed', zoom); if (!zoom) m.style.transformOrigin = ''; fitMedia(); };
+        $('#phPlay', tools).onclick = () => { SFX.start(); slides(); };
+        if (dir && !reduced && !view.classList.contains('slides')) m.animate([{opacity:0},{opacity:1}],{duration:300,easing:'ease-out'});
+      };
+      const stop = () => { clearInterval(timer); timer = null; view.classList.remove('slides'); fitMedia(); };
+      const slides = () => { view.hidden = false; view.classList.add('slides'); fitMedia();
+        clearInterval(timer); timer = setInterval(() => { paint(cur + 1, 1); }, 5000); };
+      const open = (i, show) => { view.hidden = false; paint(i); if (show) slides(); else $('#phBack', tools).focus({preventScroll:true}); };
+      view.addEventListener('click', e => { if (view.classList.contains('slides') && !e.target.closest('a')){ e.stopPropagation(); SFX.back(); stop(); $('#phBack', tools).focus({preventScroll:true}); } }, true);
+      $('#pvPrev', r).onclick = () => this._step(-1);
+      $('#pvNext', r).onclick = () => this._step(1);
+      $('#phShow', r).onclick = () => { SFX.start(); open(pg*per, true); };
+      this._close = () => { if (view.hidden) return false;
+        stop(); view.querySelectorAll('video').forEach(v=>v.pause()); view.hidden = true; stage.innerHTML = '';
+        const target = Math.floor(cur / per); if (target !== pg){ pg = target; board(); }
+        const t = $(`[data-ph="${cur}"]`, grid); if (t) t.focus({preventScroll:true}); return true; };
+      this._step = d => { if (view.classList.contains('slides')) stop(); SFX.page(d); paint(cur + d, d); };
+      this._open = () => !view.hidden;
+      this._slides = () => view.classList.contains('slides');
+      this._stop = stop; this._flip = flip; this._grid = grid; this._cols = () => cols;
+      this._resize = () => { if (view.hidden){ const f = document.activeElement && document.activeElement.dataset ? document.activeElement.dataset.ph : null; board(f != null ? +f : null); } else fitMedia(); };
+      addEventListener('resize', this._resize);
+      this.leave = () => { stop(); removeEventListener('resize', this._resize); };
+      board(0);
+    },
+    key(e){
+      if (this._open()){
+        if (this._slides()){ if (['Escape','Backspace','b','B','Enter',' ','a','A'].includes(e.key)){ SFX.back(); this._stop(); $('#phBack', content).focus({preventScroll:true}); return true; } return false; }
+        if (e.key==='ArrowLeft'||e.key==='ArrowRight'){ this._step(e.key==='ArrowLeft'?-1:1); return true; } return false; }
+      const els = $$('[data-ph]', content), i = els.indexOf(document.activeElement), c = this._cols();
+      if (i >= 0 && e.key==='ArrowRight' && (i % c === c-1 || i === els.length-1)) return this._flip(1) || true;
+      if (i >= 0 && e.key==='ArrowLeft' && i % c === 0) return this._flip(-1) || true;
+      if (i < 0 && e.key.startsWith('Arrow') && els[0]){ els[0].focus(); return true; }
+      return arrowNav(e, els, c);
+    },
+    back(){ if (this._close()){ SFX.back(); return true; } return false; },
+  },
+  internet: { label:'Internet Channel', html: () => `<div class="scr in">
+      <div class="in-addr"><div class="fld"><div class="prog" id="inProg"></div><span id="inUrl"></span></div></div>
+      <div class="in-page" id="inView" tabindex="-1"><div class="pg" id="pg"></div></div>
+      <div class="in-tools">
+        ${BB('inBack','back','Back')}${BB('inFwd','fwd','Forward')}${BB('inReload','reload','Reload','data-wide')}
+        <span class="sp"></span>
+        ${BB('inHome','home','Start Page')}${BB('inFav','fav','Favorites','aria-expanded="false"')}${BB('inZoom','zoom','Zoom','aria-pressed="false" data-wide')}
+        <button class="wb in-exit" data-back>Wii Menu</button>
+      </div>
+      <div class="in-fav" id="inFavBox" hidden><b>Favorites</b>${FAV.map(f=>`<button data-fav="${f[0]}">${f[1]}<small>${urlOf(f[0]).replace('http://','')}</small></button>`).join('')}</div>
+    </div>`,
+    init(r){
+      const pg = $('#pg', r), view = $('#inView', r), url = $('#inUrl', r), prog = $('#inProg', r), fav = $('#inFavBox', r), favBtn = $('#inFav', r);
+      const bk = $('#inBack', r), fw = $('#inFwd', r);
+      let hist = [], hi = -1, t = null;
+      const render = key => { pg.innerHTML = WEB[key].html(); view.scrollTop = 0; pg.style.opacity = ''; bk.disabled = hi <= 0; fw.disabled = hi >= hist.length-1; };
+      const go = (key, push=true, instant=false) => {
+        if (push){ hist = hist.slice(0, hi+1); hist.push(key); hi = hist.length-1; }
+        closeFav(); url.textContent = urlOf(key); clearTimeout(t);
+        bk.disabled = hi <= 0; fw.disabled = hi >= hist.length-1;
+        if (instant || reduced){ render(key); return; }
+        pg.style.opacity = '0';
+        prog.animate([{width:'0%',opacity:1},{width:'70%',offset:.6},{width:'100%',opacity:1},{width:'100%',opacity:0}],{duration:520,easing:'ease-out'});
+        t = setTimeout(() => { render(key); view.focus({preventScroll:true}); }, 380);
+      };
+      const closeFav = () => { fav.hidden = true; favBtn.setAttribute('aria-expanded', false); };
+      pg.addEventListener('click', e => { const a = e.target.closest('a[data-go]'); if (a){ e.preventDefault(); SFX.press(); go(a.dataset.go); } });
+      bk.onclick = () => { if (hi > 0){ hi--; SFX.back(); go(hist[hi], false); } };
+      fw.onclick = () => { if (hi < hist.length-1){ hi++; SFX.press(); go(hist[hi], false); } };
+      $('#inReload', r).onclick = () => { SFX.press(); go(hist[hi], false); };
+      $('#inHome', r).onclick = () => { SFX.press(); if (hist[hi] !== 'home') go('home'); };
+      $('#inZoom', r).onclick = e => { SFX.select(); const on = pg.classList.toggle('big'); e.currentTarget.classList.toggle('on', on); e.currentTarget.setAttribute('aria-pressed', on); };
+      favBtn.onclick = () => { const open = fav.hidden; SFX[open ? 'select' : 'back'](); fav.hidden = !open; favBtn.setAttribute('aria-expanded', open); if (open) $('button', fav).focus(); };
+      fav.addEventListener('click', e => { const b = e.target.closest('[data-fav]'); if (b){ SFX.press(); const k = b.dataset.fav; closeFav(); if (k !== hist[hi]) go(k); else favBtn.focus(); } });
+      this._fav = () => { if (fav.hidden) return false; closeFav(); favBtn.focus(); return true; };
+      this._nav = () => { if (hi <= 0) return false; bk.click(); return true; };
+      go('home', true, true);
+      if (!reduced) prog.animate([{width:'0%',opacity:1},{width:'100%',opacity:1},{width:'100%',opacity:0}],{duration:600,easing:'ease-out'});
+    },
+    key(e){ const fav = $('#inFavBox', content);
+      if (!fav.hidden) return ['ArrowUp','ArrowDown'].includes(e.key) && arrowNav(e, $$('button', fav));
+      return ['ArrowLeft','ArrowRight'].includes(e.key) && arrowNav(e, $$('.in-tools button:not([disabled])', content)); },
+    back(){ if (this._fav()){ SFX.back(); return true; } return false; },
+  },
+
+  board: { label:'Wii Message Board', html: () => { const d = new Date(); return `<div class="scr mb">
+      <div class="mb-head"><span class="d">${d.getMonth()+1}/${d.getDate()}</span><span class="m">${d.toLocaleDateString('en-US',{weekday:'long'})}</span></div>
+      <div class="scroll"><div class="letter"><div class="from"><span class="av"><img src="${ZW_IMG}" alt=""></span><b>From: Zach</b></div>
+        <p>${PROFILE.lede}</p>
+        <p>Email: <a href="mailto:${EMAIL}">${EMAIL}</a></p>
+        <p><a href="${LINKEDIN}" target="_blank" rel="noopener">LinkedIn</a>, <a href="${GITHUB}" target="_blank" rel="noopener">GitHub</a></p></div></div>
+      <div class="wbar">${BACK()}${EXT('mailto:'+EMAIL,'Reply')}</div>
+    </div>`; },
+    key(e){ return ['ArrowLeft','ArrowRight'].includes(e.key) && arrowNav(e, $$('.wbar .wb', content)); } },
+};
+
+/* =====================================================================
+   CHANNEL REGISTRY: a sparse console, like a real one. The rest of the
+   slots stay empty. jingle: an original short motif for the preview.
+   ===================================================================== */
+const CHANNELS = [
+  { name:'Disc Channel',     art:'disc',     screen:null,       jingle:'' },
+  { name:'Mii Channel',      art:'mii',      screen:'mii',      jingle:'C5 E5 G5 E5 F5 A5 G5 . E5 C5' },
+  { name:'Photo Channel',    art:'photo',    screen:'photo',    jingle:'G4 C5 E5 G5 . E5 G5' },
+  { name:'Internet Channel', art:'internet', screen:'internet', jingle:'E5 B5 . G#5 E5 F#5' },
+];
+
+/* =====================================================================
+   SOUND: all synthesized
+   ===================================================================== */
+let AC = null, noiseBuf = null, jingleGain = null;
+function audio(){
+  if (!AC){ try{ AC = new (window.AudioContext||window.webkitAudioContext)();
+    noiseBuf = AC.createBuffer(1, AC.sampleRate*.5, AC.sampleRate); const d = noiseBuf.getChannelData(0); for (let i=0;i<d.length;i++) d[i] = Math.random()*2-1; }catch(e){} }
+  return AC;
+}
+function tone(freq, dur=.06, type='sine', vol=.05, when=0, slide=0, dest){
+  const ac = audio(); if(!ac) return;
+  const t = ac.currentTime + when, o = ac.createOscillator(), g = ac.createGain();
+  o.type = type; o.frequency.setValueAtTime(freq, t);
+  if (slide) o.frequency.exponentialRampToValueAtTime(freq*slide, t+dur);
+  g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t+.008); g.gain.exponentialRampToValueAtTime(.0001, t+dur);
+  o.connect(g).connect(dest||ac.destination); o.start(t); o.stop(t+dur+.02);
+}
+function noise(dur, f0, f1, vol=.03, q=2){
+  const ac = audio(); if(!ac) return;
+  const t = ac.currentTime, s = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain();
+  s.buffer = noiseBuf; f.type = 'bandpass'; f.Q.value = q;
+  f.frequency.setValueAtTime(f0, t); f.frequency.exponentialRampToValueAtTime(f1, t+dur);
+  g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t+dur*.3); g.gain.exponentialRampToValueAtTime(.0001, t+dur);
+  s.connect(f).connect(g).connect(ac.destination); s.start(t); s.stop(t+dur+.02);
+}
+const SFX = {
+  hover: () => { noise(.025, 3200, 2800, .05, 6); tone(1250,.04,'sine',.018); },
+  select: () => { tone(520,.16,'sine',.05,0,1.9); tone(1600,.03,'triangle',.02); },
+  back: () => tone(900,.15,'sine',.045,0,.55),
+  page: (dir=1) => dir>0 ? noise(.26, 500, 2200, .05, 1.2) : noise(.26, 2200, 500, .05, 1.2),
+  start: () => { tone(660,.25,'sine',.05,0,1.5); tone(1320,.2,'triangle',.02,.05); },
+  press: () => tone(1500,.03,'triangle',.03),
+};
+const NOTE = n => { const m = /^([A-G])(#?)(\d)$/.exec(n); if (!m) return 0; const i = {C:0,D:2,E:4,F:5,G:7,A:9,B:11}[m[1]] + (m[2]?1:0); return 440*Math.pow(2,(i + (m[3]-4)*12 - 9)/12); };
+function playJingle(str){
+  const ac = audio(); if (!ac || !str) return;
+  stopJingle();
+  jingleGain = ac.createGain(); jingleGain.gain.value = 1; jingleGain.connect(ac.destination);
+  let t = 0; const beat = .16;
+  str.split(' ').forEach(n => { if (n !== '.'){ const f = NOTE(n); tone(f, .3, 'triangle', .045, t, 0, jingleGain); tone(f*2, .12, 'sine', .012, t, 0, jingleGain); } t += beat; });
+}
+/* Original ambient menu loop (not Nintendo's music): a soft Cmaj7, Am7, Dm7, G7
+   arpeggio through a lowpass, scheduled a little ahead of the audio clock. */
+let musicOn = true, musicGain = null, musicT = null, musicNext = 0, musicStep = 0;
+try{ musicOn = localStorage.getItem('wiiMusic') !== 'off'; }catch(e){}
+const MUSIC = ['C4 E4 G4 B4 E5 B4 G4 E4','A3 C4 E4 G4 C5 G4 E4 C4','D4 F4 A4 C5 F5 C5 A4 F4','G3 B3 D4 F4 B4 F4 D4 B3'].map(b=>b.split(' ').map(NOTE));
+function startMusic(){
+  const ac = audio(); if (!ac || musicGain) return;
+  const lp = ac.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value = 1800;
+  musicGain = ac.createGain(); musicGain.gain.value = musicOn ? 1 : 0;
+  musicGain.connect(lp).connect(ac.destination);
+  musicNext = ac.currentTime + .1;
+  musicT = setInterval(() => {
+    while (musicNext < ac.currentTime + .6){
+      const bar = MUSIC[Math.floor(musicStep/8) % 4], f = bar[musicStep % 8];
+      const when = musicNext - ac.currentTime;
+      tone(f, .55, 'triangle', .016, when, 0, musicGain);
+      if (musicStep % 8 === 0) tone(f/2, 1.6, 'sine', .014, when, 0, musicGain);
+      musicNext += .3; musicStep++;
+    }
+  }, 150);
+}
+function duckMusic(down){ if (!musicGain || !musicOn) return; musicGain.gain.setTargetAtTime(down ? 0 : 1, AC.currentTime, .12); }
+function stopJingle(){ if (jingleGain){ try{ jingleGain.gain.setTargetAtTime(0, AC.currentTime, .05); }catch(e){} jingleGain = null; } }
+
+/* =====================================================================
+   LAYOUT: 16:9 (and wider), 4:3, and a portrait mode for phones.
+   ===================================================================== */
+let L;
+function computeLayout(){
+  const a = innerWidth / innerHeight;
+  if (a < .9){
+    const W = 720, H = Math.round(Math.max(1100, Math.min(1700, W/a))), cols = 2, rows = 4, gx = 16, gy = 18, mx = 60;
+    const tw = (W - 2*mx - gx*(cols-1)) / cols, th = 188, gridH = rows*th + (rows-1)*gy;
+    const barTop = H - 200, top = Math.max(60, Math.round((barTop - gridH)*.5));
+    const zh = 470;
+    return { mode:'portrait', W, H, cols, rows, per:cols*rows, gx, gy, mx, tw, th, top, barTop, s:190, zoom:{l:0,t:Math.round((H-148-zh)/2),w:720,h:zh}, arrowY:top + gridH/2 - 41 };
+  }
+  const H = 720, W = Math.round(Math.max(960, Math.min(1280, H*a)));
+  const cols = 4, rows = 3, gx = 14, gy = 12, mx = Math.round(W*.074);
+  const tw = (W - 2*mx - gx*(cols-1)) / cols, th = 156;
+  return { mode:'land', W, H, cols, rows, per:cols*rows, gx, gy, mx, tw, th, top:40, barTop:H-200, s:204, zoom:{l:0,t:0,w:W,h:572}, arrowY:40 + (rows*th+(rows-1)*gy)/2 - 41 };
+}
+const stage = document.getElementById('stage'), track = document.getElementById('track'), pagesEl = document.getElementById('pages');
+const bar = document.getElementById('bar'), barExt = document.getElementById('barExt');
+let SCALE = 1, OX = 0, OY = 0, PAGES = 1;
+const tiles = [];
+
+function barPath(W, s){
+  const d = s + (W/2 - s)*.55, k = (d - s)/238;
+  const X = v => (s + v*k).toFixed(1), R = v => (W - s - v*k).toFixed(1);
+  return `M0,44 H${s} C${X(32)},44 ${X(71)},44 ${X(118)},84 C${X(150)},112 ${X(180)},130 ${X(238)},130 H${R(238)} C${R(180)},130 ${R(150)},112 ${R(118)},84 C${R(71)},44 ${R(32)},44 ${W-s},44 H${W}`;
+}
+function buildBar(){
+  const W = L.W, top = barPath(W, L.s);
+  const svg = bar.querySelector('svg.shape');
+  svg.setAttribute('viewBox', `0 0 ${W} 200`);
+  svg.innerHTML = `<defs><linearGradient id="barG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e8e9ec"/><stop offset=".4" stop-color="#e1e2e6"/><stop offset="1" stop-color="#d6d7db"/></linearGradient>
+      <linearGradient id="tabG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dcdcdf"/><stop offset="1" stop-color="#d0d0d3"/></linearGradient>
+      <filter id="tabShadow" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="1" dy="3" stdDeviation="2.5" flood-color="#000" flood-opacity=".1"/></filter></defs>
+    <path fill="url(#barG)" d="${top} V200 H0 Z"/>
+    <path fill="none" stroke="#34beed" stroke-width="3" d="${top}"/>
+    <path filter="url(#tabShadow)" fill="url(#tabG)" d="M0,61 H118 C155,61 186,92 186,130 C186,168 155,199 118,199 H0 Z"/>
+    <path filter="url(#tabShadow)" fill="url(#tabG)" d="M${W},61 H${W-118} C${W-155},61 ${W-186},92 ${W-186},130 C${W-186},168 ${W-155},199 ${W-118},199 H${W} Z"/>`;
+  Object.assign(bar.style, { top:L.barTop+'px', width:W+'px' });
+  const sd = document.getElementById('sdBtn');
+  sd.style.left = '212px'; sd.style.display = L.mode==='portrait' ? 'none' : '';
+  document.getElementById('clock').style.transform = L.mode==='portrait' ? 'scale(.85)' : '';
+}
+function buildGrid(){
+  PAGES = Math.max(2, Math.ceil(CHANNELS.length / L.per));   // the real menu always has more (empty) pages
+  track.innerHTML = ''; tiles.length = 0;
+  Object.assign(pagesEl.style, { width:L.W+'px', height:(L.barTop+60)+'px' });
+  track.style.width = (PAGES*L.W)+'px';
+  for (let p=0; p<PAGES; p++){
+    const pg = document.createElement('div'); pg.className='page'; pg.style.width = L.W+'px';
+    const grid = document.createElement('div'); grid.className = 'grid' + (L.tw/L.th < 1.6 ? ' narrow' : '');
+    Object.assign(grid.style, { left:L.mx+'px', top:L.top+'px', gridTemplateColumns:`repeat(${L.cols},${L.tw}px)`, gridTemplateRows:`repeat(${L.rows},${L.th}px)`, gap:`${L.gy}px ${L.gx}px` });
+    for (let s=0; s<L.per; s++){
+      const idx = p*L.per+s, ch = CHANNELS[idx];
+      const el = document.createElement('button');
+      if (ch){
+        el.className = 'ch'; el.dataset.hot = ''; el.dataset.idx = idx;
+        el.setAttribute('aria-label', ch.name);
+        el.innerHTML = `<div class="bn">${B[ch.art]()}</div>`;
+        el.addEventListener('click', () => { if (state==='menu') openPreview(idx); });
+        tiles[idx] = el;
+      } else {
+        el.className = 'ch empty'; el.tabIndex = -1; el.setAttribute('aria-hidden','true');
+        el.innerHTML = '<div class="bn"></div>';
+      }
+      grid.appendChild(el);
+    }
+    pg.appendChild(grid); track.appendChild(pg);
+  }
+  const ax = Math.max(6, L.mx/2-23);
+  document.getElementById('arrL').style.cssText = `left:${ax}px;top:${L.arrowY}px`;
+  document.getElementById('arrR').style.cssText = `right:${ax}px;top:${L.arrowY}px`;
+  ['pvL','pvR'].forEach(id => document.getElementById(id).style.top = (L.zoom.t + L.zoom.h/2 - 41)+'px');
+  document.getElementById('pvL').style.left = '22px'; document.getElementById('pvR').style.right = '22px';
+  if (typeof pauseSMIL === 'function') pauseSMIL(track);
+}
+function unscroll(){ for (const el of [document.getElementById('root'), stage, pagesEl]) { el.scrollTop = 0; el.scrollLeft = 0; } }
+function fit(){
+  unscroll();
+  const w = innerWidth, h = innerHeight;
+  SCALE = Math.min(w/L.W, h/L.H);
+  OX = (w - L.W*SCALE)/2;
+  OY = h - L.H*SCALE;              // bottom-align so the bar always touches the bottom edge
+  Object.assign(stage.style, { width:L.W+'px', height:L.H+'px', transform:`translate(${OX}px,${OY}px) scale(${SCALE})` });
+  // Extend the bar beyond the stage on ultra-wide screens
+  if (OX > 1 && L.mode!=='portrait'){ barExt.style.display='block'; barExt.style.height = ((200-44)*SCALE)+'px'; }
+  else barExt.style.display='none';
+}
+function relayout(force){
+  const next = computeLayout(), prevMode = L && L.mode;
+  const changed = force || !L || next.mode!==L.mode || next.W!==L.W || next.H!==L.H;
+  L = next;
+  document.body.classList.toggle('portrait', L.mode==='portrait');
+  if (changed){
+    const keep = state==='preview' && prevMode===L.mode;
+    if (!keep && (state==='preview' || state==='opening' || state==='closing')) forceClosePreview();
+    if (state==='content' && contentFrom==='preview') camera(false);
+    buildBar(); buildGrid(); setPage(keep ? Math.floor(current/L.per) : Math.min(page, PAGES-1), true, true);
+    if (keep){ [pagesEl, bar, barExt, pvZoom].forEach(el => el.style.transition='none'); placeZoom(L.zoom, 0); camera(true, current); pvZoom.offsetWidth; [pagesEl, bar, barExt, pvZoom].forEach(el => el.style.transition=''); }
+  }
+  fit();
+}
+
+/* =====================================================================
+   ARROWS, CLOCK
+   ===================================================================== */
+const ARROW_SVG = `<svg viewBox="0 0 55 98" aria-hidden="true"><defs><radialGradient id="arG" cx="24" cy="49" r="45" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#cbf6ff"/><stop offset="1" stop-color="#62d6ff"/></radialGradient></defs><path d="M4.16 2.07 52.25 48.28a1 1 0 0 1 0 1.44L4.16 95.93c-.7.66-1.84.07-1.68-.88L9.92 49 2.48 2.95c-.16-.95.98-1.54 1.68-.88Z" fill="url(#arG)" stroke="#24479b" stroke-width="3"/></svg>`;
+['arrL','arrR','pvL','pvR'].forEach(id => document.getElementById(id).innerHTML = ARROW_SVG);
+
+const SEG = {0:'1111110',1:'0110000',2:'1101101',3:'1111001',4:'0110011',5:'1011011',6:'1011111',7:'1110000',8:'1111111',9:'1111011'};
+// thinner, slightly rounded segments
+const SEG_POLY = ['M8,3 H28 L25,6.5 H11 Z','M30,5 V29 L26.5,26.5 V8.5 Z','M30,35 V59 L26.5,55.5 V37.5 Z','M8,61 H28 L25,57.5 H11 Z','M6,35 V59 L9.5,55.5 V37.5 Z','M6,5 V29 L9.5,26.5 V8.5 Z','M8.5,32 L11,29.8 H25 L27.5,32 L25,34.2 H11 Z'];
+const SEG_COL = '#a5a7ab';
+const digitSVG = (ch, x) => `<g transform="translate(${x},0)">${SEG_POLY.map((d,i)=>(SEG[ch]||'0000000')[i]==='1'?`<path d="${d}" fill="${SEG_COL}" stroke="${SEG_COL}" stroke-width="1" stroke-linejoin="round"/>`:'').join('')}</g>`;
+let colon = true;
+function tick(){
+  const now = new Date();
+  let h = now.getHours(); const m = now.getMinutes();
+  const ampm = h>=12 ? 'PM' : 'AM'; h = h%12 || 12;
+  const hs = String(h), ms = String(m).padStart(2,'0');
+  let x = 0, svg = '';
+  for (const c of hs){ svg += digitSVG(c, x); x += 38; }
+  svg += `<g opacity="${colon?1:.12}"><rect x="${x+1}" y="20" width="6" height="6" rx="2" fill="${SEG_COL}"/><rect x="${x+1}" y="40" width="6" height="6" rx="2" fill="${SEG_COL}"/></g>`; x += 14;
+  svg += digitSVG(ms[0], x); x += 38; svg += digitSVG(ms[1], x); x += 38;
+  svg += `<text x="${x+8}" y="58" font-family="Arial Rounded MT Bold,Figtree,Arial" font-weight="700" font-size="19" fill="${SEG_COL}">${ampm}</text>`; x += 40;
+  document.getElementById('clock').innerHTML = `<svg viewBox="0 0 ${x} 64" width="${x}" height="62">${svg}</svg>`;
+  document.getElementById('date').textContent = `${now.toLocaleDateString('en-US',{weekday:'short'})} ${now.getMonth()+1}/${now.getDate()}`;
+  colon = !colon;
+}
+tick(); setInterval(tick, 1000);
+
+/* =====================================================================
+   HAND POINTER + HOVER
+   ===================================================================== */
+const fine = matchMedia('(hover:hover) and (pointer:fine)').matches;
+const reduced = matchMedia('(prefers-reduced-motion:reduce)').matches;
+const hand = document.getElementById('hand');
+if (fine) document.documentElement.classList.add('has-hand');
+let mx = innerWidth/2, my = innerHeight/2, hx = mx, hy = my, roll = 0, lastMove = 0, lastKey = false;
+addEventListener('pointermove', e => { mx = e.clientX; my = e.clientY; lastMove = performance.now(); lastKey = false; });
+addEventListener('pointerdown', () => { lastKey = false; }, true);
+addEventListener('keydown', () => { lastKey = true; }, true);
+addEventListener('pointerdown', () => hand.classList.add('press'));
+addEventListener('pointerup', () => hand.classList.remove('press'));
+(function loop(){
+  const k = reduced ? 1 : .7;
+  hx += (mx-hx)*k; hy += (my-hy)*k;
+  // A gentle "roll" toward where you point that settles upright when the hand rests.
+  const target = performance.now() - lastMove < 300 ? (mx/innerWidth - .5) * 12 : 0;
+  roll += (target - roll) * .08;
+  hand.style.transform = `translate(${hx}px,${hy}px) rotate(${roll}deg)`;
+  requestAnimationFrame(loop);
+})();
+
+let hotEl = null;
+const bubble = document.getElementById('bubble');
+function setHot(el, silent){
+  if (el === hotEl) return;
+  if (hotEl) hotEl.classList.remove('hot');
+  hotEl = el;
+  if (el){ el.classList.add('hot'); if (started && !silent) SFX.hover(); }
+  updateBubble();
+}
+function updateBubble(){
+  if (hotEl && hotEl.classList.contains('ch') && state==='menu'){
+    const idx = +hotEl.dataset.idx, ch = CHANNELS[idx];
+    bubble.textContent = ch.name;
+    const s = idx % L.per, col = s % L.cols, row = Math.floor(s / L.cols);
+    const cx = L.mx + col*(L.tw+L.gx) + L.tw/2, by = L.top + (row+1)*L.th + row*L.gy;
+    const half = bubble.offsetWidth/2 || 120;
+    bubble.style.left = Math.max(half+10, Math.min(L.W-half-10, cx)) + 'px';
+    bubble.style.top = Math.min(by - 8, L.barTop - 46) + 'px';
+    bubble.classList.add('on');
+  } else bubble.classList.remove('on');
+}
+document.addEventListener('pointerover', e => {
+  if (e.pointerType === 'touch' || ['opening','closing','leaving'].includes(state)) return;
+  const el = e.target.closest('[data-hot]');
+  const next = el && !el.disabled && el.offsetParent !== null ? el : null;
+  if (next !== hotEl && document.activeElement && document.activeElement !== document.body && document.activeElement.closest('#stage')) document.activeElement.blur();
+  setHot(next);
+});
+document.documentElement.addEventListener('mouseleave', () => { setHot(null); hand.style.opacity = 0; });
+document.documentElement.addEventListener('mouseenter', () => { hand.style.opacity = ''; });
+document.addEventListener('focusin', e => { if (!lastKey) return; const el = e.target.closest('[data-hot]'); if (el) setHot(el, true); });
+
+/* =====================================================================
+   STATE MACHINE: warning, menu, opening, preview, content; closing
+   returns from preview to menu.
+   ===================================================================== */
+let state = 'warning', started = false, page = 0, current = -1, pvTimer = null;
+const menu = document.getElementById('menu'), warning = document.getElementById('warning');
+
+let pressReady = reduced;
+document.querySelector('.warn-press').addEventListener('animationend', () => { pressReady = true; });
+setTimeout(() => { pressReady = true; }, 3000);
+function startMenu(){
+  if (started || !pressReady) return;   // A is only accepted once the prompt has appeared
+  started = true; audio(); SFX.press(); setTimeout(startMusic, 900);
+  warning.classList.add('gone');
+  menu.style.visibility = 'visible'; menu.classList.add('boot');
+  state = 'menu';
+  setTimeout(()=>{ warning.remove(); }, 700);
+}
+warning.addEventListener('click', startMenu);
+
+/* --- paging --- */
+const arrL = document.getElementById('arrL'), arrR = document.getElementById('arrR');
+function setPage(p, silent, instant){
+  const prev = page;
+  page = Math.max(0, Math.min(PAGES-1, p));
+  if (instant){ track.style.transition='none'; }
+  track.style.transform = `translateX(${-page*L.W}px)`;
+  if (instant){ track.offsetWidth; track.style.transition=''; }
+  [...track.children].forEach((pg,i) => pg.inert = i !== page);
+  arrL.classList.toggle('show', page>0); arrR.classList.toggle('show', page<PAGES-1);
+  if ((document.activeElement===arrL && page===0) || (document.activeElement===arrR && page===PAGES-1)){ const t = tiles[page*L.per]; if (t) t.focus({preventScroll:true}); }
+  arrL.disabled = page===0; arrR.disabled = page===PAGES-1;
+  if (!silent && page !== prev) SFX.page(page >= prev ? 1 : -1);
+  setHot(null);
+}
+arrL.onclick = () => setPage(page-1);
+arrR.onclick = () => setPage(page+1);
+
+/* --- preview: the menu "camera" pushes into the tile while its banner grows --- */
+const preview = document.getElementById('preview'), pvZoom = document.getElementById('pvZoom'), pvStartBtn = document.getElementById('pvStart');
+preview.inert = true;
+function tileRect(idx){
+  const s = idx % L.per, col = s % L.cols, row = Math.floor(s / L.cols);
+  const w = L.tw-12, h = L.tw/L.th < 1.6 ? w*9/16 : L.th-12;
+  return { l:L.mx + col*(L.tw+L.gx) + 6, t:L.top + row*(L.th+L.gy) + (L.th-h)/2, w, h };
+}
+function placeZoom(r, radius){ Object.assign(pvZoom.style, { left:r.l+'px', top:r.t+'px', width:r.w+'px', height:r.h+'px', borderRadius:radius+'px' }); }
+function camera(on, idx){
+  if (on){
+    const r = tileRect(idx);
+    pagesEl.style.transformOrigin = `${r.l + r.w/2}px ${r.t + r.h/2}px`;
+    pagesEl.style.transform = 'scale(3.2)'; pagesEl.style.opacity = '0';
+    bar.style.transform = barExt.style.transform = 'translateY(230px)';
+    arrL.style.opacity = arrR.style.opacity = '0';
+  } else {
+    pagesEl.style.transform = ''; pagesEl.style.opacity = '';
+    bar.style.transform = barExt.style.transform = ''; arrL.style.opacity = arrR.style.opacity = '';
+  }
+}
+function openPreview(idx, dir){
+  current = idx; const ch = CHANNELS[idx];
+  if (state === 'menu'){
+    state = 'opening'; SFX.select(); bubble.classList.remove('on');
+    pvZoom.innerHTML = `<div class="bn">${B[ch.art]()}</div>`;
+    pvZoom.style.transition = 'none'; placeZoom(tileRect(idx), 13); pvZoom.offsetWidth; pvZoom.style.transition = '';
+    preview.classList.remove('closing'); preview.classList.add('open'); preview.inert = false;
+    requestAnimationFrame(() => { placeZoom(L.zoom, 0); camera(true, idx); });
+    clearTimeout(pvTimer); duckMusic(true);
+    pvTimer = setTimeout(() => { if (state!=='opening') return; state = 'preview'; preview.classList.add('shown'); if (lastKey) (pvStartBtn.disabled ? document.getElementById('pvMenu') : pvStartBtn).focus({preventScroll:true}); playJingle(ch.jingle); }, 480);
+  } else if (state === 'preview'){
+    SFX.page(); stopJingle();
+    pvZoom.innerHTML = `<div class="bn">${B[ch.art]()}</div>`;
+    if (!reduced) pvZoom.animate([{opacity:0, transform:`translateX(${dir*60}px)`},{opacity:1, transform:'none'}],{duration:260,easing:'ease-out'});
+    setTimeout(()=>{ if (current===idx && state==='preview') playJingle(ch.jingle); }, 200);
+  } else return;
+  pvStartBtn.disabled = !ch.screen;
+  document.getElementById('pvL').style.visibility = idx>0 ? 'visible':'hidden';
+  document.getElementById('pvR').style.visibility = idx<CHANNELS.length-1 ? 'visible':'hidden';
+  if (document.activeElement && (document.activeElement.style.visibility === 'hidden' || document.activeElement.disabled)) (pvStartBtn.disabled ? document.getElementById('pvMenu') : pvStartBtn).focus({preventScroll:true});
+}
+function closePreview(silent){
+  if (state !== 'preview' && state !== 'opening') return;
+  state = 'closing'; clearTimeout(pvTimer); stopJingle(); if (!silent) SFX.back(); duckMusic(false);
+  preview.classList.remove('shown'); preview.classList.add('closing');
+  const p = Math.floor(current / L.per); if (p !== page) setPage(p, true, true);
+  placeZoom(tileRect(current), 13); camera(false);
+  pvTimer = setTimeout(() => {
+    preview.classList.remove('open','closing'); preview.inert = true; pvZoom.innerHTML=''; pvZoom.style.width='0';
+    state = 'menu';
+    if (lastKey && tiles[current]){ tiles[current].focus({preventScroll:true}); setHot(tiles[current], true); }
+    else if (!coarse){ const el = document.elementFromPoint(mx, my); const h = el && el.closest('[data-hot]'); setHot(h && !h.disabled ? h : null, true); }
+  }, 480);
+}
+function forceClosePreview(){
+  clearTimeout(pvTimer); stopJingle(); camera(false);
+  preview.classList.remove('open','shown','closing'); preview.inert = true; pvZoom.innerHTML=''; pvZoom.style.width='0';
+  if (state!=='content') state = 'menu';
+}
+document.getElementById('pvMenu').onclick = closePreview;
+document.getElementById('pvL').onclick = () => current>0 && openPreview(current-1, -1);
+document.getElementById('pvR').onclick = () => current<CHANNELS.length-1 && openPreview(current+1, 1);
+document.getElementById('pvStart').onclick = () => openContent(current);
+
+/* --- channel content --- */
+const content = document.getElementById('content');
+let contentFrom = 'preview', curScreen = null;
+function showScreen(key){
+  const sc = SCREENS[key]; curScreen = sc;
+  content.innerHTML = sc.html();
+  content.setAttribute('aria-label', sc.label);
+  content.querySelectorAll('[data-back]').forEach(b => b.onclick = closeContent);
+  content.classList.remove('leaving'); content.classList.add('open');
+  document.documentElement.classList.add('in-content');
+  stage.inert = true;
+  if (sc.init) sc.init(content);
+  setTimeout(() => { const f = content.querySelector('[data-focus]') || content.querySelector('button:not([disabled]),a'); if (f) f.focus({preventScroll:true}); }, 50);
+}
+const fader = document.getElementById('fader');
+function openContent(idx){
+  if (state !== 'preview' || !CHANNELS[idx].screen) return;
+  const ch = CHANNELS[idx]; SFX.start(); stopJingle();
+  state = 'entering'; contentFrom = 'preview';
+  fader.classList.add('on');
+  setTimeout(() => { state = 'content'; showScreen(ch.screen); fader.classList.remove('on'); unscroll(); }, 260);
+}
+// "Wii Menu" from inside a channel returns to the channel grid: fade to white,
+// then zoom the banner back down into its tile (rebuilt for the current layout).
+function closeContent(){
+  if (state !== 'content') return;
+  state = 'leaving'; SFX.back();
+  content.querySelectorAll('video').forEach(v=>v.pause());
+  fader.classList.add('on');
+  setTimeout(() => {
+    if (curScreen && curScreen.leave) curScreen.leave(); curScreen = null;
+    content.classList.remove('open'); content.innerHTML = '';
+    document.documentElement.classList.remove('in-content'); stage.inert = false;
+    if (contentFrom === 'preview'){
+      const ch = CHANNELS[current], p = Math.floor(current / L.per);
+      if (p !== page) setPage(p, true, true);
+      [pagesEl, bar, pvZoom].forEach(el => el.style.transition = 'none');
+      pvZoom.innerHTML = `<div class="bn">${B[ch.art]()}</div>`;
+      placeZoom(L.zoom, 0); camera(true, current);
+      preview.classList.add('open'); preview.classList.remove('shown'); preview.inert = false;
+      pvZoom.offsetWidth;
+      [pagesEl, bar, pvZoom].forEach(el => el.style.transition = '');
+      fader.classList.remove('on');
+      state = 'preview';
+      setTimeout(() => closePreview(true), 180);
+    } else {
+      fader.classList.remove('on');
+      state = 'menu'; if (lastKey) document.getElementById('mailBtn').focus({preventScroll:true});
+    }
+  }, 260);
+}
+
+/* --- Wii button / SD / mail --- */
+const sys = document.getElementById('sysmenu');
+function openSys(){ if(state!=='menu') return; SFX.select(); sys.classList.add('open'); state='sys'; bubble.classList.remove('on'); setHot(null, true); bar.inert = true; pagesEl.style.visibility='hidden'; arrL.style.visibility = arrR.style.visibility = 'hidden'; if (lastKey) document.getElementById('sysData').focus({preventScroll:true}); }
+function closeSys(){ if(state!=='sys') return; SFX.back(); sys.classList.remove('open'); state='menu'; bar.inert = false; pagesEl.style.visibility=''; arrL.style.visibility = arrR.style.visibility = ''; if (lastKey) document.getElementById('wiiBtn').focus({preventScroll:true}); }
+const musicBtn = document.getElementById('musicToggle');
+const paintMusic = () => musicBtn.textContent = 'Music: ' + (musicOn ? 'On' : 'Off');
+paintMusic();
+musicBtn.onclick = () => { musicOn = !musicOn; paintMusic(); try{ localStorage.setItem('wiiMusic', musicOn ? 'on' : 'off'); }catch(e){}
+  if (musicGain) musicGain.gain.setTargetAtTime(musicOn ? 1 : 0, AC.currentTime, .1); else if (musicOn) startMusic(); };
+document.getElementById('wiiBtn').onclick = openSys;
+document.getElementById('sysClose').onclick = closeSys;
+document.getElementById('sysData').onclick = () => window.open(RESUME,'_blank','noopener');
+document.getElementById('sysSettings').onclick = () => { location.href = ASSET; };
+document.getElementById('sdBtn').onclick = () => { if (state==='menu'){ SFX.select(); window.open(RESUME,'_blank','noopener'); } };
+document.getElementById('mailBtn').onclick = () => { if(state!=='menu') return; SFX.select(); contentFrom='menu'; bubble.classList.remove('on');
+  state='entering'; fader.classList.add('on'); setTimeout(() => { state='content'; showScreen('board'); fader.classList.remove('on'); }, 260); };
+
+/* --- keyboard: arrows move the highlight, Enter/A = select, Esc/Backspace/B = back --- */
+let kFocus = 0;
+addEventListener('keydown', e => {
+  const onControl = e.target.closest && e.target.closest('button,a,video,iframe,input');
+  if (state === 'warning'){ if (['Enter',' ','a','A'].includes(e.key)){ e.preventDefault(); startMenu(); } return; }
+  if (onControl && (e.key==='Enter' || e.key===' ')) return;  // native buttons handle their own activation
+  const back = ['Escape','Backspace','b','B'].includes(e.key);
+  if (state === 'menu'){
+    if (hotEl && hotEl.dataset.idx) kFocus = +hotEl.dataset.idx;
+    const per = L.per, cols = L.cols, s = kFocus % per, row = Math.floor(s/cols), col = s % cols;
+    let n = null;
+    if (!hotEl && e.key.startsWith('Arrow')) n = page*per;
+    else if (e.key==='ArrowRight') n = col < cols-1 ? kFocus+1 : (page < PAGES-1 ? (page+1)*per + row*cols : null);
+    else if (e.key==='ArrowLeft') n = col > 0 ? kFocus-1 : (page > 0 ? (page-1)*per + row*cols + cols-1 : null);
+    else if (e.key==='ArrowDown') n = row < L.rows-1 ? kFocus+cols : null;
+    else if (e.key==='ArrowUp') n = row > 0 ? kFocus-cols : null;
+    else if (e.key==='Enter' || e.key==='a' || e.key==='A'){ if (hotEl && hotEl.classList.contains('ch')) openPreview(+hotEl.dataset.idx); return; }
+    else return;
+    e.preventDefault();
+    if (n===null || n<0) return;
+    if (n >= CHANNELS.length){ if (e.key==='ArrowDown') return; n = CHANNELS.length-1; }
+    const p = Math.floor(n/per); if (p!==page) setPage(p);
+    kFocus = n; tiles[n].focus({preventScroll:true}); setHot(tiles[n]);
+  } else if (state === 'opening'){
+    if (back){ e.preventDefault(); closePreview(); }
+  } else if (state === 'preview'){
+    if (back){ e.preventDefault(); closePreview(); }
+    else if (e.key==='Enter' || e.key==='a' || e.key==='A') openContent(current);
+    else if (e.key==='ArrowLeft' && current>0) openPreview(current-1,-1);
+    else if (e.key==='ArrowRight' && current<CHANNELS.length-1) openPreview(current+1,1);
+  } else if (state === 'content'){
+    if (curScreen && curScreen.key && curScreen.key(e)){ e.preventDefault(); return; }
+    if (e.key==='Escape' || ((e.key==='Backspace' || e.key==='b' || e.key==='B') && !onControl)){ e.preventDefault(); if (curScreen && curScreen.back && curScreen.back()) return; closeContent(); }
+  } else if (state === 'sys'){
+    if (back) return closeSys();
+    const order = ['sysData','sysSettings','musicToggle','sysClose'].map(id=>document.getElementById(id));
+    let i = order.indexOf(document.activeElement);
+    const moves = { ArrowRight:1, ArrowLeft:-1, ArrowDown:2, ArrowUp:-2 };
+    if (moves[e.key] === undefined) return;
+    e.preventDefault(); i = i < 0 ? 0 : Math.max(0, Math.min(3, i + moves[e.key]));
+    order[i].focus({preventScroll:true}); setHot(order[i], false);
+  }
+});
+
+/* --- touch: swipe pages in the menu, channels in the preview --- */
+let tsx = null, tsy = null;
+addEventListener('touchstart', e => { tsx = e.touches[0].clientX; tsy = e.touches[0].clientY; }, {passive:true});
+addEventListener('touchend', e => {
+  if (tsx===null) return; const dx = e.changedTouches[0].clientX - tsx, dy = e.changedTouches[0].clientY - tsy; tsx = null;
+  if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy)) return;
+  if (state==='menu'){ const t = page + (dx<0?1:-1);
+    if (t < 0 || t >= PAGES){ if (!reduced) track.animate([{transform:`translateX(${-page*L.W}px)`},{transform:`translateX(${-page*L.W + (dx<0?-30:30)}px)`},{transform:`translateX(${-page*L.W}px)`}],{duration:260,easing:'ease-out'}); }
+    else setPage(t); }
+  else if (state==='preview'){ const n = current + (dx<0?1:-1); if (n>=0 && n<CHANNELS.length) openPreview(n, dx<0?1:-1); }
+});
+
+/* prefers-reduced-motion: CSS can't stop SMIL, so pause banner SVG animations directly */
+function pauseSMIL(root){ if (reduced) root.querySelectorAll('svg').forEach(s => s.pauseAnimations && s.pauseAnimations()); }
+new MutationObserver(() => pauseSMIL(pvZoom)).observe(pvZoom,{childList:true});
+pauseSMIL(document);
+
+/* =====================================================================
+   GO
+   ===================================================================== */
+relayout(true);
+let rT; addEventListener('resize', () => { clearTimeout(rT); rT = setTimeout(()=>relayout(false), 80); });
+</script>
+</body>
+</html>

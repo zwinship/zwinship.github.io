@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { motion, useScroll, useSpring } from 'motion/react';
 import { EMAIL, LINKS, PROFILE } from './content.js';
-import { LINES } from './data.js';
+import { LINES, pageById } from './data.js';
 import { navigate, parse, scrollToSection } from './router.js';
 
 const isExternal = href => /^https?:/.test(href);
@@ -92,16 +92,31 @@ function Line({ line }) {
   );
 }
 
-export default function Main() {
+export default function Main({ restoreY }) {
   const [current, setCurrent] = useState(LINES[0].id);
   const { scrollYProgress } = useScroll();
 
   // Arriving from the landing or a shared link: jump straight to the section.
   useLayoutEffect(() => {
     const r = parse();
-    if (r.section) scrollToSection(r.section, { instant: true });
-    else if (!r.item) scrollTo(0, 0);
-  }, []);
+    const back = restoreY?.current;
+    if (restoreY) restoreY.current = null;
+    const target = r.section || (r.item && pageById(r.item).line.id);
+    const place = () => {
+      if (target) scrollToSection(target, { instant: true });
+      else scrollTo(0, back ?? 0);
+    };
+    place();
+    // Fonts arriving late change heights above the target; place again unless the visitor has moved.
+    if (target || back) {
+      let moved = false;
+      const mark = () => { moved = true; };
+      addEventListener('wheel', mark, { passive: true, once: true });
+      addEventListener('touchstart', mark, { passive: true, once: true });
+      addEventListener('keydown', mark, { once: true });
+      document.fonts?.ready.then(() => { if (!moved) place(); });
+    }
+  }, [restoreY]);
 
   useEffect(() => {
     let raf = 0;

@@ -5,7 +5,7 @@ import ItemSheet from './ItemSheet.jsx';
 import Intro from './Intro.jsx';
 import FunPage from './FunPage.jsx';
 import { lineById, pageById } from './data.js';
-import { navigate, reduceMotion, scrollToSection, scrollToY, useRoute } from './router.js';
+import { navigate, reduceMotion, scrollToSection, scrollToY, stopScroll, useRoute } from './router.js';
 
 // The intro plays on a bare visit to the home page, once per browser tab.
 function shouldPlayIntro() {
@@ -20,7 +20,9 @@ export default function App() {
   const prev = useRef(route);
   const fromMain = useRef(false);
   const closeMode = useRef('back');
-  const savedScroll = useRef(0);
+  const savedScroll = useRef(null);
+  const closing = useRef(false);
+  const mainScroll = useRef(null);
   const savedFocus = useRef(null);
   const [dir, setDir] = useState(1);
   const [intro, setIntro] = useState(shouldPlayIntro);
@@ -30,8 +32,12 @@ export default function App() {
   useLayoutEffect(() => {
     const was = prev.current;
     prev.current = route;
-    if (was === route || route.view !== 'main' || was.view !== 'main') return;
+    if (was === route) return;
+    if (was.view === 'main' && route.view === 'fun') { mainScroll.current = scrollY; return; }
+    if (route.view !== 'main' || was.view !== 'main') return;
     if (route.item && !was.item) {           // opening an item
+      stopScroll();
+      closing.current = false;
       fromMain.current = true;
       savedScroll.current = scrollY;
       savedFocus.current = document.activeElement;
@@ -42,7 +48,9 @@ export default function App() {
       document.documentElement.classList.remove('sheet-open');
       const f = savedFocus.current;
       requestAnimationFrame(() => (f && document.contains(f) ? f : document.getElementById('main'))?.focus({ preventScroll: true }));
+      closing.current = false;
       if (closeMode.current === 'replace' && route.section) scrollToSection(route.section, { instant: true });
+      else if (savedScroll.current == null) scrollToSection(pageById(was.item).line.id, { instant: true });
       else scrollTo(0, savedScroll.current);
       closeMode.current = 'back';
       return;
@@ -65,10 +73,12 @@ export default function App() {
   }, [route.item, route.view]);
 
   const closeItem = () => {
+    if (closing.current) return;
+    closing.current = true;
     if (fromMain.current) { fromMain.current = false; closeMode.current = 'back'; history.back(); }
     else { closeMode.current = 'replace'; location.replace(`#/${pageById(route.item).line.id}`); }
   };
-  const goItem = (id, d) => { setDir(d); location.replace(`#/${id}`); };
+  const goItem = (id, d) => { if (closing.current) return; setDir(d); location.replace(`#/${id}`); };
   const fade = { duration: reduceMotion() ? 0 : 0.25 };
 
   return (
@@ -76,11 +86,11 @@ export default function App() {
       <AnimatePresence mode="wait" initial={false}>
         {route.view === 'fun' ? (
           <motion.div key="fun" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={fade}>
-            <FunPage />
+            <FunPage fromMain={mainScroll.current != null} />
           </motion.div>
         ) : (
           <motion.div key="main" id="page" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={fade}>
-            <Main />
+            <Main restoreY={mainScroll} />
           </motion.div>
         )}
       </AnimatePresence>

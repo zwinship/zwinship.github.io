@@ -48,11 +48,13 @@ export default function Intro({ onDone }) {
       setTimeout(onDone, 220);
     };
     addEventListener('pointerdown', skip);
+    addEventListener('resize', skip);
     addEventListener('keydown', skip);
     addEventListener('wheel', skip, { passive: true });
     addEventListener('touchmove', skip, { passive: true });
     return () => {
       removeEventListener('pointerdown', skip);
+      removeEventListener('resize', skip);
       removeEventListener('keydown', skip);
       removeEventListener('wheel', skip);
       removeEventListener('touchmove', skip);

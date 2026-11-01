@@ -6,14 +6,20 @@ const VERSIONS = [
   { href: '/play/win98/', name: 'Family computer, 1998', line: 'This site as a Windows 98 desktop.', img: '/images/fun-win98.jpg' },
 ];
 
-export default function FunPage() {
-  useLayoutEffect(() => { scrollTo(0, 0); }, []);
+// fromMain: arrived from the main page in this tab, so going back returns to the same spot.
+export default function FunPage({ fromMain }) {
+  useLayoutEffect(() => { scrollTo(0, 0); document.getElementById('main')?.focus({ preventScroll: true }); }, []);
+  const back = e => {
+    e.preventDefault();
+    if (fromMain) history.back();
+    else navigate('#/');
+  };
   return (
     <div className="fun">
       <header className="fun-head">
-        <a href="#/" onClick={e => { e.preventDefault(); navigate('#/'); }}>Zach Winship</a>
+        <a href="#/" onClick={back}>Zach Winship</a>
       </header>
-      <main id="main" className="fun-main">
+      <main id="main" className="fun-main" tabIndex={-1}>
         <h1>Fun versions</h1>
         <ul className="fun-list">
           {VERSIONS.map(v => (
@@ -26,7 +32,7 @@ export default function FunPage() {
             </li>
           ))}
         </ul>
-        <p className="fun-back"><a href="#/" onClick={e => { e.preventDefault(); navigate('#/'); }}>Back to the main site</a></p>
+        <p className="fun-back"><a href="#/" onClick={back}>Back to the main site</a></p>
       </main>
     </div>
   );
