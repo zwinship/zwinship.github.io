@@ -121,11 +121,24 @@ export default function Intro3({ onDone }) {
 
     const finish = () => { if (!done.current) { done.current = true; onDone(); } };
     let raf = 0;
-    let t0 = 0;
+    let t = 0;
+    let last = 0;
+    let warm = 0;
+    let ready = false;
+    // Let the page finish its first paints before the clock starts, so the run in does not stutter.
+    const wait = new Promise(r => setTimeout(r, 400));
+    Promise.race([document.fonts ? document.fonts.ready : wait, wait]).then(() => { ready = true; });
     const frame = now => {
       if (done.current) return;
-      if (!t0) t0 = now;
-      const t = (now - t0) / 1000;
+      if (!ready || warm < 3) {
+        if (ready) warm += 1;
+        last = now;
+        raf = requestAnimationFrame(frame);
+        return;
+      }
+      // A late or dropped frame moves the train on by at most two frames' worth.
+      t += Math.min(now - last, 34) / 1000;
+      last = now;
       // The route can move a little if a web font lands late; follow it.
       const r = document.querySelector('.route-line')?.getBoundingClientRect();
       if (r) cy = r.top + r.height / 2;

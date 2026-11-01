@@ -21,7 +21,7 @@ const T = {
   swing: 1.64, swingLen: 0.62,
 };
 T.landed = T.swing + T.swingLen;
-T.end = T.landed + 0.1;
+T.end = T.landed + 0.14;
 
 // Where each line ends up: the left end of its segment in the route bar
 // (Education has no segment, so it closes into its station).
@@ -111,7 +111,7 @@ export default function Intro5({ onDone }) {
   const nameOpacity = useTransform(t, [T.nameIn, T.nameIn + T.nameInLen, T.nameOut, T.nameOut + T.nameOutLen],
     [0, 1, 1, 0], { ease: [cubicBezier(0, 0, 0.58, 1), linear, cubicBezier(0.42, 0, 1, 1)] });
   const nameY = useTransform(t, [T.nameIn, T.nameIn + T.nameInLen], [14, 0], { ease: cubicBezier(0.2, 0, 0.2, 1) });
-  const ground = useTransform(t, [T.swing + 0.12, T.swing + 0.54], [1, 0], { ease: FADE });
+  const ground = useTransform(t, [T.swing + 0.32, T.landed + 0.08], [1, 0], { ease: FADE });
   const cover = useTransform([t, skipFade], ([v, s]) => (v < T.landed ? 1 : Math.max(0, 1 - (v - T.landed) / (T.end - T.landed))) * s);
 
   useLayoutEffect(() => {
