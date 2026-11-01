@@ -474,6 +474,7 @@ function imSound(){ try{ AC = AC || new (window.AudioContext||window.webkitAudio
 const BOT = [
   [/\b(hi|hey|hello|yo|sup|hiya)\b/, () => `hey! thanks for stopping by my site :) ask me about my research, projects, résumé, or how to reach me`],
   [/a\/?s\/?l/, () => `lol. econ grad student / NYC`],
+  [/\b(rd2d(net)?|software|package)\b/, () => { setTimeout(()=>openProject(ALL_PROJECTS.find(p=>p.id==='rd2dnet')),900); return `rd2dnet is my package for boundary discontinuity designs on street networks. it extends rd2d (Cattaneo, Titiunik and Yu) so distance to the boundary is measured along streets, not in straight lines. v1 is out for Python (PyPI) and R, v2 is coming soon. code: ${SOFTWARE.links[0][0]}`; }],
   [/\b(nber|ems|ambulances?|congestion|research|papers?)\b/, () => { setTimeout(()=>openApp('research'),900); return `my main research: NBER Working Paper No. 35414 on NYC congestion pricing + EMS response times. diff-in-disc at the 60th St boundary, ~63-70 sec faster ambulance trips. opening the Research drive for you!`; }],
   [/\b(projects?|portfolio|built|build)\b/, () => { setTimeout(()=>openApp('mycomputer'),900); return `everything's on My Computer: Research is C:, personal projects are D:. the UFC model and the MBTA LED art are my favorites`; }],
   [/(resume|résumé|cv)/, () => { setTimeout(()=>openApp('resume'),900); return `sure, pulling up my résumé now`; }],
@@ -481,7 +482,7 @@ const BOT = [
   [/(hire|job|intern|position|opportunit|recruit)/, () => `I'd love to chat! best way is email: ${EMAIL}`],
   [/\b(ufc|octastats|octa|fights?|mma)\b/, () => `OctaStats! a UFC fight prediction model, rebuilt as a dynamic logit for v2. there's also Tale of the Tape, a daily UFC guessing game`],
   [/\b(mbta|trains?|subway|led|the t)\b/, () => `MBTA stuff: an ARIMA ridership forecast in R, and a Raspberry Pi LED map that tracks trains in real time (frame still in progress)`],
-  [/\b(nyu|grad school|masters|ms|graduate)\b/, () => `I'm in NYU's MS in Quantitative Economics (May 2027) and TA intro macro`],
+  [/\b(nyu|grad school|master'?s|msqe|graduate)\b|\bms\b(?!\s*-?\s*(paint|dos|word|excel|office))/, () => `I'm in NYU's MS in Quantitative Economics (May 2027). this year I'm a research assistant for Professor Anna Vitali and I TA intro macro`],
   [/\b(bentley|undergrad|college)\b/, () => `Bentley '26, BS Quantitative Economics, minors in math + data tech`],
   [/\b(skills?|python|stata|r|code|coding|languages?)\b/, () => `Python, R, Stata mostly. causal inference (RD, diff-in-disc), forecasting, ML, some web dev`],
   [/\b(blog|unlikely|instruments?)\b/, () => { setTimeout(()=>openApp('blog'),900); return `Unlikely Instruments: a blog about weird proxy variables. first post planned for early 2027`; }],
@@ -714,14 +715,30 @@ function arrangeIcons(){
 }
 const iconLabel = d => d.querySelector('.lbl').textContent;
 function saveIcons(){ const o = {}; [...iconsEl.children].forEach(x=>o[iconLabel(x)]=[x.offsetLeft,x.offsetTop]); try{ localStorage.setItem('z98icons2', JSON.stringify(o)); }catch(err){} }
-// Lay icons out in columns, then restore any positions the visitor dragged them to.
+// Visible icon grid: columns are 78px wide, rows 76px tall, starting 4px in.
+function iconGrid(){ return { rows: Math.max(1, Math.floor((desktop.clientHeight-8)/76)), cols: Math.max(1, Math.floor((desktop.clientWidth-8)/78)) }; }
+// First free slot at or after (x,y), going down each column, then wrapping back to the first column.
+function freeSlot(x, y, taken, g){
+  const n = g.rows*g.cols; let k = Math.min(n-1, Math.max(0, x*g.rows + y));
+  for (let t=0; t<n; t++, k=(k+1)%n){ const cx = Math.floor(k/g.rows), cy = k%g.rows; if (!taken(cx,cy)) return [cx,cy]; }
+  return [Math.min(g.cols-1, Math.max(0, x)), Math.min(g.rows-1, Math.max(0, y))];
+}
+// Lay icons out in columns, then restore any positions the visitor dragged them to (kept inside the visible grid).
 function layoutIcons(){
   if (matchMedia('(pointer:coarse)').matches) return;
-  [...iconsEl.children].forEach(d => { d.style.position='absolute'; });
+  const icons = [...iconsEl.children], g = iconGrid(), used = new Set();
+  icons.forEach(d => { d.style.position='absolute'; });
   let saved = null; try{ saved = JSON.parse(localStorage.getItem('z98icons2')||'null'); }catch(e){}
-  const rows = Math.max(1, Math.floor((desktop.clientHeight - 8) / 76));
-  [...iconsEl.children].forEach((d,i)=>{ d.style.left = (4 + Math.floor(i/rows)*78)+'px'; d.style.top = (4 + (i%rows)*76)+'px'; });
-  if (saved) [...iconsEl.children].forEach(d=>{ const p = saved[iconLabel(d)]; if (p){ d.style.left=p[0]+'px'; d.style.top=p[1]+'px'; } });
+  const put = (d,x,y) => { used.add(x+','+y); d.style.left = (4 + x*78)+'px'; d.style.top = (4 + y*76)+'px'; };
+  const taken = (x,y) => used.has(x+','+y);
+  const rest = [];
+  icons.forEach((d,i) => {
+    const p = saved && saved[iconLabel(d)];
+    if (Array.isArray(p)){ const x = Math.round((p[0]-4)/78), y = Math.round((p[1]-4)/76);
+      if (x>=0 && y>=0 && x<g.cols && y<g.rows && !taken(x,y)){ put(d,x,y); return; } }
+    rest.push([d,i]);
+  });
+  rest.forEach(([d,i]) => { const [x,y] = freeSlot(Math.floor(i/g.rows), i%g.rows, taken, g); put(d,x,y); });
 }
 if (!matchMedia('(pointer:coarse)').matches){
   iconsEl.style.cssText = 'position:absolute;inset:0;display:block';
@@ -734,10 +751,9 @@ if (!matchMedia('(pointer:coarse)').matches){
       d.style.left = (ox+dx)+'px'; d.style.top = (oy+dy)+'px'; d.style.opacity = .7; };
     const up = () => { removeEventListener('pointermove', mv); removeEventListener('pointerup', up); d.style.opacity='';
       if (!moved) return;
-      let cx = Math.max(0, Math.round((d.offsetLeft-4)/78)), cy = Math.max(0, Math.round((d.offsetTop-4)/76));
-      const rows = Math.max(1, Math.floor((desktop.clientHeight-8)/76));
+      const g = iconGrid();
       const taken = (x,y) => [...iconsEl.children].some(o => o!==d && Math.round((o.offsetLeft-4)/78)===x && Math.round((o.offsetTop-4)/76)===y);
-      while (taken(cx,cy)){ cy++; if (cy >= rows){ cy = 0; cx++; } }
+      const [cx, cy] = freeSlot(Math.min(g.cols-1, Math.max(0, Math.round((d.offsetLeft-4)/78))), Math.min(g.rows-1, Math.max(0, Math.round((d.offsetTop-4)/76))), taken, g);
       d.style.left = (cx*78+4)+'px'; d.style.top = (cy*76+4)+'px';
       saveIcons(); };
     addEventListener('pointermove', mv); addEventListener('pointerup', up);

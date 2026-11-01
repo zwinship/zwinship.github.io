@@ -20,7 +20,11 @@ document.head.insertAdjacentHTML('beforeend', `<style id="scheme"></style><style
 .wu-head small{display:block;font:12px Arial;color:#cfe3ff;margin-top:2px}
 .wu-item{display:flex;gap:10px;padding:10px 16px;border-bottom:1px solid #ddd;align-items:flex-start}
 .wu-item b{color:#000080}
-.wu-item .when{color:#666;font-size:11px}
+.wu-item .when{color:#666;font-size:11px;margin-left:4px}
+.wu-item label{display:block;flex:1;min-width:0;line-height:1.35}
+.wu-item label::before{top:1px}
+.wu-item label::after{top:4px}
+.wu-item .wu-desc{display:block;margin-top:3px}
 .defrag-grid{display:grid;grid-template-columns:repeat(32,1fr);gap:1px;background:#fff;box-shadow:var(--sunken);padding:3px;flex:1;min-height:0;align-content:start}
 .defrag-grid i{display:block;aspect-ratio:1;border:1px solid rgba(0,0,0,.35)}
 .defrag-grid i.cur{outline:2px solid #ff0}
@@ -161,7 +165,7 @@ APPS.regedit = { title:'Registry Editor', icon:'regedit', w:700, h:460, render(w
   const key = (name, values, kids) => ({ name, values:values||[], kids:kids||[] });
   const TREE = [
     key('HKEY_CLASSES_ROOT'),
-    key('HKEY_CURRENT_ZACH', [S('(Default)','Zach Winship'), S('Title','Quantitative Economist and Data Analyst')], [
+    key('HKEY_CURRENT_ZACH', [S('(Default)','Zach Winship'), S('Title','MS in Quantitative Economics, New York University')], [
       key('Contact', [S('Email',EMAIL), S('LinkedIn','linkedin.com/in/zwinship'), S('GitHub','github.com/zwinship')]),
       key('Education', [], [
         key('NYU', [S('Degree','MS in Quantitative Economics'), S('Expected','May 2027'), S('Fellowship','NYU Economics Teaching Fellowship, Summer 2026'), S('Role','Teaching Assistant, Introductory Macroeconomics')]),
@@ -204,11 +208,11 @@ APPS.regedit = { title:'Registry Editor', icon:'regedit', w:700, h:460, render(w
 /* ---------------- Zach 98 Update: news as "critical updates" ---------------- */
 const UPDATES = [
   ['NBER Working Paper No. 35414', 'Congestion Pricing and Emergency Medical Service Response: Evidence from New York City. Under journal review.', '2026', ()=>openProject(ALL_PROJECTS[0])],
-  ['Media Coverage Pack', 'Fortune, ABC7, Gothamist, Streetsblog NYC, City Observatory and Yahoo Finance covered the EMS paper.', 'July 2026', ()=>openApp('ie')],
+  ['Media Coverage Pack', `${MEDIA.map(m=>m[1]).slice(0,-1).join(', ')} and ${MEDIA[MEDIA.length-1][1]} covered the EMS paper.`, 'Jul to Sep 2026', ()=>openApp('ie')],
   ['NYU MS Quantitative Economics', 'Installs graduate coursework. Expected completion May 2027.', 'Summer 2026', ()=>openApp('system')],
   ['Teaching Assistant Service Pack', 'Introductory Macroeconomics recitations, exams and grading at NYU.', 'Aug 2026', ()=>openApp('wordpad')],
   ['rd2dnet version 1', 'Boundary discontinuity designs on street networks, for Python and R. Built on rd2d (Cattaneo, Titiunik and Yu). Version 2 is coming soon.', '2026', ()=>openProject(ALL_PROJECTS.find(p=>p.id==='rd2dnet'))],
-  ['Research Assistant: Prof. Anna Vitali', 'NYU Economics, Sep 2026 to May 2027. Also the MSQE Research Practicum.', 'Sep 2026', ()=>openApp('wordpad')],
+  ['Research Assistant: Prof. Anna Vitali', 'NYU Economics, Sep 2026 to May 2027. Data pipelines for two development field projects in Uganda.', 'Sep 2026', ()=>openApp('wordpad')],
   ['Chesque', 'Chess rules, but every piece is a hero.', '2026', ()=>openProject(ALL_PROJECTS.find(p=>p.id==='chesque'))],
   ['Unlikely Instruments 1.0', 'A blog about unusual proxy variables, every two months. First post: Strava as a proxy for urban crime perception.', 'Early 2027', ()=>openApp('blog')],
   ['OctaStats UFC Model V2', 'Full rebuild: dynamic logit framework, automated pipeline, proprietary data.', '2026', ()=>openProject(ALL_PROJECTS.find(p=>/OctaStats/.test(p.title)))],
@@ -216,7 +220,7 @@ const UPDATES = [
 ];
 APPS.wupdate = { title:'Zach 98 Update - Internet Explorer', icon:'update', w:640, h:500, render(w){
   w.body.innerHTML = `<div class="wu"><div class="wu-head">Zach 98 Update<small>Product Updates · Critical Updates for ZACH-PC</small></div>
-      ${UPDATES.map((u,i)=>`<div class="wu-item"><input type="checkbox" id="wu${i}" checked><label for="wu${i}" style="flex:1"><b>${esc(u[0])}</b> <span class="when">(${esc(u[2])})</span><br>${esc(u[1])}</label><button data-i="${i}" style="min-width:64px">Install</button></div>`).join('')}
+      ${UPDATES.map((u,i)=>`<div class="wu-item"><input type="checkbox" id="wu${i}" checked><label for="wu${i}"><b>${esc(u[0])}</b><span class="when">(${esc(u[2])})</span><span class="wu-desc">${esc(u[1])}</span></label><button data-i="${i}" style="min-width:64px">Install</button></div>`).join('')}
     </div>
     <div style="display:flex;align-items:center;gap:8px;margin-top:6px"><div class="progress-indicator segmented" style="flex:1"><span class="progress-indicator-bar" data-bar style="width:0%"></span></div><button class="default" data-all>Download</button></div>
     <div class="status-bar"><p class="status-bar-field" data-st>${UPDATES.length} critical updates available.</p></div>`;
@@ -261,7 +265,7 @@ APPS.defrag = { title:'Defragmenting Drive C', icon:'defrag', w:520, h:430, minW
     }
     const pct = Math.floor(i/N*100); bar.style.width = pct+'%'; pctEl.textContent = pct + '% Complete';
     if (i >= N){ clearInterval(timer); g.querySelectorAll('.cur').forEach(x=>x.classList.remove('cur')); beep('ding');
-      msgbox('Disk Defragmenter', "Defragmentation of Zach's portfolio is complete.<br><br>0 bytes of coursework were found.", 'info'); }
+      msgbox('Disk Defragmenter', "Defragmentation of Zach's portfolio is complete.<br><br>0 bytes of p-hacking were found.", 'info'); }
   }
   init(); timer = setInterval(step, 40);
   w.body.querySelector('[data-stop]').onclick = w.close;
@@ -274,7 +278,7 @@ APPS.defrag = { title:'Defragmenting Drive C', icon:'defrag', w:520, h:430, minW
 const NET = [
   ['NBER', 'National Bureau of Economic Research', 'Publisher of Working Paper No. 35414 (Congestion Pricing and EMS Response Time).', [['https://www.nber.org/papers/w35414','Open Paper']]],
   ['NBER-COAUTHORS', 'Workgroup: co-authors', 'Yulia Chikish, Greg Colman, Dhaval Dave, Brad Humphreys and Zachary Santamaria.', []],
-  ['NYU-ECON', 'New York University · Economics', 'MS in Quantitative Economics (May 2027). Teaching Assistant, Introductory Macroeconomics.', []],
+  ['NYU-ECON', 'New York University · Economics', 'MS in Quantitative Economics (May 2027). Research Assistant to Professor Anna Vitali. Teaching Assistant, Introductory Macroeconomics.', []],
   ['BENTLEY', 'Bentley University', 'BS Quantitative Economics, May 2026. Research Assistant and Instructional Content Assistant.', [['https://falconeconsim.github.io/','Course Site']]],
   ['AAF-DC', 'American Action Forum · Washington, DC', 'Regulatory Data Intern, May to August 2025.', [['https://policyinterns.com/author/typhoonscented11a6c9fde0/','Blog Posts']]],
   ['OCTASTATS', 'OctaStats server', 'UFC fight prediction model, live dashboard.', [['https://octastats.github.io/index.html','Open Site']]],
@@ -344,7 +348,7 @@ desktop.addEventListener('contextmenu', e => {
   const ic = e.target.closest('.dicon'); if (!ic || ic.querySelector('.lbl').textContent !== 'Recycle Bin') return;
   e.preventDefault(); e.stopImmediatePropagation();
   showCtx(e.clientX, e.clientY, [['<b>Open</b>', ()=>openApp('recycle')], ['Explore', ()=>openApp('recycle')], '-',
-    ['Empty Recycle Bin', ()=>msgbox('Confirm Multiple File Delete','Are you sure you want to delete these 4 items?','warn',['Yes','No'], b => { if (b===0) msgbox('Error Deleting File','Cannot delete coursework_portfolio.zip: it never existed in the first place.','errorx'); })],
+    ['Empty Recycle Bin', ()=>msgbox('Confirm Multiple File Delete','Are you sure you want to delete these 4 items?','warn',['Yes','No'], b => { if (b===0) msgbox('Error Deleting File','Cannot delete coursework_portfolio.zip: the transcript still needs it.','errorx'); })],
     '-', ['Properties', ()=>msgbox('Recycle Bin Properties','Maximum size of Recycle Bin: 10% of drive.<br>Contents: things this portfolio deliberately leaves out.','info')]]);
 }, true);
 
@@ -367,7 +371,7 @@ Object.assign(RUN, { regedit:()=>openApp('regedit'), wupdate:()=>openApp('wupdat
 // rd2dnet gets its own desktop shortcut, right after Research
 {
   const d = document.createElement('div'); d.className='dicon'; d.tabIndex=0;
-  d.innerHTML = `${icon('network')}<div class="lbl">rd2dnet</div>`;
+  d.innerHTML = `${icon('package')}<div class="lbl">rd2dnet</div>`;
   const open = () => openProject(ALL_PROJECTS.find(p=>p.id==='rd2dnet'), d.querySelector('.ico').getBoundingClientRect());
   d.addEventListener('click', e => { iconsEl.querySelectorAll('.sel').forEach(x=>x.classList.remove('sel')); d.classList.add('sel'); if (matchMedia('(pointer:coarse)').matches) open(); e.stopPropagation(); });
   d.addEventListener('dblclick', open);
