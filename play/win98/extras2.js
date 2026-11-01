@@ -1,5 +1,5 @@
 /* =====================================================================
-   Zach 98 — more programs: screen savers + Display tabs, color schemes,
+   Zach 98, more programs: screen savers + Display tabs, color schemes,
    Regedit, Zach 98 Update, Disk Defragmenter, Network Neighborhood,
    dial-up networking, system menu / Alt+F4.
    ===================================================================== */
@@ -169,7 +169,7 @@ APPS.regedit = { title:'Registry Editor', icon:'regedit', w:700, h:460, render(w
       ]),
       key('Experience', [], EXPERIENCE.map(e => key(e.role.replace(/,.*/,''), [S('Organization',e.org), S('When',e.when), S('Description',e.body)]))),
       key('Research', [], RESEARCH.map(p => key(shortName(p.title), [S('Title',p.title), S('Year',p.year), S('Fields',p.meta), S('Methods',p.tags.join(', ')), ...(p.badge?[S('Series',p.badge)]:[]), ...(p.links||[]).map(l=>S(l[1],l[0]))]))),
-      key('Software', [], [ key('Skills', SKILLS.map(sk => D(sk, 1))) ]),
+      key('Software', [], [ key('Skills', SKILLS.map(sk => D(sk, 1))), key('rd2dnet', [S('Version', SOFTWARE.badge), S('Summary', SOFTWARE.body.slice(0, 120) + '...'), S('Credit', SOFTWARE.credit), ...SOFTWARE.links.map(l=>S(l[1], l[0]))]) ]),
     ]),
     key('HKEY_LOCAL_MACHINE', [], [ key('Hardware', [], [ key('MBTA_LED_Art', [S('Board','Raspberry Pi'), S('Status','Software complete; frame in progress')]) ]) ]),
     key('HKEY_USERS', [], [ key('.DEFAULT', [S('Visitor','Welcome!')]) ]),
@@ -207,7 +207,10 @@ const UPDATES = [
   ['Media Coverage Pack', 'Fortune, ABC7, Gothamist, Streetsblog NYC, City Observatory and Yahoo Finance covered the EMS paper.', 'July 2026', ()=>openApp('ie')],
   ['NYU MS Quantitative Economics', 'Installs graduate coursework. Expected completion May 2027.', 'Summer 2026', ()=>openApp('system')],
   ['Teaching Assistant Service Pack', 'Introductory Macroeconomics recitations, exams and grading at NYU.', 'Aug 2026', ()=>openApp('wordpad')],
-  ['Unlikely Instruments 1.0', 'A bi-monthly blog about unusual proxy variables. First post: Strava as a proxy for urban crime perception.', 'Sept 2026', ()=>openApp('blog')],
+  ['rd2dnet 0.2.0', 'Boundary discontinuity designs on street networks, for Python and R. Built on rd2d (Cattaneo, Titiunik and Yu).', 'Oct 2026', ()=>openProject(ALL_PROJECTS.find(p=>p.id==='rd2dnet'))],
+  ['Research Assistant: Prof. Anna Vitali', 'NYU Economics, Sep 2026 to May 2027. Also the MSQE Research Practicum.', 'Sep 2026', ()=>openApp('wordpad')],
+  ['Chesque', 'A browser game.', '2026', ()=>openProject(ALL_PROJECTS.find(p=>p.id==='chesque'))],
+  ['Unlikely Instruments 1.0', 'A blog about unusual proxy variables, every two months. First post: Strava as a proxy for urban crime perception.', 'Early 2027', ()=>openApp('blog')],
   ['OctaStats UFC Model V2', 'Full rebuild: dynamic logit framework, automated pipeline, proprietary data.', '2026', ()=>openProject(ALL_PROJECTS.find(p=>/OctaStats/.test(p.title)))],
   ['Bentley University Graduation', 'BS Quantitative Economics, minors in Mathematics and Data Technologies. GPA 3.74.', 'May 2026', ()=>openApp('system')],
 ];
@@ -361,4 +364,16 @@ buildSub('programs', SUBS.programs);
 SUBS.settings.push(['Zach 98 Update...','update','wupdate']);
 buildSub('settings', SUBS.settings);
 Object.assign(RUN, { regedit:()=>openApp('regedit'), wupdate:()=>openApp('wupdate'), defrag:()=>openApp('defrag'), scandisk:()=>openApp('defrag'), network:()=>openApp('network'), welcome:()=>openApp('welcome') });
+// rd2dnet gets its own desktop shortcut, right after Research
+{
+  const d = document.createElement('div'); d.className='dicon'; d.tabIndex=0;
+  d.innerHTML = `${icon('network')}<div class="lbl">rd2dnet</div>`;
+  const open = () => openProject(ALL_PROJECTS.find(p=>p.id==='rd2dnet'), d.querySelector('.ico').getBoundingClientRect());
+  d.addEventListener('click', e => { iconsEl.querySelectorAll('.sel').forEach(x=>x.classList.remove('sel')); d.classList.add('sel'); if (matchMedia('(pointer:coarse)').matches) open(); e.stopPropagation(); });
+  d.addEventListener('dblclick', open);
+  d.addEventListener('keydown', e => { if (e.key==='Enter') open(); });
+  const research = [...iconsEl.children].find(x => x.querySelector('.lbl').textContent === 'Research');
+  iconsEl.insertBefore(d, research ? research.nextSibling : null);
+}
+Object.assign(RUN, { rd2dnet:()=>openProject(ALL_PROJECTS.find(p=>p.id==='rd2dnet')) });
 if (typeof layoutIcons === 'function') layoutIcons();
