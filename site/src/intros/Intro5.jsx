@@ -7,7 +7,10 @@ const EXT = 40;                                   // bars run past the screen ed
 const linear = t => t;
 const DROP = cubicBezier(0.42, 0, 0.18, 1);
 const DRAW_IN = cubicBezier(0.55, 0, 0.25, 1);
-const SWING = cubicBezier(0.6, 0, 0.12, 1);       // gathers speed, then brakes hard into place, no overshoot
+// Swing: constant acceleration for most of the travel, then a short hard brake that ends at rest
+// exactly at 90 degrees (position and speed continuous, no overshoot).
+const BRAKE_AT = 0.8;
+const SWING = x => (x < BRAKE_AT ? (x * x) / BRAKE_AT : 1 - ((1 - x) * (1 - x)) / (1 - BRAKE_AT));
 const FADE = cubicBezier(0.4, 0, 0.6, 1);
 
 // Timeline, in seconds.
@@ -71,7 +74,7 @@ function Arm({ a, i, t, H, thick }) {
   const bot = useTransform([t, rotate], ([v, r]) => {
     if (v < T.swing) return full * (1 - DROP(Math.min(Math.max((v - d0) / T.dropLen, 0), 1)));
     const p = r / -90;
-    const len = a.len + (reach - a.len) * (1 - p) * (1 - p);
+    const len = a.len + (reach - a.len) * (1 - p) ** 1.4;
     return full - pivot - len;
   });
   // The part above the route bar draws down into the pivot, and the line thins to the segment's height.
