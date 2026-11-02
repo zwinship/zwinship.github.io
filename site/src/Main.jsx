@@ -4,7 +4,8 @@ import { EMAIL, LINKS, PROFILE } from './content.js';
 import { LINES, pageById } from './data.js';
 import { navigate, parse, scrollToSection, setOrigin } from './router.js';
 
-const isExternal = href => /^https?:/.test(href);
+// Other sites and PDFs (the CV) open in a new tab.
+const isExternal = href => /^https?:/.test(href) || /\.pdf($|[?#])/i.test(href);
 export function A({ href, children, ...rest }) {
   return <a href={href} {...(isExternal(href) ? { target: '_blank', rel: 'noopener' } : {})} {...rest}>{children}</a>;
 }
