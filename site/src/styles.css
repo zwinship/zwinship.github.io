@@ -146,7 +146,7 @@ main { max-width: 1040px; margin: 0 auto; padding: 56px 32px 40px; scroll-margin
 .intro-cover { position: fixed; inset: 0; z-index: 100; background: #fff; }
 .intro-route { position: absolute; }
 .intro-name { position: absolute; left: 0; bottom: 100%; margin: 0 0 28px; font-size: clamp(48px, 8vw, 104px); line-height: 0.92; letter-spacing: -0.045em; font-weight: 900; white-space: nowrap; }
-.intro-stop { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; font-weight: 700; font-size: 16px; white-space: nowrap; }
+.intro-stop { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; color: var(--ink); font-weight: 700; font-size: 16px; white-space: nowrap; }
 
 /* ---------- fun versions ---------- */
 
