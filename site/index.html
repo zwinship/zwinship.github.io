@@ -29,6 +29,10 @@
     ]
   }
   </script>
+  <!-- The plain copy of the page inside #root is for search engines and no-JS visitors. With JS on it stays hidden
+       until React replaces it, so visitors never see it flash before the intro. -->
+  <script>document.documentElement.classList.add('js');</script>
+  <style>.js .static-fallback { visibility: hidden; }</style>
   <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
   <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
@@ -44,7 +48,7 @@
 <body>
   <script>if (new URLSearchParams(location.search).get('theme') === 'dark') document.documentElement.dataset.theme = 'dark';</script>
   <div id="root">
-    <main style="font:17px/1.55 system-ui,sans-serif;max-width:44rem;margin:4rem auto;padding:0 1rem">
+    <main class="static-fallback" style="font:17px/1.55 system-ui,sans-serif;max-width:44rem;margin:4rem auto;padding:0 1rem">
       <h1>Zach Winship</h1>
       <p>Economist and MS student in Quantitative Economics at New York University (BS in Quantitative Economics, Bentley University). My research is in urban and transportation economics.</p>
       <h2>Research</h2>
