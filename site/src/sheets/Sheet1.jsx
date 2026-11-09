@@ -34,7 +34,7 @@ export function Content({ pg }) {
         <>
           <h3>Coverage</h3>
           <ul className="plain-list press">
-            {pg.press.map(([href, outlet, headline]) => <li key={href}><A href={href}>{outlet}</A>: {headline}</li>)}
+            {pg.press.map(([href, outlet]) => <li key={href}><A href={href}>{outlet}</A></li>)}
           </ul>
         </>
       )}
