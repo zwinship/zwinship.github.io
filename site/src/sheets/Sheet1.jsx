@@ -13,6 +13,7 @@ export function Content({ pg }) {
         <h2 id={`sheet-title-${pg.id}`} tabIndex={-1}>{pg.title}</h2>
       </div>
       <p className="sub">{pg.sub}</p>
+      {pg.note && <p className="sub note">{pg.note}</p>}
       {pg.image && <img className="page-img" src={pg.image} alt={`${pg.title}, partway through the build`} />}
       {pg.body.map(t => <p key={t.slice(0, 24)}>{t}</p>)}
       {pg.install && (

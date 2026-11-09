@@ -75,6 +75,8 @@ main { max-width: 1040px; margin: 0 auto; padding: 56px 32px 40px; scroll-margin
 @media (hover: hover) { .stop h3 a:hover { color: var(--ink); text-decoration-color: var(--ink); } }
 .stop .sub { margin: 0 0 2px; color: var(--ink-2); font-size: 17px; }
 .stop .blurb { margin: 0; }
+.stop .note { margin: 4px 0 0; }
+.page .sub:has(+ .note) { margin-bottom: 4px; }
 .item-links { margin: 0; display: flex; flex-wrap: wrap; gap: 0 18px; }
 
 /* ---------- footer ---------- */

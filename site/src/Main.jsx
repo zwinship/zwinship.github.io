@@ -70,6 +70,7 @@ function Stop({ it }) {
       <h3>{title}</h3>
       <p className="sub">{it.sub}</p>
       <p className="blurb">{it.blurb}</p>
+      {it.note && <p className="sub note">{it.note}</p>}
       {it.showLinks && it.links?.length > 0 && (
         <p className="item-links">{it.links.map(([href, label]) => <A key={href + label} href={href}>{label}</A>)}</p>
       )}
