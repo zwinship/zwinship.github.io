@@ -7,7 +7,7 @@ const RESEARCH = [
   "badge": "NBER WP No. 35414",
   "meta": "Urban Economics · Health Policy · Causal Inference",
   "coauthors": "Yulia Chikish, Greg Colman, Dhaval Dave, Brad Humphreys and Zachary Santamaria",
-  "body": "NBER Working Paper No. 35414, under journal review. Using a difference-in-discontinuities design at the 60th Street congestion relief zone boundary, we find congestion pricing reduced total EMS travel times by 63 to 70 seconds (roughly 5 to 6%), with vehicular traffic down 18 to 21% near the boundary and no evidence of displacement to adjacent areas.",
+  "body": "NBER Working Paper No. 35414, under review at the Journal of Health Economics. Using a difference-in-discontinuities design at the 60th Street congestion relief zone boundary, we find congestion pricing reduced total EMS travel times by 63 to 70 seconds (roughly 5 to 6%), with vehicular traffic down 18 to 21% near the boundary and no evidence of displacement to adjacent areas.",
   "tags": [
    "Python",
    "Stata",

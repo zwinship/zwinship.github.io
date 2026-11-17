@@ -28,6 +28,7 @@ function Intro() {
           <li><A href={LINKS.resume}>CV</A></li>
           <li><A href={LINKS.github}>GitHub</A></li>
           <li><A href={LINKS.linkedin}>LinkedIn</A></li>
+          <li><A href={LINKS.orcid}>ORCID</A></li>
         </ul>
       </div>
       <img className="portrait" src="/images/zwinship.png" alt="Zach Winship" width="400" height="400" />
@@ -159,6 +160,7 @@ export default function Main({ restoreY }) {
             <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
             <A href={LINKS.github}>GitHub</A>
             <A href={LINKS.linkedin}>LinkedIn</A>
+            <A href={LINKS.orcid}>ORCID</A>
             <A href={LINKS.resume}>CV</A>
           </p>
           <p className="foot-fun">
