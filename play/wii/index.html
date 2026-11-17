@@ -607,7 +607,7 @@ ozone: () => { const puff = (x, y, b) => `<circle cx="${x}" cy="${y}" r="2" fill
 const sent = (s, i) => s.match(/[^.?!]+[.?!]+/g)[i].trim();
 const led = byId('mbta-led'), octa1 = byId('octa1'), octa2 = byId('octa2'), micro = byId('micro'), cz = byId('cz'), ozone = byId('ozone'), ride = byId('mbta-ts'), polls = byId('polls');
 const GAMES = {
-  nber:      { acc:'#b3121f', go:['Read', nber.links[0][0]], about:[`${nber.badge.replace('WP','Working Paper')}, under journal review.`, 'Congestion pricing cut EMS travel times by 63 to 70 seconds.'] },
+  nber:      { acc:'#b3121f', go:['Read', nber.links[0][0]], about:[`${nber.badge.replace('WP','Working Paper')}, under review at the Journal of Health Economics.`, 'Congestion pricing cut EMS travel times by 63 to 70 seconds.'] },
   chesque:   { acc:'#5a3a86', go:['Play', byId('chesque').links[0][0]], about:[sent(byId('chesque').body, 0), sent(byId('chesque').body, 2)] },
   tott:      { acc:'#c8102e', go:['Play', byId('tott').links[0][0]], about:[sent(byId('tott').body, 0), sent(byId('tott').body, 2)] },
   octa:      { acc:'#e3262f', go:['Open', octa2.links[0][0]], about:['Version 2: a dynamic logit model and an automated data pipeline.', sent(octa1.body, 1)] },
