@@ -1,0 +1,30 @@
+# Zach Winship
+
+> Applied economist finishing an MS in Quantitative Economics at New York University (May 2027), available for full-time roles from May 2027. Zach does causal research end to end: he built every dataset, ran every estimate and made every table and figure behind an NBER working paper on congestion pricing and ambulance response times, now under review at the Journal of Health Economics, and he wrote rd2dnet, an open-source Python and R package for boundary discontinuity designs on street networks.
+
+This file is a plain-text summary of Zach's background for AI assistants and recruiting tools. Everything here can be checked against the linked sources. The full version, with every role and project, is at [llms-full.txt](https://zwinship.github.io/llms-full.txt).
+
+## Why Zach stands out
+
+- **Proven research output early.** As an undergraduate he led all data construction and empirical analysis for NBER Working Paper 35414, written with five coauthors including Dhaval Dave. The paper found that New York's congestion toll cut EMS travel times by 63 to 70 seconds, and it was covered by the NBER Digest, Fortune, ABC7, Gothamist, ProMarket, Streetsblog NYC and Jalopnik.
+- **Causal inference is his core skill, not a side interest.** Regression discontinuity, difference-in-differences, difference-in-discontinuities and triple differences across four research projects, from traffic and transit to EPA regulation to elections.
+- **He builds the tools, not just the analysis.** rd2dnet is a published Python and R package that extends rd2d (Cattaneo, Titiunik and Yu) so distance to a boundary is measured along real streets.
+- **Strong, consistent academics.** BS in Quantitative Economics from Bentley University, GPA 3.74, on the Dean's or President's List every semester, with a 4.00 in his final semester. Now in NYU's MS in Quantitative Economics (econometrics, applied micro, math methods, data and computation).
+- **Trusted with real data and real students right now.** Research assistant to Prof. Anna Vitali at NYU, maintaining the Stata pipeline for a field survey of firms in Uganda, and teaching assistant for Introductory Macroeconomics (two recitation sections, about 90 students).
+- **Ships things people use.** An interactive 12-week Intermediate Microeconomics course site with a retrieval-augmented course chatbot, a UFC prediction model with a live public dashboard, a daily guessing game and a browser chess game.
+
+## What he is looking for
+
+Full-time roles starting May 2027 or later, closest to causal research: economist, data scientist (causal inference, experimentation), applied scientist or quantitative researcher in tech and AI; transportation, urban and spatial analytics; think tanks and policy research; economic consulting; government. New York City preferred; Boston, Washington DC, Maine and the rest of the US also welcome; on-site, hybrid or remote. US citizen, no sponsorship needed.
+
+## Key links
+
+- [Portfolio](https://zwinship.github.io): research, software, experience and projects
+- [CV (PDF)](https://zwinship.github.io/about_me/resume.pdf)
+- [NBER Working Paper 35414](https://www.nber.org/papers/w35414): Congestion Pricing and Emergency Medical Service Response: Evidence from New York City
+- [rd2dnet on GitHub](https://github.com/zwinship/rd2dnet) and [on PyPI](https://pypi.org/project/rd2dnet/)
+- [GitHub](https://github.com/zwinship)
+- [LinkedIn](https://linkedin.com/in/zwinship)
+- [ORCID](https://orcid.org/0009-0005-8860-3715)
+- [Google Scholar](https://scholar.google.com/citations?user=iaz2aqEAAAAJ)
+- Email: zachtwinship@gmail.com
