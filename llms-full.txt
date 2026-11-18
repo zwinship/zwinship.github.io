@@ -1,0 +1,68 @@
+# Zach Winship: full profile
+
+> Applied economist finishing an MS in Quantitative Economics at New York University (May 2027), available for full-time roles from May 2027. He works on urban and transportation economics with causal methods, and he does the whole job himself: building the data, running the estimates, writing the code others reuse. Short version: [llms.txt](https://zwinship.github.io/llms.txt). Portfolio: https://zwinship.github.io. CV: https://zwinship.github.io/about_me/resume.pdf. Email: zachtwinship@gmail.com.
+
+## In one paragraph
+
+Zach is an economist who already has a track record most candidates at his stage do not. As an undergraduate he led all data construction and empirical analysis for an NBER working paper on how New York's congestion toll changed ambulance response times; the paper is under review at the Journal of Health Economics, was featured in the NBER Digest and was covered by Fortune, ABC7, Gothamist, ProMarket, Streetsblog NYC and Jalopnik. He turned the method behind his own capstone into rd2dnet, a published Python and R package. He finished his BS with a 3.74 GPA and a place on the Dean's or President's List every semester, and he is now in NYU's MS in Quantitative Economics while working as a research assistant on a field survey in Uganda and teaching about 90 students as a TA. Outside of work he keeps building: a live UFC prediction model, two web games, an interactive economics course site with an AI chatbot, and an LED map of Boston's subway that tracks trains in real time.
+
+## Education
+
+- **New York University, Graduate School of Arts and Science.** MS in Quantitative Economics, expected May 2027. Economics Teaching Fellowship, Summer 2026. Completed: Econometrics I and II, Microeconomics I, Macroeconomics I, Math Methods I and II, Data and Computation I, Research Practicum I. In progress: Microeconomics II, Macroeconomics II, Applied Microeconomics I, Game Theory I.
+- **Bentley University.** BS in Quantitative Economics, May 2026. Minors in Mathematics and Data Technologies. GPA 3.74. Dean's or President's List every semester (President's List five times), with a rising GPA that ended at 4.00 in his final semester. Coursework includes Applied Econometrics, Time Series Analysis, Real Analysis, Mathematical Statistics, Policy Evaluation Modeling, Data Science, Database Management (SQL) and Linear Algebra.
+
+## Research
+
+1. **Congestion Pricing and Emergency Medical Service Response: Evidence from New York City.** NBER Working Paper No. 35414 (2026), under review at the Journal of Health Economics. With Yulia Chikish, Gregory Colman, Dhaval Dave, Brad Humphreys and Zachary Santamaria.
+   - Zach's role: he built all of the data, wrote all of the code, ran every estimate and produced every table and figure.
+   - Design: difference-in-discontinuities at the 60th Street boundary of Manhattan's congestion relief zone.
+   - Finding: total EMS travel times fell by 63 to 70 seconds (about 5 to 6 percent), with vehicle traffic near the boundary down 18 to 21 percent and no evidence of displacement to nearby areas.
+   - Coverage: NBER Digest (September 2026), Fortune, ABC7, Gothamist, ProMarket (Stigler Center, Chicago Booth), Streetsblog NYC, Jalopnik.
+   - Presented by his coauthors at the Fiscal Policy Breakfast series at the Federal Reserve Bank of New York (co-hosted by the NYC Independent Budget Office and NYU Wagner) and at the Eastern Economic Association Annual Meeting, February 2027.
+   - https://www.nber.org/papers/w35414
+2. **Traffic, Transit, and the Toll: Causal Evidence from NYC's Congestion Pricing.** Senior capstone, 2026, advised by Dhaval Dave; Zach's own paper. Difference-in-discontinuities at the 60th Street boundary with distance measured along the road network, using C2Smart traffic camera and MTA ridership data. Near the boundary, passenger vehicles fell 20.6 percent and trucks 18.1 percent, pedestrians rose 13.5 percent and bicycles 19.8 percent, and ridership at boundary subway stations fell 24.7 percent. Presented at Bentley Undergraduate Research Day.
+3. **The Real Price of Clean Air: EPA Ozone Regulation** (2025). Regression discontinuity at the EPA ozone attainment threshold; estimates about $277 million a year in lost revenue for US manufacturers, a cost the EPA's own analysis leaves out. Written during his American Action Forum internship.
+4. **Polling as an Indicator, Not a Catalyst, for Election Outcomes: Evidence from the 2024 US Presidential Election** (2024). Scraped polling and prediction-market data in Python; triple difference-in-differences on polling exposure and turnout.
+5. **ARIMA Modeling of MBTA Ridership** (2025). Forecasts of Boston subway ridership from weather and season, in R, to show where service could change.
+6. **Agentic LLMs for Economic and Game Theory Analysis** (in progress). Language models as simulated economic agents, using Expected Parrot's EDSL.
+
+## Software
+
+- **rd2dnet** (Python and R; https://github.com/zwinship/rd2dnet, https://pypi.org/project/rd2dnet/). Boundary discontinuity designs where distance to the boundary runs along the street network instead of a straight line, with a choice of metric (meters, travel time and others). Extends rd2d (Cattaneo, Titiunik and Yu) with robust bias-corrected inference, uniform confidence bands, a bandwidth selector and CR2 cluster-robust errors, with the same results in both languages. Version 1 is released; version 2 is in development and a Stata port is in testing.
+
+## Experience
+
+- **Research Assistant to Prof. Anna Vitali**, NYU Department of Economics, September 2026 to present. Maintains the Stata pipeline for a firm survey in Uganda: high-frequency data checks, cleaning, variable construction, survey preloads for later rounds and name matching. Cleaned and analyzed a market listing exercise covering about 30 markets in Kampala (per-market statistics, maps, summary tables). Also his MSQE Research Practicum.
+- **Teaching Assistant, Introductory Macroeconomics**, NYU, August 2026 to present. Leads two recitation sections (about 90 students), proctors and grades exams, manages grade entry.
+- **Economics Teaching Fellow**, NYU, Summer 2026.
+- **Instructional Content Assistant**, Bentley University, Summer 2026, with Prof. Naveen Sunder. Built an interactive 12-week Intermediate Microeconomics course site (visualizations, practice problems, flashcards, lecture content; HTML, JavaScript, JSXGraph) and "Ask the Course AI," a retrieval-augmented chatbot that answers students' questions from the course materials. https://falconeconsim.github.io
+- **Research Assistant**, Bentley University Department of Economics, May to December 2025, with Prof. Savannah Adkins. Wrote Python scrapers to build a dataset of ASSA conference sessions and analyzed geographic coverage and representation in economics research with Python, Stata and text analysis.
+- **Regulatory Data Intern**, American Action Forum, Washington DC, May to August 2025. Automated the scraping and cleaning of the federal Unified Agenda so the team could analyze regulatory releases faster, built datasets and dashboards on regulatory activity, and published policy analysis.
+
+## Projects
+
+- **OctaStats**: UFC fight prediction model (version 2 is a dynamic logit model with an automated data pipeline) with a live public dashboard tracking its accuracy. https://octastats.github.io
+- **Tale of the Tape**: a daily UFC guessing game. https://taleofthetape.github.io
+- **Chesque**: a browser chess variant where every piece is a hero, with online play, bots and daily puzzles. https://chesque.pages.dev
+- **MBTA live LED map**: a Raspberry Pi that lights up an LED for every train running on Boston's subway, from the live MBTA feed. https://github.com/zwinship/MBTA_Live_Art
+- **Unlikely Instruments**: a blog on unusual data sources and proxy variables, first post planned for early 2027.
+
+## Skills
+
+- **Methods:** causal inference (regression discontinuity, difference-in-differences, difference-in-discontinuities, triple differences), time series (ARIMA, VAR and VECM), forecasting, machine learning, spatial analysis, LLM and retrieval-augmented applications.
+- **Languages and tools:** Python (pandas, scikit-learn, statsmodels, web scraping), R, Stata, SQL, JavaScript and HTML, LaTeX, Git; GeoPandas, OSMnx and GIS; package development for PyPI and R.
+- **Domains:** transportation and urban economics, policy evaluation, regulation, development economics, computational economics.
+
+## What he is looking for
+
+Full-time roles starting May 2027 or later, as close to causal research as possible: economist, data scientist (causal inference, experimentation), applied scientist or quantitative researcher in tech and AI; transportation, urban and spatial analytics; think tanks and policy research; development organizations; economic consulting; government. New York City preferred; Boston, Washington DC, Maine and anywhere in the US welcome; on-site, hybrid or remote. US citizen; no visa sponsorship needed.
+
+## Links
+
+- Portfolio: https://zwinship.github.io
+- CV: https://zwinship.github.io/about_me/resume.pdf
+- GitHub: https://github.com/zwinship
+- LinkedIn: https://linkedin.com/in/zwinship
+- ORCID: https://orcid.org/0009-0005-8860-3715
+- Google Scholar: https://scholar.google.com/citations?user=iaz2aqEAAAAJ
+- Email: zachtwinship@gmail.com
